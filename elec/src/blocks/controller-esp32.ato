@@ -1,0 +1,11 @@
+module ControllerESP32:
+    """
+    Controller block using the ESP32S3 microcontroller
+    Adds ethernet interface for communication
+    """
+
+    power_in_24v = new Power
+    power_out_24v = new Power
+    power_out_3v3 = new Power
+    
+    

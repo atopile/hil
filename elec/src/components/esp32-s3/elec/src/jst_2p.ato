@@ -1,0 +1,5 @@
+component JST_PH_2P:
+    signal gnd ~ pin 1
+    signal vcc ~ pin 2
+    mpn = "C295747"
+    footprint = "CONN-SMD_P2.00_S2B-PH-SM4-TB-LF-SN"
