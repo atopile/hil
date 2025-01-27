@@ -222,7 +222,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "controller-esp32.kicad_pro",
+    "filename": "ethernet.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -256,7 +256,7 @@
     "last_paths": {
       "gencad": "",
       "idf": "",
-      "netlist": "../../../build/default.net",
+      "netlist": "../../../build/ethernet.net",
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",

@@ -8,9 +8,13 @@ builds:
     entry: elec/src/blocks/isolator-i2c.ato:IsolatorI2C
   isolator-24v-3v3:
     entry: elec/src/blocks/isolator-24v-3v3.ato:Isolator24v3v3
-  controller-esp32: 
+  controller-esp32:
     entry: elec/src/blocks/controller-esp32.ato:ControllerESP32
   power-usbpd:
     entry: elec/src/blocks/power-usbpd.ato:PowerUSBPD
+  ethernet:
+    entry: elec/src/components/ethernet.ato:W5500Ethernet
+  space-bms:
+    entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
 dependencies:
 - generics

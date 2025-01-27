@@ -66,13 +66,13 @@ module Amplifier:
     power_in.gnd ~ input.gnd
     power_in.gnd ~ output.gnd
 
-    # # Parameters
-    # gain: dimensionless
+    # Parameters
+    gain: dimensionless
 
     # # Configure the amplifier
-    # assert 1 + feedback_resistor.resistance / input_resistor.resistance within gain
-    # assert gain within max(output.voltage) / max(input.voltage)
-    # assert power_in.voltage * gain < opamp.supply_voltage # Ensure the opamp doesn't saturate
+    assert 1 + feedback_resistor.resistance / input_resistor.resistance is gain
+    assert gain within max(output.voltage) / max(input.voltage)
+    assert power_in.voltage * gain < opamp.supply_voltage # Ensure the opamp doesn't saturate
 
 
 module TVS:

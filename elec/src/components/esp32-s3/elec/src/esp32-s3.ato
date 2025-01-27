@@ -44,6 +44,12 @@ module ESP32S3:
     enable_button.out ~ ic.EN
     enable_button.btn -> ButtonSKRPACE010
 
+    # Boot button
+    boot_button = new ButtonPullup
+    boot_button.power ~ power
+    boot_button.out ~ ic.IO0
+    boot_button.btn -> ButtonSKRPACE010
+
     # connect up USB
     usb2 = new USB2
     usb2.dm ~ ic.IO19
