@@ -48,12 +48,12 @@ class TYPE_C_16PIN_2MD073(Module):
     def pin_association_heuristic(self):
         return F.has_pin_association_heuristic_lookup_table(
             mapping={
-                self.CC1.signal: ["CC1"],
-                self.CC2.signal: ["CC2"],
-                self.USB2.n.signal: ["DN1", "DN2"],
-                self.USB2.p.signal: ["DP1", "DP2"],
-                self.SBU1.signal: ["SBU1"],
-                self.SBU2.signal: ["SBU2"],
+                self.CC1.line: ["CC1"],
+                self.CC2.line: ["CC2"],
+                self.USB2.n.line: ["DN1", "DN2"],
+                self.USB2.p.line: ["DP1", "DP2"],
+                self.SBU1.line: ["SBU1"],
+                self.SBU2.line: ["SBU2"],
                 self.POWER_VBUS.lv: ["SHELL", "GND"],
                 self.POWER_VBUS.hv: ["VBUS"],
             },

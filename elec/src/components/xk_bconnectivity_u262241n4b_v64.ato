@@ -1,6 +1,6 @@
 from "generics/interfaces.ato" import Power, USB2
 
-component _XKB_Connectivity_U262_241N_4BV64:
+component XKB_Connectivity_U262_241N_4BV64:
     """XKB_Connectivity_U262_241N_4BV64 component"""
     lcsc_id = "C388660"
     manufacturer = "XKB Connectivity"

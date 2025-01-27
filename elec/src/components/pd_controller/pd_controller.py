@@ -106,15 +106,15 @@ class PDController(Module):
         # ESD protection
         self.power_vbus.hv.connect_via(self.vbus_esd_diode, self.power_vbus.lv)
         self.power_vsink.hv.connect_via(self.vsink_esd_diode, self.power_vsink.lv)
-        self.pd_controller.CC1.signal.connect(self.esd_cc.K1)
-        self.pd_controller.CC2.signal.connect(self.esd_cc.K2)
+        self.pd_controller.CC1.line.connect(self.esd_cc.K1)
+        self.pd_controller.CC2.line.connect(self.esd_cc.K2)
         self.power_vbus.lv.connect(self.esd_cc.A)
 
         # CC line net naming
         cc1 = F.Net.with_name("CC1")
         cc2 = F.Net.with_name("CC2")
-        cc1.part_of.connect(self.pd_controller.CC1.signal)
-        cc2.part_of.connect(self.pd_controller.CC2.signal)
+        cc1.part_of.connect(self.pd_controller.CC1.line)
+        cc2.part_of.connect(self.pd_controller.CC2.line)
 
         # VSINK SWITCH
         # self.VSINK_MOSFET.channel_type.alias_is(F.MOSFET.ChannelType.P_CHANNEL)
@@ -170,8 +170,8 @@ class PDController(Module):
         # I2C nets
         # self.i2c_scl = F.Net.with_name("I2C_SCL")
         # self.i2c_sda = F.Net.with_name("I2C_SDA")
-        # self.i2c.scl.signal.connect(self.i2c_scl.part_of)
-        # self.i2c.sda.signal.connect(self.i2c_sda.part_of)
+        # self.i2c.scl.line.connect(self.i2c_scl.part_of)
+        # self.i2c.sda.line.connect(self.i2c_sda.part_of)
 
         self.i2c.connect(self.pd_controller.I2C)
 

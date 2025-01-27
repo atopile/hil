@@ -39,8 +39,8 @@ class STEMMA_RIGHT_ANGLE(Module):
             mapping={
                 self.power.lv: ["1","5","6"],
                 self.power.hv: ["2"],
-                self.i2c.sda.signal: ["3"],
-                self.i2c.scl.signal: ["4"]
+                self.i2c.sda.line: ["3"],
+                self.i2c.scl.line: ["4"]
             },
             accept_prefix=False,
             case_sensitive=False,
