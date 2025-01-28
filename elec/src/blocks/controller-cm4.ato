@@ -1,0 +1,25 @@
+from "components/cm4/cm4.py" import CM4_MINIMAL
+from "components/cm4/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
+from "generics/interfaces.ato" import I2C, SPI, USB2, Power
+
+module ControllerCM4:
+    """
+    Controller using Raspberry Pi CM4
+    Includes ethernet interface
+    """
+    # External Interfaces
+    i2c = new I2C
+    # spi = new SPI
+    usb2 = new USB2
+    power_3v3 = new Power
+    power_5v = new Power
+
+    cm4 = new CM4_MINIMAL
+    rj45 = new HANRUNZhongshan_HanRun_Elec_HR911130A
+    
+    cm4.ethernet ~ rj45.ethernet
+    cm4.i2c ~ i2c
+    # cm4.spi ~ spi
+    # cm4.usb2 ~ usb2
+    cm4.power_3v3 ~ power_3v3
+    cm4.power_5v ~ power_5v

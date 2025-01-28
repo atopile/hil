@@ -33,7 +33,7 @@ class TYPE_C_16PIN_2MD073(Module):
     #                 traits
     # ----------------------------------------
     lcsc_id = L.f_field(F.has_descriptive_properties_defined)({"LCSC": "C2765186"})
-    designator_prefix = L.f_field(F.has_designator_prefix_defined)("USB")
+    designator_prefix = L.f_field(F.has_designator_prefix)("USB")
     descriptive_properties = L.f_field(F.has_descriptive_properties_defined)(
         {
             DescriptiveProperties.manufacturer: "SHOU HAN",

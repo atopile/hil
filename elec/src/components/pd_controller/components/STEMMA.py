@@ -22,7 +22,7 @@ class STEMMA_RIGHT_ANGLE(Module):
     #                 traits
     # ----------------------------------------
     lcsc_id = L.f_field(F.has_descriptive_properties_defined)({"LCSC": "C160404"})
-    designator_prefix = L.f_field(F.has_designator_prefix_defined)("CN")
+    designator_prefix = L.f_field(F.has_designator_prefix)("CN")
     descriptive_properties = L.f_field(F.has_descriptive_properties_defined)(
         {
             DescriptiveProperties.manufacturer: "JST Sales America",

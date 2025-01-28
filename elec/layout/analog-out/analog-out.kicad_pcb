@@ -114,8 +114,8 @@
     (net 7 "io")
     (net 8 "inverting")
     (net 9 "amplifier.opamp.footprint.pins[4].net-net")
-    (net 10 "hv-1")
-    (net 11 "hv")
+    (net 10 "hv")
+    (net 11 "hv-1")
     (net 12 "io-1")
     (footprint "atopile:SMB_L4.6-W3.6-LS5.3-RD-330cb3"
         (layer "F.Cu")
@@ -881,7 +881,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2addeb51-e4b4-473b-8d9d-e9f2e4d36365")
-            (net 10 "hv-1"))
+            (net 10 "hv"))
         (pad "4" smd rect
             (at 0.95 -1.15 90)
             (size 0.53 1.07)
@@ -1396,7 +1396,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "58182595-88a7-4d74-ba42-22b9cae42610")
-            (net 11 "hv")))
+            (net 11 "hv-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "ff554e70-c05c-49cd-9aab-de054642524b")
