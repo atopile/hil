@@ -21,6 +21,8 @@ module SpaceBMSHIL:
     regulator_3v3.v_out = 3.3V +/- 5%
 
 
+
+
     # IOs
     ntc_1 = new NTCEmulator
     ntc_2 = new NTCEmulator
@@ -102,8 +104,23 @@ module SpaceBMSHIL:
     # - Sat voltage emulation
     # - Batt voltage emulation
 
+    regulator_3v3.feedback_div.r_top.resistance = 17.8kohm +/- 1.5%
+    regulator_3v3.feedback_div.r_bottom.resistance = 10kohm +/- 1%
+
+    regulator_5v.feedback_div.r_top.resistance = 55.36kohm +/- 1.5%
+    regulator_5v.feedback_div.r_bottom.resistance = 10kohm +/- 1%
+
+
 
 module NTCEmulator from AnalogOut:
     amplifier.gain = 1 +/- 2%
     filter.cutoff_frequency = 1kHz +/- 20%
     tvs.clamping_voltage = 30V +/- 20%
+
+    # Set values
+    amplifier.input_resistor.resistance = 10kohm +/- 1%
+    amplifier.feedback_resistor.resistance = 10kohm +/- 1%
+
+    filter.resistor.resistance = 10kohm +/- 1%
+    filter.capacitor.capacitance = 100nF +/- 20%
+
