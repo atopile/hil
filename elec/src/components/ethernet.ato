@@ -13,10 +13,6 @@ module W5500Ethernet:
     signal reset
     power = new Power
 
-    resistor1 = new Resistor
-    resistor1.package = "0402"
-    resistor1.value = 100ohm +/- 1%
-
     # Components
     w5500 = new W5500
     rj45 = new J1B1211CCD

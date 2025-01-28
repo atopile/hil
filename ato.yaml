@@ -14,7 +14,18 @@ builds:
     entry: elec/src/blocks/power-usbpd.ato:PowerUSBPD
   ethernet:
     entry: elec/src/components/ethernet.ato:W5500Ethernet
-  space-bms:
+  space-bms-hil:
     entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
+  # relay:
+  #   entry: elec/src/blocks/relay.ato:PowerRelay
+  i2c-relay:
+    entry: elec/src/blocks/relay.ato:I2CRelay
 dependencies:
-- generics
+- name: generics
+  version_spec:
+  link_broken: false
+  path:
+- name: ldk220m-r
+  version_spec: '@1c2a973953da33a23d7afdce0fa1f7fdf68dc68e'
+  link_broken: false
+  path: .ato/modules/ldk220m-r

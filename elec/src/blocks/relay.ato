@@ -1,0 +1,98 @@
+from "generics/interfaces.ato" import Power, I2C
+from "generics/leds.ato" import LEDIndicatorGreen
+from "generics/resistors.ato" import Resistor
+from "components/irlml0040.ato" import IRLML0040
+from "components/tca6408.ato" import TCA6408ARGTR
+
+module I2CRelay:
+    """
+    Power Relay with I2C interface
+    """
+    # External interfaces
+    i2c = new I2C
+    power_3v3 = new Power
+    power_5v = new Power
+    input = new Power
+    output = new Power
+
+    # Relay
+    relay = new PowerRelay
+    gpio_expander = new TCA6408ARGTR
+    input ~ relay.power_in
+    output ~ relay.power_out
+
+    # Power
+    power_3v3 ~ gpio_expander.power
+    power_5v ~ relay.power_relay
+
+    # GPIO Expander
+    i2c ~ gpio_expander.i2c
+    gpio_expander.P0 ~ relay.input
+
+module PowerRelay:
+    """
+    DPDT relay with 5V coil and 5V indicator LED
+    Logic level control with N-FET
+    Designed to switch + and - of a power rail
+    """
+    # External interfaces
+    power_relay = new Power
+    power_in = new Power
+    power_out = new Power
+    signal input
+
+    # Output specs
+    # power_in.voltage &= power_out.voltage
+    # power_in.current += power_out.current
+
+    # Relay
+    relay = new HFD4_5_S
+
+    # Indicator LED
+    indicator_led = new LEDIndicatorGreen
+# indicator_led.v_in = power_relay.voltag
+    indicator_led.v_in = 5V +/- 10%
+    indicator_led.current = 0.1mA to 0.3mA
+
+    # Mosfet
+    fet = new IRLML0040
+    fet_gate_resistor = new Resistor
+    fet_ilim_resistor = new Resistor
+    fet_gate_resistor.footprint = "R0402"
+    fet_ilim_resistor.footprint = "R0402"
+    fet_gate_resistor.value = 10kohm +/- 5%
+    fet_ilim_resistor.value = 1kohm +/- 5%
+
+    # coil connections
+    relay.coil ~ indicator_led.power
+    power_relay.vcc ~ indicator_led.power.vcc
+    indicator_led.power.gnd ~ fet.drain
+    fet.source ~ power_relay.gnd
+
+    # power connections
+    power_in ~ relay.power_in
+    power_out ~ relay.power_out
+
+    # Fet connections
+    input ~ fet_gate_resistor.p1; fet_gate_resistor.p2 ~ fet.gate
+    input ~ fet_ilim_resistor.p1; fet_ilim_resistor.p2 ~ power_relay.gnd
+
+component HFD4_5_S:
+    # component HFD4_slash_5_minus_S
+    footprint = "RELAY-SMD_HFD4-5-SR"
+    lcsc_id = "C64399"
+    mpn = "C64399"
+
+    # pins
+    coil = new Power
+    coil.voltage &= 5V +/- 10%
+    coil.vcc ~ pin 1
+    coil.gnd ~ pin 8
+
+    power_out = new Power
+    power_out.vcc ~ pin 6
+    power_out.gnd ~ pin 3
+
+    power_in = new Power
+    power_in.vcc ~ pin 5
+    power_in.gnd ~ pin 4

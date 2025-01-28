@@ -1,0 +1,31 @@
+
+component Molex5030912221:
+    """
+    Molex VSH connector 5030912221
+    """
+    mpn = "C17276654"
+    lcsc_id = "C17276654"
+    footprint = "CON_5030912221_MOL"
+
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+    signal p5 ~ pin 5
+    signal p6 ~ pin 6
+    signal p7 ~ pin 7
+    signal p8 ~ pin 8
+    signal p9 ~ pin 9
+    signal p10 ~ pin 10
+    signal p11 ~ pin 11
+    signal p12 ~ pin 12
+    signal p13 ~ pin 13
+    signal p14 ~ pin 14
+    signal p15 ~ pin 15
+    signal p16 ~ pin 16
+    signal p17 ~ pin 17
+    signal p18 ~ pin 18
+    signal p19 ~ pin 19
+    signal p20 ~ pin 20
+    signal p21 ~ pin 21
+    signal p22 ~ pin 22

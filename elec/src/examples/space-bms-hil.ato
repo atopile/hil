@@ -1,6 +1,109 @@
-
-
+from "blocks/controller-esp32.ato" import ControllerESP32
+from "blocks/power-usbpd.ato" import PowerUSBPD
+from "components/tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
+from "blocks/analog-out.ato" import AnalogOut
+from "components/lv2842xlvddcr/elec/src/lv2842kit.ato" import LV2842Kit
+from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+from "generics/interfaces.ato" import Power
+from "blocks/relay.ato" import I2CRelay
+from "components/DF13C_2P_1_25V.ato" import DF13C_2P_1_25V
+from "components/Molex5030912221.ato" import Molex5030912221
 
 module SpaceBMSHIL:
+    controller = new ControllerESP32
+    i2c_multiplexer = new TCA9548APWR
+    usb_pd = new PowerUSBPD
+    regulator_3v3 = new LDK220M_R
+    regulator_5v = new LV2842Kit
+
+    # Configure power
+    regulator_5v.v_out = 5V +/- 5%
+    regulator_3v3.v_out = 3.3V +/- 5%
 
 
+    # IOs
+    ntc_1 = new NTCEmulator
+    ntc_2 = new NTCEmulator
+    ntc_3 = new NTCEmulator
+    ntc_4 = new NTCEmulator
+
+    sep_relay = new I2CRelay
+    dep_relay = new I2CRelay
+
+    # Connectors
+    sep_connector = new DF13C_2P_1_25V
+    dep_connector = new DF13C_2P_1_25V
+    vsh_connector = new Molex5030912221
+
+    # Configure IOs
+
+    # Internal Power rails
+    power_usb = new Power
+    power_3v3 = new Power
+    power_5v = new Power
+
+    # Common gnd
+    power_usb.gnd ~ power_3v3.gnd
+    power_3v3.gnd ~ power_5v.gnd
+
+    # Power Regulator connections
+    usb_pd.power_out ~ power_usb
+    power_usb ~ regulator_5v.power_in
+    regulator_5v.power_out ~ power_5v
+    power_5v ~ regulator_3v3.power_in
+    regulator_3v3.power_out ~ power_3v3
+
+    # Power IOs 
+    power_3v3 ~ controller.power_3v3
+    power_3v3 ~ ntc_1.power_3v3
+    power_3v3 ~ ntc_2.power_3v3
+    power_3v3 ~ ntc_3.power_3v3
+    power_3v3 ~ ntc_4.power_3v3
+    power_3v3 ~ ntc_1.power_in
+    power_3v3 ~ ntc_2.power_in
+    power_3v3 ~ ntc_3.power_in
+    power_3v3 ~ ntc_4.power_in
+    power_3v3 ~ sep_relay.power_3v3
+    power_3v3 ~ dep_relay.power_3v3
+    power_3v3 ~ i2c_multiplexer.power
+    power_5v ~ sep_relay.power_5v
+    power_5v ~ dep_relay.power_5v
+
+    # Connections
+    usb_pd.usb2 ~ controller.usb2
+    controller.i2c ~ i2c_multiplexer.i2c
+    controller.i2c ~ usb_pd.i2c
+    i2c_multiplexer.i2c2 ~ ntc_1.i2c
+    i2c_multiplexer.i2c3 ~ ntc_2.i2c
+    i2c_multiplexer.i2c4 ~ ntc_3.i2c
+    i2c_multiplexer.i2c5 ~ ntc_4.i2c
+    i2c_multiplexer.i2c6 ~ sep_relay.i2c
+    i2c_multiplexer.i2c7 ~ dep_relay.i2c
+
+    # SEP/DEP connectors
+    sep_connector.p1 ~ sep_relay.output.vcc
+    sep_connector.p2 ~ sep_relay.input.vcc
+    dep_connector.p1 ~ dep_relay.output.vcc
+    dep_connector.p2 ~ dep_relay.input.vcc
+
+    # Thermistor connector
+    vsh_connector.p15 ~ ntc_1.output.io
+    vsh_connector.p16 ~ ntc_1.output.gnd
+    vsh_connector.p17 ~ ntc_2.output.io
+    vsh_connector.p18 ~ ntc_2.output.gnd
+    vsh_connector.p19 ~ ntc_3.output.io
+    vsh_connector.p20 ~ ntc_3.output.gnd
+    vsh_connector.p21 ~ ntc_4.output.io
+    vsh_connector.p22 ~ ntc_4.output.gnd
+
+    # TODO:
+    # - CAN interface
+    # - DI2C interface
+    # - Sat voltage emulation
+    # - Batt voltage emulation
+
+
+module NTCEmulator from AnalogOut:
+    amplifier.gain = 1 +/- 2%
+    filter.cutoff_frequency = 1kHz +/- 20%
+    tvs.clamping_voltage = 30V +/- 20%

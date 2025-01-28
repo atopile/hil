@@ -7,6 +7,7 @@ component XKB_Connectivity_U262_241N_4BV64:
     mpn = "U262-241N-4BV64"
     datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2110151730_XKB-Connection-U262-241N-4BV64_C388660.pdf"
     designator_prefix = "USB"
+    footprint = "USB-C-SMD_TYC-324G-a50b79"
 
     # pins
     signal CC1 ~ pin A5
