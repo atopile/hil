@@ -255,9 +255,13 @@ class CM4_MINIMAL(Module):
         self.power_3v3.hv.connect_via(
             [self.power_led, self.power_led_resistor], self.power_led_buffer.output.line
         )
+        self.power_led.color.constrain_subset(F.LED.Color.GREEN)
+        # self.power_led.add(F.has_package())
 
         # Activity LED
         self.power_3v3.hv.connect_via([self.activity_led, self.activity_led_resistor], self.hdi_a.pins[19])
+        self.activity_led.color.constrain_subset(F.LED.Color.YELLOW)
+        # self.activity_led.add(F.has_package())
 
         # Net name overrides
         F.Net.with_name("VCC_5V").part_of.connect(self.power_5v.hv)
