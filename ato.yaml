@@ -1,7 +1,7 @@
 ato-version: ^0.3.0
 builds:
-  default:
-    entry: elec/src/hil-blocks.ato:HilBlocks
+  # default:
+    # entry: elec/src/hil-blocks.ato:HilBlocks
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
   isolator-i2c:
