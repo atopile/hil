@@ -2,18 +2,18 @@ ato-version: ^0.3.0
 builds:
   # default:
     # entry: elec/src/hil-blocks.ato:HilBlocks
-  analog-out:
-    entry: elec/src/blocks/analog-out.ato:AnalogOut
-  isolator-i2c:
-    entry: elec/src/blocks/isolator-i2c.ato:IsolatorI2C
-  isolator-24v-3v3:
-    entry: elec/src/blocks/isolator-24v-3v3.ato:Isolator24v3v3
-  controller-esp32:
-    entry: elec/src/blocks/controller-esp32.ato:ControllerESP32
-  power-usbpd:
-    entry: elec/src/blocks/power-usbpd.ato:PowerUSBPD
-  ethernet:
-    entry: elec/src/components/ethernet.ato:W5500Ethernet
+  # analog-out:
+  #   entry: elec/src/blocks/analog-out.ato:AnalogOut
+  # isolator-i2c:
+  #   entry: elec/src/blocks/isolator-i2c.ato:IsolatorI2C
+  # isolator-24v-3v3:
+  #   entry: elec/src/blocks/isolator-24v-3v3.ato:Isolator24v3v3
+  # controller-esp32:
+  #   entry: elec/src/blocks/controller-esp32.ato:ControllerESP32
+  # power-usbpd:
+  #   entry: elec/src/blocks/power-usbpd.ato:PowerUSBPD
+  # ethernet:
+  #   entry: elec/src/components/ethernet.ato:W5500Ethernet
   space-bms-hil:
     entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
   # relay:
