@@ -1,0 +1,12 @@
+from "generics/diodes.ato" import TVSDiode
+
+component DOWO_SMF3_3A from TVSDiode:
+    """DOWO_SMF3_3A component"""
+    lcsc_id = "C283866"
+    manufacturer = "DOWO"
+    mpn = "SMF3.3A"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2403211725_DOWO-SMF3-3A_C283866.pdf"
+    designator_prefix = "D"
+
+    anode ~ pin 2
+    cathode ~ pin 1

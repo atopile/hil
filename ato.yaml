@@ -2,6 +2,8 @@ ato-version: ^0.3.0
 builds:
   space-bms-hil:
     entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
+  cm4-example:
+    entry: elec/src/examples/cm4-example.ato:CM4Example
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
     exclude_targets: [mfg-data]
@@ -32,6 +34,12 @@ builds:
   coms-can-iso:
     entry: elec/src/blocks/coms-can.ato:ComsCANISO
     exclude_targets: [mfg-data]
+  analog-in:
+    entry: elec/src/blocks/analog-in.ato:AnalogIn
+    exclude_targets: [mfg-data]
+  analog-in-isolated:
+    entry: elec/src/blocks/analog-in.ato:AnalogInIsolated
+    exclude_targets: [mfg-data]
 dependencies:
 - name: generics
   version_spec:
@@ -41,3 +49,7 @@ dependencies:
   version_spec: '@1c2a973953da33a23d7afdce0fa1f7fdf68dc68e'
   link_broken: false
   path: .ato/modules/ldk220m-r
+- name: jst-gh
+  version_spec:
+  link_broken: false
+  path: .ato/modules/jst-gh

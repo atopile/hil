@@ -20,9 +20,6 @@ module SpaceBMSHIL:
     regulator_5v.v_out = 5V +/- 5%
     regulator_3v3.v_out = 3.3V +/- 5%
 
-
-
-
     # IOs
     ntc_1 = new NTCEmulator
     ntc_2 = new NTCEmulator
