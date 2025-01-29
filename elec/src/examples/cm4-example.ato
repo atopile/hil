@@ -73,7 +73,7 @@ module CM4Example:
     can_interface = new ComsCANISO
     can_interface.power_3v3 ~ power_3v3
     can_interface.power_5v ~ power_5v
-    controller.spi3 ~ can_interface.spi
+    controller.spi4 ~ can_interface.spi
 
     can_connector = new JSTGH4Pin
     can_interface.can ~ can_connector.can

@@ -106,15 +106,15 @@ class CM4_MINIMAL(Module):
         self.usb2.usb_if.d.n.line.connect(self.hdi_b.pins[2])
 
         # SPI
-        self.spi3.miso.connect(self.gpio[1])
-        self.spi3.mosi.connect(self.gpio[2])
-        self.spi3.sclk.connect(self.gpio[3])
-        self.spi3_cs.connect(self.gpio[4])
+        # self.spi3.miso.connect(self.gpio[1])
+        # self.spi3.mosi.connect(self.gpio[2])
+        # self.spi3.sclk.connect(self.gpio[3])
+        # self.spi3_cs.connect(self.gpio[4])
 
         self.spi4.miso.connect(self.gpio[5])
         self.spi4.mosi.connect(self.gpio[6])
         self.spi4.sclk.connect(self.gpio[7])
-        self.spi4_cs.connect(self.gpio[8])
+        self.spi4_cs.connect(self.gpio[4])
 
         # UART
         F.Net.with_name("UART_TX").part_of.connect(self.gpio[13].line, self.uart_tx.line)
