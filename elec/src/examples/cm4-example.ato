@@ -69,6 +69,11 @@ module CM4Example:
     # USBPD
     controller.i2c ~ usb_pd.i2c
 
+    # USB Connector (External programmers etc)
+    usb_connector = new XKB_Connectivity_U262_241N_4BV64
+    controller.usb2 ~ usb_connector.usb2
+    power_5v ~ usb_connector.power_5v
+
     # CAN Interface
     can_interface = new ComsCANISO
     can_interface.power_3v3 ~ power_3v3
