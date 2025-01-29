@@ -8,6 +8,7 @@ from "components/texas_instruments_lm358d_r.ato" import Texas_Instruments_LM358D
 from "components/mcp4725.ato" import MCP4725A0T
 from "components/born_smbj26a.ato" import BORN_SMBJ26A
 from "components/amplifier.ato" import Amplifier
+from "components/tvs.ato" import TVS
 
 module AnalogOut:
     power_in = new Power
