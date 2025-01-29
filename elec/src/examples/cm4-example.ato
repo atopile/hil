@@ -8,6 +8,7 @@ from "components/dosinconn_do_sin8010072.ato" import dosinconn_DOSIN_801_0072
 from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 from "generics/interfaces.ato" import Power
 from "jst-gh/elec/src/jst-gh.ato" import JSTGH4Pin
+from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64
 
 module CM4Example:
     """
@@ -72,7 +73,7 @@ module CM4Example:
     # USB Connector (External programmers etc)
     usb_connector = new XKB_Connectivity_U262_241N_4BV64
     controller.usb2 ~ usb_connector.usb2
-    power_5v ~ usb_connector.power_5v
+    power_5v ~ usb_connector.power_vbus
 
     # CAN Interface
     can_interface = new ComsCANISO
