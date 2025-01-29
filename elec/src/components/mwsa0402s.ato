@@ -1,0 +1,8 @@
+from "generics/inductors.ato" import Inductor
+
+component MWSA0402S_2R2MT from Inductor:
+    # component MWSA0402S_minus_2R2MT
+    footprint = "IND-SMD_L4.4-W4.2"
+    lcsc_id = "C408335"
+    mpn = "C408335"
+    value = 2.2uH

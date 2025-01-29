@@ -4,7 +4,9 @@ from "components/tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
 
 module CellSim8Ch:
     """
-    Simulates 8 channels of cells, can be stacked
+    Simulates 8 channels of cells
+    - can be stacked with other CellSim8Ch
+    - communicates via I2C to the controller
     """
     power_12v = new Power
     power_5v = new Power

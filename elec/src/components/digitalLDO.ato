@@ -1,0 +1,71 @@
+from "generics/resistors.ato" import Resistor
+from "generics/capacitors.ato" import Capacitor
+
+from "components/digital-regulator.ato" import DigitalRegulator
+
+module DigitalLDO from DigitalRegulator:
+    """
+    Buck regulator with adjustable output voltage
+    controled via a DAC with I2C interface
+    """
+    regulator = new TLV75901PDRVR
+
+    # Configure parameters
+    power_in.voltage &= 1.5V to 6V
+    power_out.voltage = 0.55V to 5.5V
+    # assert power_out.voltage >= power_in.voltage - regulator.dropout_voltage # dropout voltage
+
+    power_in.current -= power_out.current
+
+    power_in.vcc ~ regulator.IN
+    power_in.gnd ~ regulator.GND
+    power_out.vcc ~ regulator.OUT
+    power_out.gnd ~ regulator.GND
+
+    dac.A0 ~ power_in.gnd
+
+    # Output cap
+    output_cap_1 = new Capacitor
+    output_cap_1.value = 1uF +/- 10%
+    output_cap_1.package = "0402"
+    power_out ~ output_cap_1.power
+
+    # output_cap_2 = new Capacitor
+    # output_cap_2.value = 100nF +/- 10%
+    # output_cap_2.package = "0402"
+    # power_out ~ output_cap_2.power
+
+    # output_cap_3 = new Capacitor
+    # output_cap_3.value = 10nF +/- 10%
+    # output_cap_3.package = "0402"
+    # power_out ~ output_cap_3.power
+
+    # Enable
+    enable_resistor = new Resistor
+    enable_resistor.value = 10kohm +/- 5%
+    enable_resistor.package = "0402"
+    enable ~ enable_resistor.p1
+    enable_resistor.p2 ~ regulator.EN
+
+    # Feedback
+    regulator.FB ~ feedback_div.out
+
+component TLV75901PDRVR:
+    # component TLV75901PDRVR
+    # 1A LDO, 1.5V to 6V input, 0.55V to 5.5V output
+    footprint = "WSON-6_L2.0-W2.0-P0.65-TL-EP"
+    lcsc_id = "C544759"
+    mpn = "C544759"
+    vref = 0.55V
+    dropout_voltage = 0.225V
+
+    # pins
+    signal OUT ~ pin 1
+    signal FB ~ pin 2
+    signal GND ~ pin 3
+    signal EN ~ pin 4
+    signal DNC ~ pin 5
+    signal IN ~ pin 6
+    signal EP ~ pin 7
+
+    GND ~ EP

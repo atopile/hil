@@ -40,6 +40,12 @@ builds:
   analog-in-isolated:
     entry: elec/src/blocks/analog-in.ato:AnalogInIsolated
     exclude_targets: [mfg-data]
+  cell:
+    entry: elec/src/components/cell.ato:Cell
+    exclude_targets: [mfg-data]
+  cellsim-8ch:
+    entry: elec/src/blocks/cellsim-8ch.ato:CellSim8Ch
+    exclude_targets: [mfg-data]
 dependencies:
 - name: generics
   version_spec:
