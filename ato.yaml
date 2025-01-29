@@ -29,6 +29,9 @@ builds:
   controller-cm4:
     entry: elec/src/blocks/controller-cm4.ato:ControllerCM4
     exclude_targets: [mfg-data]
+  coms-can-iso:
+    entry: elec/src/blocks/coms-can.ato:ComsCANISO
+    exclude_targets: [mfg-data]
 dependencies:
 - name: generics
   version_spec:

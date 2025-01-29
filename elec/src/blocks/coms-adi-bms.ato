@@ -1,0 +1,7 @@
+from "components/ADBMS6822.ato" import ADBMS6822
+
+module ADIBMBCommunicator:
+    # external interfaces
+    power
+    nic = new ADBMS6822
+    

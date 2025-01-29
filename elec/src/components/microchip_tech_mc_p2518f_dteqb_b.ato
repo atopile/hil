@@ -1,0 +1,86 @@
+from "components/lucki_l327s400h11l.ato" import Lucki_L327S400H11L
+from "generics/interfaces.ato" import Power, SPI, Pair, CAN_TTL
+from "generics/oscillators.ato" import Oscillator
+from "generics/capacitors.ato" import Capacitor
+
+module Microchip_Tech_MCP2518FDT_E_QBB:
+    """Microchip_Tech_MCP2518FDT_E_QBB module"""
+
+    controller = new _Microchip_Tech_MCP2518FDT_E_QBB
+
+    # Power
+    power_3v3 = new Power
+    power_3v3.vcc ~ controller.VDD
+    power_3v3.gnd ~ controller.VSS
+    power_3v3.gnd ~ controller.EPAD
+
+    # SPI
+    spi = new SPI
+    spi.sck ~ controller.SCK
+    spi.mosi ~ controller.SDI
+    spi.miso ~ controller.SDO
+    spi.cs ~ controller.nCS
+
+    # CAN_TTL
+    can_ttl = new CAN_TTL
+    can_ttl.rx ~ controller.RXCAN
+    can_ttl.tx ~ controller.TXCAN
+
+    # Interrupts
+    interrupt_0 = new Pair
+    interrupt_0.io ~ controller.INT0h_GPIO0_XSTBY
+    interrupt_0.gnd ~ power_3v3.gnd
+
+    interrupt_1 = new Pair
+    interrupt_1.io ~ controller.INT1h_GPIO1
+    interrupt_1.gnd ~ power_3v3.gnd
+
+    interrupt_h = new Pair
+    interrupt_h.io ~ controller.INTh
+    interrupt_h.gnd ~ power_3v3.gnd
+
+    # Clock
+    clock = new Pair
+    clock.io ~ controller.CLKO_SOF
+    clock.gnd ~ power_3v3.gnd
+
+    # Decoupling
+    decoupling_cap = new Capacitor
+    decoupling_cap.capacitance = 1uF +/- 20%
+    decoupling_cap.package = "0402"
+    power_3v3 ~ decoupling_cap.power
+
+    # oscillator
+    oscillator = new Oscillator
+    oscillator.crystal -> Lucki_L327S400H11L
+    oscillator.load_cap_1.capacitance = 10pF +/- 20%
+    oscillator.load_cap_2.capacitance = 10pF +/- 20%
+    oscillator.xin.io ~ controller.OSC1
+    oscillator.xout.io ~ controller.OSC2
+    oscillator.gnd ~ power_3v3.gnd
+    
+
+component _Microchip_Tech_MCP2518FDT_E_QBB:
+    """Microchip_Tech_MCP2518FDT_E_QBB component"""
+    lcsc_id = "C621395"
+    manufacturer = "Microchip Tech"
+    mpn = "MCP2518FDT-E/QBB"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2210180630_Microchip-Tech-MCP2518FDT-E-QBB_C621395.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal CLKO_SOF ~ pin 3
+    signal EPAD ~ pin 15
+    signal INT0h_GPIO0_XSTBY ~ pin 9
+    signal INT1h_GPIO1 ~ pin 8
+    signal INTh ~ pin 4
+    signal OSC1 ~ pin 6
+    signal OSC2 ~ pin 5
+    signal RXCAN ~ pin 2
+    signal SCK ~ pin 10
+    signal SDI ~ pin 11
+    signal SDO ~ pin 12
+    signal TXCAN ~ pin 1
+    signal VDD ~ pin 14
+    signal VSS ~ pin 7
+    signal nCS ~ pin 13

@@ -37,6 +37,11 @@ class CM4_MINIMAL(Module):
     gpio = L.list_field(28, F.ElectricLogic)
     i2s: F.I2S
     i2c: F.I2C
+    spi3: F.SPI
+    spi4: F.SPI
+
+    spi3_cs: F.ElectricLogic
+    spi4_cs: F.ElectricLogic
 
     uart_rx: F.ElectricLogic
     uart_tx: F.ElectricLogic
@@ -99,6 +104,17 @@ class CM4_MINIMAL(Module):
         # USBS2
         self.usb2.usb_if.d.p.line.connect(self.hdi_b.pins[4])
         self.usb2.usb_if.d.n.line.connect(self.hdi_b.pins[2])
+
+        # SPI
+        self.spi3.miso.connect(self.gpio[1])
+        self.spi3.mosi.connect(self.gpio[2])
+        self.spi3.sclk.connect(self.gpio[3])
+        self.spi3_cs.connect(self.gpio[4])
+
+        self.spi4.miso.connect(self.gpio[5])
+        self.spi4.mosi.connect(self.gpio[6])
+        self.spi4.sclk.connect(self.gpio[7])
+        self.spi4_cs.connect(self.gpio[8])
 
         # UART
         F.Net.with_name("UART_TX").part_of.connect(self.gpio[13].line, self.uart_tx.line)
@@ -255,12 +271,15 @@ class CM4_MINIMAL(Module):
         self.power_3v3.hv.connect_via(
             [self.power_led, self.power_led_resistor], self.power_led_buffer.output.line
         )
-        self.power_led.color.constrain_subset(F.LED.Color.GREEN)
-        # self.power_led.add(F.has_package())
+        # self.power_led.color.constrain_subset(F.LED.Color.GREEN)
+        self.power_led.add(F.has_descriptive_properties_defined({"LCSC": "C12624"}))
+        self.power_led_resistor.add(F.has_package("R0402"))
 
         # Activity LED
         self.power_3v3.hv.connect_via([self.activity_led, self.activity_led_resistor], self.hdi_a.pins[19])
-        self.activity_led.color.constrain_subset(F.LED.Color.YELLOW)
+        # self.activity_led.color.constrain_subset(F.LED.Color.YELLOW)
+        self.activity_led.add(F.has_descriptive_properties_defined({"LCSC": "C72038"}))
+        self.activity_led_resistor.add(F.has_package("R0402"))
         # self.activity_led.add(F.has_package())
 
         # Net name overrides
