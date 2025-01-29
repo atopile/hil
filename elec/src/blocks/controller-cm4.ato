@@ -19,6 +19,7 @@ module ControllerCM4:
     rj45 = new HANRUNZhongshan_HanRun_Elec_HR911130A
     
     rj45.ethernet ~ cm4.ethernet
+    rj45.power_led ~ cm4.power_3v3
     i2c ~ cm4.i2c
     power_3v3 ~ cm4.power_3v3
     power_5v ~ cm4.power_5v

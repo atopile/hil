@@ -133,3 +133,5 @@ class HANRUNZhongshan_HanRun_Elec_HR911130A(Module):
         self.ethernet.single_electric_reference.get_reference().lv.connect(
             self.connector.SHIELD0, self.connector.SHIELD1
         )
+        self.power_led.lv.connect(self.connector.SHIELD0, self.connector.SHIELD1)
+
