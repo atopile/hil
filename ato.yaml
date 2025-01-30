@@ -1,51 +1,71 @@
-ato-version: ^0.3.0
+ato-version: "0.3.0"
+
 builds:
+  # Project Examples
   space-bms-hil:
     entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
+
   cm4-example:
     entry: elec/src/examples/cm4-example.ato:CM4Example
+
+  # IO Blocks
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
     exclude_targets: [mfg-data]
-  isolator-i2c:
-    entry: elec/src/blocks/isolator-i2c.ato:IsolatorI2C
-    exclude_targets: [mfg-data]
-  isolator-24v-3v3:
-    entry: elec/src/blocks/isolator-24v-3v3.ato:Isolator24v3v3
-    exclude_targets: [mfg-data]
-  controller-esp32:
-    entry: elec/src/blocks/controller-esp32.ato:ControllerESP32
-    exclude_targets: [mfg-data]
-  power-usbpd:
-    entry: elec/src/blocks/power-usbpd.ato:PowerUSBPD
-    exclude_targets: [mfg-data]
-  ethernet:
-    entry: elec/src/components/ethernet.ato:W5500Ethernet
-    exclude_targets: [mfg-data]
+
   relay:
     entry: elec/src/blocks/relay.ato:PowerRelay
     exclude_targets: [mfg-data]
+
   i2c-relay:
     entry: elec/src/blocks/relay.ato:I2CRelay
     exclude_targets: [mfg-data]
-  controller-cm4:
-    entry: elec/src/blocks/controller-cm4.ato:ControllerCM4
-    exclude_targets: [mfg-data]
+
   coms-can-iso:
     entry: elec/src/blocks/coms-can.ato:ComsCANISO
     exclude_targets: [mfg-data]
+
   analog-in:
     entry: elec/src/blocks/analog-in.ato:AnalogIn
     exclude_targets: [mfg-data]
+
   analog-in-isolated:
     entry: elec/src/blocks/analog-in.ato:AnalogInIsolated
     exclude_targets: [mfg-data]
+
   cell:
     entry: elec/src/components/cell.ato:Cell
     exclude_targets: [mfg-data]
+
   cellsim-8ch:
     entry: elec/src/blocks/cellsim-8ch.ato:CellSim8Ch
     exclude_targets: [mfg-data]
+
+  # Controllers and Interconnect
+  controller-cm4:
+    entry: elec/src/blocks/controller-cm4.ato:ControllerCM4
+    exclude_targets: [mfg-data]
+
+  controller-esp32:
+    entry: elec/src/blocks/controller-esp32.ato:ControllerESP32
+    exclude_targets: [mfg-data]
+
+  isolator-i2c:
+    entry: elec/src/blocks/isolator-i2c.ato:IsolatorI2C
+    exclude_targets: [mfg-data]
+
+  isolator-24v-3v3:
+    entry: elec/src/blocks/isolator-24v-3v3.ato:Isolator24v3v3
+    exclude_targets: [mfg-data]
+
+  power-usbpd:
+    entry: elec/src/blocks/power-usbpd.ato:PowerUSBPD
+    exclude_targets: [mfg-data]
+
+  ethernet:
+    entry: elec/src/components/ethernet.ato:W5500Ethernet
+    exclude_targets: [mfg-data]
+
 dependencies:
 - name: generics
   version_spec:
