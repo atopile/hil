@@ -1,0 +1,119 @@
+from "generics/interfaces.ato" import Power, I2C
+
+module Texas_Instruments_BQ25756RRVR:
+    """Texas_Instruments_BQ25756RRVR Bi-directional Buck/Boost"""
+    power_in = new Power
+    power_out = new Power
+    i2c = new I2C
+
+    # Components
+    controller = new _Texas_Instruments_BQ25756RRVR
+
+    # I2C
+    i2c.scl ~ controller.SCL
+    i2c.sda ~ controller.SDA
+
+component _Texas_Instruments_BQ25756RRVR:
+    """Texas_Instruments_BQ25756RRVR component"""
+    lcsc_id = "C19272232"
+    manufacturer = "Texas Instruments"
+    mpn = "BQ25756RRVR"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2312012001_Texas-Instruments-BQ25756RRVR_C19272232.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal ACN ~ pin 29
+    signal ACOV ~ pin 35
+    signal ACP ~ pin 30
+    signal ACUV ~ pin 34
+    signal BTST1 ~ pin 26
+    signal BTST2 ~ pin 20
+    signal CEh ~ pin 7
+    signal DRV_SUP ~ pin 23
+    signal FB ~ pin 12
+    signal FBG ~ pin 11
+    signal FSW_SYNC ~ pin 36
+    signal HIDRV1 ~ pin 27
+    signal HIDRV2 ~ pin 19
+    signal ICHG ~ pin 9
+    signal ILIM_HIZ ~ pin 10
+    signal INTh ~ pin 3
+    signal LODRV1 ~ pin 25
+    signal LODRV2 ~ pin 21
+    signal PGND ~ pin 17
+    PGND ~ pin 22
+    PGND ~ pin 37
+    signal PGh ~ pin 6
+    signal REGN ~ pin 24
+    signal SCL ~ pin 1
+    signal SDA ~ pin 2
+    signal SRN ~ pin 13
+    signal SRP ~ pin 14
+    signal STAT1 ~ pin 4
+    signal STAT2 ~ pin 5
+    signal SW1 ~ pin 28
+    signal SW2 ~ pin 18
+    signal TS ~ pin 8
+    signal VAC ~ pin 32
+    VAC ~ pin 33
+
+#C22387789 100v 80uf capacitor - is cheaper
+#C251002 100v 68uf capacitor - has model (nichicon)
+#C487438 100v 68uf capacitor - cheap and has model
+#C434455 80V 100A 3.9mohm NFET
+#C845102 16.5A 10uH inductor
+
+module ShuntInput:
+
+    power_in = new Power
+    power_out = new Power
+    output = new DiffPair
+
+    # Components
+    shunt = new Resistor
+    filter_n = new LowPassFilter
+    filter_p = new LowPassFilter
+    diff_cap = new Capacitor
+
+    # Default values
+    diff_cap.capacitance = 470nF +/- 20%
+    filter_n.resistor.resistance = 10ohm +/- 1%
+    filter_p.resistor.resistance = 10ohm +/- 1%
+    filter_n.capacitor.capacitance = 100nF +/- 20%
+    filter_p.capacitor.capacitance = 100nF +/- 20%
+    shunt.resistance = 5mOhm +/- 1%
+
+    # Connections
+    power_in.vcc ~ shunt.p1; shunt.p2 ~ power_out.vcc
+    power_in.vcc ~ filter_p.input.io
+    power_out.vcc ~ filter_n.input.io
+    filter_p.output.io ~ output.p
+    filter_n.output.io ~ output.n
+    filter_p.input.gnd ~ power_in.gnd
+    filter_n.input.gnd ~ power_out.gnd
+    power_in.gnd ~ power_out.gnd
+
+
+module BuckBoostCore:
+    """Contains inductor, fets and capacitors"""
+    power_in = new Power
+    power_out = new Power
+
+
+
+    # Components
+    inductor = new Inductor
+    fet_input_hs = new FET
+    fet_input_ls = new FET
+    fet_output_hs = new FET
+    fet_output_ls = new FET
+    gate_res_input_hs = new Resistor
+    gate_res_input_ls = new Resistor
+    gate_res_output_hs = new Resistor
+    gate_res_output_ls = new Resistor
+    input_cap = new Capacitor
+    output_cap = new Capacitor
+
+
+
+
