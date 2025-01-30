@@ -81,9 +81,9 @@
     (net 3 "amplifier.opamp.footprint.pins[6].net-net")
     (net 4 "AIN2")
     (net 5 "AIN1")
-    (net 6 "line")
+    (net 6 "line-1")
     (net 7 "gnd")
-    (net 8 "line-1")
+    (net 8 "line")
     (net 9 "ALERT_slash_RDY")
     (net 10 "amplifier.opamp.footprint.pins[4].net-net")
     (net 11 "top")
@@ -1640,14 +1640,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "515b65be-2589-4a53-b604-e62cba2c2c5b")
-            (net 6 "line"))
+            (net 6 "line-1"))
         (pad "10" smd oval
             (at -1 -2.11 90)
             (size 0.28 1.62)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "14b754bb-2900-4366-a3af-b2f198a2fb79")
-            (net 8 "line-1"))
+            (net 8 "line"))
         (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/MSOP-10_L3.0-W3.0-H1.1-LS5.0-P0.50.step"
             (offset
                 (xyz -914.22 685.91 0))

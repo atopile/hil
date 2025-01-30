@@ -121,3 +121,4 @@ module NTCEmulator from AnalogOut:
     filter.resistor.resistance = 10kohm +/- 1%
     filter.capacitor.capacitance = 100nF +/- 20%
 
+    filter.cutoff_frequency = 1Hz to 1GHz

@@ -1,4 +1,12 @@
-from "generics/interfaces.ato" import Power, I2C
+from "generics/interfaces.ato" import Power, I2C, DiffPair
+from "generics/diodes.ato" import SchottkyDiode
+from "generics/filters.ato" import LowPassFilter
+from "generics/capacitors.ato" import Capacitor, CapacitorElectrolytic
+# from "generics/mosfets.ato" import NFET
+import MOSFET
+from "generics/resistors.ato" import Resistor
+from "generics/vdivs.ato" import VDiv
+from "generics/inductors.ato" import Inductor
 
 module Texas_Instruments_BQ25756RRVR:
     """Texas_Instruments_BQ25756RRVR Bi-directional Buck/Boost"""
@@ -8,10 +16,115 @@ module Texas_Instruments_BQ25756RRVR:
 
     # Components
     controller = new _Texas_Instruments_BQ25756RRVR
+    core = new BuckBoostCore
+    input_shunt = new ShuntInput
+    output_shunt = new ShuntInput
+    ovuv_setter = new OVUVSetter
+    input_cap_bank = new CapBank
+    output_cap_bank = new CapBank
+    input_electrolytic = new CapacitorElectrolytic
+    output_electrolytic = new CapacitorElectrolytic
+
+    # Power connections
+    power_in ~ input_shunt.power_in
+    input_shunt.power_out ~ core.power_in
+    core.power_out ~ output_shunt.power_in
+    output_shunt.power_out ~ power_out
+
+    # Bulk capacitors
+    power_in ~ input_electrolytic.power
+    power_out ~ output_electrolytic.power
+    input_electrolytic.lcsc_id = "C487438"
+    output_electrolytic.lcsc_id = "C487438"
+    core.power_in ~ input_cap_bank.power_in
+    core.power_out ~ output_cap_bank.power_in
+
+    # Controller connections
+
+    # Controller decoupling capacitors
+    # Chip input caps
+    vac_cap_1 = new Capacitor
+    vac_cap_2 = new Capacitor
+    vac_cap_1.capacitance = 100nF +/- 20%
+    vac_cap_2.capacitance = 1uF +/- 20%
+    vac_cap_1.max_voltage = 100V to 1000V
+    vac_cap_2.max_voltage = 100V to 1000V
+
+    power_in ~ vac_cap_1.power
+    power_in ~ vac_cap_2.power
+
+    # Driver supply cap
+    drv_sup_cap = new Capacitor
+    drv_sup_cap.capacitance = 4.7uF +/- 20%
+    drv_sup_cap.max_voltage = 25V to 1000V
+    controller.DRV_SUP ~ drv_sup_cap.p1
+    drv_sup_cap.p2 ~ controller.PGND
+
+    # Internal LDO cap
+    regn_cap = new Capacitor
+    regn_cap.capacitance = 4.7uF +/- 20%
+    regn_cap.max_voltage = 25V to 1000V
+    controller.REGN ~ regn_cap.p1
+    regn_cap.p2 ~ controller.PGND
+
+    # OVUV
+    power_in ~ ovuv_setter.power_in
+    ovuv_setter.acuv ~ controller.ACUV
+    ovuv_setter.acov ~ controller.ACOV
+
+    # Gate drive
+    core.gate_input_hs ~ controller.HIDRV1
+    core.gate_input_ls ~ controller.LODRV1
+    core.gate_output_hs ~ controller.HIDRV2
+    core.gate_output_ls ~ controller.LODRV2
+
+    # BST Connections
+    core.bst_input ~ controller.BTST1
+    core.bst_output ~ controller.BTST2
+
+    # Input shunt
+    input_shunt.output.p ~ controller.ACP
+    input_shunt.output.n ~ controller.ACN
+
+    # Output shunt
+    output_shunt.output.p ~ controller.SRP
+    output_shunt.output.n ~ controller.SRN
 
     # I2C
     i2c.scl ~ controller.SCL
     i2c.sda ~ controller.SDA
+
+    # BST Diodes
+    bst_diode_input = new SchottkyDiode
+    bst_diode_output = new SchottkyDiode
+    bst_diode_input.lcsc_id = "C3758930"
+    bst_diode_output.lcsc_id = "C3758930"
+
+    controller.DRV_SUP ~ bst_diode_input.anode
+    controller.DRV_SUP ~ bst_diode_output.cathode
+    bst_diode_input.cathode ~ controller.BTST1
+    bst_diode_output.cathode ~ controller.BTST2
+
+    # Input Current limit resistor
+    ilim_resistor = new Resistor
+    # TODO: make this a variable
+    ilim_resistor.resistance = 2.49kohm +/- 1%  # Application note value for 8A current limit
+    controller.ILIM_HIZ ~ ilim_resistor.p1
+    ilim_resistor.p2 ~ controller.PGND
+
+    # Output voltage sense
+    output_v_sense = new VDiv
+    output_v_sense.r_top.resistance = 249kohm +/- 1%
+    output_v_sense.r_bottom.resistance = 13.7kohm +/- 1%
+    power_out.vcc ~ output_v_sense.top
+    output_v_sense.out ~ controller.FB
+    output_v_sense.bottom ~ controller.FBG
+
+    # Power
+    power_in.vcc ~ controller.VAC_IN
+    power_out.vcc ~ controller.VAC_OUT
+    power_in.gnd ~ controller.PGND
+
 
 component _Texas_Instruments_BQ25756RRVR:
     """Texas_Instruments_BQ25756RRVR component"""
@@ -54,17 +167,72 @@ component _Texas_Instruments_BQ25756RRVR:
     signal SW1 ~ pin 28
     signal SW2 ~ pin 18
     signal TS ~ pin 8
-    signal VAC ~ pin 32
-    VAC ~ pin 33
+    signal VAC_IN ~ pin 32
+    signal VAC_OUT ~ pin 33
 
 #C22387789 100v 80uf capacitor - is cheaper
 #C251002 100v 68uf capacitor - has model (nichicon)
 #C487438 100v 68uf capacitor - cheap and has model
 #C434455 80V 100A 3.9mohm NFET
 #C845102 16.5A 10uH inductor
+#C3758930 100V 1A Schottky Diode
 
+module CapBank:
+    """Bank of capacitors for power filtering as shown in reference design"""
+    power_in = new Power
+
+    # Input capacitors
+    cap1 = new Capacitor
+    cap2 = new Capacitor
+    cap3 = new Capacitor
+    cap4 = new Capacitor
+    cap5 = new Capacitor
+    cap6 = new Capacitor
+    cap7 = new Capacitor
+    cap8 = new Capacitor
+    cap9 = new Capacitor
+    cap10 = new Capacitor
+    cap11 = new Capacitor
+    # Set capacitance values
+    cap1.capacitance = 4.7uF +/- 20%
+    cap2.capacitance = 4.7uF +/- 20%
+    cap3.capacitance = 4.7uF +/- 20%
+    cap11.capacitance = 4.7uF +/- 20%
+    cap4.capacitance = 10uF +/- 20%
+    cap5.capacitance = 10uF +/- 20%
+    cap6.capacitance = 10uF +/- 20%
+    cap7.capacitance = 10uF +/- 20%
+    cap8.capacitance = 1uF +/- 20%
+    cap9.capacitance = 100nF +/- 20%
+    cap10.capacitance = 100pF +/- 20%
+
+    # Set voltage ratings
+    cap1.max_voltage = 100V to 1000V
+    cap2.max_voltage = 100V to 1000V
+    cap3.max_voltage = 100V to 1000V
+    cap4.max_voltage = 100V to 1000V
+    cap5.max_voltage = 100V to 1000V
+    cap6.max_voltage = 100V to 1000V
+    cap7.max_voltage = 100V to 1000V
+    cap8.max_voltage = 100V to 1000V
+    cap9.max_voltage = 100V to 1000V
+    cap10.max_voltage = 100V to 1000V
+    cap11.max_voltage = 100V to 1000V
+
+    # Connect to power
+    power_in ~ cap1.power
+    power_in ~ cap2.power
+    power_in ~ cap3.power
+    power_in ~ cap4.power
+    power_in ~ cap5.power
+    power_in ~ cap6.power
+    power_in ~ cap7.power
+    power_in ~ cap8.power
+    power_in ~ cap9.power
+    power_in ~ cap10.power
+    power_in ~ cap11.power
 module ShuntInput:
-
+    """Shunt input for buck/boost with low pass filter"""
     power_in = new Power
     power_out = new Power
     output = new DiffPair
@@ -81,7 +249,10 @@ module ShuntInput:
     filter_p.resistor.resistance = 10ohm +/- 1%
     filter_n.capacitor.capacitance = 100nF +/- 20%
     filter_p.capacitor.capacitance = 100nF +/- 20%
-    shunt.resistance = 5mOhm +/- 1%
+    shunt.resistance = 5mohm +/- 1%
+
+    filter_n.cutoff_frequency = 1Hz to 1GHz
+    filter_p.cutoff_frequency = 1Hz to 1GHz
 
     # Connections
     power_in.vcc ~ shunt.p1; shunt.p2 ~ power_out.vcc
@@ -93,26 +264,111 @@ module ShuntInput:
     filter_n.input.gnd ~ power_out.gnd
     power_in.gnd ~ power_out.gnd
 
+module OVUVSetter:
+    """Over voltage/under voltage setting for buck/boost"""
+    power_in = new Power
+    signal acuv 
+    signal acov
+
+    r_ac1 = new Resistor
+    r_ac2 = new Resistor
+    r_ac3 = new Resistor
+
+    # Connect resistor together in series
+    power_in.vcc ~ r_ac1.p1
+    r_ac1.p2 ~ acuv
+    acuv ~ r_ac2.p1
+    r_ac2.p2 ~ acov
+    acov ~ r_ac3.p1
+    r_ac3.p2 ~ power_in.gnd
+
+    r_ac1.resistance = 1Mohm +/- 1%
+    r_ac2.resistance = 133kohm +/- 1%
+    r_ac3.resistance = 25.5kohm +/- 1%
+
 
 module BuckBoostCore:
     """Contains inductor, fets and capacitors"""
     power_in = new Power
     power_out = new Power
 
+    # common gnd
+    power_in.gnd ~ power_out.gnd
 
+    # gate signals
+    signal gate_input_hs
+    signal gate_input_ls
+    signal gate_output_hs
+    signal gate_output_ls
+    signal bst_input
+    signal bst_output
 
     # Components
     inductor = new Inductor
-    fet_input_hs = new FET
-    fet_input_ls = new FET
-    fet_output_hs = new FET
-    fet_output_ls = new FET
+    fet_input_hs = new MOSFET
+    fet_input_ls = new MOSFET
+    fet_output_hs = new MOSFET
+    fet_output_ls = new MOSFET
     gate_res_input_hs = new Resistor
     gate_res_input_ls = new Resistor
-    gate_res_output_hs = new Resistor
+    gate_res_output_hs = new Resistor   
     gate_res_output_ls = new Resistor
-    input_cap = new Capacitor
-    output_cap = new Capacitor
+    input_cap = new CapacitorElectrolytic
+    output_cap = new CapacitorElectrolytic
+    bst_input_cap = new Capacitor
+    bst_output_cap = new Capacitor
+
+    # Specalize components
+    fet_input_hs.lcsc_id = "C434455"
+    fet_input_ls.lcsc_id = "C434455"
+    fet_output_hs.lcsc_id = "C434455"
+    fet_output_ls.lcsc_id = "C434455"
+    inductor.lcsc_id = "C845102"
+    input_cap.lcsc_id = "C487438"
+    output_cap.lcsc_id = "C487438"
+    bst_input_cap.capacitance = 100nF +/- 20%
+    bst_output_cap.capacitance = 100nF +/- 20%
+
+    gate_res_input_hs.resistance = 0ohm
+    gate_res_input_ls.resistance = 0ohm
+    gate_res_output_hs.resistance = 0ohm
+    gate_res_output_ls.resistance = 0ohm
+
+    #Connections
+
+    # Bulk capacitors
+    power_in ~ input_cap.power
+    power_out ~ output_cap.power
+
+    # Internal signals
+    signal input_switching_node
+    signal output_switching_node
+
+    # Input H-Bridge
+    power_in.vcc ~ fet_input_hs.drain
+    fet_input_hs.source ~ input_switching_node
+    input_switching_node ~ inductor.p1
+    input_switching_node ~ fet_input_ls.drain
+    fet_input_ls.source ~ power_in.gnd
+
+    # Output H-Bridge
+    power_out.vcc ~ fet_output_hs.drain
+    fet_output_hs.source ~ output_switching_node
+    output_switching_node ~ inductor.p2
+    output_switching_node ~ fet_output_ls.drain
+    fet_output_ls.source ~ power_out.gnd
+
+    # Bootstrap capacitors
+    input_switching_node ~ bst_input_cap.p1; bst_input_cap.p2 ~ bst_input
+    output_switching_node ~ bst_output_cap.p1; bst_output_cap.p2 ~ bst_output
+
+    # Gate resistors
+    gate_input_hs ~ gate_res_input_hs.p1; gate_res_input_hs.p2 ~ fet_input_hs.gate
+    gate_input_ls ~ gate_res_input_ls.p1; gate_res_input_ls.p2 ~ fet_input_ls.gate
+    gate_output_hs ~ gate_res_output_hs.p1; gate_res_output_hs.p2 ~ fet_output_hs.gate
+    gate_output_ls ~ gate_res_output_ls.p1; gate_res_output_ls.p2 ~ fet_output_ls.gate
+
+
 
 
 
