@@ -1,0 +1,31 @@
+from "components/esp32-s3/elec/src/esp32-s3.ato" import ESP32S3
+from "components/ethernet.ato" import W5500Ethernet
+from "generics/interfaces.ato" import I2C, Power, USB2
+
+module ControllerESP32:
+    """
+    Controller block using the ESP32S3 microcontroller
+    Adds ethernet interface for communication
+    """
+    # External Interfaces
+    i2c = new I2C
+    usb2 = new USB2
+    power_3v3 = new Power
+
+    micro = new ESP32S3
+    micro.power ~ power_3v3
+
+    ethernet = new W5500Ethernet
+    ethernet.power ~ power_3v3
+
+    # Connections
+    power_3v3 ~ micro.power
+    power_3v3 ~ ethernet.power
+    micro.spi2 ~ ethernet.spi
+    i2c ~ micro.i2c
+    usb2 ~ micro.usb2
+
+    # Naming
+    i2c.sda.override_net_name = "i2c_sda"
+    i2c.scl.override_net_name = "i2c_scl"
+    

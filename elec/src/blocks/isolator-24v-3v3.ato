@@ -1,0 +1,21 @@
+from "generics/interfaces.ato" import Power
+from "components/ylptec_b2424s2wr3.ato" import YLPTEC_B2424S_2WR3
+from "components/lv2842xlvddcr/elec/src/lv2842kit.ato" import LV2842Kit
+
+module Isolator24v3v3:
+    """
+    Isolated supply with 24V input and dual outputs
+        - 24V output (up to 1A)
+        - 3.3V output (up to 1A)
+    """
+    power_in_24v = new Power
+    power_out_24v = new Power
+    power_out_3v3 = new Power
+
+    isolated_supply = new YLPTEC_B2424S_2WR3
+    isolated_supply.power_in ~ power_in_24v
+    isolated_supply.power_out ~ power_out_24v
+
+    buck_converter = new LV2842Kit
+    buck_converter.power_in ~ power_in_24v
+    buck_converter.power_out ~ power_out_3v3

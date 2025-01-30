@@ -1,0 +1,34 @@
+from "components/pd_controller/pd_controller.py" import PDController
+from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64
+from "generics/interfaces.ato" import Power, USB2, I2C
+
+module PowerUSBPD:
+    """
+    Power block for USB PD
+    - Outputs up to 20V @ 5A on VBUS
+    - I2C interface for configuration (defaults to 20V 1A)
+    - USB2 pass-through for downstream devices
+    """
+    # External Interfaces
+    power_out = new Power
+    usb2 = new USB2
+    power_mcu = new Power
+    i2c = new I2C
+
+    usb_connector = new XKB_Connectivity_U262_241N_4BV64
+    pd_controller = new PDController
+
+    # Power
+    usb_connector.power_vbus ~ pd_controller.power_vbus
+    pd_controller.power_vsink ~ power_out
+    power_mcu ~ pd_controller.power_mcu
+
+    # Communication
+    pd_controller.i2c.sda.line ~ i2c.sda.line
+    pd_controller.i2c.scl.line ~ i2c.scl.line
+
+    pd_controller.cc1.line ~ usb_connector.CC1
+    pd_controller.cc2.line ~ usb_connector.CC2
+
+    # USB2
+    usb_connector.usb2 ~ usb2

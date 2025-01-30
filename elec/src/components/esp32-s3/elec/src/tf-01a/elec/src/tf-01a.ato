@@ -1,0 +1,43 @@
+import SPI from "generics/interfaces.ato"
+import Power from "generics/interfaces.ato"
+
+component _TF_01A:
+    # component TF-01A
+    footprint = "TF-SMD_TF-01A"
+    lcsc_id = "C91145"
+    mpn = "C91145"
+    # pins
+    signal DAT2_RSV_ ~ pin 1
+    signal CDDAT3_CS_ ~ pin 2
+    signal CMD_DI_ ~ pin 3
+    signal VDD ~ pin 4
+    signal CLK_SCLK_ ~ pin 5
+    signal VSS ~ pin 6
+    signal DAT0_D0_ ~ pin 7
+    signal DAT1_RSV_ ~ pin 8
+    signal GND ~ pin 13
+    GND ~ pin 10
+    GND ~ pin 11
+    GND ~ pin 12
+    signal CD ~ pin 9
+
+
+
+module TF_01A:
+    card_slot = new _TF_01A
+    power = new Power
+    spi = new SPI
+
+    # Power
+    power.vcc ~ card_slot.VDD
+    power.gnd ~ card_slot.VSS
+    power.gnd ~ card_slot.GND
+
+    # SPI
+    spi.miso ~ card_slot.DAT0_D0_
+    spi.mosi ~ card_slot.CMD_DI_
+    spi.sck ~ card_slot.CLK_SCLK_
+    spi.cs ~ card_slot.CDDAT3_CS_
+    spi.gnd ~ card_slot.GND
+
+    #TODO: SD interface

@@ -1,0 +1,42 @@
+from "generics/capacitors.ato" import Capacitor
+from "generics/interfaces.ato" import Power
+
+module YLPTEC_B0505S_2WR3:
+    """
+    YLPTEC_B0505S_2WR3 module
+    """
+    power_in = new Power
+    power_out = new Power
+
+    regulator = new _YLPTEC_B0505S_2WR3
+    input_capacitor = new Capacitor
+    output_capacitor = new Capacitor
+
+    input_capacitor.power ~ power_in
+    output_capacitor.power ~ power_out
+
+    input_capacitor.capacitance = 4.7uF +/- 20%
+    output_capacitor.capacitance = 10uF +/- 20%
+    input_capacitor.pacakge = "0805"
+    output_capacitor.pacakge = "0805"
+
+    power_in ~ regulator.power_in
+    regulator.power_out ~ power_out
+
+
+component _YLPTEC_B0505S_2WR3:
+    """YLPTEC_B0505S_2WR3 component"""
+    lcsc_id = "C5369473"
+    manufacturer = "YLPTEC"
+    mpn = "B0505S-2WR3"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2304271700_YLPTEC-B0505S-2WR3_C5369473.pdf"
+    designator_prefix = "U"
+
+    power_in = new Power
+    power_out = new Power
+
+    # pins
+    power_in.vcc ~ pin 1
+    power_in.gnd ~ pin 2
+    power_out.vcc ~ pin 6
+    power_out.gnd ~ pin 4

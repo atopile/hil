@@ -1,0 +1,9 @@
+from "generics/inductors.ato" import Inductor
+
+component YNR4030_101M from Inductor:
+    # component YNR4030_minus_101M
+    footprint = "IND-SMD_L4.0-W4.0"
+    lcsc_id = "C341017"
+    mpn = "C341017"
+    value = 100uH
+    # pins

@@ -1,0 +1,121 @@
+from "bq24045dsqr/elec/src/bq24045dsqr.ato" import BQ24040DSQR
+from "esp32-s3.ato" import ESP32S3
+from "generics/capacitors.ato" import Capacitor
+from "generics/diodes.ato" import SchottkyDiode
+from "generics/interfaces.ato" import Power, SPI, I2C
+from "generics/leds.ato" import LEDIndicatorRed
+from "generics/mosfets.ato" import PFET
+from "generics/resistors.ato" import Resistor
+from "jst_2p.ato" import JST_PH_2P
+from "programming-headers/elec/src/programming-headers.ato" import JTAG_10PIN
+from "sk6805-ec20/elec/src/sk6805-ec20.ato" import SK6805EC20
+from "tf-01a/elec/src/tf-01a.ato" import TF_01A
+from "tps63020dsjr/elec/src/tps63020dsjr.ato" import TPS63020DSJR
+from "usb-connectors/usb-connectors.ato" import USBCConn
+from "power-prioritiser/elec/src/power-prioritiser.ato" import PowerPrioritiser
+
+
+component Header4P:
+    # component PM2_period_54_minus_1_star_4
+    footprint = "HDR-TH_4P-P2.54-V-F"
+    lcsc_id = "C5116530"
+    mpn = "C5116530"
+    # pins
+    signal gnd ~ pin 1
+    signal vcc ~ pin 2
+    signal scl ~ pin 3
+    signal sda ~ pin 4
+
+    i2c = new I2C
+    i2c.scl ~ scl
+    i2c.sda ~ sda
+
+    power = new Power
+    power.gnd ~ gnd
+    power.vcc ~ vcc
+
+
+module Base:
+    """
+    This is a fairly fleshed out based project for the ESP32-S3.
+
+    It offers:
+    - JTAG debugging
+    - USB power
+    """
+    uc = new ESP32S3
+    jtag = new JTAG_10PIN
+    uc.jtag ~ jtag.jtag
+
+    ## Power
+    power_raw = new Power
+    usb_conn = new USBCConn
+    usb_conn.power.gnd ~ power_raw.gnd
+    usb_conn.usb2 ~ uc.usb2
+    usb_conn.usb2.dp.override_net_name = "usb+"
+    usb_conn.usb2.dm.override_net_name = "usb-"
+
+    # Power rails
+    _5v_reg = new TPS63020DSJR
+    power_raw ~ _5v_reg.power_in
+    _5v_reg.v_in = 2.5V to 4.2V
+    _5v_reg.v_out = 5V +/- 10%
+    power_5v = new Power
+    _5v_reg.power_out ~ power_5v
+
+    _3v3_reg = new TPS63020DSJR
+    power_raw ~ _3v3_reg.power_in
+    _3v3_reg.v_in = 2.5V to 4.2V
+    _3v3_reg.v_out = 3.3V +/- 10%
+    power_3v3 = new Power
+    _3v3_reg.power_out ~ power_3v3
+    power_3v3 ~ uc.power
+
+    power_indicator = new LEDIndicatorRed
+    power_3v3 ~ power_indicator.power
+    power_indicator.v_in = _3v3_reg.v_out
+
+    ## SD Card on Fast SPI interface (SPI2)
+    _sd_card = new TF_01A
+    uc.spi2 ~ _sd_card.spi
+    power_3v3 ~ _sd_card.power
+
+    ## General-Purpose LED indicator
+    _led = new SK6805EC20
+    uc.io1 ~ _led.din.io
+    power_3v3 ~ _led.power
+    signal led_dout ~ _led.dout.io
+
+    ## I2C for display
+    display = new Header4P
+    power_3v3 ~ display.power
+    uc.i2c ~ display.i2c
+    i2c_pullup_strength = 2.7kΩ +/- 10%
+    sda_pullup = new Resistor
+    scl_pullup = new Resistor
+    sda_pullup.value = i2c_pullup_strength
+    scl_pullup.value = i2c_pullup_strength
+    display.i2c.sda ~ sda_pullup.p1; sda_pullup.p2 ~ power_3v3.vcc
+    display.i2c.scl ~ scl_pullup.p1; scl_pullup.p2 ~ power_3v3.vcc
+
+
+module BattBase from Base:
+    """
+    This base adds a battery charger and prioritiser to the base project.
+    """
+    battery_conn = new JST_PH_2P
+    power_batt = new Power
+    battery_conn.vcc ~ power_batt.vcc
+    battery_conn.gnd ~ power_batt.gnd
+
+    # Ideally draw from the USB connection
+    # and prevent back-feeding the battery
+    power_prio = new PowerPrioritiser
+    usb_conn.power ~ power_prio.high_priority
+    power_batt ~ power_prio.low_priority
+    power_prio.out ~ power_raw
+
+    # Battery charger
+    _charger = new BQ24040DSQR
+    usb_conn.power ~ _charger.power_in
+    _charger.power_batt ~ power_batt

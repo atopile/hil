@@ -41,3 +41,7 @@ venv/
 
 # IDEs
 .vscode/
+
+# Python
+__pycache__/
+*.pyc

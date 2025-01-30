@@ -1,0 +1,40 @@
+ato-version: ^0.2.0
+builds:
+  default:
+    entry: elec/src/esp32-s3.ato:ESP32S3
+  base:
+    entry: elec/src/base.ato:Base
+
+dependencies:
+- name: tf-01a
+  version_spec: '@19f4c986d486c7098b34e129225106d260827def'
+  link_broken: true
+  path: elec/src/tf-01a
+- name: programming-headers
+  version_spec: '@e3a6ca6b5b93e3c2db899aa7cc5a8fde17920abc'
+  link_broken: true
+  path: elec/src/programming-headers
+- name: tps63020dsjr
+  version_spec: '@05e0eabdcf71388f020d9ddb3fca08726b19a664'
+  link_broken: true
+  path: elec/src/tps63020dsjr
+- name: usb-connectors
+  version_spec: '@1be66943895494857495c3afe24389a895b9fac8'
+  link_broken: true
+  path: elec/src/usb-connectors
+- name: sk6805-ec20
+  version_spec:
+  link_broken: false
+  path: .ato/modules/sk6805-ec20
+- name: bq24045dsqr
+  version_spec: '@14ee74841ac8a1d311dd1050445bc6b4f300c6bf'
+  link_broken: true
+  path: elec/src/bq24045dsqr
+- name: power-prioritiser
+  version_spec:
+  link_broken: false
+  path: .ato/modules/power-prioritiser
+- name: generics
+  version_spec: ^v4.4.0
+  link_broken: false
+  path: .ato/modules/generics

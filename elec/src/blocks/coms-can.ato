@@ -1,0 +1,79 @@
+from "components/ylptec_b0505s2wr3.ato" import YLPTEC_B0505S_2WR3
+from "components/nexperia_pe_sd1c_an215.ato" import Nexperia_PESD1CAN_215
+from "components/texas_instruments_is_o1044b_dr.ato" import Texas_Instruments_ISO1044BDR
+from "components/microchip_tech_mc_p2518f_dteqb_b.ato" import Microchip_Tech_MCP2518FDT_E_QBB
+from "generics/capacitors.ato" import Capacitor
+from "generics/resistors.ato" import Resistor
+from "generics/interfaces.ato" import CAN, SPI, Power
+
+module ComsCANISO:
+    """
+    SPI interface for CAN communication
+    - Up to 1Mbps (CAN 2.0A)
+    - Up to 5Mbps (CAN FD)
+    - Isolated CAN interface (1KV)
+    """
+    # external interfaces
+    spi = new SPI
+    can = new CAN
+    power_3v3 = new Power
+    power_5v = new Power
+
+    # internal interfaces
+    _power_5v_iso = new Power
+
+    # Components
+    regulator = new YLPTEC_B0505S_2WR3
+    controller = new Microchip_Tech_MCP2518FDT_E_QBB
+    transceiver = new Texas_Instruments_ISO1044BDR
+    protection = new Nexperia_PESD1CAN_215
+    termination = new CANTermination
+
+    # Power
+    power_5v ~ regulator.power_in
+    regulator.power_out ~ _power_5v_iso
+    _power_5v_iso ~ transceiver.power_5v_iso
+    power_3v3 ~ transceiver.power_3v3
+    power_3v3 ~ controller.power_3v3
+    power_3v3.gnd ~ power_5v.gnd
+
+    # Data
+    spi ~ controller.spi
+    controller.can_ttl ~ transceiver.can_ttl
+    transceiver.can ~ can
+
+    # Protection
+    protection.can ~ can
+    protection.gnd ~ _power_5v_iso.gnd
+
+    # Termination
+    termination.can ~ can
+    termination.gnd ~ _power_5v_iso.gnd
+
+module CANTermination:
+    """
+    CAN termination 120Ohm with center tap capacitor
+    """
+    can = new CAN
+    signal gnd
+
+    # Components
+    resistor_can_high = new Resistor
+    resistor_can_high.resistance = 60ohm +/- 2%
+
+    resistor_can_low = new Resistor
+    resistor_can_low.resistance = 60ohm +/- 2%
+
+    capacitor_can = new Capacitor
+    capacitor_can.capacitance = 4.7nF +/- 20%
+
+    # CAN
+    signal _midpoint
+    can.CANH ~ resistor_can_high.p1
+    resistor_can_high.p2 ~ _midpoint
+    _midpoint ~ resistor_can_low.p1
+    resistor_can_low.p2 ~ can.CANL
+
+    _midpoint ~ capacitor_can.p1
+    capacitor_can.p2 ~ gnd
+    

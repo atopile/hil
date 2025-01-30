@@ -1,0 +1,326 @@
+from "generics/interfaces.ato" import Power, SPI
+from "generics/resistors.ato" import Resistor
+from "generics/capacitors.ato" import Capacitor
+from "generics/oscillators.ato" import Oscillator, Crystal
+
+
+module W5500Ethernet:
+    """
+    Ethernet module using the W5500 chip.
+    """
+    spi = new SPI
+    signal interrupt
+    signal reset
+    power = new Power
+
+    # Components
+    w5500 = new W5500
+    rj45 = new J1B1211CCD
+
+    # W5500
+    # Mode select
+    # +-----------+--------------------------------------------------+
+    # | PMODE [2:0]| Description                                      |
+    # +-----------+--------------------------------------------------+
+    # | 0 0 0     | 10BT Half-duplex, Auto-negotiation disabled      |
+    # | 0 0 1     | 10BT Full-duplex, Auto-negotiation disabled      |
+    # | 0 1 0     | 100BT Half-duplex, Auto-negotiation disabled     |
+    # | 0 1 1     | 100BT Full-duplex, Auto-negotiation disabled     |
+    # | 1 0 0     | 100BT Half-duplex, Auto-negotiation enabled      |
+    # | 1 0 1     | Not used                                         |
+    # | 1 1 0     | Not used                                         |
+    # | 1 1 1     | All capable, Auto-negotiation enabled (Typical)  |
+    # +-----------+--------------------------------------------------+
+    w5500.PMODE2 ~ power.vcc
+    w5500.PMODE1 ~ power.vcc
+    w5500.PMODE0 ~ power.vcc
+
+
+    # SPI
+    spi.mosi ~ w5500.MOSI
+    spi.miso ~ w5500.MISO
+    spi.sck ~ w5500.SCLK
+    spi.cs ~ w5500.SCSn
+    interrupt ~ w5500.INTn
+    reset ~ w5500.RSTn
+
+    # RJ45
+
+    # link led
+    link_led_resistor = new Resistor
+    link_led_resistor.package = "0402"
+    link_led_resistor.value = 220ohm +/- 10%
+    w5500.LINKLED ~ link_led_resistor.p1
+    link_led_resistor.p2 ~ rj45.LLED_minus
+    power.vcc ~ rj45.LLED_plus
+
+    # activity led
+    activity_led_resistor = new Resistor
+    activity_led_resistor.package = "0402"
+    activity_led_resistor.value = 220ohm +/- 10%
+    w5500.ACTLED ~ activity_led_resistor.p1
+    activity_led_resistor.p2 ~ rj45.RLED_minus
+    power.vcc ~ rj45.RLED_plus
+
+    # Gnd cap - Should be 1kV isolated (ideally)
+    gnd_cap = new Capacitor
+    gnd_cap.package = "0805"
+    gnd_cap.value = 1nF +/- 10%
+    rj45.CGND ~ gnd_cap.p1
+    gnd_cap.p2 ~ power.gnd
+
+    # TX connections
+    tx_plus_damping = new Resistor
+    tx_plus_damping.package = "0402"
+    tx_plus_damping.value = 33ohm +/- 1%
+    w5500.TXP ~ tx_plus_damping.p1
+    tx_plus_damping.p2 ~ rj45.TD_plus
+
+    tx_minus_damping = new Resistor
+    tx_minus_damping.package = "0402"
+    tx_minus_damping.value = 33ohm +/- 1%
+    w5500.TXN ~ tx_minus_damping.p1
+    tx_minus_damping.p2 ~ rj45.TD_minus
+
+    # TX pullups
+    tx_plus_pullup = new Resistor
+    tx_plus_pullup.package = "0402"
+    tx_plus_pullup.value = 49.9ohm +/- 1%
+    power.vcc ~ tx_plus_pullup.p1
+    tx_plus_pullup.p2 ~ rj45.TD_plus
+
+    tx_minus_pullup = new Resistor
+    tx_minus_pullup.package = "0402"
+    tx_minus_pullup.value = 49.9ohm +/- 1%
+    power.vcc ~ tx_minus_pullup.p1
+    tx_minus_pullup.p2 ~ rj45.TD_minus
+
+    # TX center tap pullup
+    tx_ct_pullup = new Resistor
+    tx_ct_pullup.package = "0402"
+    tx_ct_pullup.value = 10ohm +/- 1%
+    power.vcc ~ tx_ct_pullup.p1
+    tx_ct_pullup.p2 ~ rj45.TCT
+
+    # TX center tap decoupling
+    tx_ct_cap = new Capacitor
+    tx_ct_cap.package = "0402"
+    tx_ct_cap.value = 22nF +/- 10%
+    rj45.TCT ~ tx_ct_cap.p1
+    tx_ct_cap.p2 ~ power.gnd
+
+    # RX connections
+    # RX negative connection with damping and isolation
+    rx_minus_damping = new Resistor
+    rx_minus_damping.package = "0402"
+    rx_minus_damping.value = 33ohm +/- 1%
+    
+    rx_minus_cap = new Capacitor
+    rx_minus_cap.package = "0402"
+    rx_minus_cap.value = 6.8nF +/- 10%
+    
+    w5500.RXN ~ rx_minus_damping.p1
+    rx_minus_damping.p2 ~ rx_minus_cap.p1
+    rx_minus_cap.p2 ~ rj45.RD_minus
+
+    # RX positive connection with damping and isolation
+    rx_plus_damping = new Resistor
+    rx_plus_damping.package = "0402"
+    rx_plus_damping.value = 33ohm +/- 1%
+    
+    rx_plus_cap = new Capacitor
+    rx_plus_cap.package = "0402"
+    rx_plus_cap.value = 6.8nF +/- 10%
+    
+    w5500.RXP ~ rx_plus_damping.p1
+    rx_plus_damping.p2 ~ rx_plus_cap.p1
+    rx_plus_cap.p2 ~ rj45.RD_plus
+
+
+    # RX pulldown resistors
+    rx_minus_pulldown = new Resistor
+    rx_minus_pulldown.package = "0402"
+    rx_minus_pulldown.value = 49.9ohm +/- 1%
+    rj45.RD_minus ~ rx_minus_pulldown.p1
+    rx_minus_pulldown.p2 ~ rj45.RCT
+
+    rx_plus_pulldown = new Resistor
+    rx_plus_pulldown.package = "0402"
+    rx_plus_pulldown.value = 49.9ohm +/- 1%
+    rj45.RD_plus ~ rx_plus_pulldown.p1
+    rx_plus_pulldown.p2 ~ rj45.RCT
+
+    # RX center tap decoupling
+    rx_ct_cap = new Capacitor
+    rx_ct_cap.package = "0402"
+    rx_ct_cap.value = 10nF +/- 10%
+    rj45.RCT ~ rx_ct_cap.p1
+    rx_ct_cap.p2 ~ power.gnd
+
+    # EXRES1 pulldown resistor
+    exres1_pulldown = new Resistor
+    exres1_pulldown.package = "0402"
+    exres1_pulldown.value = 12.4kohm +/- 1%
+    w5500.EXRES1 ~ exres1_pulldown.p1
+    exres1_pulldown.p2 ~ power.gnd
+
+    # 1.2V decoupling capacitor
+    _1v2o_cap = new Capacitor
+    _1v2o_cap.package = "0402"
+    _1v2o_cap.value = 10nF +/- 10%
+    w5500._1V2O ~ _1v2o_cap.p1
+    _1v2o_cap.p2 ~ power.gnd
+
+    # TOCAP decoupling capacitor
+    tocap_cap = new Capacitor
+    tocap_cap.package = "0402"
+    tocap_cap.value = 4.7uF +/- 10%
+    w5500.TOCAP ~ tocap_cap.p1
+    tocap_cap.p2 ~ power.gnd
+
+    # Power
+    power.vcc ~ w5500.AVDD
+    power.vcc ~ w5500.VDD
+    power.gnd ~ w5500.AGND
+    power.gnd ~ w5500.GND
+
+    # Decoupling caps
+    # 100nF decoupling caps
+    decap1 = new Capacitor
+    decap1.package = "0402"
+    decap1.value = 100nF +/- 10%
+    power.vcc ~ decap1.p1
+    decap1.p2 ~ power.gnd
+
+    decap2 = new Capacitor
+    decap2.package = "0402"
+    decap2.value = 100nF +/- 10%
+    power.vcc ~ decap2.p1
+    decap2.p2 ~ power.gnd
+
+    decap3 = new Capacitor
+    decap3.package = "0402"
+    decap3.value = 100nF +/- 10%
+    power.vcc ~ decap3.p1
+    decap3.p2 ~ power.gnd
+
+    decap4 = new Capacitor
+    decap4.package = "0402"
+    decap4.value = 100nF +/- 10%
+    power.vcc ~ decap4.p1
+    decap4.p2 ~ power.gnd
+
+    decap5 = new Capacitor
+    decap5.package = "0402"
+    decap5.value = 100nF +/- 10%
+    power.vcc ~ decap5.p1
+    decap5.p2 ~ power.gnd
+
+    decap6 = new Capacitor
+    decap6.package = "0402"
+    decap6.value = 100nF +/- 10%
+    power.vcc ~ decap6.p1
+    decap6.p2 ~ power.gnd
+
+    # 10uF bulk decoupling cap
+    bulk_decap = new Capacitor
+    bulk_decap.package = "0805"
+    bulk_decap.value = 10uF +/- 10%
+    power.vcc ~ bulk_decap.p1
+    bulk_decap.p2 ~ power.gnd
+
+
+    # Oscillator
+    oscillator = new Oscillator
+    oscillator.crystal -> X322525MMB4SI
+    oscillator.load_cap_1.value = 10pF +/- 10%
+    oscillator.load_cap_2.value = 10pF +/- 10%
+
+    # 1M resistor across crystal pins for stability
+    osc_resistor = new Resistor
+    osc_resistor.package = "0402" 
+    osc_resistor.value = 1Mohm +/- 10%
+    oscillator.xin.io ~ osc_resistor.p1
+    oscillator.xout.io ~ osc_resistor.p2
+    oscillator.gnd ~ power.gnd
+
+    # Connect oscillator to W5500
+    w5500.XI_slash_CLKIN ~ oscillator.xin.io
+    w5500.XO ~ oscillator.xout.io
+
+component X322525MMB4SI from Crystal:
+    # component X322525MMB4SI
+    footprint = "CRYSTAL-SMD_4P-L3.2-W2.5-BL"
+    lcsc_id = "C70582"
+    mpn = "C70582"
+    # pins
+    gnd ~ pin 4
+    gnd ~ pin 2
+    xin ~ pin 1
+    xout ~ pin 3
+
+
+component J1B1211CCD:
+    # component J1B1211CCD
+    footprint = "RJ45-TH_J1B1211CCD"
+    lcsc_id = "C910371"
+    mpn = "C910371"
+    # pins
+    signal CGND ~ pin 14
+    CGND ~ pin 13
+    signal RLED_minus ~ pin 11
+    signal RLED_plus ~ pin 12
+    signal LLED_minus ~ pin 9
+    CGND ~ pin 8
+    signal TD_plus ~ pin 1
+    signal TCT ~ pin 2
+    signal TD_minus ~ pin 3
+    signal RD_plus ~ pin 4
+    signal RCT ~ pin 5
+    signal RD_minus ~ pin 6
+    signal LLED_plus ~ pin 10
+
+
+component W5500:
+    # component W5500
+    footprint = "LQFP-48_L7.0-W7.0-P0.50-LS9.0-BL"
+    lcsc_id = "C32843"
+    mpn = "C32843"
+    # pins
+    signal TXN ~ pin 1
+    signal TXP ~ pin 2
+    signal AGND ~ pin 3
+    signal AVDD ~ pin 4
+    signal RXN ~ pin 5
+    signal RXP ~ pin 6
+    AVDD ~ pin 8
+    AGND ~ pin 9
+    signal EXRES1 ~ pin 10
+    AVDD ~ pin 11
+    AGND ~ pin 14
+    AVDD ~ pin 15
+    AGND ~ pin 16
+    AVDD ~ pin 17
+    signal VBG ~ pin 18
+    AGND ~ pin 19
+    signal TOCAP ~ pin 20
+    AVDD ~ pin 21
+    signal _1V2O ~ pin 22
+    signal SPDLED ~ pin 24
+    signal LINKLED ~ pin 25
+    signal DUPLED ~ pin 26
+    signal ACTLED ~ pin 27
+    signal VDD ~ pin 28
+    signal GND ~ pin 29
+    signal XI_slash_CLKIN ~ pin 30
+    signal XO ~ pin 31
+    signal SCSn ~ pin 32
+    signal SCLK ~ pin 33
+    signal MISO ~ pin 34
+    signal MOSI ~ pin 35
+    signal INTn ~ pin 36
+    signal RSTn ~ pin 37
+    signal PMODE2 ~ pin 43
+    signal PMODE1 ~ pin 44
+    signal PMODE0 ~ pin 45
+    AGND ~ pin 48

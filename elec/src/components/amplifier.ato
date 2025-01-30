@@ -1,0 +1,50 @@
+
+from "generics/opamps.ato" import Opamp
+from "generics/interfaces.ato" import Pair, Power
+from "generics/capacitors.ato" import Capacitor
+from "generics/resistors.ato" import Resistor
+from "components/texas_instruments_lm358d_r.ato" import Texas_Instruments_LM358DR
+
+module Amplifier:
+    """
+    Amplifies the input signal by a given gain. 
+    Uses a Non-Inverting Opamp and a feedback resistor divider.
+    """
+    power_in = new Power
+    input = new Pair
+    output = new Pair
+
+    feedback_resistor = new Resistor
+    input_resistor = new Resistor
+    opamp = new Opamp
+
+    # Decoupling Capacitor
+    decoupling_capacitor = new Capacitor
+    decoupling_capacitor.package = "0402"
+    decoupling_capacitor.capacitance = 1uF +/- 20%
+    power_in ~ decoupling_capacitor.power
+
+    feedback_resistor.package = "0402"
+    input_resistor.package = "0402"
+    feedback_resistor.resistance = 10kohm +/- 1%
+    input_resistor.resistance = 10kohm +/- 1%
+    opamp -> Texas_Instruments_LM358DR
+
+    # Connections
+    power_in ~ opamp.power
+    input.io ~ opamp.non_inverting
+    power_in.gnd ~ input_resistor.p1; input_resistor.p2 ~ opamp.inverting
+    opamp.inverting ~ feedback_resistor.p1; feedback_resistor.p2 ~ opamp.output
+    output.io ~ opamp.output
+
+    # Common gnd
+    power_in.gnd ~ input.gnd
+    power_in.gnd ~ output.gnd
+
+    # Parameters
+    gain: dimensionless
+
+    # # Configure the amplifier
+    # assert 1 + feedback_resistor.resistance / input_resistor.resistance is gain
+    # assert gain within max(output.voltage) / max(input.voltage)
+    # assert power_in.voltage * gain < opamp.supply_voltage # Ensure the opamp doesn't saturate

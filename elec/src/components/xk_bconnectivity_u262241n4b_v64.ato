@@ -1,0 +1,52 @@
+from "generics/interfaces.ato" import Power, USB2
+
+component XKB_Connectivity_U262_241N_4BV64:
+    """XKB_Connectivity_U262_241N_4BV64 component"""
+    lcsc_id = "C388660"
+    manufacturer = "XKB Connectivity"
+    mpn = "U262-241N-4BV64"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2110151730_XKB-Connection-U262-241N-4BV64_C388660.pdf"
+    designator_prefix = "USB"
+    footprint = "USB-C-SMD_TYC-324G-a50b79"
+
+    # pins
+    signal CC1 ~ pin A5
+    signal CC2 ~ pin B5
+    signal DN1 ~ pin A7
+    signal DN2 ~ pin B7
+    signal DP1 ~ pin A6
+    signal DP2 ~ pin B6
+    signal GND ~ pin B12
+    GND ~ pin B1
+    GND ~ pin A12
+    GND ~ pin A1
+    signal SBU1 ~ pin A8
+    signal SBU2 ~ pin B8
+    signal SSRXN1 ~ pin B10
+    signal SSRXN2 ~ pin A10
+    signal SSRXP1 ~ pin B11
+    signal SSRXP2 ~ pin A11
+    signal SSTXN1 ~ pin A3
+    signal SSTXN2 ~ pin B3
+    signal SSTXP1 ~ pin A2
+    signal SSTXP2 ~ pin B2
+    signal VBUS ~ pin B9
+    VBUS ~ pin B4
+    VBUS ~ pin A9
+    VBUS ~ pin A4
+
+    power_vbus = new Power
+    power_vbus.vcc ~ VBUS
+    power_vbus.gnd ~ GND
+
+    # Mounting holes
+    power_vbus.gnd ~ pin 1
+    power_vbus.gnd ~ pin 2
+    power_vbus.gnd ~ pin 3
+    power_vbus.gnd ~ pin 4
+
+    usb2 = new USB2
+    usb2.dp ~ DP1
+    usb2.dp ~ DP2
+    usb2.dm ~ DN1
+    usb2.dm ~ DN2

@@ -1,0 +1,35 @@
+from "generics/interfaces.ato" import Power, I2C
+from "generics/resistors.ato" import I2CPullup
+
+component ISO1640BDR:
+    """
+    i2c digital isolator
+    """
+    footprint = "SOIC-8_L4.9-W3.9-P1.27-LS6.0-TL"
+    lcsc_id = "C5122339"
+    mpn = "C5122339"
+    # pins
+    power_non_isolated = new Power
+    power_non_isolated.vcc ~ pin 1
+    power_non_isolated.gnd ~ pin 4
+
+    power_isolated = new Power
+    power_isolated.vcc ~ pin 8
+    power_isolated.gnd ~ pin 5
+
+    i2c_non_isolated = new I2C
+    i2c_non_isolated.scl ~ pin 3
+    i2c_non_isolated.sda ~ pin 2
+
+    i2c_isolated = new I2C
+    i2c_isolated.scl ~ pin 6
+    i2c_isolated.sda ~ pin 7
+
+    signal VCC1 ~ pin 1
+    signal SDA1 ~ pin 2
+    signal SCL1 ~ pin 3
+    signal GND1 ~ pin 4
+    signal GND2 ~ pin 5
+    signal SCL2 ~ pin 6
+    signal SDA2 ~ pin 7
+    signal VCC2 ~ pin 8

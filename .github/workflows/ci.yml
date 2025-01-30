@@ -11,6 +11,10 @@ jobs:
 
       - name: Build
         uses: docker://ghcr.io/atopile/atopile-kicad:main
+        env:
+          FBRK_MAX_PATHS: 1e7
+          FBRK_MAX_PATHS_NO_WEAK: 1e6
+          FBRK_MAX_PATHS_NO_NEW_WEAK: 1e5
 
       - name: Upload Combined Artifacts
         uses: actions/upload-artifact@v3

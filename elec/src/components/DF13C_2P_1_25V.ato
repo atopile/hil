@@ -1,0 +1,9 @@
+from "generics/interfaces.ato" import Pair
+
+component DF13C_2P_1_25V:
+    footprint = "CON2_1X2_U_DF13"
+    lcsc_id = "C17644483"
+    mpn = "C17644483"
+
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2

@@ -1,0 +1,166 @@
+from "generics/interfaces.ato" import SPI, Power, ISOSPI
+from "generics/resistors.ato" import Resistor
+from "generics/capacitors.ato" import Capacitor
+
+
+component ADBMS6822:
+    """Single isoSPI Transceiver"""
+    footprint = "05-08-7057_ADI"
+    mpn = "ADBMS6822WCCSZ"
+
+    # Source: [page 9, section Pin Configurations and Function Descriptions]
+    signal MSTR ~ pin 1
+    signal PICO ~ pin 2
+    signal POCI ~ pin 3
+    signal SCK ~ pin 4
+    signal CS ~ pin 5
+    signal VDDS ~ pin 6
+    signal INTR ~ pin 7
+    signal WAKE ~ pin 8
+    signal GND ~ pin 9
+    signal IM ~ pin 10
+    signal IP ~ pin 11
+    signal VDD ~ pin 12
+    signal VP ~ pin 13
+    signal PHAPOL ~ pin 14
+    signal RTO ~ pin 15
+    signal XCVRMD ~ pin 16
+    GND ~ pin 17
+    signal IM2 ~ pin 18
+    signal IP2 ~ pin 19
+    signal VDD2 ~ pin 20
+    signal VP2 ~ pin 21
+    signal PHAPOL2 ~ pin 22
+    signal RTO2 ~ pin 23
+    signal XCVRMD2 ~ pin 24
+    signal MSTR2 ~ pin 25
+    signal PICO2 ~ pin 26
+    signal POCI2 ~ pin 27
+    signal SCK2 ~ pin 28
+    signal CS2 ~ pin 29
+    signal VDDS2 ~ pin 30
+    signal INTR2 ~ pin 31
+    signal WAKE2 ~ pin 32
+    signal EP ~ pin 33
+
+
+component _ConfigResistor from Resistor:
+    """Configuration Resistor"""
+    footprint = "R0402"
+
+
+component _0OhmConfig from _ConfigResistor:
+    """Configuration Resistor"""
+    mpn = "C17168"
+    value = 0Ω
+
+
+component _BypassCapacitor from Capacitor:
+    """Configuration Resistor"""
+    package = "0402"
+    # rated_voltage = 10 to 50V
+    value = 100nF * (0.8 to 5)  # -20%, + lots
+
+
+module ADBMS6822Module:
+    "Single isoSPI Transceiver Module"
+    signal _gnd
+    _ic = new ADBMS6822
+    _ic.GND ~ _gnd
+
+    # EP must be tied to ground
+    _ic.EP ~ _ic.GND
+
+    # Power connections
+    # These ICs actually have seperate power rails
+    # for each of the two SPI interfaces, but that's
+    # not particularly useful for us, so we'll roll
+    # with the one
+    logic_power = new Power
+    logic_power.gnd ~ _gnd
+    logic_power.vcc ~ _ic.VDDS
+    logic_power.vcc ~ _ic.VDDS2
+    logic_power_bypass_1 = new _BypassCapacitor
+    logic_power_bypass_2 = new _BypassCapacitor
+    _ic.VDDS ~ logic_power_bypass_1.p1; logic_power_bypass_1.p2 ~ _gnd
+    _ic.VDDS2 ~ logic_power_bypass_2.p1; logic_power_bypass_2.p2 ~ _gnd
+
+    iso_power = new Power
+    iso_power.gnd ~ _gnd
+    iso_power.vcc ~ _ic.VDD
+    iso_power.vcc ~ _ic.VDD2
+    iso_power.vcc ~ _ic.VP
+    iso_power.vcc ~ _ic.VP2
+    logic_power_bypass_3 = new _BypassCapacitor
+    logic_power_bypass_4 = new _BypassCapacitor
+    logic_power_bypass_5 = new _BypassCapacitor
+    logic_power_bypass_6 = new _BypassCapacitor
+    _ic.VDD ~ logic_power_bypass_3.p1; logic_power_bypass_3.p2 ~ _gnd
+    _ic.VDD2 ~ logic_power_bypass_4.p1; logic_power_bypass_4.p2 ~ _gnd
+    _ic.VP ~ logic_power_bypass_5.p1; logic_power_bypass_5.p2 ~ _gnd
+    _ic.VP2 ~ logic_power_bypass_6.p1; logic_power_bypass_6.p2 ~ _gnd
+
+    logic_spi_1 = new SPI
+    logic_spi_1.gnd ~ _gnd
+    logic_spi_1.mosi ~ _ic.PICO
+    logic_spi_1.miso ~ _ic.POCI
+    logic_spi_1.sck ~ _ic.SCK
+    logic_spi_1.cs ~ _ic.CS
+
+    logic_spi_2 = new SPI
+    logic_spi_2.gnd ~ _gnd
+    logic_spi_2.mosi ~ _ic.PICO2
+    logic_spi_2.miso ~ _ic.POCI2
+    logic_spi_2.sck ~ _ic.SCK2
+    logic_spi_2.cs ~ _ic.CS2
+
+    isospi_1 = new ISOSPI
+    _ic.IP ~ isospi_1.p
+    _ic.IM ~ isospi_1.n
+
+    isospi_2 = new ISOSPI
+    _ic.IP2 ~ isospi_2.p
+    _ic.IM2 ~ isospi_2.n
+
+    # TODO: handle intr and wake signals
+    # They remain unconnected for now because they're just for
+    # waking up stuff on the receiver side of things
+    # In typical operation they're both informative signals that the
+    # microcontroller can monitor to know when the transceiver/bmb is awake
+    signal intr_1 ~ _ic.INTR
+    signal intr_2 ~ _ic.INTR2
+    signal wake_1 ~ _ic.WAKE
+    signal wake_2 ~ _ic.WAKE2
+
+    # TODO: make configuration better configurable
+    # Low Power Mode Timeout
+    # Timeout Time      Resistance
+    # 1.5 sec           0  | 0    | 10 kΩ
+    # 1.5 sec           92 |      | 100 kΩ
+    # 3 sec             15 | 17.8 | 22 kΩ
+    # 6 sec             28 | 30.9 | 34 kΩ
+    # 12 sec            41 | 43.2 | 46 kΩ
+    # 18 sec            54 | 56.2 | 58 kΩ
+    # 24 sec            67 | 68.1 | 71 kΩ
+    # 48 sec            79 | 80.6 | 83 kΩ
+    lpcm_1_cfg = new _0OhmConfig
+    _ic.RTO ~ lpcm_1_cfg.1; lpcm_1_cfg.2 ~ _gnd
+
+    lpcm_2_cfg = new _0OhmConfig
+    _ic.RTO2 ~ lpcm_2_cfg.1; lpcm_2_cfg.2 ~ _gnd
+
+    # Transceiver Mode
+    # See https://www.analog.com/media/en/technical-documentation/data-sheets/adbms6821-adbms6822.pdf#page=5
+    xcvrmd_1_cfg = new _0OhmConfig
+    _ic.XCVRMD ~ xcvrmd_1_cfg.1; xcvrmd_1_cfg.2 ~ _gnd
+
+    xcvrmd_2_cfg = new _0OhmConfig
+    _ic.XCVRMD2 ~ xcvrmd_2_cfg.1; xcvrmd_2_cfg.2 ~ _gnd
+
+    # Standard Bi-directional Mode
+    # 0Ω -> SCK triggered on rising edge
+    phapol_1_cfg = new _0OhmConfig
+    _ic.PHAPOL ~ phapol_1_cfg.1; phapol_1_cfg.2 ~ _gnd
+
+    phapol_2_cfg = new _0OhmConfig
+    _ic.PHAPOL2 ~ phapol_2_cfg.1; phapol_2_cfg.2 ~ _gnd
