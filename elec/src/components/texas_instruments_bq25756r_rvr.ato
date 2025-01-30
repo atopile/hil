@@ -2,7 +2,8 @@ from "generics/interfaces.ato" import Power, I2C, DiffPair
 from "generics/diodes.ato" import SchottkyDiode
 from "generics/filters.ato" import LowPassFilter
 from "generics/capacitors.ato" import Capacitor, CapacitorElectrolytic
-from "generics/mosfets.ato" import NFET
+# from "generics/mosfets.ato" import NFET
+import MOSFET
 from "generics/resistors.ato" import Resistor
 from "generics/vdivs.ato" import VDiv
 from "generics/inductors.ato" import Inductor
@@ -46,8 +47,8 @@ module Texas_Instruments_BQ25756RRVR:
     vac_cap_2 = new Capacitor
     vac_cap_1.capacitance = 100nF +/- 20%
     vac_cap_2.capacitance = 1uF +/- 20%
-    vac_cap_1.rated_voltage = 100V to 1000V
-    vac_cap_2.rated_voltage = 100V to 1000V
+    vac_cap_1.max_voltage = 100V to 1000V
+    vac_cap_2.max_voltage = 100V to 1000V
 
     power_in ~ vac_cap_1.power
     power_in ~ vac_cap_2.power
@@ -55,14 +56,14 @@ module Texas_Instruments_BQ25756RRVR:
     # Driver supply cap
     drv_sup_cap = new Capacitor
     drv_sup_cap.capacitance = 4.7uF +/- 20%
-    drv_sup_cap.rated_voltage = 25V to 1000V
+    drv_sup_cap.max_voltage = 25V to 1000V
     controller.DRV_SUP ~ drv_sup_cap.p1
     drv_sup_cap.p2 ~ controller.PGND
 
     # Internal LDO cap
     regn_cap = new Capacitor
     regn_cap.capacitance = 4.7uF +/- 20%
-    regn_cap.rated_voltage = 25V to 1000V
+    regn_cap.max_voltage = 25V to 1000V
     controller.REGN ~ regn_cap.p1
     regn_cap.p2 ~ controller.PGND
 
@@ -191,11 +192,12 @@ module CapBank:
     cap8 = new Capacitor
     cap9 = new Capacitor
     cap10 = new Capacitor
-
+    cap11 = new Capacitor
     # Set capacitance values
     cap1.capacitance = 4.7uF +/- 20%
     cap2.capacitance = 4.7uF +/- 20%
     cap3.capacitance = 4.7uF +/- 20%
+    cap11.capacitance = 4.7uF +/- 20%
     cap4.capacitance = 10uF +/- 20%
     cap5.capacitance = 10uF +/- 20%
     cap6.capacitance = 10uF +/- 20%
@@ -205,16 +207,17 @@ module CapBank:
     cap10.capacitance = 100pF +/- 20%
 
     # Set voltage ratings
-    cap1.rated_voltage = 100V to 1000V
-    cap2.rated_voltage = 100V to 1000V
-    cap3.rated_voltage = 100V to 1000V
-    cap4.rated_voltage = 100V to 1000V
-    cap5.rated_voltage = 100V to 1000V
-    cap6.rated_voltage = 100V to 1000V
-    cap7.rated_voltage = 100V to 1000V
-    cap8.rated_voltage = 100V to 1000V
-    cap9.rated_voltage = 100V to 1000V
-    cap10.rated_voltage = 100V to 1000V
+    cap1.max_voltage = 100V to 1000V
+    cap2.max_voltage = 100V to 1000V
+    cap3.max_voltage = 100V to 1000V
+    cap4.max_voltage = 100V to 1000V
+    cap5.max_voltage = 100V to 1000V
+    cap6.max_voltage = 100V to 1000V
+    cap7.max_voltage = 100V to 1000V
+    cap8.max_voltage = 100V to 1000V
+    cap9.max_voltage = 100V to 1000V
+    cap10.max_voltage = 100V to 1000V
+    cap11.max_voltage = 100V to 1000V
 
     # Connect to power
     power_in ~ cap1.power
@@ -227,7 +230,7 @@ module CapBank:
     power_in ~ cap8.power
     power_in ~ cap9.power
     power_in ~ cap10.power
-
+    power_in ~ cap11.power
 module ShuntInput:
     """Shunt input for buck/boost with low pass filter"""
     power_in = new Power
@@ -302,13 +305,13 @@ module BuckBoostCore:
 
     # Components
     inductor = new Inductor
-    fet_input_hs = new NFET
-    fet_input_ls = new NFET
-    fet_output_hs = new NFET
-    fet_output_ls = new NFET
+    fet_input_hs = new MOSFET
+    fet_input_ls = new MOSFET
+    fet_output_hs = new MOSFET
+    fet_output_ls = new MOSFET
     gate_res_input_hs = new Resistor
     gate_res_input_ls = new Resistor
-    gate_res_output_hs = new Resistor
+    gate_res_output_hs = new Resistor   
     gate_res_output_ls = new Resistor
     input_cap = new CapacitorElectrolytic
     output_cap = new CapacitorElectrolytic

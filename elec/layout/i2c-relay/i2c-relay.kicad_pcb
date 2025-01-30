@@ -105,28 +105,28 @@
             (scaleselection 1)
             (outputdirectory "")))
     (net 0 "")
-    (net 1 "gpio_expander-net-2")
+    (net 1 "gpio_expander-net-6")
     (net 2 "line-1")
     (net 3 "gpio_expander-net-4")
     (net 4 "hv")
-    (net 5 "gpio_expander-net-1")
-    (net 6 "gpio_expander-net-5")
+    (net 5 "gpio_expander-net")
+    (net 6 "gpio_expander-net-2")
     (net 7 "anode")
     (net 8 "input")
     (net 9 "gnd")
     (net 10 "INT")
-    (net 11 "gpio_expander-net-6")
+    (net 11 "gpio_expander-net-1")
     (net 12 "VCCI")
     (net 13 "hv-1")
     (net 14 "line")
-    (net 15 "gpio_expander-net")
-    (net 16 "gnd-3")
-    (net 17 "gnd-1")
+    (net 15 "gpio_expander-net-3")
+    (net 16 "gnd-2")
+    (net 17 "gnd-3")
     (net 18 "cathode")
     (net 19 "relay-gnd")
-    (net 20 "gate")
-    (net 21 "gpio_expander-net-3")
-    (net 22 "gnd-2")
+    (net 20 "relay.fet.footprint.pins[0].net-net")
+    (net 21 "gpio_expander-net-5")
+    (net 22 "gnd-1")
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "2cbb53c3-70e2-46f5-8408-9b4d4642524b")
@@ -321,7 +321,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "cbb03acd-e41f-48e7-888b-5f6fd1a0b56e")
-            (net 17 "gnd-1")))
+            (net 17 "gnd-3")))
     (footprint "lib:LED0603-RD"
         (layer "F.Cu")
         (uuid "43b23b39-827d-4bc2-bc9c-b8494642524b")
@@ -859,7 +859,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7d689de6-6796-402a-928d-561423efb596")
-            (net 16 "gnd-3"))
+            (net 16 "gnd-2"))
         (pad "5" smd rect
             (at 3.84 -3.18 0)
             (size 0.8 2.15)
@@ -894,7 +894,7 @@
                 (xyz 1 1 1))
             (rotate
                 (xyz 0 0 0))))
-    (footprint "lib:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+    (footprint "atopile:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR-688f29"
         (layer "F.Cu")
         (uuid "ab6f98e1-6084-4196-b700-36d24642524b")
         (at 126.940774 90.496502 180)
@@ -902,21 +902,23 @@
             (at 0 -4.95 0)
             (layer "F.SilkS")
             (hide no)
-            (uuid "8b897208-8c2d-46ad-a39b-fd00d65faec7")
+            (uuid "5121128e-09f4-4fa7-8a55-9ff2032938c6")
             (effects
                 (font
                     (size 1 1)
-                    (thickness 0.15))))
+                    (thickness 0.15))
+                (hide no)))
         (property "Value" ""
-            (at 0 4.95 180)
+            (at 0 4.95 0)
             (layer "F.Fab")
             (hide no)
-            (uuid "815daaa9-55a3-4c33-b9d4-40bd0ffb2e5e")
+            (uuid "2f633721-3455-41a9-ba4b-ccf5e4708cd6")
             (effects
                 (font
                     (size 1 1)
-                    (thickness 0.15))))
-        (property "Footprint" "lib:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+                    (thickness 0.15))
+                (hide no)))
+        (property "Footprint" "atopile:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR-688f29"
             (at 0 0 180)
             (layer "User.9")
             (hide yes)
@@ -943,11 +945,11 @@
                 (font
                     (size 1.27 1.27)
                     (thickness 0.15))))
-        (property "__atopile_lib_fp_hash__" "031e619a-ffcb-a184-252f-a1621c6dde28"
-            (at 0 0 180)
+        (property "__atopile_lib_fp_hash__" "402f7197-01b9-8c53-5b79-21ffe1930bc8"
+            (at 0 0 0)
             (layer "User.9")
             (hide yes)
-            (uuid "374362aa-7d8d-463d-85e8-53944642524b")
+            (uuid "01fd8cac-c52d-432e-ab0f-54d24642524b")
             (effects
                 (font
                     (size 0.125 0.125)
@@ -999,37 +1001,13 @@
                     (thickness 0.01875))))
         (attr smd)
         (fp_line
-            (start 0.73 1.53)
-            (end -0.73 1.53)
-            (stroke
-                (width 0.15)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "e7f0191d-7bd2-4f49-8a09-05e073aed927"))
-        (fp_line
-            (start 0.73 -0.46)
-            (end 0.73 0.46)
-            (stroke
-                (width 0.15)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "f24f383a-5f30-47c8-ade8-d7e992cfed09"))
-        (fp_line
             (start 0.73 -1.53)
             (end -0.73 -1.53)
             (stroke
                 (width 0.15)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "0b57932d-c54e-4bdd-ba41-0889310616ac"))
-        (fp_line
-            (start -0.73 1.53)
-            (end -0.73 0.49)
-            (stroke
-                (width 0.15)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "b770441c-b5eb-4e80-9ce8-c2303586ee9b"))
+            (uuid "48f8624e-1406-4711-bec6-6a2b9df7116b"))
         (fp_line
             (start -0.73 -1.53)
             (end -0.73 -0.49)
@@ -1037,16 +1015,31 @@
                 (width 0.15)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "2fc1d8e1-6140-4e28-a314-d3b3d54512b0"))
-        (fp_circle
-            (center 1.46 1.1)
-            (end 1.56 1.1)
+            (uuid "e13876e3-7e6d-4cfe-9aa7-c9a5c8493989"))
+        (fp_line
+            (start 0.73 1.53)
+            (end -0.73 1.53)
             (stroke
-                (width 0.2)
+                (width 0.15)
                 (type solid))
-            (fill none)
-            (layer "Cmts.User")
-            (uuid "a8c5773c-74aa-489f-8b00-c4b941b38f52"))
+            (layer "F.SilkS")
+            (uuid "86284c57-3b2f-4eb6-a5d7-cf7037ae575a"))
+        (fp_line
+            (start -0.73 1.53)
+            (end -0.73 0.49)
+            (stroke
+                (width 0.15)
+                (type solid))
+            (layer "F.SilkS")
+            (uuid "4e8b1ea4-8580-4fac-9143-9232ba7b5785"))
+        (fp_line
+            (start 0.73 -0.46)
+            (end 0.73 0.46)
+            (stroke
+                (width 0.15)
+                (type solid))
+            (layer "F.SilkS")
+            (uuid "af2052db-7ee3-4648-90ba-fd767a83063d"))
         (fp_circle
             (center 1.2 1.45)
             (end 1.23 1.45)
@@ -1055,11 +1048,20 @@
                 (type solid))
             (fill none)
             (layer "F.Fab")
-            (uuid "edaac88c-ca01-449d-9aa1-d485c440cbf6"))
-        (fp_text user "${REFERENCE}"
-            (at 0 -4.95 180)
-            (layer "F.SilkS")
-            (uuid "d838984a-0283-4c08-92bd-20473c17665c")
+            (uuid "ead81f33-a53d-469e-bcb7-60a9d59f3423"))
+        (fp_circle
+            (center 1.46 1.1)
+            (end 1.56 1.1)
+            (stroke
+                (width 0.2)
+                (type solid))
+            (fill none)
+            (layer "Cmts.User")
+            (uuid "db99147e-b293-4455-887f-dd13a6d631e1"))
+        (fp_text user "%R"
+            (at 0 0 0)
+            (layer "F.Fab")
+            (uuid "7f5bb83d-24b7-4468-8c35-3f9f99136910")
             (effects
                 (font
                     (size 1 1)
@@ -1067,9 +1069,9 @@
                 (hide no))
             (unlocked no))
         (fp_text user "${REFERENCE}"
-            (at 0 0 180)
-            (layer "F.Fab")
-            (uuid "d20e908e-4ba4-4afd-8e56-2f7a03ee4cb9")
+            (at 0 -4.95 0)
+            (layer "F.SilkS")
+            (uuid "5121128e-09f4-4fa7-8a55-9ff2032938c6")
             (effects
                 (font
                     (size 1 1)
@@ -1081,29 +1083,22 @@
             (size 1.25 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "5e93a120-8c08-4c6b-9d16-79289f2ae4e7")
-            (net 20 "gate"))
+            (uuid "9ddf170c-efb6-4f62-a0fd-885ef3d318ac")
+            (net 20 "relay.fet.footprint.pins[0].net-net"))
         (pad "2" smd rect
             (at 1 -0.95 180)
             (size 1.25 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "54d5a962-610c-4507-a268-57b742a6818d")
-            (net 17 "gnd-1"))
+            (uuid "9ed601fa-74ae-4907-984c-574c1e188a00")
+            (net 17 "gnd-3"))
         (pad "3" smd rect
             (at -1 0 180)
             (size 1.25 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "452558dd-6909-471c-a402-099cbeef5611")
-            (net 19 "relay-gnd"))
-        (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/SOT-23-3P_L2.9-W1.3-H1.0-LS2.4-P0.95.step"
-            (offset
-                (xyz -861.57 843.28 0))
-            (scale
-                (xyz 1 1 1))
-            (rotate
-                (xyz 0 0 180))))
+            (uuid "b22267bf-aec7-47b3-954a-9f664504e4b3")
+            (net 19 "relay-gnd")))
     (footprint "lib:QFN-16_L3.0-W3.0-P0.50-BL-EP1.7"
         (layer "F.Cu")
         (uuid "accfd25e-ac99-44c2-a22b-b80c4642524b")
@@ -1347,49 +1342,49 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5485fb93-eb91-4b1d-ad81-c2253c5b403c")
-            (net 21 "gpio_expander-net-3"))
+            (net 21 "gpio_expander-net-5"))
         (pad "4" smd rect
             (at 0.75 1.41 90)
             (size 0.28 0.66)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4b6c1d9b-2fbf-459b-b0a2-a47995bbe483")
-            (net 1 "gpio_expander-net-2"))
+            (net 1 "gpio_expander-net-6"))
         (pad "5" smd rect
             (at 1.41 0.75 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f35e8dde-1794-40df-954a-df2e7aae0ea3")
-            (net 15 "gpio_expander-net"))
+            (net 15 "gpio_expander-net-3"))
         (pad "6" smd rect
             (at 1.41 0.25 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "42eff6f6-017d-43fc-8d71-6fc7bebe5f53")
-            (net 22 "gnd-2"))
+            (net 22 "gnd-1"))
         (pad "7" smd rect
             (at 1.41 -0.25 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "76f6d5ae-0ca1-4b12-b629-3b16c63bf518")
-            (net 5 "gpio_expander-net-1"))
+            (net 5 "gpio_expander-net"))
         (pad "8" smd rect
             (at 1.41 -0.75 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "be6889e4-97ea-4e28-aa5d-3f7a220b8129")
-            (net 11 "gpio_expander-net-6"))
+            (net 11 "gpio_expander-net-1"))
         (pad "9" smd rect
             (at 0.75 -1.41 90)
             (size 0.28 0.66)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3ee7fdb8-7235-4328-ba29-358f9db2d399")
-            (net 6 "gpio_expander-net-5"))
+            (net 6 "gpio_expander-net-2"))
         (pad "10" smd rect
             (at 0.25 -1.41 90)
             (size 0.28 0.66)
@@ -1438,14 +1433,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "6321b904-95e3-4f77-b46d-97ea7e6ece45")
-            (net 22 "gnd-2"))
+            (net 22 "gnd-1"))
         (pad "17" smd rect
             (at 0 0 90)
             (size 1.75 1.75)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2acf2b82-883b-4ad4-b034-f985f566b067")
-            (net 22 "gnd-2"))
+            (net 22 "gnd-1"))
         (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/QFN-16_L3.0-W3.0-H0.9-P0.50.step"
             (offset
                 (xyz -951.61 821.31 0))
@@ -1842,7 +1837,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "00795118-d470-439a-ad36-862293506989")
-            (net 20 "gate")))
+            (net 20 "relay.fet.footprint.pins[0].net-net")))
     (via
         (at 124.4 94.1)
         (size 0.8)

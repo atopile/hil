@@ -1,7 +1,7 @@
 from "generics/interfaces.ato" import Power, I2C
 from "generics/leds.ato" import LEDIndicatorGreen
 from "generics/resistors.ato" import Resistor
-from "generics/mosfets.ato" import NFET
+import MOSFET
 # from "components/irlml0040.ato" import IRLML0040
 from "components/tca6408.ato" import TCA6408ARGTR
 
@@ -56,7 +56,7 @@ module PowerRelay:
     indicator_led.current = 0.1mA to 0.3mA
 
     # Mosfet
-    fet = new NFET
+    fet = new MOSFET
     fet.lcsc_id = "C5364305"
     fet_gate_resistor = new Resistor
     fet_ilim_resistor = new Resistor

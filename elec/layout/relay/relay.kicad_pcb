@@ -105,39 +105,41 @@
             (scaleselection 1)
             (outputdirectory "")))
     (net 0 "")
-    (net 1 "gnd-2")
+    (net 1 "gnd")
     (net 2 "input")
     (net 3 "anode")
-    (net 4 "gnd-1")
-    (net 5 "hv")
+    (net 4 "gnd-3")
+    (net 5 "hv-1")
     (net 6 "cathode")
-    (net 7 "gnd")
-    (net 8 "gate")
-    (net 9 "hv-1")
-    (net 10 "gnd-3")
-    (footprint "lib:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+    (net 7 "gnd-1")
+    (net 8 "fet.footprint.pins[0].net-net")
+    (net 9 "hv")
+    (net 10 "gnd-2")
+    (footprint "atopile:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR-688f29"
         (layer "F.Cu")
         (uuid "22eb6a33-a6dd-4824-9ba0-eb254642524b")
         (at 162.240774 73.996502 180)
         (property "Reference" "Q1"
-            (at 0 -4.95 360)
+            (at 0 -4.95 0)
             (layer "F.SilkS")
             (hide no)
-            (uuid "05f9b1d0-fe29-47f8-9f83-fe07855c70b7")
+            (uuid "f3b4c1f8-e94d-4d74-9567-79331607597a")
             (effects
                 (font
                     (size 1 1)
-                    (thickness 0.15))))
+                    (thickness 0.15))
+                (hide no)))
         (property "Value" ""
-            (at 0 4.95 360)
+            (at 0 4.95 0)
             (layer "F.Fab")
             (hide no)
-            (uuid "f2648f94-a529-411a-85d3-abfa4693cc55")
+            (uuid "af5cca76-b4d4-4ab0-be0e-eeba1a8576b2")
             (effects
                 (font
                     (size 1 1)
-                    (thickness 0.15))))
-        (property "Footprint" "lib:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR"
+                    (thickness 0.15))
+                (hide no)))
+        (property "Footprint" "atopile:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR-688f29"
             (at 0 0 360)
             (layer "User.9")
             (hide yes)
@@ -164,11 +166,11 @@
                 (font
                     (size 1.27 1.27)
                     (thickness 0.15))))
-        (property "__atopile_lib_fp_hash__" "69ff94c6-f8b9-7839-d3f1-5b105f43df3b"
-            (at 0 0 360)
+        (property "__atopile_lib_fp_hash__" "0937a959-9bd2-3bae-d73d-da85dcbdc391"
+            (at 0 0 0)
             (layer "User.9")
             (hide yes)
-            (uuid "17258978-7e87-4828-b8aa-34be4642524b")
+            (uuid "c7abdb05-824f-46f0-aa36-67104642524b")
             (effects
                 (font
                     (size 0.125 0.125)
@@ -220,37 +222,13 @@
                     (thickness 0.01875))))
         (attr smd)
         (fp_line
-            (start 0.73 1.53)
-            (end -0.73 1.53)
-            (stroke
-                (width 0.15)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "6baab81c-a122-49e0-8e5b-620ba4fb8a07"))
-        (fp_line
-            (start 0.73 -0.46)
-            (end 0.73 0.46)
-            (stroke
-                (width 0.15)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "0646b71a-84af-4c7d-b965-5d62cc536389"))
-        (fp_line
             (start 0.73 -1.53)
             (end -0.73 -1.53)
             (stroke
                 (width 0.15)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "695257c8-6303-4044-8a6b-25cc220cd53f"))
-        (fp_line
-            (start -0.73 1.53)
-            (end -0.73 0.49)
-            (stroke
-                (width 0.15)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "0f59805b-7277-4e28-bb1d-85a203d54d00"))
+            (uuid "dd4ef9bb-157e-43fc-ae4d-e7ceb6799775"))
         (fp_line
             (start -0.73 -1.53)
             (end -0.73 -0.49)
@@ -258,16 +236,31 @@
                 (width 0.15)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "dd6b31a3-8632-44ac-a3a6-4f9a2b92f48b"))
-        (fp_circle
-            (center 1.46 1.1)
-            (end 1.56 1.1)
+            (uuid "752c1ebc-4696-486b-812d-9607d1157433"))
+        (fp_line
+            (start 0.73 1.53)
+            (end -0.73 1.53)
             (stroke
-                (width 0.2)
+                (width 0.15)
                 (type solid))
-            (fill none)
-            (layer "Cmts.User")
-            (uuid "4263def0-7cfc-46a8-91e3-a7154d72eeb2"))
+            (layer "F.SilkS")
+            (uuid "ca857e68-116c-4b1f-9068-9c2430da671f"))
+        (fp_line
+            (start -0.73 1.53)
+            (end -0.73 0.49)
+            (stroke
+                (width 0.15)
+                (type solid))
+            (layer "F.SilkS")
+            (uuid "3eb5c88a-9df8-4bca-96c7-499ba9c0dbf7"))
+        (fp_line
+            (start 0.73 -0.46)
+            (end 0.73 0.46)
+            (stroke
+                (width 0.15)
+                (type solid))
+            (layer "F.SilkS")
+            (uuid "18211840-589e-48ec-8fe3-5110280d6c9b"))
         (fp_circle
             (center 1.2 1.45)
             (end 1.23 1.45)
@@ -276,11 +269,20 @@
                 (type solid))
             (fill none)
             (layer "F.Fab")
-            (uuid "12447bf4-eab3-43b9-bf18-3ecc13c9340c"))
-        (fp_text user "${REFERENCE}"
-            (at 0 -4.95 360)
-            (layer "F.SilkS")
-            (uuid "af8e79fc-e1db-4c41-90e8-9729fc526487")
+            (uuid "3b4b7995-51bb-40c2-a7dd-23765f39b098"))
+        (fp_circle
+            (center 1.46 1.1)
+            (end 1.56 1.1)
+            (stroke
+                (width 0.2)
+                (type solid))
+            (fill none)
+            (layer "Cmts.User")
+            (uuid "dfa3afbb-719e-482c-b7b0-b84b6c033dfc"))
+        (fp_text user "%R"
+            (at 0 0 0)
+            (layer "F.Fab")
+            (uuid "866a20a0-b263-44bd-ad96-81d4ab1b43b6")
             (effects
                 (font
                     (size 1 1)
@@ -288,9 +290,9 @@
                 (hide no))
             (unlocked no))
         (fp_text user "${REFERENCE}"
-            (at 0 0 360)
-            (layer "F.Fab")
-            (uuid "929cb85c-2467-4abd-a267-6db6dcd16251")
+            (at 0 -4.95 0)
+            (layer "F.SilkS")
+            (uuid "f3b4c1f8-e94d-4d74-9567-79331607597a")
             (effects
                 (font
                     (size 1 1)
@@ -302,29 +304,22 @@
             (size 1.25 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "5a1be7a5-8f8d-4cd8-b7b9-2ee0da0d235d")
-            (net 8 "gate"))
+            (uuid "d8613e14-0068-4524-bcef-d75dd067fc6b")
+            (net 8 "fet.footprint.pins[0].net-net"))
         (pad "2" smd rect
             (at 1 -0.95 180)
             (size 1.25 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "b6913d63-672a-4711-8e8c-d05241c73516")
-            (net 10 "gnd-3"))
+            (uuid "20de08c0-a498-485e-bf88-6e6891357b9e")
+            (net 10 "gnd-2"))
         (pad "3" smd rect
             (at -1 0 180)
             (size 1.25 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "3428f99c-719f-46b1-82de-5ec191bdb69d")
-            (net 7 "gnd"))
-        (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/SOT-23-3P_L2.9-W1.3-H1.0-LS2.4-P0.95.step"
-            (offset
-                (xyz -861.57 843.28 0))
-            (scale
-                (xyz 1 1 1))
-            (rotate
-                (xyz 0 0 180))))
+            (uuid "428efab9-e496-4271-a736-781f849189b4")
+            (net 7 "gnd-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "509bf63b-b53b-4da2-848a-2f0e4642524b")
@@ -519,7 +514,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "46def24f-a6d5-4ac2-a307-14ee9a2f1764")
-            (net 10 "gnd-3")))
+            (net 10 "gnd-2")))
     (footprint "lib:LED0603-RD"
         (layer "F.Cu")
         (uuid "7ffc2479-9940-4916-b770-36a74642524b")
@@ -996,7 +991,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8a1960f6-580d-4d25-af56-2c39bb806be9")
-            (net 8 "gate")))
+            (net 8 "fet.footprint.pins[0].net-net")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "d2d6d12b-29ec-44dd-a3a7-02874642524b")
@@ -1191,7 +1186,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b7892bbb-d6b0-41e4-b458-6e3dd64e0d94")
-            (net 7 "gnd")))
+            (net 7 "gnd-1")))
     (footprint "lib:RELAY-SMD_HFD4-5-SR"
         (layer "F.Cu")
         (uuid "d8ae40f3-737a-42d1-b0ec-a04b4642524b")
@@ -1440,28 +1435,28 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "dcfe5aea-8f98-4778-9d7c-7c4b3beada10")
-            (net 1 "gnd-2"))
+            (net 1 "gnd"))
         (pad "4" smd rect
             (at 3.84 3.17 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a9edfb4f-c71d-4fca-90a7-7ec624ec7dfc")
-            (net 4 "gnd-1"))
+            (net 4 "gnd-3"))
         (pad "5" smd rect
             (at 3.84 -3.18 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3e6e015d-6271-4ed3-88ca-4c4e741678fb")
-            (net 9 "hv-1"))
+            (net 9 "hv"))
         (pad "6" smd rect
             (at 1.64 -3.18 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c225b8ea-2379-4e59-a7c3-9435e07eaa0f")
-            (net 5 "hv"))
+            (net 5 "hv-1"))
         (pad "7" smd rect
             (at -0.56 -3.18 0)
             (size 0.8 2.15)
@@ -1474,7 +1469,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "15fb7c90-5a00-4c30-b051-e261ea0f5eae")
-            (net 7 "gnd"))
+            (net 7 "gnd-1"))
         (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/RELAY-SMD_L10.0-W6.5-H5.7-LS7.5-P2.2.step"
             (offset
                 (xyz 0 0 0))

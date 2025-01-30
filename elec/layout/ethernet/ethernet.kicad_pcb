@@ -107,7 +107,7 @@
     (net 0 "")
     (net 1 "TCT")
     (net 2 "LLED_minus")
-    (net 3 "LLED_plus")
+    (net 3 "RLED_plus")
     (net 4 "RD_plus")
     (net 5 "RD_minus")
     (net 6 "CGND")
@@ -561,7 +561,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "bf926c9b-b6e8-4e30-a3d5-524cbc92dd7c")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.43 0 180)
             (size 0.57 0.54)
@@ -795,7 +795,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "76be5de8-dcfe-4cf8-80b4-f9c0748d9f34")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.55 0 90)
             (size 0.79 0.54)
@@ -1213,7 +1213,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2e4a8c9f-d516-47ec-9847-4e2dc4b02e03")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "5" smd oval
             (at -0.75 4.25 270)
@@ -1244,7 +1244,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a2ca5438-7785-4d65-87e7-436f69cd37e8")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "9" smd oval
             (at 1.25 4.25 270)
@@ -1268,7 +1268,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3a0701c5-8f90-46d5-be35-d50f0b2312c1")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "12" smd oval
             (at 2.75 4.25 270)
@@ -1298,7 +1298,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "83bc18ad-d2ea-4f37-ae46-c05db6232fdc")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "16" smd oval
             (at 4.25 1.25 270)
@@ -1314,7 +1314,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "74c9fe29-ad30-40d1-a5a6-f401b471e657")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "18" smd oval
             (at 4.25 0.25 270)
@@ -1346,7 +1346,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0659815b-e745-4820-b7c0-f024774a6778")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "22" smd oval
             (at 4.25 -1.75 270)
@@ -1402,7 +1402,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "50ae3d4f-7f9b-4d99-91bc-5b46b516605c")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "29" smd oval
             (at 0.75 -4.25 270)
@@ -1522,7 +1522,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "07718b1f-a799-453d-a57d-4f6a8500c3c7")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "44" smd oval
             (at -4.25 0.75 270)
@@ -1530,7 +1530,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3b664d89-3480-4d70-85d3-bf312b4ef430")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "45" smd oval
             (at -4.25 1.25 270)
@@ -1538,7 +1538,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e8fce0fe-d9f2-4e95-a112-c7bf40f70806")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "46" smd oval
             (at -4.25 1.75 270)
@@ -1759,7 +1759,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "db80a0e5-1f04-42dc-820a-60aafc74378d")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.43 0 180)
             (size 0.57 0.54)
@@ -2890,7 +2890,7 @@
             (layers "*.Cu" "*.Mask")
             (remove_unused_layers no)
             (uuid "d4109395-cbe8-494f-98ac-b01e42f49da9")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "11" thru_hole circle
             (at 3.79 6.99 270)
@@ -2908,7 +2908,7 @@
             (layers "*.Cu" "*.Mask")
             (remove_unused_layers no)
             (uuid "472cd275-9e3b-46fb-81e5-8428e1882113")
-            (net 3 "LLED_plus")
+            (net 3 "RLED_plus")
             (pintype "stereo"))
         (pad "13" thru_hole circle
             (at -7.88 -1.14 270)
@@ -3359,7 +3359,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0fd8610d-fdaf-4f7a-9687-b2d04c00f59c")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.55 0 270)
             (size 0.79 0.54)
@@ -3593,7 +3593,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a4de1579-6aae-41e2-8eab-82d570862cd3")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.55 0 90)
             (size 0.79 0.54)
@@ -3989,7 +3989,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ccc43b11-a465-402f-9ea4-9443a7724222")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.43 0 180)
             (size 0.57 0.54)
@@ -4619,7 +4619,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ae788b27-8998-454a-96d8-29a734685737")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 1 0 180)
             (size 1.41 1.35)
@@ -6396,7 +6396,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "700dad5d-1f18-4ebc-b961-bd0f9e6735ea")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.55 0 270)
             (size 0.79 0.54)
@@ -6630,7 +6630,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "1f4032bb-825e-4115-a779-231aa93b4f9d")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.55 0 270)
             (size 0.79 0.54)
@@ -7566,7 +7566,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "57c8e6f2-91a6-437d-9507-685f7dddbcf1")
-            (net 3 "LLED_plus"))
+            (net 3 "RLED_plus"))
         (pad "2" smd rect
             (at 0.55 0 90)
             (size 0.79 0.54)

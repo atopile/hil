@@ -80,21 +80,21 @@
     (net 2 "output")
     (net 3 "io")
     (net 4 "line-1")
-    (net 5 "line")
-    (net 6 "out")
-    (net 7 "gnd-1")
+    (net 5 "line-3")
+    (net 6 "ADJ_NC")
+    (net 7 "gnd-2")
     (net 8 "analog_in.amplifier.opamp.footprint.pins[5].net-net")
-    (net 9 "hv-1")
-    (net 10 "hv-3")
+    (net 9 "hv-3")
+    (net 10 "hv-2")
     (net 11 "AIN1")
     (net 12 "analog_in.amplifier.opamp.footprint.pins[6].net-net")
-    (net 13 "gnd")
-    (net 14 "gnd-2")
+    (net 13 "gnd-1")
+    (net 14 "gnd")
     (net 15 "cathode")
     (net 16 "ALERT_slash_RDY")
-    (net 17 "hv-2")
+    (net 17 "hv-1")
     (net 18 "inverting")
-    (net 19 "line-3")
+    (net 19 "line")
     (net 20 "AIN3")
     (net 21 "hv")
     (net 22 "line-2")
@@ -517,14 +517,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b4e9a817-9a1c-4dcc-b9b3-11c78b1ca7df")
-            (net 9 "hv-1"))
+            (net 9 "hv-3"))
         (pad "2" smd rect
             (at 0.48 0 0)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0453e20d-6cc6-4b7f-9f8c-1a17d2e6508b")
-            (net 13 "gnd")))
+            (net 13 "gnd-1")))
     (footprint "atopile:PWRM-TH_BXXXXS-2WR3-d8b2fb"
         (layer "F.Cu")
         (uuid "219c35a9-e352-493f-91b1-48c44642524b")
@@ -756,7 +756,7 @@
             (layers "*.Cu" "*.Mask")
             (remove_unused_layers no)
             (uuid "ee4d4e18-97c5-4519-9144-dbbb2201d573")
-            (net 10 "hv-3"))
+            (net 10 "hv-2"))
         (pad "2" thru_hole circle
             (at -3.81 0 0)
             (size 1.8 1.8)
@@ -764,7 +764,7 @@
             (layers "*.Cu" "*.Mask")
             (remove_unused_layers no)
             (uuid "a535efe1-75d9-423d-b5fc-a6de7c0b3e1c")
-            (net 7 "gnd-1"))
+            (net 7 "gnd-2"))
         (pad "4" thru_hole circle
             (at 1.27 0 0)
             (size 1.8 1.8)
@@ -772,7 +772,7 @@
             (layers "*.Cu" "*.Mask")
             (remove_unused_layers no)
             (uuid "6a8252b7-b81b-4526-8081-3de933d3e0d9")
-            (net 13 "gnd"))
+            (net 13 "gnd-1"))
         (pad "6" thru_hole circle
             (at 6.35 0 0)
             (size 1.8 1.8)
@@ -968,14 +968,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "fa09f983-baec-4507-ac0b-cf03fbc8c530")
-            (net 19 "line-3"))
+            (net 19 "line"))
         (pad "2" smd rect
             (at 0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3a0fe24c-da5c-49c4-837e-d0f722d513f7")
-            (net 17 "hv-2")))
+            (net 17 "hv-1")))
     (footprint "atopile:SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL-294f77"
         (layer "F.Cu")
         (uuid "3a58caa1-cc88-43eb-a754-61284642524b")
@@ -1203,7 +1203,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "1631a8b3-18f1-4a4b-a975-ed50d3138ed5")
-            (net 13 "gnd"))
+            (net 13 "gnd-1"))
         (pad "5" smd oval
             (at 1.9 -2.71 90)
             (size 0.57 1.95)
@@ -1231,7 +1231,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "04558476-7a0e-4ab7-af29-a44784e40643")
-            (net 9 "hv-1")))
+            (net 9 "hv-3")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "403a6c79-0331-4be3-86ff-96984642524b")
@@ -1455,14 +1455,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "14f21a57-a1fe-48cf-a414-8ef8e1aa1a48")
-            (net 9 "hv-1"))
+            (net 9 "hv-3"))
         (pad "2" smd rect
             (at 0.55 0 180)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "25746371-f3e9-4bd2-862d-61b5e9109ac2")
-            (net 13 "gnd")))
+            (net 13 "gnd-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "4c984e5c-4d43-4526-966c-dfc84642524b")
@@ -1476,7 +1476,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "1kΩ ±1% 62.5mW"
+        (property "Value" "infΩ infW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -1521,7 +1521,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C2906941"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1530,7 +1530,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "FRC0402J472 TS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1539,7 +1539,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+        (property "Manufacturer" "FOJAN"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1548,7 +1548,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±5% 4.7kΩ 0402  Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1650,14 +1650,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "29bc51df-421b-4b66-a531-1e8afc85eb13")
-            (net 9 "hv-1"))
+            (net 9 "hv-3"))
         (pad "2" smd rect
             (at 0.51 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8da0c6e7-e643-45e9-8432-e24a2e6570fd")
-            (net 6 "out")))
+            (net 6 "ADJ_NC")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "544e7ee5-2a9b-4790-94db-96de4642524b")
@@ -1881,14 +1881,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ee283d8d-9a0a-48fc-b9b5-785e1cbd0714")
-            (net 9 "hv-1"))
+            (net 9 "hv-3"))
         (pad "2" smd rect
             (at 0.55 0 180)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8f923c83-3d74-4bb3-8479-62c2e825e075")
-            (net 13 "gnd")))
+            (net 13 "gnd-1")))
     (footprint "atopile:C0603-bd72f6"
         (layer "F.Cu")
         (uuid "5a8ae18a-1f99-41bc-8b16-b2a94642524b")
@@ -2112,14 +2112,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "00d80dd9-8a5f-4c1e-8cc3-68f6e5d68456")
-            (net 10 "hv-3"))
+            (net 10 "hv-2"))
         (pad "2" smd rect
             (at 0.7 0 90)
             (size 0.8 0.9)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ae5b667f-7042-4c84-8d3c-20da2ae8c0d8")
-            (net 7 "gnd-1")))
+            (net 7 "gnd-2")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "65979dc3-bf42-45f7-91c2-37e04642524b")
@@ -2307,7 +2307,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "fab627cf-9556-4d54-92dc-acbd3e8f5963")
-            (net 13 "gnd"))
+            (net 13 "gnd-1"))
         (pad "2" smd rect
             (at 0.43 0 270)
             (size 0.57 0.54)
@@ -2509,7 +2509,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "264d3e99-507d-4486-9453-3caa5b122e65")
-            (net 13 "gnd")))
+            (net 13 "gnd-1")))
     (footprint "lib:SOT-23-5_L3.0-W1.7-P0.95-LS2.8-BL"
         (layer "F.Cu")
         (uuid "7719fe4a-23ce-4f8b-8a27-7f864642524b")
@@ -2698,7 +2698,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c713df7b-519b-4b40-bdc2-d6669e63eea6")
-            (net 13 "gnd"))
+            (net 13 "gnd-1"))
         (pad "3" smd rect
             (at 0.95 1.15 90)
             (size 0.49 1.16)
@@ -2712,14 +2712,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ab4129e6-28ce-4bc4-a640-07d8b13ab9f5")
-            (net 6 "out"))
+            (net 6 "ADJ_NC"))
         (pad "5" smd rect
             (at -0.95 -1.15 90)
             (size 0.49 1.18)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7f3fd07f-189f-4803-b300-eaed0258d2e6")
-            (net 9 "hv-1")))
+            (net 9 "hv-3")))
     (footprint "lib:MSOP-10_L3.0-W3.0-P0.50-LS5.0-BL"
         (layer "F.Cu")
         (uuid "8f9a975d-d7af-4ea1-8a9f-c5854642524b")
@@ -2918,7 +2918,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9151661b-0fca-47c0-b27f-19e3bd172efc")
-            (net 13 "gnd"))
+            (net 13 "gnd-1"))
         (pad "2" smd oval
             (at -0.5 2.11 90)
             (size 0.28 1.62)
@@ -2932,7 +2932,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "d716f9ff-cfd0-470b-9a8c-71afa089ae9e")
-            (net 13 "gnd"))
+            (net 13 "gnd-1"))
         (pad "4" smd oval
             (at 0.5 2.11 90)
             (size 0.28 1.62)
@@ -2967,7 +2967,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7c2cebe0-247b-4508-9a01-cc96624861e7")
-            (net 9 "hv-1"))
+            (net 9 "hv-3"))
         (pad "9" smd oval
             (at -0.5 -2.11 90)
             (size 0.28 1.62)
@@ -3176,14 +3176,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "06b7d48a-a380-4cd1-9e7c-b664f45acb99")
-            (net 5 "line"))
+            (net 5 "line-3"))
         (pad "2" smd rect
             (at 0.43 0 270)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3eba9732-ecac-420b-b960-017772b3f3d7")
-            (net 17 "hv-2")))
+            (net 17 "hv-1")))
     (footprint "lib:SOIC-8_L4.9-W3.9-P1.27-LS6.0-TL"
         (layer "F.Cu")
         (uuid "a0999394-5ef1-4123-a1d2-9bc04642524b")
@@ -3454,35 +3454,35 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5562e717-0e9b-44b9-96fe-9fc4300f95d3")
-            (net 17 "hv-2"))
+            (net 17 "hv-1"))
         (pad "2" smd oval
             (at -2.74 -0.63 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "deb90ba7-7e00-4468-9b96-214063d6d389")
-            (net 19 "line-3"))
+            (net 19 "line"))
         (pad "3" smd oval
             (at -2.74 0.63 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ebad255d-fc8f-42a7-9297-d82707622100")
-            (net 5 "line"))
+            (net 5 "line-3"))
         (pad "4" smd oval
             (at -2.74 1.91 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8c2abb77-d751-4722-b4d4-fc0dcc9e75dd")
-            (net 14 "gnd-2"))
+            (net 14 "gnd"))
         (pad "5" smd oval
             (at 2.74 1.91 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "82bb3f0d-0d87-45cf-b508-3ea647df6fbe")
-            (net 13 "gnd"))
+            (net 13 "gnd-1"))
         (pad "6" smd oval
             (at 2.74 0.63 90)
             (size 0.6 1.52)
@@ -3503,7 +3503,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c7a8c97f-771b-4626-82ef-126224c66968")
-            (net 9 "hv-1"))
+            (net 9 "hv-3"))
         (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/SOIC-8_L4.9-W3.9-H1.7-LS6.0-P1.27.step"
             (offset
                 (xyz 0 0 0))
@@ -3769,7 +3769,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8ddd63f1-0f41-47bb-8cbe-07b8e8a0b278")
-            (net 13 "gnd")))
+            (net 13 "gnd-1")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "bca6afa6-43dd-4c76-94e9-0fed4642524b")
@@ -3993,14 +3993,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a8126adb-0c7a-4522-8c16-e2c8ef344431")
-            (net 17 "hv-2"))
+            (net 17 "hv-1"))
         (pad "2" smd rect
             (at 0.55 0 0)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2ad11864-d936-4d5c-aa58-5bc329942c01")
-            (net 14 "gnd-2")))
+            (net 14 "gnd")))
     (footprint "atopile:C0603-bd72f6"
         (layer "F.Cu")
         (uuid "bdaab1f9-e90f-430f-82ee-b7f54642524b")
@@ -4231,7 +4231,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8015a5b5-13f9-4ec0-89c4-08c195e7925a")
-            (net 13 "gnd")))
+            (net 13 "gnd-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "c1204784-c713-4d77-8539-8bd84642524b")
@@ -4621,7 +4621,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "676df00a-28bb-4943-8ec5-3129b594f910")
-            (net 9 "hv-1")))
+            (net 9 "hv-3")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "dd3b1807-944f-43c9-a9e4-84cc4642524b")
@@ -4852,7 +4852,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "492f179f-d856-42e9-8a57-ca8082b359f2")
-            (net 13 "gnd")))
+            (net 13 "gnd-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "df608b14-c2ed-4117-a940-75e14642524b")
@@ -5040,14 +5040,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b71b167e-641a-45b4-83f5-8126cf2f27ec")
-            (net 6 "out"))
+            (net 6 "ADJ_NC"))
         (pad "2" smd rect
             (at 0.51 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "44d3f371-7a1d-4eb0-9e21-755176026ec4")
-            (net 13 "gnd")))
+            (net 13 "gnd-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "fd122389-e6f8-4da6-bf48-f71c4642524b")
@@ -5242,7 +5242,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "57530ea0-6f1d-40a7-bca3-f190c6af3b74")
-            (net 9 "hv-1")))
+            (net 9 "hv-3")))
     (via
         (at 68.9 50.1)
         (size 0.6)

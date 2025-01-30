@@ -1,0 +1,17 @@
+component Diodes_Incorporated_DMTH8003SPS_13:
+    """Diodes_Incorporated_DMTH8003SPS_13 component"""
+    lcsc_id = "C434455"
+    manufacturer = "Diodes Incorporated"
+    mpn = "DMTH8003SPS-13"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Diodes-Incorporated-DMTH8003SPS-13_C434455.pdf"
+    designator_prefix = "Q"
+
+    # pins
+    signal D ~ pin 5
+    D ~ pin 6
+    D ~ pin 7
+    D ~ pin 8
+    signal G ~ pin 4
+    signal S ~ pin 2
+    S ~ pin 1
+    S ~ pin 3
