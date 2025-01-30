@@ -12,6 +12,14 @@ This suite is intended to be used as a dependency on your project. So, create a 
 
 ### Project Structure
 
+This suite is opinionated about project structure, interfaces and the controller.
+
+There should be three main components on your HiL:
+
+- A controller, which should typically be a Raspberry Pi CM4
+- A power supply unit (PSU)
+- A set of IOs, which should be connected to the DuT. These are the interesting bits
+
 ```mermaid
 block-beta
   columns 1
