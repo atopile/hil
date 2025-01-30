@@ -4,7 +4,48 @@ Hardware-in-the-Loop, or HiL (sometimes HitL), is a way to continuously validate
 
 HiL testing catches integration issues early, accelerates development cycles, and ensures robust system performance before deployment. Typically the domain of the most sophisticated automotive and aerospace companies, this HiL suite is now for all 🚀.
 
-## The magic HiL suite 🪄
+## Usage
+
+If you haven't already, get [atopile](https://docs.atopile.io/dev/quickstart/) and run through the quickstart and tutorial.
+
+This suite is intended to be used as a dependency on your project. So, create a new project (`ato create project`) and add this suite as a dependency (`ato install https://github.com/atopile/hil`)
+
+### Project Structure
+
+```mermaid
+block-beta
+  columns 1
+  CI(("CI Job"))
+  block:HiL
+    columns 1
+    block:Controller
+      RPi["RPi CM4"]
+      PSU
+    end
+    block:IOs
+      A
+      B
+      C
+      D
+      E
+    end
+  end
+  space:1
+  DuT
+  CI --> RPi
+  A --> DuT
+  DuT --> B
+  DuT --> C
+  D --> DuT
+  E --> DuT
+```
+
+### Software
+
+Under construction 🚧
+
+
+## Goals - The magic HiL suite 🪄
 
 Project goals and aspirations:
 
