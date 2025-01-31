@@ -1,4 +1,4 @@
-ato-version: "0.3.0"
+ato-version: 0.3.0
 
 builds:
   # Project Examples
@@ -41,6 +41,10 @@ builds:
     entry: elec/src/blocks/cellsim-8ch.ato:CellSim8Ch
     exclude_targets: [mfg-data]
 
+  variable-load:
+    entry: elec/src/variable_load.ato:VariableLoad
+    exclude_targets: [mfg-data]
+
   # Controllers and Interconnect
   controller-cm4:
     entry: elec/src/blocks/controller-cm4.ato:ControllerCM4
@@ -69,7 +73,7 @@ builds:
   buck-boost:
     entry: elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
-  
+
 dependencies:
 - name: generics
   version_spec:
