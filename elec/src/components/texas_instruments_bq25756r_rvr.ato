@@ -1,18 +1,20 @@
 from "generics/interfaces.ato" import Power, I2C, DiffPair
-from "generics/diodes.ato" import SchottkyDiode
 from "generics/filters.ato" import LowPassFilter
 from "generics/capacitors.ato" import Capacitor, CapacitorElectrolytic
-# from "generics/mosfets.ato" import NFET
-import MOSFET
+import MOSFET, Diode
 from "generics/resistors.ato" import Resistor
 from "generics/vdivs.ato" import VDiv
 from "generics/inductors.ato" import Inductor
+from "generics/leds.ato" import LEDIndicatorRed, LEDIndicatorGreen
 
 module Texas_Instruments_BQ25756RRVR:
     """Texas_Instruments_BQ25756RRVR Bi-directional Buck/Boost"""
     power_in = new Power
     power_out = new Power
     i2c = new I2C
+
+    # Common gnd
+    power_in.gnd ~ power_out.gnd
 
     # Components
     controller = new _Texas_Instruments_BQ25756RRVR
@@ -23,7 +25,9 @@ module Texas_Instruments_BQ25756RRVR:
     input_cap_bank = new CapBank
     output_cap_bank = new CapBank
     input_electrolytic = new CapacitorElectrolytic
+    # input_electrolytic_2 = new CapacitorElectrolytic
     output_electrolytic = new CapacitorElectrolytic
+
 
     # Power connections
     power_in ~ input_shunt.power_in
@@ -33,9 +37,11 @@ module Texas_Instruments_BQ25756RRVR:
 
     # Bulk capacitors
     power_in ~ input_electrolytic.power
+    # power_in ~ input_electrolytic_2.power
     power_out ~ output_electrolytic.power
     input_electrolytic.lcsc_id = "C487438"
     output_electrolytic.lcsc_id = "C487438"
+    # input_electrolytic_2.lcsc_id = "C487438"
     core.power_in ~ input_cap_bank.power_in
     core.power_out ~ output_cap_bank.power_in
 
@@ -82,6 +88,10 @@ module Texas_Instruments_BQ25756RRVR:
     core.bst_input ~ controller.BTST1
     core.bst_output ~ controller.BTST2
 
+    # SW connections
+    controller.SW1 ~ core.input_switching_node
+    controller.SW2 ~ core.output_switching_node
+
     # Input shunt
     input_shunt.output.p ~ controller.ACP
     input_shunt.output.n ~ controller.ACN
@@ -95,13 +105,13 @@ module Texas_Instruments_BQ25756RRVR:
     i2c.sda ~ controller.SDA
 
     # BST Diodes
-    bst_diode_input = new SchottkyDiode
-    bst_diode_output = new SchottkyDiode
+    bst_diode_input = new Diode
+    bst_diode_output = new Diode
     bst_diode_input.lcsc_id = "C3758930"
     bst_diode_output.lcsc_id = "C3758930"
 
     controller.DRV_SUP ~ bst_diode_input.anode
-    controller.DRV_SUP ~ bst_diode_output.cathode
+    controller.DRV_SUP ~ bst_diode_output.anode
     bst_diode_input.cathode ~ controller.BTST1
     bst_diode_output.cathode ~ controller.BTST2
 
@@ -124,6 +134,26 @@ module Texas_Instruments_BQ25756RRVR:
     power_in.vcc ~ controller.VAC_IN
     power_out.vcc ~ controller.VAC_OUT
     power_in.gnd ~ controller.PGND
+    power_out.gnd ~ controller.PGND
+
+    # Set switching frequency
+    fsw_res = new Resistor
+    fsw_res.resistance = 50kohm +/- 1% # 500kHz
+    fsw_res.package = "0402"
+    controller.FSW_SYNC ~ fsw_res.p1
+    fsw_res.p2 ~ controller.PGND
+
+    # Status pins connect to LEDs
+    status_1_led = new LEDIndicatorRed
+    status_2_led = new LEDIndicatorGreen
+    status_1_led.current = 0.1mA to 0.3mA
+    status_2_led.current = 0.1mA to 0.3mA
+    status_1_led.v_in = 5V +/- 1%
+    status_2_led.v_in = 5V +/- 1%
+    controller.REGN ~ status_1_led.input
+    controller.REGN ~ status_2_led.input
+    controller.STAT1 ~ status_1_led.gnd
+    controller.STAT2 ~ status_2_led.gnd
 
 
 component _Texas_Instruments_BQ25756RRVR:
@@ -231,6 +261,8 @@ module CapBank:
     power_in ~ cap9.power
     power_in ~ cap10.power
     power_in ~ cap11.power
+
+
 module ShuntInput:
     """Shunt input for buck/boost with low pass filter"""
     power_in = new Power
@@ -263,6 +295,7 @@ module ShuntInput:
     filter_p.input.gnd ~ power_in.gnd
     filter_n.input.gnd ~ power_out.gnd
     power_in.gnd ~ power_out.gnd
+    output.p ~ diff_cap.p1; diff_cap.p2 ~ output.n
 
 module OVUVSetter:
     """Over voltage/under voltage setting for buck/boost"""
@@ -286,6 +319,10 @@ module OVUVSetter:
     r_ac2.resistance = 133kohm +/- 1%
     r_ac3.resistance = 25.5kohm +/- 1%
 
+    r_ac1.package = "0603"
+    r_ac2.package = "0603"
+    r_ac3.package = "0603"
+
 
 module BuckBoostCore:
     """Contains inductor, fets and capacitors"""
@@ -302,6 +339,8 @@ module BuckBoostCore:
     signal gate_output_ls
     signal bst_input
     signal bst_output
+    signal input_switching_node
+    signal output_switching_node
 
     # Components
     inductor = new Inductor
@@ -309,10 +348,6 @@ module BuckBoostCore:
     fet_input_ls = new MOSFET
     fet_output_hs = new MOSFET
     fet_output_ls = new MOSFET
-    gate_res_input_hs = new Resistor
-    gate_res_input_ls = new Resistor
-    gate_res_output_hs = new Resistor   
-    gate_res_output_ls = new Resistor
     input_cap = new CapacitorElectrolytic
     output_cap = new CapacitorElectrolytic
     bst_input_cap = new Capacitor
@@ -329,20 +364,11 @@ module BuckBoostCore:
     bst_input_cap.capacitance = 100nF +/- 20%
     bst_output_cap.capacitance = 100nF +/- 20%
 
-    gate_res_input_hs.resistance = 0ohm
-    gate_res_input_ls.resistance = 0ohm
-    gate_res_output_hs.resistance = 0ohm
-    gate_res_output_ls.resistance = 0ohm
-
     #Connections
 
     # Bulk capacitors
     power_in ~ input_cap.power
     power_out ~ output_cap.power
-
-    # Internal signals
-    signal input_switching_node
-    signal output_switching_node
 
     # Input H-Bridge
     power_in.vcc ~ fet_input_hs.drain
@@ -363,13 +389,7 @@ module BuckBoostCore:
     output_switching_node ~ bst_output_cap.p1; bst_output_cap.p2 ~ bst_output
 
     # Gate resistors
-    gate_input_hs ~ gate_res_input_hs.p1; gate_res_input_hs.p2 ~ fet_input_hs.gate
-    gate_input_ls ~ gate_res_input_ls.p1; gate_res_input_ls.p2 ~ fet_input_ls.gate
-    gate_output_hs ~ gate_res_output_hs.p1; gate_res_output_hs.p2 ~ fet_output_hs.gate
-    gate_output_ls ~ gate_res_output_ls.p1; gate_res_output_ls.p2 ~ fet_output_ls.gate
-
-
-
-
-
-
+    gate_input_hs ~ fet_input_hs.gate
+    gate_input_ls ~ fet_input_ls.gate
+    gate_output_hs ~ fet_output_hs.gate
+    gate_output_ls ~ fet_output_ls.gate
