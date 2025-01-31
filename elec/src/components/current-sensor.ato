@@ -1,6 +1,8 @@
-from "generics/interfaces.ato" import Power
+import ElectricSignal
+
 from "generics/resistors.ato" import Resistor
 from "generics/interfaces.ato" import Power, DiffPair
+
 
 module CurrentSensor:
     sensor = new INA185A2IDRLR
@@ -8,14 +10,16 @@ module CurrentSensor:
     power = new Power
     power_in = new Power
     power_out = new Power
-    signal output ~ sensor.out
-    current: current
+    output = new ElectricSignal
 
-    # power_in.current += power_out.current
-    # power_in.voltage &= power_out.voltage - power_in.current * shunt.value
+    max_current: current  # The designed current limit to measure to
+
+    sensor.out ~ output.line
 
     # Shunt config
-    assert shunt.value * current * sensor.gain within 1.2V to 3V
+    assert shunt.value * max_current * sensor.gain within 2.5V to 3V
+    # 1.5x -> 50% margin on the the power rating is expected
+    assert max_current ** 2 * shunt.value * 1.5 <= shunt.max_power
     shunt.package = "0805"
 
     # Shunt connections
@@ -31,11 +35,13 @@ module CurrentSensor:
     # Power connections
     power ~ sensor.power
 
+
 component INA185A2IDRLR:
-    # component NTZD3154NT1G
+    """Current sense amplifier IC"""
     footprint = "SOT-563_L1.6-W1.2-P0.50-LS1.6-TL"
     lcsc_id = "C2059320"
-    mpn = "C2059320"
+
+    # Fixed gain provided by this variant
     gain = 50
 
     power = new Power

@@ -1,7 +1,6 @@
 # Generics
 from "generics/interfaces.ato" import Power, I2C, Pair, Load
 from "generics/resistors.ato" import Resistor, I2CPullup
-from "generics/filters.ato" import PiFilter
 from "generics/mosfets.ato" import NFET
 from "generics/capacitors.ato" import Capacitor
 from "generics/inductors.ato" import Inductor
@@ -50,7 +49,7 @@ module Cell:
     # External interfaces
     power_in = new Power
     power_out = new Power
-    power_5v = new Power # micro gnd referenced rail 
+    power_5v = new Power # micro gnd referenced rail
     power_isolator = new Power # power for digital isolators
     dmm_out = new Power
     i2c = new I2C
@@ -130,7 +129,7 @@ module Cell:
     filter.C2.package = "0805"
 
     # # Current sense config
-    current_sense.current = 0.5A
+    current_sense.max_current = 0.5A
     current_sense.shunt.value = 100mohm +/- 10%
 
     # # Power devices
@@ -200,25 +199,6 @@ module Cell:
     gpio.P5 ~ output_relay.input
 
 
-
-    # Netname overrides - doesnt work well with patterns
-    # _power_5v.vcc.override_net_name = "CELL_5V_VCC"
-    # _power_3v3.vcc.override_net_name = "CELL_3V3_VCC"
-    # _power_3v3.gnd.override_net_name = "CELL_GND"
-    # _iso_i2c.scl.override_net_name = "CELL_I2C_SCL"
-    # _iso_i2c.sda.override_net_name = "CELL_I2C_SDA"
-    # buck.enable.override_net_name = "CELL_BUCK_ENABLE"
-    # ldo.enable.override_net_name = "CELL_LDO_ENABLE"
-    # load_switch.control.override_net_name = "CELL_LOAD_SWITCH_CONTROL"
-    # output_relay.input.override_net_name = "CELL_OUTPUT_RELAY_CONTROL"
-    # dmm_relay.input.override_net_name = "CELL_DMM_RELAY_CONTROL"
-    # current_sense.output.override_net_name = "CELL_CURRENT_SENSE_OUTPUT"
-    # filter.power_out.vcc.override_net_name = "CELL_FILTER_POWER_OUT_VCC"
-    # buck.power_out.vcc.override_net_name = "CELL_BUCK_POWER_OUT_VCC"
-    # ldo.power_out.vcc.override_net_name = "CELL_LDO_POWER_OUT_VCC"
-    # current_sense.power_out.vcc.override_net_name = "CELL_CURRENT_SENSE_POWER_OUT_VCC"
-
-
 # Custom interface for connecting the cells together
 interface CellJumper:
     signal cell
@@ -267,7 +247,6 @@ module LowSideSwitch:
     fet.source ~ power_in.gnd
 
 
-
 module PiFilter:
     C1 = new Capacitor
     L1 = new Inductor
@@ -287,5 +266,5 @@ module PiFilter:
 
     power_in.gnd ~ power_out.gnd
 
-    # assert 1 / (2 * 3.14 * L1.inductance * C1.value) within cutoff_frequency
-
+    # FIXME: L1.inductance * C1.value term requires square root
+    # assert 1 / (2 * 3.14 * L1.inductance * C1.value) is cutoff_frequency
