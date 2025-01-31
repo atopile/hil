@@ -118,6 +118,7 @@ module Texas_Instruments_BQ25756RRVR:
     # Input Current limit resistor
     ilim_resistor = new Resistor
     # TODO: make this a variable
+    ilim_resistor.package = "0402"
     ilim_resistor.resistance = 2.49kohm +/- 1%  # Application note value for 8A current limit
     controller.ILIM_HIZ ~ ilim_resistor.p1
     ilim_resistor.p2 ~ controller.PGND
@@ -137,6 +138,7 @@ module Texas_Instruments_BQ25756RRVR:
     power_out.gnd ~ controller.PGND
 
     # Set switching frequency
+    
     fsw_res = new Resistor
     fsw_res.resistance = 50kohm +/- 1% # 500kHz
     fsw_res.package = "0402"
@@ -155,6 +157,34 @@ module Texas_Instruments_BQ25756RRVR:
     controller.STAT1 ~ status_1_led.gnd
     controller.STAT2 ~ status_2_led.gnd
 
+    # ICHG
+    ichg_resistor = new Resistor
+    ichg_resistor.resistance = 0ohm
+    ichg_resistor.package = "0402"
+    controller.ICHG ~ ichg_resistor.p1
+    ichg_resistor.p2 ~ controller.PGND
+
+    # TS
+    ts_vdiv = new VDiv
+    ts_thermistor = new Resistor
+    ts_thermistor.lcsc_id = "C13564"
+    ts_vdiv.r_top.resistance = 5.24kohm +/- 2%
+    ts_vdiv.r_bottom.resistance = 30.31kohm +/- 2%
+    controller.REGN ~ ts_vdiv.top
+    controller.TS ~ ts_vdiv.out
+    controller.TS ~ ts_thermistor.p1
+    ts_thermistor.p2 ~ controller.PGND
+    ts_vdiv.bottom ~ controller.PGND
+
+    # PG
+    pg_status_led = new LEDIndicatorGreen
+    pg_status_led.current = 0.1mA to 0.3mA
+    pg_status_led.v_in = 5V +/- 1%
+    controller.REGN ~ pg_status_led.input
+    controller.PGh ~ pg_status_led.gnd
+
+    # CHG Enable
+    controller.CEh ~ controller.PGND # default active low
 
 component _Texas_Instruments_BQ25756RRVR:
     """Texas_Instruments_BQ25756RRVR component"""
