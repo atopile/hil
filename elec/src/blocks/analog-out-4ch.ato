@@ -1,0 +1,46 @@
+import ElectricPower, I2C, ElectricSignal
+from "blocks/protection-tvs.ato" import TVSProtection
+from "components/amplifier-4ch.ato" import Amplifier4Ch
+from "components/microchip_tech_mc_p4728eun.ato" import Microchip_Tech_MCP4728_E_UN
+
+
+
+module AnalogOut4ch:
+    """
+    Outputs 4 channels of analog signals.
+    TBD
+
+    """
+    # External interfaces
+    power = new ElectricPower
+    i2c = new I2C
+    output_1 = new ElectricSignal
+    output_2 = new ElectricSignal
+    output_3 = new ElectricSignal
+    output_4 = new ElectricSignal
+
+    # Components
+    dac = new Microchip_Tech_MCP4728_E_UN
+    amplifier = new Amplifier4Ch
+    tvs_ch1 = new TVSProtection
+    tvs_ch2 = new TVSProtection
+    tvs_ch3 = new TVSProtection
+    tvs_ch4 = new TVSProtection
+
+    # Connections
+    i2c ~ dac.i2c
+    dac.vout_1 ~ amplifier.input_1
+    dac.vout_2 ~ amplifier.input_2
+    dac.vout_3 ~ amplifier.input_3
+    dac.vout_4 ~ amplifier.input_4
+
+    amplifier.output_1 ~ tvs_ch1.input
+    amplifier.output_2 ~ tvs_ch2.input
+    amplifier.output_3 ~ tvs_ch3.input
+    amplifier.output_4 ~ tvs_ch4.input
+
+    tvs_ch1.output ~ output_1
+    tvs_ch2.output ~ output_2
+    tvs_ch3.output ~ output_3
+    tvs_ch4.output ~ output_4
+    

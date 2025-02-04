@@ -1,0 +1,101 @@
+import ElectricSignal, ElectricPower
+from "generics/opamps.ato" import Opamp
+from "generics/interfaces.ato" import Pair, Power
+from "generics/capacitors.ato" import Capacitor
+from "generics/resistors.ato" import Resistor
+from "components/onsemi_mc33174d_r2g.ato" import Onsemi_MC33174DR2G
+
+module Amplifier4Ch:
+    """
+    Amplifies the input signal from a given 4 channel signal. Utilizes functionality 
+    from 'Amplifier' Module.
+    """
+    # External interfaces
+    power = new ElectricPower
+    input_1 = new ElectricSignal
+    input_2 = new ElectricSignal
+    input_3 = new ElectricSignal
+    input_4 = new ElectricSignal
+    output_1 = new ElectricSignal
+    output_2 = new ElectricSignal
+    output_3 = new ElectricSignal
+    output_4 = new ElectricSignal
+
+    # Reference
+    power ~ output_1.reference
+    power ~ output_2.reference
+    power ~ output_3.reference
+    power ~ output_4.reference
+
+    # Components
+    quad_opamp = new Onsemi_MC33174DR2G
+    amplified_signal_1 = new Gain
+    amplified_signal_2 = new Gain
+    amplified_signal_3 = new Gain
+    amplified_signal_4 = new Gain
+
+    # Connections
+    quad_opamp.OUT1 ~ amplified_signal_1.output_terminal
+    quad_opamp.OUT2 ~ amplified_signal_2.output_terminal
+    quad_opamp.OUT3 ~ amplified_signal_3.output_terminal
+    quad_opamp.OUT4 ~ amplified_signal_4.output_terminal
+
+    input_4 ~ quad_opamp.IN4plus
+    input_3 ~ quad_opamp.IN3plus
+    input_2 ~ quad_opamp.IN2plus
+    input_1 ~ quad_opamp.IN1plus
+
+    quad_opamp.IN1_ ~ amplified_signal_1.negative_terminal
+    quad_opamp.IN2_ ~ amplified_signal_2.negative_terminal
+    quad_opamp.IN3_ ~ amplified_signal_3.negative_terminal
+    quad_opamp.IN4_ ~ amplified_signal_4.negative_terminal
+
+    output_1 ~ amplified_signal_1.output_terminal
+    output_2 ~ amplified_signal_2.output_terminal
+    output_3 ~ amplified_signal_3.output_terminal
+    output_4 ~ amplified_signal_4.output_terminal
+    
+    power ~ amplified_signal_1.reference
+    power ~ amplified_signal_2.reference
+    power ~ amplified_signal_3.reference
+    power ~ amplified_signal_4.reference
+    
+    power.hv ~ quad_opamp.VCC
+    power.lv ~ quad_opamp.VEE
+
+    amplified_signal_1.negative_terminal.line.override_net_name = "negative_terminal_1"
+    amplified_signal_2.negative_terminal.line.override_net_name = "negative_terminal_2"
+    amplified_signal_3.negative_terminal.line.override_net_name = "negative_terminal_3"
+    amplified_signal_4.negative_terminal.line.override_net_name = "negative_terminal_4"
+    amplified_signal_1.output_terminal.line.override_net_name = "output_terminal_1"
+    amplified_signal_2.output_terminal.line.override_net_name = "output_terminal_2"
+    amplified_signal_3.output_terminal.line.override_net_name = "output_terminal_3"
+    amplified_signal_4.output_terminal.line.override_net_name = "output_terminal_4"
+    quad_opamp.IN1plus.override_net_name = "input_1"
+    quad_opamp.IN2plus.override_net_name = "input_2"
+    quad_opamp.IN3plus.override_net_name = "input_3"
+    quad_opamp.IN4plus.override_net_name = "input_4"
+
+
+
+module Gain:
+    """
+    Determines the gain of the amplifier based on the feedback and input resistors.
+    """
+    negative_terminal = new ElectricSignal
+    output_terminal = new ElectricSignal
+    result = new ElectricSignal
+    reference = new ElectricPower
+    feedback_resistor = new Resistor
+    input_resistor = new Resistor
+
+    # should give rough gain of ~ 7.27 meaning a signal from 3.3v to 24v
+    feedback_resistor.package = "0402"
+    input_resistor.package = "0402"
+    feedback_resistor.resistance = 240kohm +/- 1%
+    input_resistor.resistance = 33kohm +/- 1%
+
+    # Connections
+    reference.lv ~ input_resistor.p1; input_resistor.p2 ~ feedback_resistor.p1
+    negative_terminal ~ input_resistor.p2
+    feedback_resistor.p2 ~ output_terminal; feedback_resistor.p2 ~ result

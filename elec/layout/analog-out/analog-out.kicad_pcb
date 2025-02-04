@@ -115,7 +115,7 @@
     (net 8 "inverting")
     (net 9 "amplifier.opamp.footprint.pins[4].net-net")
     (net 10 "hv-1")
-    (net 12 "io")
+    (net 12 "io-1")
     (net 13 "hv")
     (footprint "atopile:SMB_L4.6-W3.6-LS5.3-RD-330cb3"
         (layer "F.Cu")
