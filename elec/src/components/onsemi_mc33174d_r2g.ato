@@ -1,0 +1,23 @@
+component Onsemi_MC33174DR2G:
+    """onsemi_MC33174DR2G component"""
+    lcsc_id = "C113552"
+    manufacturer = "onsemi"
+    mpn = "MC33174DR2G"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_onsemi-MC33174DR2G_C113552.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal IN1_ ~ pin 2
+    signal IN1plus ~ pin 3
+    signal IN2_ ~ pin 6
+    signal IN2plus ~ pin 5
+    signal IN3_ ~ pin 9
+    signal IN3plus ~ pin 10
+    signal IN4_ ~ pin 13
+    signal IN4plus ~ pin 12
+    signal OUT1 ~ pin 1
+    signal OUT2 ~ pin 7
+    signal OUT3 ~ pin 8
+    signal OUT4 ~ pin 14
+    signal VCC ~ pin 4
+    signal VEE ~ pin 11

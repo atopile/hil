@@ -1,0 +1,57 @@
+import ElectricSignal
+from "generics/interfaces.ato" import Power, I2C
+from "generics/capacitors.ato" import Capacitor
+
+module Microchip_Tech_MCP4728_E_UN:
+    """Microchip_Tech_MCP4728_E_UN component"""
+    ic = new _Microchip_Tech_MCP4728_E_UN
+
+    # Power
+    power = new Power
+    power.vcc ~ ic.VDD
+    power.gnd ~ ic.VSS
+
+    # Capacitor
+    bypass_cap = new Capacitor
+    power ~ bypass_cap.power
+    bypass_cap.capacitance = 100nF +/- 20%
+    bypass_cap.package = "0402"
+
+    # I2C
+    i2c = new I2C
+    i2c.scl ~ ic.SCL
+    i2c.sda ~ ic.SDA
+
+    # Outputs
+    vout_1 = new ElectricSignal
+    vout_1.line ~ ic.VOUTA
+    vout_1.reference ~ power
+    vout_2 = new ElectricSignal
+    vout_2.line ~ ic.VOUTB
+    vout_2.reference ~ power
+    vout_3 = new ElectricSignal
+    vout_3.line ~ ic.VOUTC
+    vout_3.reference ~ power
+    vout_4 = new ElectricSignal
+    vout_4.line ~ ic.VOUTD
+    vout_4.reference ~ power
+
+component _Microchip_Tech_MCP4728_E_UN:
+    """Microchip_Tech_MCP4728_E_UN component"""
+    lcsc_id = "C108207"
+    manufacturer = "Microchip Tech"
+    mpn = "MCP4728-E/UN"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1811151641_Microchip-Tech-MCP4728-E-UN_C108207.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal LDACh ~ pin 4
+    signal RDY_BSYh ~ pin 5
+    signal SCL ~ pin 2
+    signal SDA ~ pin 3
+    signal VDD ~ pin 1
+    signal VOUTA ~ pin 6
+    signal VOUTB ~ pin 7
+    signal VOUTC ~ pin 8
+    signal VOUTD ~ pin 9
+    signal VSS ~ pin 10
