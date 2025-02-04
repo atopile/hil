@@ -85,7 +85,7 @@ builds:
    
   analog-out-4ch:
     entry: 
-      /Users/tomwildoer/Desktop/Atopile_Projects/hil/elec/src/blocks/analog-out-4ch.ato:AnalogOut4ch
+      elec/src/blocks/analog-out-4ch.ato:AnalogOut4ch
 
 dependencies:
 - name: generics
