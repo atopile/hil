@@ -1,0 +1,24 @@
+import TVS
+import ElectricSignal, ElectricPower
+from "components/born_smbj26a.ato" import BORN_SMBJ26A
+
+module TVSProtection:
+    """
+    Clamps the output voltage to a given clamping voltage.
+    Has an electric signal input and output.
+    """
+    input = new ElectricSignal
+    output = new ElectricSignal
+    power = new ElectricPower
+
+    # Components
+    diode = new TVS
+    diode -> BORN_SMBJ26A
+
+    # Connections
+    input ~ output
+    input.line ~ diode.cathode
+    input.reference.lv ~ diode.anode
+
+    power.hv ~ input.line
+    power.lv ~ input.reference.lv

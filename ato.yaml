@@ -29,6 +29,14 @@ builds:
     entry: elec/src/blocks/analog-in.ato:AnalogIn
     exclude_targets: [mfg-data]
 
+  analog-in-4ch:
+    entry: elec/src/blocks/analog-in-4ch.ato:AnalogIn4Ch
+    exclude_targets: [mfg-data]
+
+  amplifier-4ch:
+    entry: elec/src/components/amplifier-4ch.ato:Amplifier4Ch
+    exclude_targets: [mfg-data]
+
   analog-in-isolated:
     entry: elec/src/blocks/analog-in.ato:AnalogInIsolated
     exclude_targets: [mfg-data]
@@ -71,8 +79,13 @@ builds:
     exclude_targets: [mfg-data]
 
   buck-boost:
-    entry: elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
+    entry: 
+      elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
+   
+  analog-out-4ch:
+    entry: 
+      /Users/tomwildoer/Desktop/Atopile_Projects/hil/elec/src/blocks/analog-out-4ch.ato:AnalogOut4ch
 
 dependencies:
 - name: generics

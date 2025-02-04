@@ -1,6 +1,6 @@
-from "generics/diodes.ato" import TVSDiode
+import TVS
 
-component BORN_SMBJ26A from TVSDiode:
+component BORN_SMBJ26A from TVS:
     """BORN_SMBJ26A component"""
     lcsc_id = "C152100"
     manufacturer = "BORN"
