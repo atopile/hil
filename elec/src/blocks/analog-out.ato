@@ -1,8 +1,6 @@
-from "generics/filters.ato" import LowPassFilter
-from "generics/opamps.ato" import Opamp
-from "generics/diodes.ato" import TVSDiode
-from "generics/interfaces.ato" import Power, I2C, Pair
-from "generics/resistors.ato" import Resistor
+import OpAmp, Power, I2C
+
+from "filters.ato" import LowPassFilter
 
 from "components/texas_instruments_lm358d_r.ato" import Texas_Instruments_LM358DR
 from "components/mcp4725.ato" import MCP4725A0T
@@ -37,4 +35,3 @@ module AnalogOut:
     amplifier.gain = 10/3.3 +/- 2%
     filter.cutoff_frequency = 1kHz +/- 20%
     tvs.clamping_voltage = 30V +/- 20%
-

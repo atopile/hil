@@ -1,14 +1,14 @@
-from "generics/resistors.ato" import I2CPullup
+import ElectricPower, I2C, Capacitor
+
+from "resistors.ato" import I2CPullup
 from "components/iso1640.ato" import ISO1640BDR
-from "generics/interfaces.ato" import Power, I2C
-from "generics/capacitors.ato" import Capacitor
 
 module IsolatorI2C:
     """
     I2C digital isolator
     """
-    power_non_isolated = new Power
-    power_isolated = new Power
+    power_non_isolated = new ElectricPower
+    power_isolated = new ElectricPower
     i2c_non_isolated = new I2C
     i2c_isolated = new I2C
 
@@ -30,9 +30,9 @@ module IsolatorI2C:
 
     isolated_bypass_capacitor.power ~ power_isolated
     non_isolated_bypass_capacitor.power ~ power_non_isolated
-    
-    isolated_bypass_capacitor.package = "0402"
-    non_isolated_bypass_capacitor.package = "0402"
+
+    isolated_bypass_capacitor.package = "R0402"
+    non_isolated_bypass_capacitor.package = "R0402"
 
     isolated_bypass_capacitor.value = 100nF +/- 20%
     non_isolated_bypass_capacitor.value = 100nF +/- 20%
@@ -42,4 +42,3 @@ module IsolatorI2C:
     power_isolated ~ isolator.power_isolated
     i2c_non_isolated ~ isolator.i2c_non_isolated
     i2c_isolated ~ isolator.i2c_isolated
-

@@ -1,6 +1,8 @@
+import ElectricPower, I2C
+from "interfaces.ato" import SPI, USB2
+
 from "components/cm4/cm4.py" import CM4_MINIMAL
 from "components/cm4/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
-from "generics/interfaces.ato" import I2C, SPI, USB2, Power
 
 module ControllerCM4:
     """
@@ -12,12 +14,12 @@ module ControllerCM4:
     spi3 = new SPI
     spi4 = new SPI
     usb2 = new USB2
-    power_3v3 = new Power # CM4 Regulator output
-    power_5v = new Power # CM4 input power
+    power_3v3 = new ElectricPower # CM4 Regulator output
+    power_5v = new ElectricPower # CM4 input power
 
     cm4 = new CM4_MINIMAL
     rj45 = new HANRUNZhongshan_HanRun_Elec_HR911130A
-    
+
     rj45.ethernet ~ cm4.ethernet
     rj45.power_led ~ cm4.power_3v3
     i2c ~ cm4.i2c
