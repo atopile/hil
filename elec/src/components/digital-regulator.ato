@@ -1,28 +1,44 @@
-from "generics/interfaces.ato" import Power, I2C
-from "generics/resistors.ato" import Resistor
-from "generics/vdivs.ato" import _VDiv
-from "generics/regulators.ato" import Regulator
-
+import ElectricPower, ElectricSignal, I2C
+import Resistor
+from "regulators.ato" import Regulator
 from "components/mcp4725.ato" import MCP4725A0T
 
 module DigitalRegulator from Regulator:
-    power_3v3 = new Power
+    power_3v3 = new ElectricPower
     i2c = new I2C
     dac = new MCP4725A0T
-    ctrl_resistor = new Resistor
-    feedback_div = new _VDiv
+    feedback_div = new VDivCtrl
+    enable = new ElectricSignal
 
-    ctrl_resistor.package = "0402"
-
-    # external signals
-    signal enable
+    # Connections
+    enable.reference.gnd ~ power_3v3.gnd
 
     # DAC config
     i2c ~ dac.i2c
     power_3v3 ~ dac.power
 
-    # Feedback circuit
-    power_out ~ feedback_div.power
-    dac.VOUT ~ ctrl_resistor.p1
-    ctrl_resistor.p2 ~ feedback_div.out
+    # Feedback
+    power_out ~ feedback_div.power_in
+    dac.output ~ feedback_div.control
 
+module VDivCtrl:
+    power_in = new ElectricPower
+    control = new ElectricSignal
+    output = new ElectricSignal
+
+    # Connections
+    control.reference.gnd ~ power_in.gnd
+    output.reference.gnd ~ power_in.gnd
+
+    # Resistors
+    r_top = new Resistor
+    r_bottom = new Resistor
+    r_ctrl = new Resistor
+
+    r_top.package = "R0402"
+    r_bottom.package = "R0402"
+    r_ctrl.package = "R0402"
+
+    power_in.vcc ~ r_top.p1; r_top.p2 ~ r_bottom.p1; r_bottom.p2 ~ power_in.gnd
+    control.line ~ r_ctrl.p1; r_ctrl.p2 ~ r_top.p2
+    output.line ~ r_top.p2

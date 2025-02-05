@@ -74,6 +74,10 @@ builds:
     entry: elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
 
+  ldo:
+    entry: elec/src/components/ldk220m-r/elec/src/ldk220m-r.ato:LDK220M_R
+    exclude_targets: [mfg-data]
+
 dependencies:
 - name: generics
   version_spec:

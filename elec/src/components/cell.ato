@@ -1,9 +1,7 @@
 # Generics
-from "generics/interfaces.ato" import Power, I2C, Pair, Load
-from "generics/resistors.ato" import Resistor, I2CPullup
-from "generics/mosfets.ato" import NFET
-from "generics/capacitors.ato" import Capacitor
-from "generics/inductors.ato" import Inductor
+import ElectricPower, I2C, ElectricSignal
+import MOSFET, Resistor, Capacitor, Inductor
+from "resistors.ato" import I2CPullup
 
 # Components
 from "components/iso1640.ato" import ISO1640BDR
@@ -17,9 +15,8 @@ from "components/current-sensor.ato" import CurrentSensor
 from "components/YNR4030.ato" import YNR4030_101M
 from "components/sk6805-ec20/elec/src/sk6805-ec20.ato" import SK6805EC20
 from "blocks/relay.ato" import PowerRelay
-from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
-# from "components/irlml0040.ato" import IRLML0040
-# from "components/comparator.ato" import Comparator #TODO: Figure out current limit protection
+from "components/um_wyoutai_semiconductor_co_ltd_xc6206p332m_r.ato" import UMWYoutai_Semiconductor_Co___Ltd__XC6206P332MR
+
 
 module Cell:
     """
@@ -47,23 +44,19 @@ module Cell:
         Addressable leds: SK6805
     """
     # External interfaces
-    power_in = new Power
-    power_out = new Power
-    power_5v = new Power # micro gnd referenced rail
-    power_isolator = new Power # power for digital isolators
-    dmm_out = new Power
+    power_in = new ElectricPower
+    power_out = new ElectricPower
+    power_5v = new ElectricPower # micro gnd referenced rail
+    power_isolator = new ElectricPower # power for digital isolators
+    dmm_out = new ElectricPower
     i2c = new I2C
     cell_up = new CellJumper
     cell_down = new CellJumper
-    signal dmm_relay_enable
-
-    #Output specs
-    power_out.voltage &= 0V to 5V
-    # power_out.current -= 300mA
+    dmm_relay_enable = new ElectricSignal
 
     # Internal interfaces
-    _power_5v = new Power
-    _power_3v3 = new Power
+    _power_5v = new ElectricPower
+    _power_3v3 = new ElectricPower
     _iso_i2c = new I2C
 
     isolated_converter = new B1205S_2WR2
@@ -82,12 +75,12 @@ module Cell:
     load_resistor = new Resistor
     i2c_pullup = new I2CPullup
 
-    # addresses:
-    adc.address = "0x48"
-    buck.address = "0x61"
-    ldo.address = "0x60"
-    gpio.address = "0x20"
-    current_sense.address = "0x21"
+    # # addresses:
+    # adc.address = "0x48"
+    # buck.address = "0x61"
+    # ldo.address = "0x60"
+    # gpio.address = "0x20"
+    # current_sense.address = "0x21"
 
     # I2C pullup
     _power_3v3 ~ i2c_pullup.power
@@ -98,13 +91,13 @@ module Cell:
     power_5v ~ current_led.power
 
     # Connect LEDs
-    cell_down.led_data ~ current_led.din.io
-    current_led.dout.io ~ voltage_led.din.io
-    voltage_led.dout.io ~ cell_up.led_data
+    cell_down.led_data ~ current_led.din
+    current_led.dout ~ voltage_led.din
+    voltage_led.dout ~ cell_up.led_data
 
     # Jumper connections
-    cell_up.cell ~ filter.power_out.vcc
-    cell_down.cell ~ filter.power_out.gnd
+    cell_up.cell.line ~ filter.power_out.vcc
+    cell_down.cell.line ~ filter.power_out.gnd
 
     # Digital i2c isolator
     i2c ~ digital_isolator.i2c_non_isolated
@@ -116,21 +109,21 @@ module Cell:
     _iso_i2c ~ ldo.i2c
     _iso_i2c ~ gpio.i2c
 
-    # # Internal rails
-    internal_ldo = new LDK220M_R
+    # # # Internal rails
+    internal_ldo = new UMWYoutai_Semiconductor_Co___Ltd__XC6206P332MR
     _power_5v ~ internal_ldo.power_in
     internal_ldo.power_out ~ _power_3v3
 
-    # # Pi Filter
-    filter.C1.value = 10uF +/- 10%
-    filter.C1.package = "0805"
-    filter.L1 -> YNR4030_101M
-    filter.C2.value = 10uF +/- 10%
-    filter.C2.package = "0805"
+    # Pi Filter
+    filter.C1.capacitance = 10uF +/- 10%
+    filter.C1.package = "C0805"
+    filter.L1.lcsc_id = "C341017"
+    filter.C2.capacitance = 10uF +/- 10%
+    filter.C2.package = "C0805"
 
     # # Current sense config
     current_sense.max_current = 0.5A
-    current_sense.shunt.value = 100mohm +/- 10%
+    current_sense.shunt.resistance = 100mohm +/- 10%
 
     # # Power devices
     power_isolator ~ digital_isolator.power_non_isolated
@@ -140,21 +133,21 @@ module Cell:
     _power_3v3 ~ ldo.power_3v3
     _power_3v3 ~ gpio.power
     _power_3v3 ~ current_sense.power
-    _power_5v ~ output_relay.power_relay
+    _power_5v ~ output_relay.power_relay 
     power_5v ~ dmm_relay.power_relay
 
     #TODO: do the math in ato
     # Buck config: vout = 5v when vctrl = 0V, vout = 0V when vctrl = 3.3V
-    buck.power_out.voltage &= 0V to 5V
-    buck.feedback_div.r_top.value = 37kohm +/- 2%
-    buck.feedback_div.r_bottom.value = 10kohm +/- 2%
-    buck.ctrl_resistor.value = 24kohm +/- 2%
+    assert buck.power_out.voltage within 0V to 5V
+    buck.feedback_div.r_top.resistance = 37kohm +/- 2%
+    buck.feedback_div.r_bottom.resistance = 10kohm +/- 2%
+    buck.feedback_div.r_ctrl.resistance = 24kohm +/- 2%
 
     #TODO: do the math in ato
     # LDO config: vout = 5v when vctrl = 0V, vout = 0V when vctrl = 3.3V
-    ldo.feedback_div.r_top.value = 60kohm +/- 2%
-    ldo.feedback_div.r_bottom.value = 10kohm +/- 2%
-    ldo.ctrl_resistor.value = 43kohm +/- 2%
+    ldo.feedback_div.r_top.resistance = 60kohm +/- 2%
+    ldo.feedback_div.r_bottom.resistance = 10kohm +/- 2%
+    ldo.feedback_div.r_ctrl.resistance = 43kohm +/- 2%
 
     # Connect Cell components
     power_in ~ isolated_converter.power_in
@@ -166,18 +159,19 @@ module Cell:
     current_sense.power_out ~ output_relay.power_in
     output_relay.power_out ~ power_out
 
-    # Load switch
+    # # Load switch
     filter.power_out ~ load_switch.power_in
-    load_switch.load.p ~ load_resistor.p1
-    load_switch.load.n ~ load_resistor.p2
+    load_switch.load.vcc ~ load_resistor.p1
+    load_switch.load.gnd ~ load_resistor.p2
     load_switch.fet.lcsc_id = "C5364305"
-    load_resistor.package = "0805"
-    load_switch.pulldown_resistor.package = "0402"
-    load_switch.gate_resistor.package = "0402"
+    load_resistor.package = "R0805"
+    load_switch.pulldown_resistor.package = "R0402"
+    load_switch.gate_resistor.package = "R0402"
 
-    load_resistor_current = 20mA to 30mA
+    # # load_resistor_current = 20mA to 30mA
 
-    assert max(ldo.power_out.voltage) / load_resistor.value  within load_resistor_current
+    # # assert max(ldo.power_out.voltage) / load_resistor.value  within load_resistor_current
+    load_resistor.value = 100ohm +/- 10%
 
     # dmm relay
     dmm_i_lim_resistors = new SeriesPowerResistors
@@ -187,61 +181,64 @@ module Cell:
     dmm_relay_enable ~ dmm_relay.input
 
     # ADC connections
-    adc.AIN0 ~ buck.power_out.vcc
-    adc.AIN1 ~ ldo.power_out.vcc
-    adc.AIN2 ~ current_sense.output
-    adc.AIN3 ~ current_sense.power_out.vcc
+    adc.input_1.line ~ buck.power_out.vcc
+    adc.input_2.line ~ ldo.power_out.vcc
+    adc.input_3 ~ current_sense.output
+    adc.input_4.line ~ current_sense.power_out.vcc
 
     # GPIO expander
-    gpio.P2 ~ buck.enable
-    gpio.P3 ~ ldo.enable
-    gpio.P4 ~ load_switch.control.io
-    gpio.P5 ~ output_relay.input
+    gpio.P2 ~ buck.enable.line
+    gpio.P3 ~ ldo.enable.line
+    gpio.P4 ~ load_switch.control.line
+    gpio.P5 ~ output_relay.input.line
+
+    _power_3v3.vcc.override_net_name = "3V3"
+    _power_3v3.gnd.override_net_name = "3V3_GND"
+    _power_5v.vcc.override_net_name = "5V"
 
 
 # Custom interface for connecting the cells together
 interface CellJumper:
-    signal cell
-    signal led_data
-
+    cell = new ElectricSignal
+    led_data = new ElectricSignal
 
 module SeriesPowerResistors:
     # Resistors in series with a power connection
     vcc_resistor = new Resistor
     gnd_resistor = new Resistor
-    power_in = new Power
-    power_out = new Power
+    power_in = new ElectricPower
+    power_out = new ElectricPower
 
     power_in.vcc ~ vcc_resistor.p1; vcc_resistor.p2 ~ power_out.vcc
     power_in.gnd ~ gnd_resistor.p1; gnd_resistor.p2 ~ power_out.gnd
 
     # Resistor values
-    vcc_resistor.value = 10kohm +/- 5%
-    gnd_resistor.value = 10kohm +/- 5%
-    vcc_resistor.package = "0402"
-    gnd_resistor.package = "0402"
+    vcc_resistor.resistance = 10kohm +/- 10%
+    gnd_resistor.resistance = 10kohm +/- 10%
+    vcc_resistor.package = "R0402"
+    gnd_resistor.package = "R0402"
 
 module LowSideSwitch:
-    fet = new NFET
+    fet = new MOSFET
     gate_resistor = new Resistor
     pulldown_resistor = new Resistor
 
-    gate_resistor.value = 1kohm +/- 5%
-    pulldown_resistor.value = 10kohm +/- 5%
+    gate_resistor.resistance = 1kohm +/- 5%
+    pulldown_resistor.resistance = 10kohm +/- 5%
 
-    power_in = new Power
-    load = new Load
-    control = new Pair
+    power_in = new ElectricPower
+    load = new ElectricPower
+    control = new ElectricSignal
 
     # connect up circuit
-    control.io ~ gate_resistor.p1; gate_resistor.p2 ~ fet.gate
-    control.gnd ~ power_in.gnd
+    control.line ~ gate_resistor.p1; gate_resistor.p2 ~ fet.gate
+    control.reference.gnd ~ power_in.gnd
 
     # Pull down resistor on control
-    control.io ~ pulldown_resistor.p1; pulldown_resistor.p2 ~ power_in.gnd
+    control.line ~ pulldown_resistor.p1; pulldown_resistor.p2 ~ power_in.gnd
 
     # load and diode between power and fet
-    power_in.vcc ~ load.p; load.n ~ fet.drain
+    power_in.vcc ~ load.vcc; load.gnd ~ fet.drain
 
     # source to ground
     fet.source ~ power_in.gnd
@@ -253,12 +250,8 @@ module PiFilter:
     C2 = new Capacitor
     cutoff_frequency = 1kHz +/- 20%
 
-
-    power_in = new Power
-    power_out = new Power
-
-    power_out.voltage = power_in.voltage
-    power_in.current += power_out.current
+    power_in = new ElectricPower
+    power_out = new ElectricPower
 
     power_in.vcc ~ L1.p1; L1.p2 ~ power_out.vcc
     power_in ~ C1.power

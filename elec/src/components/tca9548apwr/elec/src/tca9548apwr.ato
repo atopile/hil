@@ -1,14 +1,12 @@
-import Power from "generics/interfaces.ato"
-import I2C from "generics/interfaces.ato"
-import Pair from "generics/interfaces.ato"
-import Resistor from "generics/resistors.ato"
-import Capacitor from "generics/capacitors.ato"
+import ElectricPower, ElectricSignal, I2C
+import Resistor, Capacitor
+from "resistors.ato" import I2CPullup
 
 component _TCA9548APWR:
     # component TCA9548APWR
     footprint = "TSSOP-24_L7.8-W4.4-P0.65-LS6.4-BL"
     lcsc_id = "C130026"
-    mpn = "C130026"
+
     # pins
     signal A0 ~ pin 1
     signal A1 ~ pin 2
@@ -35,31 +33,15 @@ component _TCA9548APWR:
     signal SDA ~ pin 23
     signal VCC ~ pin 24
 
-module i2c_pullup:
-    power = new Power
-    i2c = new I2C
-    r_scl = new Resistor
-    r_sda = new Resistor
-    r_scl.value = 10kohm +/- 10%
-    r_sda.value = 10kohm +/- 10%
-    r_scl.package = "0402"
-    r_sda.package = "0402"
-
-    # connect the pullups
-    power.vcc ~ r_scl.1
-    r_scl.2 ~ i2c.scl
-
-    power.vcc ~ r_sda.1
-    r_sda.2 ~ i2c.sda
 
 
 module TCA9548APWR:
     ic = new _TCA9548APWR
-    power = new Power
+    power = new ElectricPower
     i2c = new I2C
-    reset = new Pair
-    i2c.sda ~ ic.SDA
-    i2c.scl ~ ic.SCL
+    reset = new ElectricSignal
+    i2c.sda.line ~ ic.SDA
+    i2c.scl.line ~ ic.SCL
 
     # connect the power
     power.vcc ~ ic.VCC
@@ -77,12 +59,12 @@ module TCA9548APWR:
     c2.power ~ power
 
     # Reset
-    reset.io ~ ic.RESET_
-    reset.gnd ~ power.gnd
+    reset.line ~ ic.RESET_
+    reset.reference.gnd ~ power.gnd
     reset_pullup = new Resistor
     reset_pullup.value = 10kohm +/- 10%
     reset_pullup.package = "0402"
-    reset.io ~ reset_pullup.p1; reset_pullup.p2 ~ power.vcc
+    reset.line ~ reset_pullup.p1; reset_pullup.p2 ~ power.vcc
 
     # Address bits
     # +------+------+------+----------------+-----------------+
@@ -111,57 +93,57 @@ module TCA9548APWR:
     ic.A2 ~ power.gnd
 
     i2c0 = new I2C
-    i2c0.sda ~ ic.SD0
-    i2c0.scl ~ ic.SC0
+    i2c0.sda.line ~ ic.SD0
+    i2c0.scl.line ~ ic.SC0
     pullup0 = new i2c_pullup
     pullup0.i2c ~ i2c0
     pullup0.power ~ power
 
     i2c1 = new I2C
-    i2c1.sda ~ ic.SD1
-    i2c1.scl ~ ic.SC1
+    i2c1.sda.line ~ ic.SD1
+    i2c1.scl.line ~ ic.SC1
     pullup1 = new i2c_pullup
     pullup1.i2c ~ i2c1
     pullup1.power ~ power
 
     i2c2 = new I2C
-    i2c2.sda ~ ic.SD2
-    i2c2.scl ~ ic.SC2
+    i2c2.sda.line ~ ic.SD2
+    i2c2.scl.line ~ ic.SC2
     pullup2 = new i2c_pullup
     pullup2.i2c ~ i2c2
     pullup2.power ~ power
 
     i2c3 = new I2C
-    i2c3.sda ~ ic.SD3
-    i2c3.scl ~ ic.SC3
+    i2c3.sda.line ~ ic.SD3
+    i2c3.scl.line ~ ic.SC3
     pullup3 = new i2c_pullup
     pullup3.i2c ~ i2c3
     pullup3.power ~ power
 
     i2c4 = new I2C
-    i2c4.sda ~ ic.SD4
-    i2c4.scl ~ ic.SC4
+    i2c4.sda.line ~ ic.SD4
+    i2c4.scl.line ~ ic.SC4
     pullup4 = new i2c_pullup
     pullup4.i2c ~ i2c4
     pullup4.power ~ power
 
     i2c5 = new I2C
-    i2c5.sda ~ ic.SD5
-    i2c5.scl ~ ic.SC5
+    i2c5.sda.line ~ ic.SD5
+    i2c5.scl.line ~ ic.SC5
     pullup5 = new i2c_pullup
     pullup5.i2c ~ i2c5
     pullup5.power ~ power
 
     i2c6 = new I2C
-    i2c6.sda ~ ic.SD6
-    i2c6.scl ~ ic.SC6
+    i2c6.sda.line ~ ic.SD6
+    i2c6.scl.line ~ ic.SC6
     pullup6 = new i2c_pullup
     pullup6.i2c ~ i2c6
     pullup6.power ~ power
 
     i2c7 = new I2C
-    i2c7.sda ~ ic.SD7
-    i2c7.scl ~ ic.SC7
+    i2c7.sda.line ~ ic.SD7
+    i2c7.scl.line ~ ic.SC7
     pullup7 = new i2c_pullup
     pullup7.i2c ~ i2c7
     pullup7.power ~ power
