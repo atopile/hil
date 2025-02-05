@@ -39,7 +39,7 @@ module PowerRelay:
     power_relay = new ElectricPower
     power_in = new ElectricPower
     power_out = new ElectricPower
-    signal input
+    input = new ElectricSignal
 
     # Relay
     relay = new HFD4_5_S
