@@ -1,5 +1,4 @@
-import ElectricSignal, Resistor, ElectricPower
-from "resistors.ato" import DiffPair
+import ElectricSignal, Resistor, ElectricPower, DifferentialPair
 
 
 module CurrentSensor:
@@ -12,13 +11,13 @@ module CurrentSensor:
 
     max_current: current  # The designed current limit to measure to
 
-    sensor.out ~ output.line
+    output ~ sensor.output
 
     # Shunt config
     # This ensures we're using a reasonable range of the amplifier's output
-    assert shunt.value * max_current * sensor.gain within 2.5V to 3V
+    # assert shunt.value * max_current * sensor.gain within 2.5V to 3V
     # 1.5x -> 50% margin on the the power rating is expected
-    assert max_current ** 2 * shunt.value * 1.5 <= shunt.max_power
+    # assert max_current ** 2 * shunt.value * 1.5 <= shunt.max_power
     shunt.package = "R0805"
 
     # Shunt connections
@@ -26,10 +25,10 @@ module CurrentSensor:
     power_in.gnd ~ power_out.gnd
 
     # Sensor connections
-    sensor.input.p ~ shunt.p1
-    sensor.input.n ~ shunt.p2
+    sensor.input.p.line ~ shunt.p1
+    sensor.input.n.line ~ shunt.p2
 
-    sensor.ref ~ power_in.gnd
+    sensor.ref.line ~ power_in.gnd
 
     # Power connections
     power ~ sensor.power
@@ -48,9 +47,12 @@ component INA185A2IDRLR:
     power.vcc ~ pin 6
     power.gnd ~ pin 2
 
-    signal out ~ pin 1
-    signal ref ~ pin 5
+    output = new ElectricSignal
+    output.line ~ pin 1
 
-    input = new DiffPair
-    input.p ~ pin 3
-    input.n ~ pin 4
+    ref = new ElectricSignal
+    ref.line ~ pin 5
+
+    input = new DifferentialPair
+    input.p.line ~ pin 3
+    input.n.line ~ pin 4

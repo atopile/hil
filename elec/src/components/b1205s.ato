@@ -17,6 +17,8 @@ module B1205S_2WR2 from Regulator:
 
     led = new PoweredLED
     led.power ~ power_out
+    led.current_limiting_resistor.package = "R0402"
+    led.current_limiting_resistor.resistance = 1kohm +/- 10%
     led.led.lcsc_id = "C12624"
 
     input_cap = new Capacitor

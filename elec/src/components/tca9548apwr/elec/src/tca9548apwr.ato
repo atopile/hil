@@ -50,12 +50,12 @@ module TCA9548APWR:
     #bypass caps
     c1 = new Capacitor
     c1.value = 100nF +/- 20%
-    c1.package = "0402"
+    c1.package = "C0402"
     c1.power ~ power
 
     c2 = new Capacitor
     c2.value = 2.2uF +/- 20%
-    c2.package = "0603"
+    c2.package = "C0603"
     c2.power ~ power
 
     # Reset
@@ -63,7 +63,7 @@ module TCA9548APWR:
     reset.reference.gnd ~ power.gnd
     reset_pullup = new Resistor
     reset_pullup.value = 10kohm +/- 10%
-    reset_pullup.package = "0402"
+    reset_pullup.package = "R0402"
     reset.line ~ reset_pullup.p1; reset_pullup.p2 ~ power.vcc
 
     # Address bits
@@ -95,55 +95,55 @@ module TCA9548APWR:
     i2c0 = new I2C
     i2c0.sda.line ~ ic.SD0
     i2c0.scl.line ~ ic.SC0
-    pullup0 = new i2c_pullup
+    pullup0 = new I2CPullup
     pullup0.i2c ~ i2c0
     pullup0.power ~ power
 
     i2c1 = new I2C
     i2c1.sda.line ~ ic.SD1
     i2c1.scl.line ~ ic.SC1
-    pullup1 = new i2c_pullup
+    pullup1 = new I2CPullup
     pullup1.i2c ~ i2c1
     pullup1.power ~ power
 
     i2c2 = new I2C
     i2c2.sda.line ~ ic.SD2
     i2c2.scl.line ~ ic.SC2
-    pullup2 = new i2c_pullup
+    pullup2 = new I2CPullup
     pullup2.i2c ~ i2c2
     pullup2.power ~ power
 
     i2c3 = new I2C
     i2c3.sda.line ~ ic.SD3
     i2c3.scl.line ~ ic.SC3
-    pullup3 = new i2c_pullup
+    pullup3 = new I2CPullup
     pullup3.i2c ~ i2c3
     pullup3.power ~ power
 
     i2c4 = new I2C
     i2c4.sda.line ~ ic.SD4
     i2c4.scl.line ~ ic.SC4
-    pullup4 = new i2c_pullup
+    pullup4 = new I2CPullup
     pullup4.i2c ~ i2c4
     pullup4.power ~ power
 
     i2c5 = new I2C
     i2c5.sda.line ~ ic.SD5
     i2c5.scl.line ~ ic.SC5
-    pullup5 = new i2c_pullup
+    pullup5 = new I2CPullup
     pullup5.i2c ~ i2c5
     pullup5.power ~ power
 
     i2c6 = new I2C
     i2c6.sda.line ~ ic.SD6
     i2c6.scl.line ~ ic.SC6
-    pullup6 = new i2c_pullup
+    pullup6 = new I2CPullup
     pullup6.i2c ~ i2c6
     pullup6.power ~ power
 
     i2c7 = new I2C
     i2c7.sda.line ~ ic.SD7
     i2c7.scl.line ~ ic.SC7
-    pullup7 = new i2c_pullup
+    pullup7 = new I2CPullup
     pullup7.i2c ~ i2c7
     pullup7.power ~ power

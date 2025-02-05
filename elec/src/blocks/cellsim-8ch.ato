@@ -10,17 +10,17 @@ module CellSim8Ch:
     - can be stacked with other CellSim8Ch
     - communicates via I2C to the controller
     """
-    power_12v = new ElectricPower
-    power_5v = new ElectricPower
-    power_3v3 = new ElectricPower
-    i2c = new I2C
-    stack_down = new CellJumper
-    stack_up = new CellJumper
-    dmm_out = new ElectricPower
+    # power_12v = new ElectricPower
+    # power_5v = new ElectricPower
+    # power_3v3 = new ElectricPower
+    # i2c = new I2C
+    # stack_down = new CellJumper
+    # stack_up = new CellJumper
+    # dmm_out = new ElectricPower
 
-    # I2C mux
-    mux = new TCA9548APWR
-    power_3v3 ~ mux.power
+    # # I2C mux
+    # mux = new TCA9548APWR
+    # power_3v3 ~ mux.power
 
     # Cells
     cell_1 = new Cell
@@ -31,3 +31,8 @@ module CellSim8Ch:
     cell_6 = new Cell
     cell_7 = new Cell
     cell_8 = new Cell
+
+# one cell: 22 seconds
+# two cells: 55 seconds
+# three cells: 115 seconds
+# four cells: 235 seconds
