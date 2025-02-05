@@ -1,7 +1,6 @@
 import ElectricPower, Regulator
 import Capacitor, PoweredLED
 
-
 module B1205S_2WR2 from Regulator:
     """
     Isolated 2W DC-DC converter
