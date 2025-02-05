@@ -1,0 +1,36 @@
+import Capacitor
+import Regulator
+
+module UMWYoutai_Semiconductor_Co___Ltd__XC6206P332MR from Regulator:
+    """Fixed 3.3V 250mA LDO from UMW(Youtai Semiconductor Co., Ltd.)"""
+    ic = new _UMWYoutai_Semiconductor_Co___Ltd__XC6206P332MR
+
+    # Connections
+    power_in.vcc ~ ic.VIN
+    power_in.gnd ~ ic.VSS
+    ic.VOUT ~ power_out.vcc
+    power_out.gnd ~ ic.VSS
+
+    # Bypass capacitors
+    input_bypass = new Capacitor
+    power_in ~ input_bypass.power
+    input_bypass.capacitance = 1uF +/- 20%
+    input_bypass.package = "C0402"
+
+    output_bypass = new Capacitor
+    power_out ~ output_bypass.power
+    output_bypass.capacitance = 1uF +/- 20%
+    output_bypass.package = "C0402"
+
+component _UMWYoutai_Semiconductor_Co___Ltd__XC6206P332MR:
+    """UMWYoutai_Semiconductor_Co___Ltd__XC6206P332MR component"""
+    lcsc_id = "C347376"
+    manufacturer = "UMW(Youtai Semiconductor Co., Ltd.)"
+    mpn = "XC6206P332MR"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2407250919_UMW-Youtai-Semiconductor-Co---Ltd--XC6206P332MR_C347376.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal VIN ~ pin 3
+    signal VOUT ~ pin 2
+    signal VSS ~ pin 1

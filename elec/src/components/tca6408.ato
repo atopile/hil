@@ -1,12 +1,14 @@
-from "generics/interfaces.ato" import Power, I2C
+import ElectricPower, I2C
+
+module Test:
+    ic = new TCA6408ARGTR
+    
 
 component TCA6408ARGTR:
     """
     8 Channel I2C GPIO Expander
     """
-    footprint = "QFN-16_L3.0-W3.0-P0.50-BL-EP1.7"
     lcsc_id = "C181499"
-    mpn = "C181499"
 
     signal RESET ~ pin 1
     signal P0 ~ pin 2
@@ -27,10 +29,10 @@ component TCA6408ARGTR:
     signal PAD ~ pin 17
 
     i2c = new I2C
-    i2c.sda ~ SDA
-    i2c.scl ~ SCL
+    i2c.sda.line ~ SDA
+    i2c.scl.line ~ SCL
 
-    power = new Power
+    power = new ElectricPower
     power.vcc ~ VCCP
     power.vcc ~ VCCI
     power.gnd ~ GND

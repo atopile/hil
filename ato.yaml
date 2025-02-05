@@ -87,6 +87,10 @@ builds:
     entry: 
       elec/src/blocks/analog-out-4ch.ato:AnalogOut4ch
 
+  ldo:
+    entry: elec/src/components/ldk220m-r/elec/src/ldk220m-r.ato:LDK220M_R
+    exclude_targets: [mfg-data]
+
 dependencies:
 - name: generics
   version_spec:

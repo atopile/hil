@@ -1,42 +1,38 @@
-import Capacitor from "generics/capacitors.ato"
-import Power from "generics/interfaces.ato"
-import Pair from "generics/interfaces.ato"
+import Capacitor, ElectricPower, ElectricSignal
 
 component _SK6805EC20:
     # component SK6805-EC20
-    footprint = "LED-SMD_4P-L2.0-W2.0-BR"
     lcsc_id = "C2890036"
-    mpn = "C2890036"
     # pins
     signal VDD ~ pin 1
     signal DOUT ~ pin 2
     signal GND ~ pin 3
     signal DIN ~ pin 4
 
-    power = new Power
+    power = new ElectricPower
     power.vcc ~ VDD
     power.gnd ~ GND
 
-    din = new Pair
-    din.io ~ DIN
-    din.gnd ~ GND
+    din = new ElectricSignal
+    din.line ~ DIN
+    din.reference.gnd ~ power.gnd
 
-    dout = new Pair
-    dout.io ~ DOUT
-    dout.gnd ~ GND
+    dout = new ElectricSignal
+    dout.line ~ DOUT
+    dout.reference.gnd ~ power.gnd
 
 module SK6805EC20:
     ic = new _SK6805EC20
-    power = new Power
+    power = new ElectricPower
     ic.power ~ power
 
-    din = new Pair
+    din = new ElectricSignal
     ic.din ~ din
 
-    dout = new Pair
+    dout = new ElectricSignal
     ic.dout ~ dout
 
     cap = new Capacitor
     power ~ cap.power
-    cap.package = "0402"
+    cap.package = "C0402"
     cap.capacitance = 100nF +/- 20%
