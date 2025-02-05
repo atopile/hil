@@ -7,6 +7,7 @@ component MCP4725A0T:
     footprint = "SOT-23-6_L2.9-W1.6-P0.95-LS2.8-BL"
     lcsc_id = "C144198"
     mpn = "MCP4725A0T"
+
     # pins
     i2c = new I2C
     i2c.scl ~ pin 5
