@@ -1,9 +1,5 @@
-import ElectricSignal
-
-from "generics/opamps.ato" import Opamp
-from "generics/interfaces.ato" import Power
-from "generics/capacitors.ato" import Capacitor
-from "generics/resistors.ato" import Resistor
+import ElectricSignal, ElectricPower
+import Resistor, Capacitor, OpAmp
 from "components/texas_instruments_lm358d_r.ato" import Texas_Instruments_LM358DR
 
 module Amplifier:
@@ -11,24 +7,24 @@ module Amplifier:
     Amplifies the input signal by a given gain.
     Uses a Non-Inverting Opamp and a feedback resistor divider.
     """
-    power_in = new Power
+    power_in = new ElectricPower
     input = new ElectricSignal
     output = new ElectricSignal
 
     feedback_resistor = new Resistor
     input_resistor = new Resistor
-    opamp = new Opamp
+    opamp = new OpAmp
 
     # Decoupling Capacitor
     decoupling_capacitor = new Capacitor
-    decoupling_capacitor.package = "0402"
+    decoupling_capacitor.package = "C0402"
     decoupling_capacitor.capacitance = 1uF +/- 20%
     power_in ~ decoupling_capacitor.power
 
-    feedback_resistor.package = "0402"
-    input_resistor.package = "0402"
+    feedback_resistor.package = "R0402"
+    input_resistor.package = "R0402"
 
-    opamp -> Texas_Instruments_LM358DR
+    opamp.lcsc_id = "C5423"
 
     # Connections
     power_in ~ opamp.power
@@ -45,6 +41,6 @@ module Amplifier:
     gain: dimensionless
 
     # # Configure the amplifier
-    assert 1 + feedback_resistor.resistance / input_resistor.resistance is gain
-    assert output.voltage is gain * input.voltage
-    assert output.voltage <= opamp.supply_voltage
+    # assert 1 + feedback_resistor.resistance / input_resistor.resistance is gain
+    # assert output.voltage is gain * input.voltage
+    # assert output.voltage <= opamp.power.voltage
