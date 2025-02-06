@@ -1,4 +1,4 @@
-from "generics/interfaces.ato" import Power, USB2
+import ElectricPower, ElectricLogic, USB2_0
 
 component XKB_Connectivity_U262_241N_4BV64:
     """XKB_Connectivity_U262_241N_4BV64 component"""
@@ -35,18 +35,18 @@ component XKB_Connectivity_U262_241N_4BV64:
     VBUS ~ pin A9
     VBUS ~ pin A4
 
-    power_vbus = new Power
+    power_vbus = new ElectricPower
     power_vbus.vcc ~ VBUS
     power_vbus.gnd ~ GND
 
-    # Mounting holes
+    # Mounting holeså
     power_vbus.gnd ~ pin 1
     power_vbus.gnd ~ pin 2
     power_vbus.gnd ~ pin 3
     power_vbus.gnd ~ pin 4
 
-    usb2 = new USB2
-    usb2.dp ~ DP1
-    usb2.dp ~ DP2
-    usb2.dm ~ DN1
-    usb2.dm ~ DN2
+    usb2 = new USB2_0
+    usb2.usb_if.d.p ~ DP1
+    usb2.usb_if.d.p ~ DP2
+    usb2.usb_if.d.n ~ DN1
+    usb2.usb_if.d.n ~ DN2
