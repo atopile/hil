@@ -1,5 +1,5 @@
-import ElectricPower, Capacitor, Resistor
-from "interfaces.ato" import CAN, SPI
+import ElectricPower, Capacitor, Resistor, SPI
+from "interfaces.ato" import CAN
 
 from "components/ylptec_b0505s2wr3.ato" import YLPTEC_B0505S_2WR3
 from "components/nexperia_pe_sd1c_an215.ato" import Nexperia_PESD1CAN_215
