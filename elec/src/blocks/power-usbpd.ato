@@ -1,4 +1,4 @@
-import ElectricPower, I2C, USB2_0_IF
+import ElectricPower, I2C, USB2_0
 
 from "components/pd_controller/pd_controller.py" import PDController
 from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64
@@ -13,7 +13,7 @@ module PowerUSBPD:
     """
     # External Interfaces
     power_out = new ElectricPower
-    usb2 = new USB2_0_IF
+    usb2 = new USB2_0
     power_mcu = new ElectricPower
     i2c = new I2C
 
