@@ -17,9 +17,9 @@ module Microchip_Tech_MCP2518FDT_E_QBB:
 
     # SPI
     spi = new SPI
-    spi.sclk ~ controller.SCK
-    spi.mosi ~ controller.SDI
-    spi.miso ~ controller.SDO
+    spi.sclk.line ~ controller.SCK
+    spi.mosi.line ~ controller.SDI
+    spi.miso.line ~ controller.SDO
     spi_cs = new ElectricLogic
     spi_cs.line ~ controller.nCS
     spi_cs.reference ~ power_3v3
@@ -68,7 +68,7 @@ component _Microchip_Tech_MCP2518FDT_E_QBB:
     lcsc_id = "C621395"
     manufacturer = "Microchip Tech"
     mpn = "MCP2518FDT-E/QBB"
-    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2210180630_Microchip-Tech-MCP2518FDT-E-QBB_C621395.pdf"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2210180630_Microchip-Tech-MCP2518FDT-E-QBB_C621395.pdf"
     designator_prefix = "U"
 
     # pins

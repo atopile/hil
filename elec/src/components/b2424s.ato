@@ -3,14 +3,14 @@ from "generics/capacitors.ato" import Capacitor
 from "generics/leds.ato" import LEDIndicatorGreen
 from "generics/regulators.ato" import IsolatedRegulator
 
-module B1205S_2WR2 from IsolatedRegulator:
+module B2405S_2WR2 from IsolatedRegulator:
     """
     Isolated 2W DC-DC converter
         -Input Voltage: 10.8V to 13.2V
         -Output Voltage: 5V
         -Output Current: 400mA
     """
-    converter = new _B1205S_2WR2
+    converter = new _B2405S_2WR2
     converter.power_in ~ power_in
     converter.power_out ~ power_out
 
@@ -21,16 +21,16 @@ module B1205S_2WR2 from IsolatedRegulator:
 
     input_cap = new Capacitor
     input_cap.value = 2.2uF +/- 10%
-    input_cap.footprint = "C0805"
+    input_cap.package = "C0805"
     power_in ~ input_cap.power
 
     output_cap = new Capacitor
     output_cap.value = 10uF +/- 10%
-    output_cap.footprint = "C0805"
+    output_cap.package = "C0805"
     power_out ~ output_cap.power
 
 
-component _B1205S_2WR2:
+component _B2405S_2WR2:
     # 2W, 12V in 5V out
     footprint = "PWRM-TH_BXXXXS-2WR2"
     lcsc_id = "C2992386"

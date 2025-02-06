@@ -17,8 +17,8 @@ module YLPTEC_B0505S_2WR3:
 
     input_capacitor.capacitance = 4.7uF +/- 20%
     output_capacitor.capacitance = 10uF +/- 20%
-    input_capacitor.pacakge = "0805"
-    output_capacitor.pacakge = "0805"
+    input_capacitor.package = "0805"
+    output_capacitor.package = "0805"
 
     power_in ~ regulator.power_in
     regulator.power_out ~ power_out
@@ -29,7 +29,7 @@ component _YLPTEC_B0505S_2WR3:
     lcsc_id = "C5369473"
     manufacturer = "YLPTEC"
     mpn = "B0505S-2WR3"
-    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2304271700_YLPTEC-B0505S-2WR3_C5369473.pdf"
+    # datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2304271700_YLPTEC-B0505S-2WR3_C5369473.pdf"
     designator_prefix = "U"
 
     power_in = new Power

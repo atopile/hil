@@ -5,9 +5,6 @@ builds:
   space-bms-hil:
     entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
 
-  cm4-example:
-    entry: elec/src/examples/cm4-example.ato:CM4Example
-
   # IO Blocks
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut

@@ -5,7 +5,7 @@ component Nexperia_PESD1CAN_215:
     lcsc_id = "C15771"
     manufacturer = "Nexperia"
     mpn = "PESD1CAN,215"
-    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1811141231_Nexperia-PESD1CAN-215_C15771.pdf"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1811141231_Nexperia-PESD1CAN-215_C15771.pdf"
     designator_prefix = "D"
 
     can = new CAN

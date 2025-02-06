@@ -5,7 +5,7 @@ component XKB_Connectivity_U262_241N_4BV64:
     lcsc_id = "C388660"
     manufacturer = "XKB Connectivity"
     mpn = "U262-241N-4BV64"
-    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2110151730_XKB-Connection-U262-241N-4BV64_C388660.pdf"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2110151730_XKB-Connection-U262-241N-4BV64_C388660.pdf"
     designator_prefix = "USB"
     footprint = "USB-C-SMD_TYC-324G-a50b79"
 
@@ -46,7 +46,7 @@ component XKB_Connectivity_U262_241N_4BV64:
     power_vbus.gnd ~ pin 4
 
     usb2 = new USB2_0
-    usb2.usb_if.d.p ~ DP1
-    usb2.usb_if.d.p ~ DP2
-    usb2.usb_if.d.n ~ DN1
-    usb2.usb_if.d.n ~ DN2
+    usb2.usb_if.d.p.line ~ DP1
+    usb2.usb_if.d.p.line ~ DP2
+    usb2.usb_if.d.n.line ~ DN1
+    usb2.usb_if.d.n.line ~ DN2

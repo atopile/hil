@@ -5,7 +5,6 @@ component ISO1640BDR:
     """
     i2c digital isolator
     """
-    footprint = "SOIC-8_L4.9-W3.9-P1.27-LS6.0-TL"
     lcsc_id = "C5122339"
     mpn = "ISO1640BDR"
     # pins

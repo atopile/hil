@@ -31,8 +31,8 @@ module IsolatorI2C:
     isolated_bypass_capacitor.power ~ power_isolated
     non_isolated_bypass_capacitor.power ~ power_non_isolated
 
-    isolated_bypass_capacitor.package = "R0402"
-    non_isolated_bypass_capacitor.package = "R0402"
+    isolated_bypass_capacitor.package = "C0402"
+    non_isolated_bypass_capacitor.package = "C0402"
 
     isolated_bypass_capacitor.value = 100nF +/- 20%
     non_isolated_bypass_capacitor.value = 100nF +/- 20%
