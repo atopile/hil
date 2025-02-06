@@ -1,11 +1,10 @@
 import ElectricSignal, I2C, ElectricPower
 from "vdivs.ato" import VDiv
 
-from "components/amplifier.ato" import Amplifier
-from "components/tvs.ato" import TVS
-from "components/ads1115.ato" import ADS1115IDGSR
-from "components/dowo_smf33a.ato" import DOWO_SMF3_3A
 from "blocks/isolator-i2c.ato" import IsolatorI2C
+from "blocks/protection-tvs.ato" import TVSProtection
+from "components/amplifier.ato" import Amplifier
+from "components/ads1115.ato" import ADS1115IDGSR
 from "components/ylptec_b0505s2wr3.ato" import YLPTEC_B0505S_2WR3
 from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 
@@ -25,10 +24,10 @@ module AnalogIn:
     # Components
     adc = new ADS1115IDGSR
     amplifier = new Amplifier
-    tvs = new TVS
+    tvs = new TVSProtection
     vdiv = new VDiv
 
-    tvs.diode -> DOWO_SMF3_3A
+    tvs.diode.lcsc_id = "C152100"
 
     # Power
     power_3v3 ~ adc.power
@@ -38,13 +37,13 @@ module AnalogIn:
     input.line ~ vdiv.top
     input.reference.lv ~ vdiv.bottom
     input.reference ~ power_3v3
-    vdiv.out ~ tvs.input.line; tvs.output ~ amplifier.input; amplifier.output.line ~ adc.AIN0
+    vdiv.out ~ tvs.input.line; tvs.output ~ amplifier.input; amplifier.output.line ~ adc.input_1
 
     adc.i2c ~ i2c
 
     # Protection
     vdiv.out ~ tvs.input.line
-    power_3v3.gnd ~ tvs.input.reference
+    power_3v3.gnd ~ tvs.input.reference.gnd
 
     # Power
     power_3v3 ~ amplifier.power_in
