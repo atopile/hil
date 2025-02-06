@@ -9,7 +9,7 @@ from "components/mcp4725.ato" import MCP4725A0T
 from "components/ads1115.ato" import ADS1115IDGSR
 from "components/digitalBuck.ato" import DigitalBuck
 from "components/digitalLDO.ato" import DigitalLDO
-from "components/b1205s.ato" import B1205S_2WR2
+from "components/b2405s.ato" import B2405S_2WR2
 from "components/tca6408.ato" import TCA6408ARGTR
 from "components/current-sensor.ato" import CurrentSensor
 from "components/YNR4030.ato" import YNR4030_101M
@@ -59,7 +59,7 @@ module Cell:
     _power_3v3 = new ElectricPower
     _iso_i2c = new I2C
 
-    isolated_converter = new B1205S_2WR2
+    isolated_converter = new B2405S_2WR2
     adc = new ADS1115IDGSR
     buck = new DigitalBuck
     ldo = new DigitalLDO
