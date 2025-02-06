@@ -1,0 +1,118 @@
+from "regulators.ato" import AdjustableRegulator
+import Inductor, Capacitor, Resistor, Diode, Electrical
+
+module Texas_Instruments_TPS55340RTER from AdjustableRegulator:
+    """Texas_Instruments_TPS55340RTER component"""
+
+    feedback_div.r_top.resistance = 182kohms +/- 5%
+    feedback_div.r_bottom.resistance = 9.76kohms +/- 5%
+
+    # Components
+    ic = new _Texas_Instruments_TPS55340RTER
+    inductor = new Inductor
+    cap_soft_start = new Capacitor
+    shottkey_diode = new Diode
+    res_freq = new Resistor
+
+    res_comp = new Resistor
+    cap_comp = new Capacitor
+
+    cap_in1 = new Capacitor
+    cap_in2 = new Capacitor
+    
+    cap_out1 = new Capacitor
+    cap_out2 = new Capacitor
+    cap_out3 = new Capacitor
+    
+
+    # Values
+    switching_frequency = 600kHz +/- 10%
+    duty_cycle = 0.167
+    v_in = 20V +/- 2%
+    v_out = 24V +/- 2%
+
+    cap_soft_start.capacitance = 4.7uF +/- 20%
+    res_freq.resistance = 78.7kohms +/- 10%
+
+    res_comp.resistance = 2.49kohms +/- 10%
+    cap_comp.capacitance = 6.8nF +/- 20%
+
+    cap_in1.capacitance = 10uF +/- 20%
+    cap_in2.capacitance = 10uF +/- 20%
+
+    cap_out1.capacitance = 10uF +/- 20%
+    cap_out2.capacitance = 10uF +/- 20%
+    cap_out3.capacitance = 10uF +/- 20%
+
+    # Specify components
+    inductor.lcsc_id = "C149581"
+    shottkey_diode.lcsc_id = "C72264"
+
+    cap_soft_start.package = "C0402"
+    res_freq.package = "R0402"
+    res_comp.package = "R0402"
+    cap_comp.package = "C0402"
+    cap_in1.package = "C0805"
+    cap_in2.package = "C0805"
+    cap_out1.package = "C0805"
+    cap_out2.package = "C0805"
+    cap_out3.package = "C0805"
+
+    ### Connections
+    # Power Delivery
+
+    # Input Capacitors
+    power_in ~ cap_in1.power
+    power_in ~ cap_in2.power
+
+    # Power Path
+    switching_node = new Electrical
+    power_in.vcc ~ inductor.p1; inductor.p2 ~ switching_node; switching_node ~ shottkey_diode.anode; shottkey_diode.cathode ~ power_out.vcc
+    switching_node ~ ic.SW
+    power_in.gnd ~ power_out.gnd
+
+    # Feedback Divider
+    power_out ~ feedback_div.power
+    ic.FB ~ feedback_div.out.line
+
+    power_in.hv ~ ic.VIN
+    ic.VIN ~ ic.EN
+
+    # Output Capacitors
+    power_out ~ cap_out1.power
+    power_out ~ cap_out2.power
+    power_out ~ cap_out3.power
+
+    # Compensation
+    ic.FREQ ~ res_freq.p1; res_freq.p2 ~ power_in.lv
+    ic.COMP ~ res_comp.p1; res_comp.p2 ~ cap_comp.p1; cap_comp.p2 ~ power_in.lv
+    ic.SS ~ cap_soft_start.p1; cap_soft_start.p2 ~ power_in.lv
+    ic.PGND ~ power_in.lv
+    ic.SYNC ~ power_out.lv
+    ic.AGND ~ power_out.lv
+    ic.EP ~ power_out.lv
+
+component _Texas_Instruments_TPS55340RTER:
+    """Texas_Instruments_TPS55340RTER component"""
+    lcsc_id = "C169167"
+    manufacturer = "Texas Instruments"
+    mpn = "TPS55340RTER"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1810011020_Texas-Instruments-TPS55340RTER_C169167.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal AGND ~ pin 6
+    signal COMP ~ pin 7
+    signal EN ~ pin 3
+    signal EP ~ pin 17
+    signal FB ~ pin 8
+    signal FREQ ~ pin 9
+    signal PGND ~ pin 11
+    PGND ~ pin 12
+    PGND ~ pin 13
+    signal SS ~ pin 4
+    signal SW ~ pin 1
+    SW ~ pin 15
+    SW ~ pin 16
+    signal SYNC ~ pin 5
+    signal VIN ~ pin 2
