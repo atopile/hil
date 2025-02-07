@@ -5,6 +5,7 @@ from "blocks/power-usbpd.ato" import PowerUSBPD
 from "blocks/relay.ato" import I2CRelay
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
 from "blocks/coms-can.ato" import ComsCANISO
+from "blocks/variable-resistor.ato" import VariableResistor
 
 from "components/cell.ato" import Cell
 from "components/texas_instruments_bq25756r_rvr.ato" import Texas_Instruments_BQ25756RRVR
@@ -19,20 +20,20 @@ from "xt-connectors.git/xt-connectors.ato" import XT30_Female_Right_Angle
 from "components/Molex5030912221.ato" import Molex5030912221
 from "components/Molex5051101292.ato" import Molex5051101292
 from "components/Molex5051100492.ato" import Molex5051100492
+from "components/Molex5026030270.ato" import Molex5026030270
 
 # TODO: DI2C Transceiver
 
 module SpaceBMSHIL:
-
-
     # Blocks
     controller = new ControllerCM4
     cell_1 = new Cell
-    cell_2 = new Cell
-    thermistors = new AnalogOut4ch
-    buck_boost = new Texas_Instruments_BQ25756RRVR
+    # cell_2 = new Cell
     relay = new I2CRelay
+    thermistors = new AnalogOut4ch
     can_controller = new ComsCANISO
+    variable_resistor = new VariableResistor
+    buck_boost = new Texas_Instruments_BQ25756RRVR
 
     # Multiplexer
     mux_1 = new TCA9548APWR
@@ -46,6 +47,10 @@ module SpaceBMSHIL:
     power_3v3 = new ElectricPower
     gnd = new Electrical
 
+    # power_vusb.voltage = 5V to 21V
+    # power_24v.voltage = 24V +/- 5%
+    # power_5v.voltage = 5V +/- 5%
+    # power_3v3.voltage = 3.3V +/- 5%
 
     # Power supplies
     usbpd = new PowerUSBPD
@@ -75,21 +80,23 @@ module SpaceBMSHIL:
     gnd ~ power_3v3.gnd
 
     # Power devices
-    power_5v ~ controller.power_5v
-    power_3v3 ~ controller.power_3v3
     power_24v ~ cell_1.power_in
-    power_5v ~ cell_1.power_5v
-    power_3v3 ~ cell_1.power_isolator
-    power_24v ~ cell_2.power_in
-    power_5v ~ cell_2.power_5v
-    power_3v3 ~ cell_2.power_isolator
-    power_3v3 ~ thermistors.power
+    # power_24v ~ cell_2.power_in
     power_24v ~ buck_boost.power_in
     power_5v ~ relay.power_5v
-    power_3v3 ~ relay.power_3v3
+    power_5v ~ cell_1.power_5v
+    power_5v ~ controller.power_5v
     power_5v ~ can_controller.power_5v
-    power_3v3 ~ can_controller.power_3v3
+    power_5v ~ variable_resistor.power_5v
+    # power_5v ~ cell_2.power_5v
     power_3v3 ~ mux_1.power
+    power_3v3 ~ relay.power_3v3
+    power_3v3 ~ thermistors.power
+    power_3v3 ~ controller.power_3v3
+    power_3v3 ~ cell_1.power_isolator
+    power_3v3 ~ can_controller.power_3v3
+    power_3v3 ~ variable_resistor.power_3v3
+    # power_3v3 ~ cell_2.power_isolator
 
     # Name power rails
     power_vusb.vcc.override_net_name = "VUSB"
@@ -101,7 +108,7 @@ module SpaceBMSHIL:
     # I2C
     controller.i2c ~ mux_1.i2c
     mux_1.i2c0 ~ cell_1.i2c
-    mux_1.i2c1 ~ cell_2.i2c
+    # mux_1.i2c1 ~ cell_2.i2c
     mux_1.i2c2 ~ thermistors.i2c
     mux_1.i2c3 ~ buck_boost.i2c
     mux_1.i2c4 ~ relay.i2c
@@ -111,8 +118,8 @@ module SpaceBMSHIL:
     controller.i2c.scl.override_net_name = "CONTROLLER_I2C_SCL"
     cell_1.i2c.sda.override_net_name = "CELL_1_I2C_SDA"
     cell_1.i2c.scl.override_net_name = "CELL_1_I2C_SCL"
-    cell_2.i2c.sda.override_net_name = "CELL_2_I2C_SDA"
-    cell_2.i2c.scl.override_net_name = "CELL_2_I2C_SCL"
+    # cell_2.i2c.sda.override_net_name = "CELL_2_I2C_SDA"
+    # cell_2.i2c.scl.override_net_name = "CELL_2_I2C_SCL"
     thermistors.i2c.sda.override_net_name = "THERMISTORS_I2C_SDA"
     thermistors.i2c.scl.override_net_name = "THERMISTORS_I2C_SCL"
     buck_boost.i2c.sda.override_net_name = "BOOST_I2C_SDA"
@@ -129,7 +136,7 @@ module SpaceBMSHIL:
     can_controller.spi_cs.override_net_name = "CAN_SPI_CS"
 
     # Cell connections
-    cell_1.cell_up ~ cell_2.cell_down
+    # cell_1.cell_up ~ cell_2.cell_down
 
     # Connectors
     vsh_connector = new Molex5030912221
@@ -138,6 +145,7 @@ module SpaceBMSHIL:
     # vshare_power_connector = new XT30_Female_Right_Angle
     housekeeper_connector = new Molex5051101292
     dep_sep_connector = new Molex5051100492
+    variable_resistor_connector = new Molex5026030270
     # pdcu_connector = new Molex5051101292 # DI2C
 
     # Connector connections
@@ -145,7 +153,7 @@ module SpaceBMSHIL:
     # Cells
     vsh_connector.p13 ~ cell_1.power_out.gnd
     vsh_connector.p12 ~ cell_1.power_out.vcc
-    vsh_connector.p11 ~ cell_2.power_out.vcc
+    # vsh_connector.p11 ~ cell_2.power_out.vcc
 
     # Thermistors
     vsh_connector.p15 ~ thermistors.output_1
@@ -174,16 +182,17 @@ module SpaceBMSHIL:
     # housekeeper_connector.p11 ~ programming reset #unused
     housekeeper_connector.p9 ~ gnd
 
+    # Variable resistor
+    variable_resistor_connector.power ~ variable_resistor.power_in
+
     # Name connector pins
     cell_1.power_out.gnd.override_net_name = "CELL_1_GND"
     cell_1.power_out.vcc.override_net_name = "CELL_1_VCC"
-    cell_2.power_out.vcc.override_net_name = "CELL_2_VCC"
+    # cell_2.power_out.vcc.override_net_name = "CELL_2_VCC"
     thermistors.output_1.override_net_name = "THERMISTOR_1"
     thermistors.output_2.override_net_name = "THERMISTOR_2"
     thermistors.output_3.override_net_name = "THERMISTOR_3"
     thermistors.output_4.override_net_name = "THERMISTOR_4"
-    buck_boost.power_out.gnd.override_net_name = "BOOST_GND"
     buck_boost.power_out.vcc.override_net_name = "BOOST_VCC"
-    buck_boost.power_in.gnd.override_net_name = "BOOST_GND"
-    buck_boost.power_in.vcc.override_net_name = "BOOST_VCC"
+    buck_boost.power_out.gnd.override_net_name = "BOOST_GND"
     

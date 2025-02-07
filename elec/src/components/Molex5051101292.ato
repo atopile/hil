@@ -5,7 +5,7 @@ component Molex5051101292:
     """
     mpn = "Molex5051101292"
     lcsc_id = "C585301"
-    # footprint = "CON_5051101292_MOL"
+    footprint = "CON_5051101292_MOL"
 
     # Pins
     signal p1 ~ pin 1

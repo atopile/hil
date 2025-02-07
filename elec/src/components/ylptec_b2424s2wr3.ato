@@ -17,7 +17,7 @@ module YLPTEC_B2424S_2WR3:
     converter.power_out ~ power_out
 
     led = new LEDIndicatorGreen
-    led.v_in = power_out.voltage
+    # led.v_in = power_out.voltage
     led.power ~ power_out
     led.current = 0.05mA to 0.2mA
 

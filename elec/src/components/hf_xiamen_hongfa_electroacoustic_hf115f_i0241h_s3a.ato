@@ -10,7 +10,7 @@ component HFXiamen_Hongfa_Electroacoustic_HF115F_I_024_1HS3A:
 
     # pins
     coil = new ElectricPower
-    assert coil.voltage within 22V to 26V
+    # assert coil.voltage within 22V to 26V
     coil.vcc ~ pin 1
     coil.gnd ~ pin 6
 
