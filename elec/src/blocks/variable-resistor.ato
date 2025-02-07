@@ -1,0 +1,111 @@
+import ElectricPower, I2C, ElectricSignal, BJT, Resistor, Capacitor, OpAmp
+from "interfaces.ato" import Power
+from "generics/vdivs.ato" import VDiv
+from "components/texas_instruments_vc_a810a_idr.ato" import Texas_Instruments_VCA810AIDR
+from "components/mcp4725.ato" import MCP4725A0T
+from "components/current-sensor.ato" import INA185A2IDRLR
+
+module VariableResistor:
+    """
+    I2C operated, large range variable resistor
+    """
+    # External Interfaces
+    power_in = new ElectricPower
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
+    i2c = new I2C
+
+    # Components
+    feedback_div = new VDiv
+    output_resistor = new Resistor
+    bjt = new BJT
+    variable_amp = new Texas_Instruments_VCA810AIDR
+    current_sensor = new INA185A2IDRLR
+    stage_1_smoothing_cap = new Capacitor
+    stage_2_smoothing_cap = new Capacitor
+    splitter_smoothing_cap = new Capacitor
+    inter_stage_resistor = new Resistor
+    stage_2_output_resistor = new Resistor
+    splitter_opamp = new OpAmp
+    base_resistor = new Resistor
+    voltage_divider_output_resistor = new Resistor
+    dac = new MCP4725A0T
+    pre_bjt_resistor_1 = new Resistor
+    pre_bjt_resistor_2 = new Resistor
+    stage_1_decoupling_cap = new Capacitor
+    stage_2_decoupling_cap = new Capacitor
+    splitter_decoupling_cap = new Capacitor
+
+    # Component specifications
+    feedback_div.r_top.resistance = 10kohms +/- 5%
+    feedback_div.r_bottom.resistance = 1kohms +/- 5%
+    output_resistor.resistance = 100mohms +/- 5%
+    inter_stage_resistor.resistance = 100ohms +/- 5%
+    stage_2_output_resistor.resistance = 100ohms +/- 5%
+    base_resistor.resistance = 100ohms +/- 5%
+    voltage_divider_output_resistor.resistance = 100ohms +/- 5%
+
+    # Component Specializations
+    bjt.lcsc_id = "C10634"
+    stage_1_smoothing_cap.lcsc_id = "C1550"
+    stage_2_smoothing_cap.lcsc_id = "C1550"
+    splitter_smoothing_cap.lcsc_id = "C1550"
+    splitter_opamp.lcsc_id = "C6965"
+    pre_bjt_resistor_1.lcsc_id = "C22446545"
+    pre_bjt_resistor_2.lcsc_id = "C22446545"
+    stage_1_decoupling_cap.lcsc_id = "C1550"
+    stage_2_decoupling_cap.lcsc_id = "C1550"
+    splitter_decoupling_cap.lcsc_id = "C1550"
+
+
+    # Connections
+    power_in.gnd ~ power_5v.gnd;
+    power_in.gnd ~ power_3v3.gnd;
+    # Input Stage
+    power_in.vcc ~ feedback_div.r_top.p1
+
+    power_in.vcc ~ pre_bjt_resistor_1.p1; pre_bjt_resistor_1.p2 ~ pre_bjt_resistor_2.p1
+    pre_bjt_resistor_2.p2 ~ bjt.collector
+    output_resistor.p1 ~ bjt.emitter
+    bjt.base ~ base_resistor.p1
+    feedback_div.r_bottom.p2 ~ power_in.gnd
+
+    # 1st Gain Stage
+    current_sensor.power ~ power_5v
+    current_sensor.ref ~ power_5v.gnd
+    stage_1_decoupling_cap.p1 ~ current_sensor.power.vcc; stage_1_decoupling_cap.p2 ~ current_sensor.power.gnd
+    current_sensor.output ~ inter_stage_resistor.p1
+    current_sensor.input.p.line ~ bjt.emitter
+    current_sensor.input.n.line ~ power_5v.gnd
+    stage_1_smoothing_cap.p2 ~ current_sensor.input.p.line; stage_1_smoothing_cap.p1 ~ current_sensor.input.n.line
+
+    # 2nd Gain Stage
+    variable_amp.plusVS ~ power_5v.vcc
+    variable_amp._VS ~ power_5v.gnd
+    stage_2_decoupling_cap.p1 ~ variable_amp.plusVS; stage_2_decoupling_cap.p2 ~ variable_amp._VS
+    variable_amp.plusIn ~ inter_stage_resistor.p2
+    stage_2_smoothing_cap.p1 ~ variable_amp.plusIn; variable_amp._In ~ stage_2_smoothing_cap.p2
+    variable_amp.VOUT ~ stage_2_output_resistor.p1
+    variable_amp.GND ~ variable_amp._VS
+    variable_amp.Gain ~ dac.output
+    power_3v3 ~ dac.power
+    i2c ~ dac.i2c
+    dac.address_bit1 ~ power_3v3.gnd
+    stage_2_output_resistor.p2 ~ splitter_opamp.inverting_input
+
+    #Splitter Stage
+    splitter_opamp.power ~ power_5v
+    splitter_decoupling_cap.p1 ~ splitter_opamp.power.vcc; splitter_decoupling_cap.p2 ~ splitter_opamp.power.gnd
+    splitter_smoothing_cap.p1 ~ splitter_opamp.inverting_input; splitter_opamp.non_inverting_input ~ splitter_smoothing_cap.p2
+    splitter_opamp.output ~ base_resistor.p2
+    splitter_opamp.non_inverting_input ~ voltage_divider_output_resistor.p1
+    voltage_divider_output_resistor.p2 ~ feedback_div.r_bottom.p1
+
+    # Output Stage
+    output_resistor.p2 ~ power_in.gnd
+    #TBD
+
+
+
+
+
