@@ -90,6 +90,11 @@ builds:
       elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
     exclude_targets: [mfg-data]
 
+  variable-resistor:
+    entry:
+      elec/src/blocks/variable-resistor.ato:VariableResistor
+    exclude_targets: [mfg-data]
+
 dependencies:
 - name: generics
   version_spec:

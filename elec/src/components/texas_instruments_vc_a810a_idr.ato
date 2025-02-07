@@ -1,0 +1,16 @@
+component Texas_Instruments_VCA810AIDR:
+    """Texas_Instruments_VCA810AIDR component"""
+    lcsc_id = "C2060449"
+    manufacturer = "Texas Instruments"
+    mpn = "VCA810AIDR"
+    # datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2303012101_Texas-Instruments-VCA810AIDR_C2060449.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal GND ~ pin 2
+    signal Gain ~ pin 3
+    signal VOUT ~ pin 5
+    signal _In ~ pin 8
+    signal _VS ~ pin 7
+    signal plusIn ~ pin 1
+    signal plusVS ~ pin 6
