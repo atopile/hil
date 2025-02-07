@@ -8,6 +8,9 @@ module Texas_Instruments_BQ25756RRVR:
     power_out = new ElectricPower
     i2c = new I2C
 
+    # Common gnd
+    power_in.gnd ~ power_out.gnd
+
     # Components
     controller = new _Texas_Instruments_BQ25756RRVR
     core = new BuckBoostCore
@@ -27,9 +30,11 @@ module Texas_Instruments_BQ25756RRVR:
 
     # Bulk capacitors
     power_in ~ input_electrolytic.power
+    # power_in ~ input_electrolytic_2.power
     power_out ~ output_electrolytic.power
     input_electrolytic.lcsc_id = "C487438"
     output_electrolytic.lcsc_id = "C487438"
+    # input_electrolytic_2.lcsc_id = "C487438"
     core.power_in ~ input_cap_bank.power_in
     core.power_out ~ output_cap_bank.power_in
 
@@ -80,6 +85,10 @@ module Texas_Instruments_BQ25756RRVR:
     core.bst_input ~ controller.BTST1
     core.bst_output ~ controller.BTST2
 
+    # SW connections
+    controller.SW1 ~ core.input_switching_node
+    controller.SW2 ~ core.output_switching_node
+
     # Input shunt
     input_shunt.output.p ~ controller.ACP
     input_shunt.output.n ~ controller.ACN
@@ -106,6 +115,7 @@ module Texas_Instruments_BQ25756RRVR:
     # Input Current limit resistor
     ilim_resistor = new Resistor
     # TODO: make this a variable
+    ilim_resistor.package = "0402"
     ilim_resistor.resistance = 2.49kohm +/- 1%  # Application note value for 8A current limit
     controller.ILIM_HIZ ~ ilim_resistor.p1
     ilim_resistor.p2 ~ controller.PGND
@@ -284,6 +294,8 @@ module CapBank:
     power_in ~ cap9.power
     power_in ~ cap10.power
     power_in ~ cap11.power
+
+
 module ShuntInput:
     """Shunt input for buck/boost with low pass filter"""
     power_in = new ElectricPower

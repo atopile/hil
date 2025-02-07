@@ -1,0 +1,4 @@
+from "components/microchip_tech_mc_p4728eun.ato" import Microchip_Tech_MCP4728_E_UN
+
+module AnalogIn4Ch:
+    dac = new Microchip_Tech_MCP4728_E_UN
