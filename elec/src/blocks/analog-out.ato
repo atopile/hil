@@ -1,32 +1,27 @@
-import TVS
-from "generics/filters.ato" import LowPassFilter
-from "generics/opamps.ato" import Opamp
-from "generics/interfaces.ato" import Power, I2C, Pair
-from "generics/resistors.ato" import Resistor
-from "components/texas_instruments_lm358d_r.ato" import Texas_Instruments_LM358DR
+import OpAmp, Power, I2C, ElectricSignal, ElectricPower
+import FilterElectricalRC
 from "components/mcp4725.ato" import MCP4725A0T
-from "components/born_smbj26a.ato" import BORN_SMBJ26A
 from "components/amplifier.ato" import Amplifier
-
+from "blocks/protection-tvs.ato" import TVSProtection
 
 module AnalogOut:
-    power_in = new Power
-    power_3v3 = new Power
+    power_in = new ElectricPower
+    power_3v3 = new ElectricPower
     i2c = new I2C
-    output = new Pair
+    output = new ElectricSignal
 
     # Components
     dac = new MCP4725A0T
-    filter = new LowPassFilter
+    filter = new FilterElectricalRC
     amplifier = new Amplifier
-    tvs = new TVS
+    tvs = new TVSProtection
 
     # Connections
     i2c ~ dac.i2c
-    dac.output ~ filter.input
-    filter.output ~ amplifier.input
-    amplifier.output ~ tvs.anode
-    tvs.cathode ~ output
+    dac.output ~ filter.in_
+    filter.out ~ amplifier.input
+    amplifier.output ~ tvs.input
+    tvs.output ~ output
 
     # Power
     power_3v3 ~ dac.power
@@ -34,6 +29,6 @@ module AnalogOut:
 
     # Configure
     amplifier.gain = 10/3.3 +/- 2%
-    filter.cutoff_frequency = 1kHz +/- 20%
+    filter.resistor.resistance = 100kohm +/- 10%
+    filter.capacitor.capacitance = 100nF +/- 10%
     tvs.clamping_voltage = 30V +/- 20%
-

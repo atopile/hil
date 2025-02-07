@@ -1,8 +1,6 @@
-from "generics/interfaces.ato" import Power, I2C
-from "generics/leds.ato" import LEDIndicatorGreen
-from "generics/resistors.ato" import Resistor
-import MOSFET
-# from "components/irlml0040.ato" import IRLML0040
+import ElectricPower, I2C, ElectricSignal
+import Resistor, MOSFET, PoweredLED
+
 from "components/tca6408.ato" import TCA6408ARGTR
 
 module I2CRelay:
@@ -11,10 +9,10 @@ module I2CRelay:
     """
     # External interfaces
     i2c = new I2C
-    power_3v3 = new Power
-    power_5v = new Power
-    input = new Power
-    output = new Power
+    power_3v3 = new ElectricPower
+    power_5v = new ElectricPower
+    input = new ElectricPower
+    output = new ElectricPower
 
     # Relay
     relay = new PowerRelay
@@ -28,7 +26,8 @@ module I2CRelay:
 
     # GPIO Expander
     i2c ~ gpio_expander.i2c
-    gpio_expander.P0 ~ relay.input
+    gpio_expander.P0 ~ relay.input.line
+
 
 module PowerRelay:
     """
@@ -37,33 +36,29 @@ module PowerRelay:
     Designed to switch + and - of a power rail
     """
     # External interfaces
-    power_relay = new Power
-    power_in = new Power
-    power_out = new Power
-    signal input
-
-    # Output specs
-    # power_in.voltage &= power_out.voltage
-    # power_in.current += power_out.current
+    power_relay = new ElectricPower
+    power_in = new ElectricPower
+    power_out = new ElectricPower
+    input = new ElectricSignal
 
     # Relay
     relay = new HFD4_5_S
 
     # Indicator LED
-    indicator_led = new LEDIndicatorGreen
-# indicator_led.v_in = power_relay.voltag
-    indicator_led.v_in = 5V +/- 10%
-    indicator_led.current = 0.1mA to 0.3mA
+    indicator_led = new PoweredLED
+    indicator_led.current_limiting_resistor.package = "R0402"
+    indicator_led.current_limiting_resistor.resistance = 1kohm +/- 10%
+    indicator_led.led.lcsc_id = "C12624"
 
     # Mosfet
     fet = new MOSFET
     fet.lcsc_id = "C5364305"
     fet_gate_resistor = new Resistor
     fet_ilim_resistor = new Resistor
-    fet_gate_resistor.footprint = "R0402"
-    fet_ilim_resistor.footprint = "R0402"
-    fet_gate_resistor.value = 10kohm +/- 5%
-    fet_ilim_resistor.value = 1kohm +/- 5%
+    fet_gate_resistor.package = "R0402"
+    fet_ilim_resistor.package = "R0402"
+    fet_gate_resistor.resistance = 10kohm +/- 5%
+    fet_ilim_resistor.resistance = 1kohm +/- 5%
 
     # coil connections
     relay.coil ~ indicator_led.power
@@ -76,25 +71,26 @@ module PowerRelay:
     power_out ~ relay.power_out
 
     # Fet connections
-    input ~ fet_gate_resistor.p1; fet_gate_resistor.p2 ~ fet.gate
-    input ~ fet_ilim_resistor.p1; fet_ilim_resistor.p2 ~ power_relay.gnd
+    input.line ~ fet_gate_resistor.p1; fet_gate_resistor.p2 ~ fet.gate
+    input.line ~ fet_ilim_resistor.p1; fet_ilim_resistor.p2 ~ power_relay.gnd
+
 
 component HFD4_5_S:
     # component HFD4_slash_5_minus_S
     footprint = "RELAY-SMD_HFD4-5-SR"
     lcsc_id = "C64399"
-    mpn = "C64399"
+
 
     # pins
-    coil = new Power
-    coil.voltage &= 5V +/- 10%
+    coil = new ElectricPower
+    assert coil.voltage within 4.5V to 5.5V
     coil.vcc ~ pin 1
     coil.gnd ~ pin 8
 
-    power_out = new Power
+    power_out = new ElectricPower
     power_out.vcc ~ pin 6
     power_out.gnd ~ pin 3
 
-    power_in = new Power
+    power_in = new ElectricPower
     power_in.vcc ~ pin 5
     power_in.gnd ~ pin 4

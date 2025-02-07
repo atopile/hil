@@ -1,16 +1,11 @@
-from "generics/interfaces.ato" import Power, I2C, DiffPair
-from "generics/filters.ato" import LowPassFilter
-from "generics/capacitors.ato" import Capacitor, CapacitorElectrolytic
-import MOSFET, Diode
-from "generics/resistors.ato" import Resistor
-from "generics/vdivs.ato" import VDiv
-from "generics/inductors.ato" import Inductor
-from "generics/leds.ato" import LEDIndicatorRed, LEDIndicatorGreen
+import ElectricPower, I2C, DifferentialPair, ElectricLogic, Electrical, ElectricSignal
+import Diode, Capacitor, MOSFET, Resistor, Inductor, FilterElectricalRC, PoweredLED
+from "vdivs.ato" import VDiv
 
 module Texas_Instruments_BQ25756RRVR:
     """Texas_Instruments_BQ25756RRVR Bi-directional Buck/Boost"""
-    power_in = new Power
-    power_out = new Power
+    power_in = new ElectricPower
+    power_out = new ElectricPower
     i2c = new I2C
 
     # Common gnd
@@ -24,10 +19,8 @@ module Texas_Instruments_BQ25756RRVR:
     ovuv_setter = new OVUVSetter
     input_cap_bank = new CapBank
     output_cap_bank = new CapBank
-    input_electrolytic = new CapacitorElectrolytic
-    # input_electrolytic_2 = new CapacitorElectrolytic
-    output_electrolytic = new CapacitorElectrolytic
-
+    input_electrolytic = new Capacitor
+    output_electrolytic = new Capacitor
 
     # Power connections
     power_in ~ input_shunt.power_in
@@ -59,19 +52,23 @@ module Texas_Instruments_BQ25756RRVR:
     power_in ~ vac_cap_1.power
     power_in ~ vac_cap_2.power
 
-    # Driver supply cap
+    # Driver supply
+    power_drv_sup = new ElectricPower
+    power_drv_sup.vcc ~ controller.DRV_SUP
+    power_drv_sup.gnd ~ controller.PGND
     drv_sup_cap = new Capacitor
     drv_sup_cap.capacitance = 4.7uF +/- 20%
     drv_sup_cap.max_voltage = 25V to 1000V
-    controller.DRV_SUP ~ drv_sup_cap.p1
-    drv_sup_cap.p2 ~ controller.PGND
+    power_drv_sup ~ drv_sup_cap.power
 
-    # Internal LDO cap
+    # Internal LDO
+    power_regn = new ElectricPower
+    power_regn.vcc ~ controller.REGN
+    power_regn.gnd ~ controller.PGND
     regn_cap = new Capacitor
     regn_cap.capacitance = 4.7uF +/- 20%
     regn_cap.max_voltage = 25V to 1000V
-    controller.REGN ~ regn_cap.p1
-    regn_cap.p2 ~ controller.PGND
+    power_regn ~ regn_cap.power
 
     # OVUV
     power_in ~ ovuv_setter.power_in
@@ -135,32 +132,35 @@ module Texas_Instruments_BQ25756RRVR:
     power_in.vcc ~ controller.VAC_IN
     power_out.vcc ~ controller.VAC_OUT
     power_in.gnd ~ controller.PGND
-    power_out.gnd ~ controller.PGND
 
-    # Set switching frequency
+        # Set switching frequency
     
     fsw_res = new Resistor
     fsw_res.resistance = 50kohm +/- 1% # 500kHz
-    fsw_res.package = "0402"
+    fsw_res.package = "R0402"
     controller.FSW_SYNC ~ fsw_res.p1
     fsw_res.p2 ~ controller.PGND
 
     # Status pins connect to LEDs
-    status_1_led = new LEDIndicatorRed
-    status_2_led = new LEDIndicatorGreen
-    status_1_led.current = 0.1mA to 0.3mA
-    status_2_led.current = 0.1mA to 0.3mA
-    status_1_led.v_in = 5V +/- 1%
-    status_2_led.v_in = 5V +/- 1%
-    controller.REGN ~ status_1_led.input
-    controller.REGN ~ status_2_led.input
-    controller.STAT1 ~ status_1_led.gnd
-    controller.STAT2 ~ status_2_led.gnd
+    status_1_led = new PoweredLED
+    status_2_led = new PoweredLED
+    # status_1_led.led.color = "RED"
+    # status_2_led.led.color = "GREEN"
+    status_1_led.led.lcsc_id = "C2286"
+    status_2_led.led.lcsc_id = "C12624"
+    status_1_led.current_limiting_resistor.resistance = 100ohm +/- 1%
+    status_2_led.current_limiting_resistor.resistance = 100ohm +/- 1%
+    status_1_led.current_limiting_resistor.package = "R0402"
+    status_2_led.current_limiting_resistor.package = "R0402"
+    controller.REGN ~ status_1_led.power.vcc
+    controller.REGN ~ status_2_led.power.vcc
+    controller.STAT1 ~ status_1_led.power.gnd
+    controller.STAT2 ~ status_2_led.power.gnd
 
     # ICHG
     ichg_resistor = new Resistor
     ichg_resistor.resistance = 0ohm
-    ichg_resistor.package = "0402"
+    ichg_resistor.package = "R0402"
     controller.ICHG ~ ichg_resistor.p1
     ichg_resistor.p2 ~ controller.PGND
 
@@ -177,14 +177,17 @@ module Texas_Instruments_BQ25756RRVR:
     ts_vdiv.bottom ~ controller.PGND
 
     # PG
-    pg_status_led = new LEDIndicatorGreen
-    pg_status_led.current = 0.1mA to 0.3mA
-    pg_status_led.v_in = 5V +/- 1%
-    controller.REGN ~ pg_status_led.input
-    controller.PGh ~ pg_status_led.gnd
+    pg_status_led = new PoweredLED
+    # pg_status_led.led.color = "GREEN"
+    pg_status_led.led.lcsc_id = "C12624"
+    pg_status_led.current_limiting_resistor.resistance = 100ohm +/- 1%
+    pg_status_led.current_limiting_resistor.package = "R0402"
+    controller.REGN ~ pg_status_led.power.vcc
+    controller.PGh ~ pg_status_led.power.gnd
 
     # CHG Enable
     controller.CEh ~ controller.PGND # default active low
+
 
 component _Texas_Instruments_BQ25756RRVR:
     """Texas_Instruments_BQ25756RRVR component"""
@@ -239,7 +242,7 @@ component _Texas_Instruments_BQ25756RRVR:
 
 module CapBank:
     """Bank of capacitors for power filtering as shown in reference design"""
-    power_in = new Power
+    power_in = new ElectricPower
 
     # Input capacitors
     cap1 = new Capacitor
@@ -295,14 +298,14 @@ module CapBank:
 
 module ShuntInput:
     """Shunt input for buck/boost with low pass filter"""
-    power_in = new Power
-    power_out = new Power
-    output = new DiffPair
+    power_in = new ElectricPower
+    power_out = new ElectricPower
+    output = new DifferentialPair
 
     # Components
     shunt = new Resistor
-    filter_n = new LowPassFilter
-    filter_p = new LowPassFilter
+    filter_n = new FilterElectricalRC
+    filter_p = new FilterElectricalRC
     diff_cap = new Capacitor
 
     # Default values
@@ -318,20 +321,24 @@ module ShuntInput:
 
     # Connections
     power_in.vcc ~ shunt.p1; shunt.p2 ~ power_out.vcc
-    power_in.vcc ~ filter_p.input.io
-    power_out.vcc ~ filter_n.input.io
-    filter_p.output.io ~ output.p
-    filter_n.output.io ~ output.n
-    filter_p.input.gnd ~ power_in.gnd
-    filter_n.input.gnd ~ power_out.gnd
-    power_in.gnd ~ power_out.gnd
-    output.p ~ diff_cap.p1; diff_cap.p2 ~ output.n
+    power_in.vcc ~ filter_p.in_.line
+    power_out.vcc ~ filter_n.in_.line
+    filter_p.out ~ output.p
+    filter_n.out ~ output.n
+    filter_p.in_.reference ~ power_in
+    filter_n.in_.reference ~ power_out
+
+    diff_cap.package = "C0402"
+    filter_n.resistor.package = "R0402"
+    filter_n.capacitor.package = "C0402"
+    filter_p.resistor.package = "R0402"
+    filter_p.capacitor.package = "C0402"
 
 module OVUVSetter:
     """Over voltage/under voltage setting for buck/boost"""
-    power_in = new Power
-    signal acuv 
-    signal acov
+    power_in = new ElectricPower
+    acuv = new ElectricSignal
+    acov = new ElectricSignal
 
     r_ac1 = new Resistor
     r_ac2 = new Resistor
@@ -339,38 +346,36 @@ module OVUVSetter:
 
     # Connect resistor together in series
     power_in.vcc ~ r_ac1.p1
-    r_ac1.p2 ~ acuv
-    acuv ~ r_ac2.p1
-    r_ac2.p2 ~ acov
-    acov ~ r_ac3.p1
+    r_ac1.p2 ~ acuv.line
+    acuv.line ~ r_ac2.p1
+    r_ac2.p2 ~ acov.line
+    acov.line ~ r_ac3.p1
     r_ac3.p2 ~ power_in.gnd
 
     r_ac1.resistance = 1Mohm +/- 1%
     r_ac2.resistance = 133kohm +/- 1%
     r_ac3.resistance = 25.5kohm +/- 1%
 
-    r_ac1.package = "0603"
-    r_ac2.package = "0603"
-    r_ac3.package = "0603"
+    r_ac1.package = "R0603"
+    r_ac2.package = "R0603"
+    r_ac3.package = "R0603"
 
 
 module BuckBoostCore:
     """Contains inductor, fets and capacitors"""
-    power_in = new Power
-    power_out = new Power
+    power_in = new ElectricPower
+    power_out = new ElectricPower
 
     # common gnd
     power_in.gnd ~ power_out.gnd
 
     # gate signals
-    signal gate_input_hs
-    signal gate_input_ls
-    signal gate_output_hs
-    signal gate_output_ls
-    signal bst_input
-    signal bst_output
-    signal input_switching_node
-    signal output_switching_node
+    gate_input_hs = new ElectricLogic
+    gate_input_ls = new ElectricLogic
+    gate_output_hs = new ElectricLogic
+    gate_output_ls = new ElectricLogic
+    bst_input = new ElectricLogic
+    bst_output = new ElectricLogic
 
     # Components
     inductor = new Inductor
@@ -378,8 +383,8 @@ module BuckBoostCore:
     fet_input_ls = new MOSFET
     fet_output_hs = new MOSFET
     fet_output_ls = new MOSFET
-    input_cap = new CapacitorElectrolytic
-    output_cap = new CapacitorElectrolytic
+    input_cap = new Capacitor
+    output_cap = new Capacitor
     bst_input_cap = new Capacitor
     bst_output_cap = new Capacitor
 
@@ -400,6 +405,10 @@ module BuckBoostCore:
     power_in ~ input_cap.power
     power_out ~ output_cap.power
 
+    # Internal signals
+    input_switching_node = new ElectricSignal
+    output_switching_node = new ElectricSignal
+
     # Input H-Bridge
     power_in.vcc ~ fet_input_hs.drain
     fet_input_hs.source ~ input_switching_node
@@ -418,8 +427,14 @@ module BuckBoostCore:
     input_switching_node ~ bst_input_cap.p1; bst_input_cap.p2 ~ bst_input
     output_switching_node ~ bst_output_cap.p1; bst_output_cap.p2 ~ bst_output
 
-    # Gate resistors
+    # Gate
     gate_input_hs ~ fet_input_hs.gate
     gate_input_ls ~ fet_input_ls.gate
     gate_output_hs ~ fet_output_hs.gate
     gate_output_ls ~ fet_output_ls.gate
+
+
+
+
+
+

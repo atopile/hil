@@ -13,7 +13,7 @@ module TVSProtection:
 
     # Components
     diode = new TVS
-    diode -> BORN_SMBJ26A
+    diode.lcsc_id = "C152100"
 
     # Connections
     input ~ output

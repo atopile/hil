@@ -107,11 +107,11 @@
     (net 0 "")
     (net 1 "line-3")
     (net 2 "line")
-    (net 3 "hv-1")
-    (net 4 "line-1")
-    (net 5 "line-2")
+    (net 3 "hv")
+    (net 4 "line-2")
+    (net 5 "line-1")
     (net 6 "gnd")
-    (net 7 "hv")
+    (net 7 "hv-1")
     (net 8 "gnd-1")
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
@@ -126,7 +126,7 @@
                 (font
                     (size 0.7 0.7)
                     (thickness 0.2))))
-        (property "Value" "10kΩ ±1% 62.5mW"
+        (property "Value" "1kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -171,7 +171,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C25744"
+        (property "LCSC" "C11702"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -180,7 +180,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1002TCE"
+        (property "Partnumber" "0402WGF1001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -198,7 +198,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -307,30 +307,32 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7712384d-09b1-41e9-9775-10764af1a127")
-            (net 3 "hv-1")))
-    (footprint "lib:SOIC-8_L4.9-W3.9-P1.27-LS6.0-TL"
+            (net 3 "hv")))
+    (footprint "atopile:SOIC-8_L4.9-W3.9-P1.27-LS6.0-TL-e13595"
         (layer "F.Cu")
         (uuid "5b566fa6-077a-40d6-858d-0f504642524b")
         (at 149.5 100.5 0)
         (property "Reference" "U3"
-            (at 0.016417 -3.670307 0)
+            (at 0 -5.9 0)
             (layer "F.SilkS")
             (hide no)
-            (uuid "f0252177-55d1-45df-9566-f97b654d54c2")
+            (uuid "015cbaff-6337-4f77-b27d-eff9781b9412")
             (effects
                 (font
-                    (size 0.7 0.7)
-                    (thickness 0.2))))
+                    (size 1 1)
+                    (thickness 0.15))
+                (hide no)))
         (property "Value" ""
             (at 0 5.91 0)
             (layer "F.Fab")
             (hide no)
-            (uuid "7fe93c48-96cb-4af5-8b6c-eb33d24b27f3")
+            (uuid "c9b5f3aa-7d95-4b36-8cb5-e8004cc6d4ee")
             (effects
                 (font
                     (size 1 1)
-                    (thickness 0.15))))
-        (property "Footprint" "lib:SOIC-8_L4.9-W3.9-P1.27-LS6.0-TL"
+                    (thickness 0.15))
+                (hide no)))
+        (property "Footprint" "atopile:SOIC-8_L4.9-W3.9-P1.27-LS6.0-TL-e13595"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -357,11 +359,11 @@
                 (font
                     (size 1.27 1.27)
                     (thickness 0.15))))
-        (property "__atopile_lib_fp_hash__" "bd3adf53-eaa0-89c1-9e9c-a028288f7fe3"
+        (property "__atopile_lib_fp_hash__" "7160b8f3-e1ef-20f9-8de7-5df67167a926"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
-            (uuid "b5cea84c-3eba-4f51-a5d1-05474642524b")
+            (uuid "aedc7c15-2bb9-4e65-8744-29664642524b")
             (effects
                 (font
                     (size 0.125 0.125)
@@ -419,7 +421,7 @@
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "4218548b-582e-4aaa-a99b-86e6c058ef6e"))
+            (uuid "af685cd5-6512-4b98-94c3-115869e81295"))
         (fp_line
             (start -2 -1.45)
             (end -2 -1.08)
@@ -427,47 +429,7 @@
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "8e3e7f3f-a7aa-4abd-9706-4e725f68a710"))
-        (fp_line
-            (start -2 -0.18)
-            (end -2 0.19)
-            (stroke
-                (width 0.25)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "2c43c548-a237-41f3-be1c-262317fec7b0"))
-        (fp_line
-            (start -2 1.09)
-            (end -2 1.46)
-            (stroke
-                (width 0.25)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "6babe420-50be-4536-bca7-83f3440da7fb"))
-        (fp_line
-            (start -2 2.36)
-            (end -2 2.5)
-            (stroke
-                (width 0.25)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "f3b099f9-1039-4b5d-a87b-9bb79d278cf7"))
-        (fp_line
-            (start -0.58 -2.5)
-            (end -2 -2.5)
-            (stroke
-                (width 0.25)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "f7f033b3-a17f-4b8d-97ee-5b25532d9bc0"))
-        (fp_line
-            (start 2 -2.5)
-            (end 0.6 -2.5)
-            (stroke
-                (width 0.25)
-                (type solid))
-            (layer "F.SilkS")
-            (uuid "ae603240-76b4-4c66-ac6a-036820194a6b"))
+            (uuid "bb274b42-9970-43d3-a4c9-f4b3b854d9fb"))
         (fp_line
             (start 2 -2.5)
             (end 2 -2.35)
@@ -475,7 +437,7 @@
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "3b12ba9a-3d9a-43bd-b3de-bf15181e389a"))
+            (uuid "fe98c537-f4e7-4db8-afba-58e8cbfaea02"))
         (fp_line
             (start 2 -1.45)
             (end 2 -1.08)
@@ -483,7 +445,7 @@
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "634d1ebe-76f3-4b43-bd5d-4f20c4391346"))
+            (uuid "dd0e609b-eaca-4a93-a3d4-56aa2cf73f87"))
         (fp_line
             (start 2 -0.18)
             (end 2 0.19)
@@ -491,7 +453,7 @@
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "f8b671be-dea9-487e-a8c9-ee4921061990"))
+            (uuid "33c8e4d8-3711-4909-9f57-b7c86332f039"))
         (fp_line
             (start 2 1.09)
             (end 2 1.46)
@@ -499,15 +461,47 @@
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "87a894a3-babd-4e94-a8b8-6e926daba4cd"))
+            (uuid "cc8b5bc0-8f3a-4fe5-a384-6f6353de7475"))
         (fp_line
-            (start 2 2.36)
-            (end 2 2.5)
+            (start -0.58 -2.5)
+            (end -2 -2.5)
             (stroke
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "5dd78e42-3cdc-411c-b738-54bd1506def3"))
+            (uuid "6680a4a9-7fd4-4541-ac68-49cfd5798ec5"))
+        (fp_line
+            (start -2 -0.18)
+            (end -2 0.19)
+            (stroke
+                (width 0.25)
+                (type solid))
+            (layer "F.SilkS")
+            (uuid "1533b7c2-8781-46e4-93fd-03f1ba253b2a"))
+        (fp_line
+            (start -2 1.09)
+            (end -2 1.46)
+            (stroke
+                (width 0.25)
+                (type solid))
+            (layer "F.SilkS")
+            (uuid "667b1276-07ca-4ffc-b1d8-e02278d26246"))
+        (fp_line
+            (start -2 2.36)
+            (end -2 2.5)
+            (stroke
+                (width 0.25)
+                (type solid))
+            (layer "F.SilkS")
+            (uuid "f74f0fea-dd10-4c22-a599-cb90cf50f777"))
+        (fp_line
+            (start 2 -2.5)
+            (end 0.6 -2.5)
+            (stroke
+                (width 0.25)
+                (type solid))
+            (layer "F.SilkS")
+            (uuid "b84ce5b8-6f45-4a6a-810e-fb849541d0db"))
         (fp_line
             (start 2 2.5)
             (end -2 2.5)
@@ -515,34 +509,24 @@
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "e79398cf-9ab1-4f74-9906-17e57885f80b"))
-        (fp_arc
-            (start -0.57991 -2.500297)
-            (mid 0.599977 -2.484851)
-            (end -0.58 -2.49)
+            (uuid "3976e443-34c0-4d18-b162-dab889ddea06"))
+        (fp_line
+            (start 2 2.36)
+            (end 2 2.5)
             (stroke
                 (width 0.25)
                 (type solid))
             (layer "F.SilkS")
-            (uuid "7e630712-9ce2-4ad2-9381-61920e9ff5a0"))
-        (fp_circle
-            (center -2.88 -2.8)
-            (end -2.73 -2.8)
+            (uuid "79671079-e513-47ec-b00d-41fab07b9219"))
+        (fp_arc
+            (start -0.58 -2.49)
+            (mid 0.5999775346078611 -2.4848513440559596)
+            (end -0.5799101401422708 -2.5002969197979974)
             (stroke
-                (width 0.3)
+                (width 0.25)
                 (type solid))
-            (fill none)
             (layer "F.SilkS")
-            (uuid "218b8605-8e6f-4cb3-a419-0743dae28cd9"))
-        (fp_circle
-            (center -3.04 -1.89)
-            (end -2.79 -1.89)
-            (stroke
-                (width 0.5)
-                (type solid))
-            (fill none)
-            (layer "Cmts.User")
-            (uuid "1eb7022e-1bac-47ab-9c53-e1fdcec257f7"))
+            (uuid "c6cce51f-ef8e-4cf0-9b80-267989006f59"))
         (fp_circle
             (center -3 -2.45)
             (end -2.97 -2.45)
@@ -551,90 +535,101 @@
                 (type solid))
             (fill none)
             (layer "F.Fab")
-            (uuid "d72f75a9-c0e2-46be-8f8b-8db3047fa2b4"))
+            (uuid "d554fc54-efb7-43a4-bcfa-02d89ac55842"))
+        (fp_circle
+            (center -3.04 -1.89)
+            (end -2.79 -1.89)
+            (stroke
+                (width 0.5)
+                (type solid))
+            (fill none)
+            (layer "Cmts.User")
+            (uuid "7961cd5c-acc1-4e63-821d-f11a88376cde"))
+        (fp_circle
+            (center -2.88 -2.8)
+            (end -2.73 -2.8)
+            (stroke
+                (width 0.3)
+                (type solid))
+            (fill none)
+            (layer "F.SilkS")
+            (uuid "554980a9-95c9-403d-9170-be4ae6667503"))
+        (fp_text user "%R"
+            (at 0 0 0)
+            (layer "F.Fab")
+            (uuid "d57fbabf-8c7f-4b3d-8502-97cc23a9cda8")
+            (effects
+                (font
+                    (size 1 1)
+                    (thickness 0.15))
+                (hide no))
+            (unlocked no))
         (fp_text user "${REFERENCE}"
             (at 0 -5.9 0)
             (layer "F.SilkS")
-            (uuid "62fc3911-0a30-4010-8f8e-ca41d65cc10d")
+            (uuid "015cbaff-6337-4f77-b27d-eff9781b9412")
             (effects
                 (font
-                    (size 0.7 0.7)
-                    (thickness 0.2))
+                    (size 1 1)
+                    (thickness 0.15))
                 (hide no))
             (unlocked no))
-        (fp_text user "${REFERENCE}"
-            (at 0 0 0)
-            (layer "F.Fab")
-            (uuid "ba07ab9e-2b00-4a37-875d-1e0e063b7610")
-            (effects
-                (font
-                    (size 0.7 0.7)
-                    (thickness 0.2))
-                (hide no))
-            (unlocked no))
-        (pad "1" smd oval
-            (at -2.74 -1.9 90)
-            (size 0.6 1.52)
-            (layers "F.Cu" "F.Paste" "F.Mask")
-            (remove_unused_layers no)
-            (uuid "aa44ae15-2769-4d26-aa31-3d1c36c86219")
-            (net 7 "hv"))
-        (pad "2" smd oval
-            (at -2.74 -0.63 90)
-            (size 0.6 1.52)
-            (layers "F.Cu" "F.Paste" "F.Mask")
-            (remove_unused_layers no)
-            (uuid "7d728d6f-c880-47c9-882f-b92c15292edc")
-            (net 4 "line-1"))
-        (pad "3" smd oval
-            (at -2.74 0.63 90)
-            (size 0.6 1.52)
-            (layers "F.Cu" "F.Paste" "F.Mask")
-            (remove_unused_layers no)
-            (uuid "4a8e2301-a687-417b-96b2-596969028948")
-            (net 2 "line"))
-        (pad "4" smd oval
-            (at -2.74 1.91 90)
-            (size 0.6 1.52)
-            (layers "F.Cu" "F.Paste" "F.Mask")
-            (remove_unused_layers no)
-            (uuid "39c49528-7910-433a-a514-55aeee26aea7")
-            (net 6 "gnd"))
         (pad "5" smd oval
             (at 2.74 1.91 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "6c96c2fa-2107-439a-9677-c8eed7005c7a")
+            (uuid "a2218f6b-6ccd-46f0-8e0a-321d73466b93")
             (net 8 "gnd-1"))
         (pad "6" smd oval
             (at 2.74 0.63 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "12e8b2a2-d3f7-4ebc-adf5-fb0cb8ec8b77")
-            (net 5 "line-2"))
+            (uuid "a66b2302-17dc-454d-8cc4-8d7d1de9b215")
+            (net 5 "line-1"))
         (pad "7" smd oval
             (at 2.74 -0.63 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "4507e5d2-6e3f-4475-9920-3dd2a690fc6f")
+            (uuid "383575b8-e69e-483a-b0e6-4b386806964c")
             (net 1 "line-3"))
         (pad "8" smd oval
             (at 2.74 -1.9 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
-            (uuid "1ed5ac29-c5fe-41ba-97d5-0b060946b7bd")
-            (net 3 "hv-1"))
-        (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/SOIC-8_L4.9-W3.9-H1.7-LS6.0-P1.27.step"
-            (offset
-                (xyz 0 0 0))
-            (scale
-                (xyz 1 1 1))
-            (rotate
-                (xyz 0 0 90))))
+            (uuid "42587faa-b9cd-4bbf-a87a-ff6d923c1f98")
+            (net 3 "hv"))
+        (pad "4" smd oval
+            (at -2.74 1.91 90)
+            (size 0.6 1.52)
+            (layers "F.Cu" "F.Paste" "F.Mask")
+            (remove_unused_layers no)
+            (uuid "3fee4eba-5004-4c5f-8259-869b215a0a3f")
+            (net 6 "gnd"))
+        (pad "3" smd oval
+            (at -2.74 0.63 90)
+            (size 0.6 1.52)
+            (layers "F.Cu" "F.Paste" "F.Mask")
+            (remove_unused_layers no)
+            (uuid "8ef92ac9-1b08-44e9-bf92-d5db7cdec8d5")
+            (net 2 "line"))
+        (pad "2" smd oval
+            (at -2.74 -0.63 90)
+            (size 0.6 1.52)
+            (layers "F.Cu" "F.Paste" "F.Mask")
+            (remove_unused_layers no)
+            (uuid "48a5489c-6b5f-4b63-810a-8201f67c3955")
+            (net 4 "line-2"))
+        (pad "1" smd oval
+            (at -2.74 -1.9 90)
+            (size 0.6 1.52)
+            (layers "F.Cu" "F.Paste" "F.Mask")
+            (remove_unused_layers no)
+            (uuid "a378a3d1-3f71-46e2-8d94-9615dda9fc43")
+            (net 7 "hv-1")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "65ab163d-63f8-4349-b685-78f44642524b")
@@ -858,7 +853,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f8dc401f-849e-4721-ab72-e6990b26caf5")
-            (net 3 "hv-1"))
+            (net 3 "hv"))
         (pad "2" smd rect
             (at 0.55 0 180)
             (size 0.79 0.54)
@@ -1089,7 +1084,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5a48f8e1-e4c4-4b59-bbcc-437679c55174")
-            (net 7 "hv"))
+            (net 7 "hv-1"))
         (pad "2" smd rect
             (at 0.55 0 0)
             (size 0.79 0.54)
@@ -1110,7 +1105,7 @@
                 (font
                     (size 0.7 0.7)
                     (thickness 0.2))))
-        (property "Value" "10kΩ ±1% 62.5mW"
+        (property "Value" "1kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -1155,7 +1150,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C25744"
+        (property "LCSC" "C11702"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1164,7 +1159,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1002TCE"
+        (property "Partnumber" "0402WGF1001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1182,7 +1177,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1284,14 +1279,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "42ef3eac-649b-4329-acc8-9c4901eec718")
-            (net 5 "line-2"))
+            (net 5 "line-1"))
         (pad "2" smd rect
             (at 0.43 0 270)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "55c43210-906c-43e8-9cd4-d1cf51b5b378")
-            (net 3 "hv-1")))
+            (net 3 "hv")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "c5bc12a4-0514-4398-afd2-0d5f4642524b")
@@ -1305,7 +1300,7 @@
                 (font
                     (size 0.7 0.7)
                     (thickness 0.2))))
-        (property "Value" "10kΩ ±1% 62.5mW"
+        (property "Value" "1kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -1350,7 +1345,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C25744"
+        (property "LCSC" "C11702"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1359,7 +1354,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1002TCE"
+        (property "Partnumber" "0402WGF1001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1377,7 +1372,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1479,14 +1474,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "edb28327-21f9-4e37-857d-fb83b73b5aa4")
-            (net 4 "line-1"))
+            (net 4 "line-2"))
         (pad "2" smd rect
             (at 0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c71367c9-9abf-458a-8c3b-78e098f452c4")
-            (net 7 "hv")))
+            (net 7 "hv-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "d110506c-d452-49c7-b5a0-b3d94642524b")
@@ -1500,7 +1495,7 @@
                 (font
                     (size 0.7 0.7)
                     (thickness 0.2))))
-        (property "Value" "10kΩ ±1% 62.5mW"
+        (property "Value" "1kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -1545,7 +1540,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C25744"
+        (property "LCSC" "C11702"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1554,7 +1549,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1002TCE"
+        (property "Partnumber" "0402WGF1001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1572,7 +1567,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1681,7 +1676,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "818f7911-746b-47df-8689-678346763aee")
-            (net 7 "hv")))
+            (net 7 "hv-1")))
     (segment
         (start 152.24 99.87)
         (end 153.705179 99.87)

@@ -11,3 +11,4 @@ component BORN_SMBJ26A from TVS:
     # pins
     anode ~ pin 2
     cathode ~ pin 1
+

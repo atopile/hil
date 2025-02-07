@@ -1,7 +1,8 @@
+import ElectricPower, ElectricLogic, SPI
+import Capacitor, Resistor
+from "interfaces.ato" import CAN_TTL
 from "components/lucki_l327s400h11l.ato" import Lucki_L327S400H11L
-from "generics/interfaces.ato" import Power, SPI, Pair, CAN_TTL
 from "generics/oscillators.ato" import Oscillator
-from "generics/capacitors.ato" import Capacitor
 
 module Microchip_Tech_MCP2518FDT_E_QBB:
     """Microchip_Tech_MCP2518FDT_E_QBB module"""
@@ -9,17 +10,19 @@ module Microchip_Tech_MCP2518FDT_E_QBB:
     controller = new _Microchip_Tech_MCP2518FDT_E_QBB
 
     # Power
-    power_3v3 = new Power
+    power_3v3 = new ElectricPower
     power_3v3.vcc ~ controller.VDD
     power_3v3.gnd ~ controller.VSS
     power_3v3.gnd ~ controller.EPAD
 
     # SPI
     spi = new SPI
-    spi.sck ~ controller.SCK
-    spi.mosi ~ controller.SDI
-    spi.miso ~ controller.SDO
-    spi.cs ~ controller.nCS
+    spi.sclk.line ~ controller.SCK
+    spi.mosi.line ~ controller.SDI
+    spi.miso.line ~ controller.SDO
+    spi_cs = new ElectricLogic
+    spi_cs.line ~ controller.nCS
+    spi_cs.reference ~ power_3v3
 
     # CAN_TTL
     can_ttl = new CAN_TTL
@@ -27,27 +30,27 @@ module Microchip_Tech_MCP2518FDT_E_QBB:
     can_ttl.tx ~ controller.TXCAN
 
     # Interrupts
-    interrupt_0 = new Pair
-    interrupt_0.io ~ controller.INT0h_GPIO0_XSTBY
-    interrupt_0.gnd ~ power_3v3.gnd
+    interrupt_0 = new ElectricLogic
+    interrupt_0.line ~ controller.INT0h_GPIO0_XSTBY
+    interrupt_0.reference ~ power_3v3
 
-    interrupt_1 = new Pair
-    interrupt_1.io ~ controller.INT1h_GPIO1
-    interrupt_1.gnd ~ power_3v3.gnd
+    interrupt_1 = new ElectricLogic
+    interrupt_1.line ~ controller.INT1h_GPIO1
+    interrupt_1.reference ~ power_3v3
 
-    interrupt_h = new Pair
-    interrupt_h.io ~ controller.INTh
-    interrupt_h.gnd ~ power_3v3.gnd
+    interrupt_h = new ElectricLogic
+    interrupt_h.line ~ controller.INTh
+    interrupt_h.reference ~ power_3v3
 
     # Clock
-    clock = new Pair
-    clock.io ~ controller.CLKO_SOF
-    clock.gnd ~ power_3v3.gnd
+    clock = new ElectricLogic
+    clock.line ~ controller.CLKO_SOF
+    clock.reference ~ power_3v3
 
     # Decoupling
     decoupling_cap = new Capacitor
     decoupling_cap.capacitance = 1uF +/- 20%
-    decoupling_cap.package = "0402"
+    decoupling_cap.package = "C0402"
     power_3v3 ~ decoupling_cap.power
 
     # oscillator
@@ -65,7 +68,7 @@ component _Microchip_Tech_MCP2518FDT_E_QBB:
     lcsc_id = "C621395"
     manufacturer = "Microchip Tech"
     mpn = "MCP2518FDT-E/QBB"
-    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2210180630_Microchip-Tech-MCP2518FDT-E-QBB_C621395.pdf"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2210180630_Microchip-Tech-MCP2518FDT-E-QBB_C621395.pdf"
     designator_prefix = "U"
 
     # pins

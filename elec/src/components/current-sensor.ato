@@ -49,9 +49,11 @@ component INA185A2IDRLR:
 
     output = new ElectricSignal
     output.line ~ pin 1
+    output.reference ~ power
 
     ref = new ElectricSignal
     ref.line ~ pin 5
+    ref.reference ~ power
 
     input = new DifferentialPair
     input.p.line ~ pin 3

@@ -1,11 +1,11 @@
-from "generics/opamps.ato" import Opamp
+import OpAmp
 
-component Texas_Instruments_LM358DR from Opamp:
+component Texas_Instruments_LM358DR from OpAmp:
     """Texas_Instruments_LM358DR component"""
     lcsc_id = "C5423"
     manufacturer = "Texas Instruments"
     mpn = "LM358DR"
-    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1810181640_Texas-Instruments-LM358DR_C5423.pdf"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1810181640_Texas-Instruments-LM358DR_C5423.pdf"
     designator_prefix = "U"
 
     # pins
