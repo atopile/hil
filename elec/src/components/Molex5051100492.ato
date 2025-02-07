@@ -1,0 +1,14 @@
+
+component Molex5051100492:
+    """
+    Molex 4 pin 5051100492 FFC/FPC connector
+    """
+    mpn = "5051100492"
+    lcsc_id = "C588007"
+    price_usd = 0.1316
+    # footprint = "CON_5051100492_MOL"
+    # Pins
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4

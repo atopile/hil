@@ -3,9 +3,9 @@ component Molex5030912221:
     """
     Molex VSH connector 5030912221
     """
-    mpn = "C17276654"
+    mpn = "5030912221"
     lcsc_id = "C17276654"
-    footprint = "CON_5030912221_MOL"
+    # footprint = "CON_5030912221_MOL"
 
     signal p1 ~ pin 1
     signal p2 ~ pin 2

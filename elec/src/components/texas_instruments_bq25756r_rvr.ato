@@ -115,7 +115,7 @@ module Texas_Instruments_BQ25756RRVR:
     # Input Current limit resistor
     ilim_resistor = new Resistor
     # TODO: make this a variable
-    ilim_resistor.package = "0402"
+    ilim_resistor.package = "R0402"
     ilim_resistor.resistance = 2.49kohm +/- 1%  # Application note value for 8A current limit
     controller.ILIM_HIZ ~ ilim_resistor.p1
     ilim_resistor.p2 ~ controller.PGND
@@ -194,7 +194,7 @@ component _Texas_Instruments_BQ25756RRVR:
     lcsc_id = "C19272232"
     manufacturer = "Texas Instruments"
     mpn = "BQ25756RRVR"
-    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2312012001_Texas-Instruments-BQ25756RRVR_C19272232.pdf"
+    # datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2312012001_Texas-Instruments-BQ25756RRVR_C19272232.pdf"
     designator_prefix = "U"
 
     # pins
