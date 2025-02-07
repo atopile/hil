@@ -60,3 +60,7 @@ dependencies:
   version_spec:
   link_broken: false
   path: .ato/modules/generics
+- name: ldk220m-r
+  version_spec:
+  link_broken: false
+  path: .ato/modules/ldk220m-r
