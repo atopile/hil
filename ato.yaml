@@ -5,9 +5,6 @@ builds:
   space-bms-hil:
     entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
 
-  cm4-example:
-    entry: elec/src/examples/cm4-example.ato:CM4Example
-
   # IO Blocks
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
@@ -45,21 +42,9 @@ builds:
     entry: elec/src/components/cell.ato:Cell
     exclude_targets: [mfg-data]
 
-  cellsim-8ch:
-    entry: elec/src/blocks/cellsim-8ch.ato:CellSim8Ch
-    exclude_targets: [mfg-data]
-
-  variable-load:
-    entry: elec/src/variable_load.ato:VariableLoad
-    exclude_targets: [mfg-data]
-
   # Controllers and Interconnect
   controller-cm4:
     entry: elec/src/blocks/controller-cm4.ato:ControllerCM4
-    exclude_targets: [mfg-data]
-
-  controller-esp32:
-    entry: elec/src/blocks/controller-esp32.ato:ControllerESP32
     exclude_targets: [mfg-data]
 
   isolator-i2c:
@@ -74,35 +59,28 @@ builds:
     entry: elec/src/blocks/power-usbpd.ato:PowerUSBPD
     exclude_targets: [mfg-data]
 
-  ethernet:
-    entry: elec/src/components/ethernet.ato:W5500Ethernet
-    exclude_targets: [mfg-data]
-
   buck-boost:
     entry: 
       elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
+  
   analog-out-4ch:
     entry: elec/src/blocks/analog-out-4ch.ato:AnalogOut4ch
-
-  regulator:
-    entry: 
-      elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
+    exclude_targets: [mfg-data]
+ 
+  boost-converter:
+    entry: elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
     exclude_targets: [mfg-data]
 
 dependencies:
 - name: generics
   version_spec:
   link_broken: false
-  path:
+  path: .ato/modules/generics
 - name: ldk220m-r
-  version_spec: '@1c2a973953da33a23d7afdce0fa1f7fdf68dc68e'
-  link_broken: false
-  path: .ato/modules/ldk220m-r
-- name: jst-gh
   version_spec:
   link_broken: false
-  path: .ato/modules/jst-gh
+  path: .ato/modules/ldk220m-r
 - name: lv2842xlvddcr
   version_spec: '@b2676b2f3315b39709fb498f429856e4725867eb'
   link_broken: false

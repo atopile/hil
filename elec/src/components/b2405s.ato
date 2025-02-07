@@ -1,0 +1,49 @@
+import ElectricPower, Regulator
+import Capacitor, PoweredLED
+
+module B2405S_2WR2 from Regulator:
+    """
+    Isolated 2W DC-DC converter
+        -Input Voltage: 10.8V to 13.2V
+        -Output Voltage: 5V
+        -Output Current: 400mA
+    """
+    power_in = new ElectricPower 
+    power_out = new ElectricPower
+
+    converter = new _B2405S_2WR2
+    converter.power_in ~ power_in
+    converter.power_out ~ power_out
+
+    led = new PoweredLED
+    led.power ~ power_out
+    led.current_limiting_resistor.package = "R0402"
+    led.current_limiting_resistor.resistance = 1kohm +/- 10%
+    led.led.lcsc_id = "C12624"
+
+    input_cap = new Capacitor
+    input_cap.capacitance = 2.2uF +/- 10%
+    input_cap.package = "C0805"
+    power_in ~ input_cap.power
+
+    output_cap = new Capacitor
+    output_cap.capacitance = 10uF +/- 10%
+    output_cap.package = "C0805"
+    power_out ~ output_cap.power
+
+
+component _B2405S_2WR2:
+    # 2W, 12V in 5V out
+    lcsc_id = "C5369484"
+    # pins
+    power_in = new ElectricPower
+    power_in.vcc ~ pin 1
+    power_in.gnd ~ pin 2
+
+    assert power_in.voltage within 10.8V to 13.2V
+
+    power_out = new ElectricPower
+    power_out.vcc ~ pin 6
+    power_out.gnd ~ pin 4
+
+    assert power_out.voltage within 4.5V to 5.5V

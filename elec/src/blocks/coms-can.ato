@@ -1,10 +1,10 @@
+import ElectricPower, Capacitor, Resistor, SPI
+from "interfaces.ato" import CAN
+
 from "components/ylptec_b0505s2wr3.ato" import YLPTEC_B0505S_2WR3
 from "components/nexperia_pe_sd1c_an215.ato" import Nexperia_PESD1CAN_215
 from "components/texas_instruments_is_o1044b_dr.ato" import Texas_Instruments_ISO1044BDR
 from "components/microchip_tech_mc_p2518f_dteqb_b.ato" import Microchip_Tech_MCP2518FDT_E_QBB
-from "generics/capacitors.ato" import Capacitor
-from "generics/resistors.ato" import Resistor
-from "generics/interfaces.ato" import CAN, SPI, Power
 
 module ComsCANISO:
     """
@@ -16,11 +16,11 @@ module ComsCANISO:
     # external interfaces
     spi = new SPI
     can = new CAN
-    power_3v3 = new Power
-    power_5v = new Power
+    power_3v3 = new ElectricPower
+    power_5v = new ElectricPower
 
     # internal interfaces
-    _power_5v_iso = new Power
+    _power_5v_iso = new ElectricPower
 
     # Components
     regulator = new YLPTEC_B0505S_2WR3
@@ -76,4 +76,3 @@ module CANTermination:
 
     _midpoint ~ capacitor_can.p1
     capacitor_can.p2 ~ gnd
-    

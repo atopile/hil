@@ -41,7 +41,7 @@ component _Texas_Instruments_ISO1044BDR:
     lcsc_id = "C2878225"
     manufacturer = "Texas Instruments"
     mpn = "ISO1044BDR"
-    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2302220108_Texas-Instruments-ISO1044BDR_C2878225.pdf"
+    # datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2302220108_Texas-Instruments-ISO1044BDR_C2878225.pdf"
     designator_prefix = "U"
 
     # pins

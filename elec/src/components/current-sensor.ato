@@ -1,50 +1,60 @@
-from "generics/interfaces.ato" import Power
-from "generics/resistors.ato" import Resistor
-from "generics/interfaces.ato" import Power, DiffPair
+import ElectricSignal, Resistor, ElectricPower, DifferentialPair
+
 
 module CurrentSensor:
     sensor = new INA185A2IDRLR
     shunt = new Resistor
-    power = new Power
-    power_in = new Power
-    power_out = new Power
-    signal output ~ sensor.out
-    current: current
+    power = new ElectricPower
+    power_in = new ElectricPower
+    power_out = new ElectricPower
+    output = new ElectricSignal
 
-    # power_in.current += power_out.current
-    # power_in.voltage &= power_out.voltage - power_in.current * shunt.value
+    max_current: current  # The designed current limit to measure to
+
+    output ~ sensor.output
 
     # Shunt config
-    assert shunt.value * current * sensor.gain within 1.2V to 3V
-    shunt.package = "0805"
+    # This ensures we're using a reasonable range of the amplifier's output
+    # assert shunt.value * max_current * sensor.gain within 2.5V to 3V
+    # 1.5x -> 50% margin on the the power rating is expected
+    # assert max_current ** 2 * shunt.value * 1.5 <= shunt.max_power
+    shunt.package = "R0805"
 
     # Shunt connections
     power_in.vcc ~ shunt.p1; shunt.p2 ~ power_out.vcc
     power_in.gnd ~ power_out.gnd
 
     # Sensor connections
-    sensor.input.p ~ shunt.p1
-    sensor.input.n ~ shunt.p2
+    sensor.input.p.line ~ shunt.p1
+    sensor.input.n.line ~ shunt.p2
 
-    sensor.ref ~ power_in.gnd
+    sensor.ref.line ~ power_in.gnd
 
     # Power connections
     power ~ sensor.power
+    power ~ output.reference
+
 
 component INA185A2IDRLR:
-    # component NTZD3154NT1G
+    """Current sense amplifier IC"""
     footprint = "SOT-563_L1.6-W1.2-P0.50-LS1.6-TL"
     lcsc_id = "C2059320"
-    mpn = "C2059320"
+
+    # Fixed gain provided by this variant
     gain = 50
 
-    power = new Power
+    power = new ElectricPower
     power.vcc ~ pin 6
     power.gnd ~ pin 2
 
-    signal out ~ pin 1
-    signal ref ~ pin 5
+    output = new ElectricSignal
+    output.line ~ pin 1
+    output.reference ~ power
 
-    input = new DiffPair
-    input.p ~ pin 3
-    input.n ~ pin 4
+    ref = new ElectricSignal
+    ref.line ~ pin 5
+    ref.reference ~ power
+
+    input = new DifferentialPair
+    input.p.line ~ pin 3
+    input.n.line ~ pin 4

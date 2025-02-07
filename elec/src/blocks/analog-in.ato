@@ -1,10 +1,10 @@
-from "components/amplifier.ato" import Amplifier
-from "components/tvs.ato" import TVS
-from "generics/vdivs.ato" import VDiv
-from "components/ads1115.ato" import ADS1115IDGSR
-from "generics/interfaces.ato" import Power, I2C, Pair
-from "components/dowo_smf33a.ato" import DOWO_SMF3_3A
+import ElectricSignal, I2C, ElectricPower
+from "vdivs.ato" import VDiv
+
 from "blocks/isolator-i2c.ato" import IsolatorI2C
+from "blocks/protection-tvs.ato" import TVSProtection
+from "components/amplifier.ato" import Amplifier
+from "components/ads1115.ato" import ADS1115IDGSR
 from "components/ylptec_b0505s2wr3.ato" import YLPTEC_B0505S_2WR3
 from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 
@@ -17,34 +17,33 @@ module AnalogIn:
     - VDiv
     """
     # External Interfaces
-    power_3v3 = new Power
+    power_3v3 = new ElectricPower
     i2c = new I2C
-    input = new Pair
+    input = new ElectricSignal
 
     # Components
     adc = new ADS1115IDGSR
     amplifier = new Amplifier
-    tvs = new TVS
+    tvs = new TVSProtection
     vdiv = new VDiv
 
-    tvs.diode -> DOWO_SMF3_3A
+    tvs.diode.lcsc_id = "C152100"
 
     # Power
     power_3v3 ~ adc.power
     power_3v3 ~ amplifier.power_in
 
     # Connections
-    input.io ~ vdiv.top
-    input.gnd ~ vdiv.bottom
-    input.gnd ~ power_3v3.gnd
-    vdiv.out ~ tvs.input.io
-    tvs.output ~ amplifier.input
-    amplifier.output.io ~ adc.AIN0
+    input.line ~ vdiv.top
+    input.reference.lv ~ vdiv.bottom
+    input.reference ~ power_3v3
+    vdiv.out ~ tvs.input.line; tvs.output ~ amplifier.input; amplifier.output.line ~ adc.input_1
+
     adc.i2c ~ i2c
 
     # Protection
-    vdiv.out ~ tvs.input.io
-    power_3v3.gnd ~ tvs.input.gnd
+    vdiv.out ~ tvs.input.line
+    power_3v3.gnd ~ tvs.input.reference.gnd
 
     # Power
     power_3v3 ~ amplifier.power_in
@@ -57,9 +56,9 @@ module AnalogInIsolated:
     """
     # External Interfaces
     i2c = new I2C
-    power_5v = new Power
-    power_3v3 = new Power
-    input = new Pair
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
+    input = new ElectricSignal
 
     # Components
     analog_in = new AnalogIn
@@ -68,8 +67,8 @@ module AnalogInIsolated:
     regulator_3v3_isolated = new LDK220M_R
 
     # Internal power
-    _power_5v_isolated = new Power
-    _power_3v3_isolated = new Power
+    _power_5v_isolated = new ElectricPower
+    _power_3v3_isolated = new ElectricPower
 
     # I2C
     i2c ~ i2c_isolator.i2c_non_isolated
@@ -84,5 +83,5 @@ module AnalogInIsolated:
     _power_3v3_isolated ~ i2c_isolator.power_isolated
     power_3v3 ~ i2c_isolator.power_non_isolated
 
-    # Connections  
+    # Connections
     input ~ analog_in.input

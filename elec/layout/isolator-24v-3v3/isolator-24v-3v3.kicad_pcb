@@ -105,11 +105,11 @@
             (scaleselection 1)
             (outputdirectory "")))
     (net 0 "")
-    (net 1 "gnd-1")
+    (net 1 "gnd")
     (net 2 "cathode")
     (net 3 "hv")
     (net 4 "cathode-1")
-    (net 5 "gnd")
+    (net 5 "gnd-1")
     (net 6 "anode")
     (net 7 "CB")
     (net 8 "hv-1")
@@ -353,7 +353,7 @@
             (layers "*.Cu" "*.Mask")
             (remove_unused_layers no)
             (uuid "2e174c93-38a1-44b1-b4e9-ce236698ec5f")
-            (net 5 "gnd"))
+            (net 5 "gnd-1"))
         (pad "4" thru_hole circle
             (at 1.27 0 0)
             (size 1.8 1.8)
@@ -361,7 +361,7 @@
             (layers "*.Cu" "*.Mask")
             (remove_unused_layers no)
             (uuid "21bff261-e25f-4eb3-ac05-14d0c1b066dd")
-            (net 1 "gnd-1"))
+            (net 1 "gnd"))
         (pad "6" thru_hole circle
             (at 6.35 0 0)
             (size 1.8 1.8)
@@ -556,7 +556,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ade77673-8042-4ff4-986a-b36fd07e4b77")
-            (net 5 "gnd"))
+            (net 5 "gnd-1"))
         (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/SOD-323_L1.7-W1.3-H1.1-LS2.5.step"
             (offset
                 (xyz -0.14 0 0))
@@ -577,7 +577,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" ""
+        (property "Value" "2.75V"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -1257,7 +1257,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "d9a92a8e-372c-45c4-abc9-c277d61fbc70")
-            (net 5 "gnd"))
+            (net 5 "gnd-1"))
         (pad "3" smd rect
             (at 1.35 -0.95 0)
             (size 1.1 0.6)
@@ -1523,7 +1523,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5ad9dbf8-2a4e-4305-aa4b-ecaf6497c5f8")
-            (net 5 "gnd")))
+            (net 5 "gnd-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "aff1042d-8efb-4b4a-9925-d92b4642524b")
@@ -1718,7 +1718,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "1638d369-1a88-4500-9676-8d0469a5ebc7")
-            (net 1 "gnd-1")))
+            (net 1 "gnd")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "bba41977-e3bf-4646-8f79-1ea84642524b")
@@ -1949,7 +1949,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "114edcb4-99b8-4d0f-9bf8-bfc2ce4c66ef")
-            (net 5 "gnd")))
+            (net 5 "gnd-1")))
     (footprint "atopile:C0805-3b2e55"
         (layer "F.Cu")
         (uuid "d8275113-1b58-43a5-b385-ea124642524b")
@@ -2180,7 +2180,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f46d5533-d121-4bac-838c-cb967ee84a47")
-            (net 5 "gnd")))
+            (net 5 "gnd-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "f5c44fff-676f-41e6-9fa3-8eb84642524b")
@@ -2194,7 +2194,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "1kΩ ±1% 62.5mW"
+        (property "Value" "infΩ infW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -2239,7 +2239,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C2906941"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2248,7 +2248,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "FRC0402J472 TS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2257,7 +2257,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+        (property "Manufacturer" "FOJAN"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2266,7 +2266,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±5% 4.7kΩ 0402  Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2570,7 +2570,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "bedadf75-700f-494e-9dfe-a51ea282b2f9")
-            (net 5 "gnd")))
+            (net 5 "gnd-1")))
     (footprint "lib:IND-SMD_L4.0-W4.0"
         (layer "F.Cu")
         (uuid "fd830115-4005-46cb-8d95-27254642524b")
@@ -2584,7 +2584,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" ""
+        (property "Value" "10µH ±20%"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -3003,4 +3003,4 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4b1c95b6-73c8-45da-a624-01e99faec39d")
-            (net 1 "gnd-1"))))
+            (net 1 "gnd"))))

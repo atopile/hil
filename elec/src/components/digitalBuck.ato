@@ -1,43 +1,36 @@
-from "generics/interfaces.ato" import Power
-from "generics/capacitors.ato" import Capacitor
-from "generics/resistors.ato" import Resistor
-from "generics/inductors.ato" import Inductor
+import ElectricPower, ElectricSignal, Capacitor, Resistor, Inductor
 
 from "components/digital-regulator.ato" import DigitalRegulator
-from "components/mwsa0402s.ato" import MWSA0402S_2R2MT
+
 
 module DigitalBuck from DigitalRegulator:
     """
     Buck regulator with adjustable output voltage
-    controled via a DAC with I2C interface
+    controled via a DAC with I2C interface 
     """
     regulator = new TPS563201DDCR
 
-    # Configure parameters
-    power_in.voltage &= 4.5V to 17V
-    power_out.voltage &= 0.768V to 7V
-    efficiency = 0.9
-
-    power_in.current -= power_out.current * (power_out.voltage / power_in.voltage) / efficiency
-
+    # Connections
     power_in.vcc ~ regulator.VIN
     power_in.gnd ~ regulator.GND
-    power_out.gnd ~ regulator.GND
+    power_out.gnd ~ regulator.GND   
 
-    regulator.VFB ~ feedback_div.out
+    # Feedback
+    regulator.VFB ~ feedback_div.output.line
 
-    dac.A0 ~ power_in.vcc
+    # DAC config
+    dac.address_bit1.line ~ power_in.vcc
 
     # Input caps
     input_cap_1 = new Capacitor
     input_cap_2 = new Capacitor
     input_cap_3 = new Capacitor
-    input_cap_1.value = 10uF +/- 10%
-    input_cap_2.value = 10uF +/- 10%
-    input_cap_3.value = 100nF +/- 10%
-    input_cap_1.package = "0805"
-    input_cap_2.package = "0805"
-    input_cap_3.package = "0402"
+    input_cap_1.capacitance = 10uF +/- 20%
+    input_cap_2.capacitance = 10uF +/- 20%
+    input_cap_3.capacitance = 100nF +/- 20%
+    input_cap_1.package = "C0805"
+    input_cap_2.package = "C0805"
+    input_cap_3.package = "C0402"
     power_in ~ input_cap_1.power
     power_in ~ input_cap_2.power
     power_in ~ input_cap_3.power
@@ -46,41 +39,41 @@ module DigitalBuck from DigitalRegulator:
     output_cap_1 = new Capacitor
     output_cap_2 = new Capacitor
     output_cap_3 = new Capacitor
-    output_cap_1.value = 10uF +/- 10%
-    output_cap_2.value = 10uF +/- 10%
-    output_cap_3.value = 10uF +/- 10%
-    output_cap_1.package = "0805"
-    output_cap_2.package = "0805"
-    output_cap_3.package = "0805"
+    output_cap_1.capacitance = 10uF +/- 20%
+    output_cap_2.capacitance = 10uF +/- 20%
+    output_cap_3.capacitance = 10uF +/- 20%
+    output_cap_1.package = "C0805"
+    output_cap_2.package = "C0805"
+    output_cap_3.package = "C0805"
     power_out ~ output_cap_1.power
     power_out ~ output_cap_2.power
     power_out ~ output_cap_3.power
 
     # Bootstrap cap
     bootstrap_cap = new Capacitor
-    bootstrap_cap.value = 100nF +/- 10%
-    bootstrap_cap.package = "0402"
+    bootstrap_cap.capacitance = 100nF +/- 20%
+    bootstrap_cap.package = "C0402"
     regulator.VBST ~ bootstrap_cap.p1
     bootstrap_cap.p2 ~ regulator.SW
 
     # Inductor
     inductor = new Inductor
-    inductor -> MWSA0402S_2R2MT
+    inductor.lcsc_id = "C408335"
     regulator.SW ~ inductor.p1
     inductor.p2 ~ power_out.vcc
 
     # Enable
     enable_resistor = new Resistor
-    enable_resistor.value = 10kohm +/- 5%
-    enable_resistor.package = "0402"
-    enable ~ enable_resistor.p1
+    enable_resistor.resistance = 10kohm +/- 5%
+    enable_resistor.package = "R0402"
+    enable.line ~ enable_resistor.p1
     enable_resistor.p2 ~ regulator.EN
 
 component TPS563201DDCR:
     # component TPS563201DDCR
     footprint = "SOT-23-6_L2.9-W1.6-P0.95-LS2.8-BL"
     lcsc_id = "C116592"
-    mpn = "C116592"
+
     vref = 0.768V
 
     # power_out.current += 3A

@@ -5,7 +5,7 @@ component Lucki_L327S400H11L from Crystal:
     lcsc_id = "C5261245"
     manufacturer = "Lucki"
     mpn = "L327S400H11L"
-    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2212021030_Lucki-L327S400H11L_C5261245.pdf"
+    # datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2212021030_Lucki-L327S400H11L_C5261245.pdf"
     designator_prefix = "U"
 
     # pins

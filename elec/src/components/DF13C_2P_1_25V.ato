@@ -1,5 +1,3 @@
-from "generics/interfaces.ato" import Pair
-
 component DF13C_2P_1_25V:
     footprint = "CON2_1X2_U_DF13"
     lcsc_id = "C17644483"

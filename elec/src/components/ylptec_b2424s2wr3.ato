@@ -38,7 +38,7 @@ component _YLPTEC_B2424S_2WR3:
     lcsc_id = "C5369487"
     manufacturer = "YLPTEC"
     mpn = "B2424S-2WR3"
-    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2304271701_YLPTEC-B2424S-2WR3_C5369487.pdf"
+    # datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2304271701_YLPTEC-B2424S-2WR3_C5369487.pdf"
     designator_prefix = "U"
 
     # Interfaces
