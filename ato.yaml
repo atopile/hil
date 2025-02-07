@@ -52,5 +52,11 @@ builds:
     exclude_targets: [mfg-data]
 
   buck-boost:
-    entry: elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
+    entry: 
+      elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
+dependencies:
+- name: generics
+  version_spec:
+  link_broken: false
+  path: .ato/modules/generics
