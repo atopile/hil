@@ -1,0 +1,15 @@
+component PZ254_2_04_S:
+    # component PZ254-2-04-S
+    footprint = "HDR-SMD_8P-P2.54-V-M-R2-C4-LS7.4"
+    lcsc_id = "C3294462"
+    mpn = "C3294462"
+    # pins
+    signal p1 ~ pin 1
+    signal p8 ~ pin 8
+    signal p3 ~ pin 3
+    signal p6 ~ pin 6
+    signal p5 ~ pin 5
+    signal p4 ~ pin 4
+    signal p7 ~ pin 7
+    signal p2 ~ pin 2
+

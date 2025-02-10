@@ -1,4 +1,5 @@
 import ElectricPower, Electrical
+from "resistors.ato" import I2CPullup
 
 from "blocks/controller-cm4.ato" import ControllerCM4
 from "blocks/power-usbpd.ato" import PowerUSBPD
@@ -21,6 +22,8 @@ from "components/Molex5030912221.ato" import Molex5030912221
 from "components/Molex5051101292.ato" import Molex5051101292
 from "components/Molex5051100492.ato" import Molex5051100492
 from "components/Molex5026030270.ato" import Molex5026030270
+
+from "blocks/debug-saleae.ato" import DebugSaleae
 
 # TODO: DI2C Transceiver
 
@@ -106,7 +109,10 @@ module SpaceBMSHIL:
     gnd.override_net_name = "GND"
 
     # I2C
-    controller.i2c ~ mux_1.i2c
+    i2c_pullup = new I2CPullup
+    i2c_pullup.power ~ power_3v3
+    i2c_pullup.i2c ~ controller.i2c1
+    controller.i2c1 ~ mux_1.i2c
     mux_1.i2c0 ~ cell_1.i2c
     # mux_1.i2c1 ~ cell_2.i2c
     mux_1.i2c2 ~ thermistors.i2c
@@ -114,8 +120,8 @@ module SpaceBMSHIL:
     mux_1.i2c4 ~ relay.i2c
 
     # Name data lines
-    controller.i2c.sda.override_net_name = "CONTROLLER_I2C_SDA"
-    controller.i2c.scl.override_net_name = "CONTROLLER_I2C_SCL"
+    controller.i2c1.sda.override_net_name = "CONTROLLER_I2C_SDA"
+    controller.i2c1.scl.override_net_name = "CONTROLLER_I2C_SCL"
     cell_1.i2c.sda.override_net_name = "CELL_1_I2C_SDA"
     cell_1.i2c.scl.override_net_name = "CELL_1_I2C_SCL"
     # cell_2.i2c.sda.override_net_name = "CELL_2_I2C_SDA"
@@ -195,4 +201,7 @@ module SpaceBMSHIL:
     thermistors.output_4.override_net_name = "THERMISTOR_4"
     buck_boost.power_out.vcc.override_net_name = "BOOST_VCC"
     buck_boost.power_out.gnd.override_net_name = "BOOST_GND"
-    
+
+    # Debug
+    saleae_header = new DebugSaleae
+    saleae_header.i2c ~ controller.i2c1

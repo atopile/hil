@@ -63,18 +63,16 @@ builds:
     entry: 
       elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
-  
   analog-out-4ch:
     entry: elec/src/blocks/analog-out-4ch.ato:AnalogOut4ch
     exclude_targets: [mfg-data]
- 
   boost-converter:
-    entry: elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
+    entry: 
+      elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
     exclude_targets: [mfg-data]
 
   variable-resistor:
-    entry:
-      elec/src/blocks/variable-resistor.ato:VariableResistor
+    entry: elec/src/blocks/variable-resistor.ato:VariableResistor
     exclude_targets: [mfg-data]
 
 dependencies:
@@ -90,3 +88,7 @@ dependencies:
   version_spec: '@b2676b2f3315b39709fb498f429856e4725867eb'
   link_broken: false
   path: .ato/modules/lv2842xlvddcr
+- name: saleae-header
+  version_spec: '@d8281da01a1efdde7779499647c31a10ab47ec45'
+  link_broken: false
+  path: .ato/modules/saleae-header
