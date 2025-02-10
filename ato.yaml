@@ -92,3 +92,7 @@ dependencies:
   version_spec: '@d8281da01a1efdde7779499647c31a10ab47ec45'
   link_broken: false
   path: .ato/modules/saleae-header
+- name: xt-connectors
+  version_spec: '@3719ec970da96df05b6763671993ca2276df968b'
+  link_broken: false
+  path: .ato/modules/xt-connectors

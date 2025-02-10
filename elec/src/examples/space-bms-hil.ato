@@ -17,7 +17,7 @@ from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 from "components/tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
 
 # Connectors
-from "xt-connectors.git/xt-connectors.ato" import XT30_Female_Right_Angle
+from "xt-connectors/xt-connectors.ato" import XT30_Female_Right_Angle
 from "components/Molex5030912221.ato" import Molex5030912221
 from "components/Molex5051101292.ato" import Molex5051101292
 from "components/Molex5051100492.ato" import Molex5051100492
