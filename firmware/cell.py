@@ -1,7 +1,7 @@
-from smbus2 import SMBus # type: ignore
 import time
 import ADS1x15 # type: ignore # DAC libary
-import adafruit_MCP4725 #ADC library
+from smbus2 import SMBus # type: ignore
+from mcp4725 import MCP4725
 
 # I2C Addresses
 
@@ -23,8 +23,8 @@ class Cell:
         self.bus = bus
         self.enabled = False
         self.adc = ADS1x15.ADS1115(1)
-        self.buck_dac = adafruit_MCP4725.MCP4725(address=0x61)
-        self.ldo_dac = adafruit_MCP4725.MCP4725(addres=0x60)
+        self.buck_dac = MCP4725(address=0x61)
+        self.ldo_dac = MCP4725(address=0x60)
 
         # Mapping for GPIO expander pins
         self.GPIO = {
@@ -158,21 +158,21 @@ class Cell:
     def set_buck_voltage(self, voltage):
         """
         Set the buck converter voltage.
-        (Stub implementation: prints the calculated setpoint.)
         """
         self.set_mux()
         setpoint = self.calculate_setpoint(voltage, use_buck_calibration=True)
         print(f"[Cell {self.cell_num}] Buck DAC set to {setpoint} (voltage: {voltage} V)")
-        self.buck_dac.normalized
+        self.buck_dac.value = setpoint
+
     def set_ldo_voltage(self, voltage):
         """
         Set the LDO voltage.
-        (Stub implementation: prints the calculated setpoint.)
         """
         self.set_mux()
         setpoint = self.calculate_setpoint(voltage, use_buck_calibration=False)
         print(f"[Cell {self.cell_num}] LDO DAC set to {setpoint} (voltage: {voltage} V)")
-        self.ldo_dac.setVoltage(setpoint, False)
+        self.ldo_dac.value(setpoint, False)
+
     def turn_on_output_relay(self):
         """
         Turn on the output relay.
