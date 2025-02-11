@@ -1,97 +1,268 @@
-from smbus2 import SMBus
+from smbus2 import SMBus # type: ignore
 import time
-import asyncio
+import ADS1x15 # type: ignore # DAC libary
+import adafruit_MCP4725 #ADC library
+
+# I2C Addresses
 
 MUX_ADDRESS = 0x70
-GPIO_EXTENDER = { #GPIO extender register definitions
-    "address": 0x20,
-    "output_register": 0x01,
-    "input_register": 0x02,
-    "polarity_inversion": 0x03,
-    "configuration": 0x04
-}
+LDO_ADDRESS = 0x60
+BUCK_ADDRESS = 0x61
+ADC_ADDRESS = 0x48
+GPIO_ADDRESS = 0x20
+TCA6408_ADDR = 0x20  # Using same value as GPIO_ADDRESS
 
-class GPIO_extender:
-    def __init__(self):
-        address = 0x20
-        output_register = 0x01
-        input_register = 0x02
-        
-    def write_register(self, register, value):
-        pass
-
-    def read_register(self, register):
-        pass
-    def __str__(self):
-        pass
-
-
-
-i2c_bus = SMBus(1) # Unsure if this is the best spot/definition for the bus
-class cell:
-    def __init__(self, address, mux_channel=None):
-        self.address = address
-        self.mux_channel = mux_channel
+class Cell:
+    def __init__(self, cell_num, bus: SMBus, mux_channel=None):
+        """
+        Initialize the cell.
+        If mux_channel is not specified, it will use cell_num % 8.
+        """
+        self.cell_num = cell_num
+        self.mux_channel = mux_channel if mux_channel is not None else cell_num % 8
+        self.bus = bus
         self.enabled = False
-        _gpio_extender = GPIO_EXTENDER()
+        self.adc = ADS1x15.ADS1115(1)
+        self.buck_dac = adafruit_MCP4725.MCP4725(address=0x61)
+        self.ldo_dac = adafruit_MCP4725.MCP4725(addres=0x60)
 
+        # Mapping for GPIO expander pins
+        self.GPIO = {
+            'buck_enable': 2,
+            'ldo_enable': 3,
+            'load_switch_control': 4,
+            'output_relay_control': 5
+        }
+        # Mapping for ADC channels 
+        self.adc_channels = {
+            'adc_buck_voltage': 0,
+            'adc_ldo_voltage': 1,
+            'adc_output_current': 2,
+            'adc_output_voltage': 3
+        }
+        # 8-bit register representing the current state of GPIO pins.
+        self.GPIO_STATE = 0x00
 
-    def cell_set_mux(self, channel):
-        if channel < 0 or channel > 7:
-            raise ValueError("Channel must be between 0 and 7")
+        # Shunt resistor and gain
+        self.SHUNT_RESISTOR_OHMS = 0.11128
+        self.SHUNT_GAIN = 50
 
-        control_byte = 1 << channel  # Enable the selected channel
-        i2c_bus.write_byte(MUX_ADDRESS, control_byte)
-        print(f"Enabled Channel {channel} (Control byte: {control_byte:#04x})")
+        # Voltage limits
+        self.MIN_BUCK_VOLTAGE = 1.5
+        self.MAX_BUCK_VOLTAGE = 4.55
+        self.MIN_LDO_VOLTAGE = 0.35
+        self.MAX_LDO_VOLTAGE = 4.5
 
-    def cell_disable(self, ):
-        pass
-
-    def cell_enable(self, ):
-        pass
-
-    def cell_get_voltage(self, ):
-        pass
-
-    def cell_set_voltage(self, ):
-        pass
-
-    def cell_output_relay_on(self, ):
-        pass
-
-    def cell_output_relay_off(self, ):
-        pass
-
-    def cell_load_switch_on(self, ):
-        pass
-
-    def cell_load_switch_off(self, ):
-        pass
-
-    def cell_get_current(self, ):
-        pass
-
-    def cell_get_LDO_voltage(self, ):
-        pass
-
-    def cell_set_LDO_voltage(self, ):
-        pass
-
-    def cell_get_buck_voltage(self, ):
-        pass
-
-    def cell_set_buck_voltage(self, ):
-        pass
-
-    def cell_set_GPIO_state(self, ):
-        pass
-
-    def cell_get_GPIO_state(self, ):
-        pass
-
-    def cell_read_shunt_current(self, ):
-        pass
-    def __str__(self):
-        return f"Cell @ {hex(self.address)} | Mux Channel: {self.mux_channel} | Enabled: {self.enabled}"
+        # Calibration points: each tuple is (setpoint, voltage)
+        self.BUCK_SETPOINTS = [(234, 4.5971), (2625, 1.5041)]
+        self.LDO_SETPOINTS = [(42, 4.5176), (3760, 0.3334)]
     
+    def set_mux(self):
+        """
+        Select the correct MUX channel.
+        Writes 1 << mux_channel to the mux address.
+        """
+        value = 1 << self.mux_channel
+        self.bus.write_byte(MUX_ADDRESS, value)
+        print(f"[Cell {self.cell_num}] MUX set: channel {self.mux_channel} (value: {hex(value)})")
+    
+    def init(self):
+        """
+        Initialize the cell.
+        - Sets the MUX.
+        - Configures the GPIO expander.
+        """
+        self.set_mux()
+        print(f"[Cell {self.cell_num}] Initializing DACs at {hex(LDO_ADDRESS)} and {hex(BUCK_ADDRESS)}")
+        print(f"[Cell {self.cell_num}] Initializing ADC at {hex(ADC_ADDRESS)}")
+        # Configure GPIO expander: set configuration register (0x03) to output (0x00)
+        self.bus.write_byte_data(GPIO_ADDRESS, 0x03, 0x00)
+        # Set output register (0x01) to 0
+        self.bus.write_byte_data(GPIO_ADDRESS, 0x01, 0x00)
+    
+    def set_GPIO_state(self):
+        """
+        Update the state of the GPIO expander.
+        Writes the current GPIO_STATE to the output register.
+        """
+        self.set_mux()
+        self.bus.write_byte_data(TCA6408_ADDR, 0x01, self.GPIO_STATE)
+        print(f"[Cell {self.cell_num}] GPIO state set: {bin(self.GPIO_STATE)}")
+    
+    def enable(self):
+        """
+        Enable the cell by setting the buck and LDO enable pins high.
+        """
+        self.set_mux()
+        self.GPIO_STATE |= (1 << self.GPIO['buck_enable'])
+        self.GPIO_STATE |= (1 << self.GPIO['ldo_enable'])
+        self.set_GPIO_state()
+        self.enabled = True
+        print(f"[Cell {self.cell_num}] Enabled")
+    
+    def disable(self):
+        """
+        Disable the cell by clearing the buck and LDO enable pins.
+        """
+        self.set_mux()
+        self.GPIO_STATE &= ~(1 << self.GPIO['buck_enable'])
+        self.GPIO_STATE &= ~(1 << self.GPIO['ldo_enable'])
+        self.set_GPIO_state()
+        self.enabled = False
+        print(f"[Cell {self.cell_num}] Disabled")
+    
+    def get_voltage(self):
+        """
+        Read the cell output voltage.
+        """
+        self.set_mux()
+        # Replace with actual ADC read process if available.
+        volts = self.adc.readADC(self.adc_channels['adc_output_voltage'])
+        print(f"[Cell {self.cell_num}] Voltage read: {volts} V")
+        return volts
+    
+    def set_voltage(self, voltage):
+        """
+        Set the target voltage.
+        Computes buck and LDO voltages, clamps them, and sets each output.
+        """
+        self.set_mux()
+        buck_voltage = voltage * 1.05
+        ldo_voltage = voltage
+        
+        if buck_voltage < self.MIN_BUCK_VOLTAGE:
+            buck_voltage = self.MIN_BUCK_VOLTAGE
+        if buck_voltage > self.MAX_BUCK_VOLTAGE:
+            buck_voltage = self.MAX_BUCK_VOLTAGE
+        if ldo_voltage < self.MIN_LDO_VOLTAGE:
+            ldo_voltage = self.MIN_LDO_VOLTAGE
+        if ldo_voltage > self.MAX_LDO_VOLTAGE:
+            ldo_voltage = self.MAX_LDO_VOLTAGE
+        
+        print(f"[Cell {self.cell_num}] Setting voltage: target {voltage} V, Buck {buck_voltage} V, LDO {ldo_voltage} V")
+        self.set_buck_voltage(buck_voltage)
+        self.set_ldo_voltage(ldo_voltage)
+    
+    def calculate_setpoint(self, voltage, use_buck_calibration=True):
+        """
+        Calculate the DAC setpoint with linear calibration.
+        """
+        calibration = self.BUCK_SETPOINTS if use_buck_calibration else self.LDO_SETPOINTS
+        m = (calibration[1][0] - calibration[0][0]) / (calibration[1][1] - calibration[0][1])
+        b = calibration[0][0] - m * calibration[0][1]
+        setpoint = int(m * voltage + b)
+        mode = "Buck" if use_buck_calibration else "LDO"
+        print(f"[Cell {self.cell_num}] {mode} setpoint calculated: {setpoint} for voltage {voltage} V")
+        return setpoint
+    
+    def set_buck_voltage(self, voltage):
+        """
+        Set the buck converter voltage.
+        (Stub implementation: prints the calculated setpoint.)
+        """
+        self.set_mux()
+        setpoint = self.calculate_setpoint(voltage, use_buck_calibration=True)
+        print(f"[Cell {self.cell_num}] Buck DAC set to {setpoint} (voltage: {voltage} V)")
+        self.buck_dac.normalized
+    def set_ldo_voltage(self, voltage):
+        """
+        Set the LDO voltage.
+        (Stub implementation: prints the calculated setpoint.)
+        """
+        self.set_mux()
+        setpoint = self.calculate_setpoint(voltage, use_buck_calibration=False)
+        print(f"[Cell {self.cell_num}] LDO DAC set to {setpoint} (voltage: {voltage} V)")
+        self.ldo_dac.setVoltage(setpoint, False)
+    def turn_on_output_relay(self):
+        """
+        Turn on the output relay.
+        """
+        self.set_mux()
+        self.GPIO_STATE |= (1 << self.GPIO['output_relay_control'])
+        self.set_GPIO_state()
+        print(f"[Cell {self.cell_num}] Output relay turned ON")
+    
+    def turn_off_output_relay(self):
+        """
+        Turn off the output relay.
+        """
+        self.set_mux()
+        self.GPIO_STATE &= ~(1 << self.GPIO['output_relay_control'])
+        self.set_GPIO_state()
+        print(f"[Cell {self.cell_num}] Output relay turned OFF")
+    
+    def turn_on_load_switch(self):
+        """
+        Turn on the load switch.
+        """
+        self.set_mux()
+        self.GPIO_STATE |= (1 << self.GPIO['load_switch_control'])
+        self.set_GPIO_state()
+        print(f"[Cell {self.cell_num}] Load switch turned ON")
+    
+    def turn_off_load_switch(self):
+        """
+        Turn off the load switch.
+        """
+        self.set_mux()
+        self.GPIO_STATE &= ~(1 << self.GPIO['load_switch_control'])
+        self.set_GPIO_state()
+        print(f"[Cell {self.cell_num}] Load switch turned OFF")
+    
+    def get_current(self):
+        """
+        Read the cell current.
+        """
+        self.set_mux()
+        current = self.read_shunt_current()
+        print(f"[Cell {self.cell_num}] Current read: {current} A")
+        return current
+    
+    def read_shunt_current(self):
+        """
+        Read current using the shunt resistor.
+        """
+        self.set_mux()
+        shunt_voltage = self.adc.readADC(self.adc_channels['adc_output_current'])
+        current = shunt_voltage / self.SHUNT_RESISTOR_OHMS / self.SHUNT_GAIN
+        return current
+    
+    def __str__(self):
+        return f"Cell {self.cell_num} | Mux Channel: {self.mux_channel} | Enabled: {self.enabled}"
 
+# Example usage:
+def main():
+    # Open I2C bus 1 (common on Raspberry Pi CM4)
+    bus = SMBus(1)
+    test_cell = Cell(3, bus)
+    
+    test_cell.init()
+    time.sleep(1)
+    
+    test_cell.enable()
+    time.sleep(1)
+    
+    test_cell.set_voltage(3.7)
+    time.sleep(1)
+    
+    test_cell.turn_on_output_relay()
+    time.sleep(1)
+    
+    test_cell.turn_on_load_switch()
+    time.sleep(1)
+    
+    voltage = test_cell.get_voltage()
+    current = test_cell.get_current()
+    print(f"Voltage: {voltage} V, Current: {current} A")
+    
+    test_cell.turn_off_load_switch()
+    time.sleep(1)
+    
+    test_cell.turn_off_output_relay()
+    time.sleep(1)
+    
+    test_cell.disable()
+    bus.close()
+
+if __name__ == "__main__":
+    main()
