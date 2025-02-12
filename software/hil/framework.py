@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime
+import inspect
 from typing import AsyncGenerator, Awaitable, Callable, Self
 import polars as pl
 
@@ -51,15 +52,20 @@ class during:
 class record[T]:
     def __init__(
         self,
-        source: Callable[[], Awaitable[T]],
+        source: Callable[[], Awaitable[T]] | Callable[[], T],
         *,
         name: str | None = None,
         minimum_interval: float | None = None,
     ):
         self._task: asyncio.Task | None = None
 
-        # TODO: accept and upgrade synchronous sources
-        self._source = source
+        # Check if the source is a synchronous function
+        # or an asynchronous function
+        if inspect.iscoroutinefunction(source):
+            self._source = source
+        else:
+            self._source = lambda: asyncio.to_thread(source)
+
         self._data: list[T] = []
         self._timestamps: list[datetime] = []
         self._trace: pl.DataFrame | None = None
