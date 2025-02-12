@@ -11,6 +11,7 @@ from "blocks/variable-resistor.ato" import VariableResistor
 from "components/cell.ato" import Cell
 from "components/texas_instruments_bq25756r_rvr.ato" import Texas_Instruments_BQ25756RRVR
 from "components/texas_instruments_tp_s55340r_ter.ato" import Texas_Instruments_TPS55340RTER
+from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64
 
 from "lv2842xlvddcr/lv2842kit.ato" import LV2842Kit
 from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
@@ -153,6 +154,11 @@ module SpaceBMSHIL:
     # dep_sep_connector = new Molex5051100492
     variable_resistor_connector = new Molex5026030270
     # pdcu_connector = new Molex5051101292 # DI2C
+    usb_connector = new XKB_Connectivity_U262_241N_4BV64
+
+    # USB connector
+    power_5v ~ usb_connector.power_vbus
+    controller.usb2 ~ usb_connector.usb2
 
     # Connector connections
 
