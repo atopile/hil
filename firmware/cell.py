@@ -7,10 +7,10 @@ from asyncI2C import AsyncSMBus
 from mcp4725 import MCP4725
 import pyinstrument
 
-logger = logging.getLogger(__name__)
-logger.info
-logger.warning
-logger.debug
+# logger = logging.getLogger(__name__)
+# logger.info
+# logger.warning
+# logger.debug
 
 # I2C Addresses
 
@@ -97,7 +97,7 @@ class Cell:
         """
         # await self.set_mux()
         await self.bus.write_byte_data(TCA6408_ADDR, 0x01, self.GPIO_STATE)
-        logger.debug(f"[Cell {self.cell_num}] GPIO state set: {bin(self.GPIO_STATE)}")
+        # logger.debug(f"[Cell {self.cell_num}] GPIO state set: {bin(self.GPIO_STATE)}")
     
     async def enable(self):
         """
@@ -108,7 +108,7 @@ class Cell:
         self.GPIO_STATE |= (1 << self.GPIO['ldo_enable'])
         await self.set_GPIO_state()
         self.enabled = True
-        logger.debug(f"[Cell {self.cell_num}] Enabled")
+        # logger.debug(f"[Cell {self.cell_num}] Enabled")
     
     async def disable(self):
         """
@@ -119,7 +119,7 @@ class Cell:
         self.GPIO_STATE &= ~(1 << self.GPIO['ldo_enable'])
         await self.set_GPIO_state()
         self.enabled = False
-        logger.debug(f"[Cell {self.cell_num}] Disabled")
+        # logger.debug(f"[Cell {self.cell_num}] Disabled")
     
     async def get_voltage(self, verbose=False):
         """
@@ -130,14 +130,14 @@ class Cell:
         raw = await self.adc.readADC(self.adc_channels['adc_output_voltage'])
         # Convert the raw ADC value to voltage with a 4.096V reference
         volts = raw * (6.144/ 32767.0)
-        logger.debug(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")
+        # logger.debug(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")
         if verbose:
             raw_ldo = await self.adc.readADC(self.adc_channels['adc_ldo_voltage'])
             raw_buck = await self.adc.readADC(self.adc_channels['adc_buck_voltage'])
             volts_buck = raw_buck * (6.144 / 32767.0)
             volts_ldo = raw_ldo * (6.144/ 32767.0)
-            logger.debug(f"[Cell {self.cell_num}] Voltage buck read: {volts_buck:.3f} V (raw: {raw_buck})")
-            logger.debug(f"[Cell {self.cell_num}] Voltage ldo read: {volts_ldo:.3f} V (raw: {raw_ldo})")
+            # logger.debug(f"[Cell {self.cell_num}] Voltage buck read: {volts_buck:.3f} V (raw: {raw_buck})")
+            # logger.debug(f"[Cell {self.cell_num}] Voltage ldo read: {volts_ldo:.3f} V (raw: {raw_ldo})")
         return volts
     
     async def set_voltage(self, voltage):
@@ -158,7 +158,7 @@ class Cell:
         if ldo_voltage > self.MAX_LDO_VOLTAGE:
             ldo_voltage = self.MAX_LDO_VOLTAGE
         
-        logger.debug(f"[Cell {self.cell_num}] Setting voltage: target {voltage:.2f} V, Buck {buck_voltage:.2f} V, LDO {ldo_voltage:.2f} V")
+        # logger.debug(f"[Cell {self.cell_num}] Setting voltage: target {voltage:.2f} V, Buck {buck_voltage:.2f} V, LDO {ldo_voltage:.2f} V")
         await self.set_buck_voltage(buck_voltage)
         await self.set_ldo_voltage(ldo_voltage)
 
@@ -173,7 +173,7 @@ class Cell:
         b = calibration[0][0] - m * calibration[0][1]
         setpoint = int(m * voltage + b)
         mode = "Buck" if use_buck_calibration else "LDO"
-        logger.debug(f"[Cell {self.cell_num}] {mode} setpoint calculated: {setpoint} for voltage {voltage:.2f} V")
+        # logger.debug(f"[Cell {self.cell_num}] {mode} setpoint calculated: {setpoint} for voltage {voltage:.2f} V")
         return setpoint
     
     async def set_buck_voltage(self, voltage):
@@ -182,7 +182,7 @@ class Cell:
         """
         # await self.set_mux()
         setpoint = await self.calculate_setpoint(voltage, use_buck_calibration=True)
-        logger.debug(f"[Cell {self.cell_num}] Buck DAC set to {setpoint} (voltage: {voltage:.2f} V)")
+        # logger.debug(f"[Cell {self.cell_num}] Buck DAC set to {setpoint} (voltage: {voltage:.2f} V)")
         self.buck_dac.raw_value = setpoint
 
     async def set_ldo_voltage(self, voltage):
@@ -191,7 +191,7 @@ class Cell:
         """
         # await self.set_mux()
         setpoint = await self.calculate_setpoint(voltage, use_buck_calibration=False)
-        logger.debug(f"[Cell {self.cell_num}] LDO DAC set to {setpoint} (voltage: {voltage} V)")
+        # logger.debug(f"[Cell {self.cell_num}] LDO DAC set to {setpoint} (voltage: {voltage} V)")
         self.ldo_dac.raw_value = setpoint
 
     async def turn_on_output_relay(self):
@@ -201,7 +201,7 @@ class Cell:
         # await self.set_mux()
         self.GPIO_STATE |= (1 << self.GPIO['output_relay_control'])
         await self.set_GPIO_state()
-        logger.debug(f"[Cell {self.cell_num}] Output relay turned ON")
+        # logger.debug(f"[Cell {self.cell_num}] Output relay turned ON")
     
     async def turn_off_output_relay(self):
         """
@@ -210,7 +210,7 @@ class Cell:
         # await self.set_mux()
         self.GPIO_STATE &= ~(1 << self.GPIO['output_relay_control'])
         await self.set_GPIO_state()
-        logger.debug(f"[Cell {self.cell_num}] Output relay turned OFF")
+        # logger.debug(f"[Cell {self.cell_num}] Output relay turned OFF")
     
     async def turn_on_load_switch(self):
         """
@@ -219,7 +219,7 @@ class Cell:
         # await self.set_mux()
         self.GPIO_STATE |= (1 << self.GPIO['load_switch_control'])
         await self.set_GPIO_state()
-        logger.debug(f"[Cell {self.cell_num}] Load switch turned ON")
+        # logger.debug(f"[Cell {self.cell_num}] Load switch turned ON")
     
     async def turn_off_load_switch(self):
         """
@@ -228,7 +228,7 @@ class Cell:
         # await self.set_mux()
         self.GPIO_STATE &= ~(1 << self.GPIO['load_switch_control'])
         await self.set_GPIO_state()
-        logger.debug(f"[Cell {self.cell_num}] Load switch turned OFF")
+        # logger.debug(f"[Cell {self.cell_num}] Load switch turned OFF")
     
     async def get_current(self):
         """
@@ -236,7 +236,7 @@ class Cell:
         """
         # await self.set_mux()
         current = await self.read_shunt_current()
-        logger.debug(f"[Cell {self.cell_num}] Current read: {current:.2f} A")
+        # logger.debug(f"[Cell {self.cell_num}] Current read: {current:.2f} A")
         return current
     
     async def read_shunt_current(self):
