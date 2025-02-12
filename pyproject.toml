@@ -27,3 +27,9 @@ sources = ["software"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["software/hil"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 88
