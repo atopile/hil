@@ -348,7 +348,14 @@ class CM4_MINIMAL(Module):
         self.power_3v3.connect(
             F.ElectricLogic.connect_all_node_references(
                 nodes=self.gpio
-                + [self.i2c1, self.hdmi0, self.hdmi1, self.ethernet, self.usb2, self.i2s]
+                + [
+                    self.i2c1,
+                    self.hdmi0,
+                    self.hdmi1,
+                    self.ethernet,
+                    self.usb2,
+                    self.i2s,
+                ]
             )
         )
 

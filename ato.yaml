@@ -69,7 +69,7 @@ builds:
     exclude_targets: [mfg-data]
 
   boost-converter:
-    entry: 
+    entry:
       elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
     exclude_targets: [mfg-data]
 

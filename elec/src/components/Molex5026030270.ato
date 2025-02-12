@@ -14,4 +14,3 @@ component Molex5026030270:
     power = new Power
     power.vcc ~ p1
     power.gnd ~ p2
-

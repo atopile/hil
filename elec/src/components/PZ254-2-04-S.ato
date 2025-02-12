@@ -12,4 +12,3 @@ component PZ254_2_04_S:
     signal p4 ~ pin 4
     signal p7 ~ pin 7
     signal p2 ~ pin 2
-
