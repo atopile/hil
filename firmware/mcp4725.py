@@ -1,5 +1,6 @@
 import time
 from smbus2 import SMBus
+from typing import Optional   # <-- added for type hinting
 
 # Internal constants:
 _MCP4725_DEFAULT_ADDRESS = 0x62
@@ -13,9 +14,13 @@ class MCP4725:
     :param int bus_number: The I2C bus number.
     :param int address: The I2C address of the device.
     """
-
-    def __init__(self, bus_number: int = 1, address: int = _MCP4725_DEFAULT_ADDRESS) -> None:
-        self._bus = SMBus(bus_number)
+    
+    # Modified __init__ method to accept an optional 'i2c' parameter.
+    def __init__(self, bus_number: int = 1, address: int = _MCP4725_DEFAULT_ADDRESS, i2c: Optional[SMBus] = None) -> None:
+        if i2c is not None:
+            self._bus = i2c
+        else:
+            self._bus = SMBus(bus_number)
         self._address = address
 
     def _write_fast_mode(self, val: int) -> None:

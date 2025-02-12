@@ -1,7 +1,9 @@
+import asyncio
 import time
-import ADS1x15 # type: ignore # DAC libary
-from smbus2 import SMBus # type: ignore
+import ADS1x15
+from smbus2 import SMBus
 from mcp4725 import MCP4725
+import asyncI2C
 
 # I2C Addresses
 
@@ -56,15 +58,21 @@ class Cell:
         # Calibration points: each tuple is (setpoint, voltage)
         self.BUCK_SETPOINTS = [(234, 4.5971), (2625, 1.5041)]
         self.LDO_SETPOINTS = [(42, 4.5176), (3760, 0.3334)]
+
+        # ADC configuration
+        self.adc.setGain(0)
     
-    def set_mux(self):
+    async def set_mux(self, verbose=False):
         """
         Select the correct MUX channel.
         Writes 1 << mux_channel to the mux address.
         """
         value = 1 << self.mux_channel
-        self.bus.write_byte(MUX_ADDRESS, value)
-        print(f"[Cell {self.cell_num}] MUX set: channel {self.mux_channel} (value: {hex(value)})")
+        await self.bus.write_byte(MUX_ADDRESS, value)
+        if verbose:
+            print(f"[Cell {self.cell_num}] MUX set: channel {self.mux_channel} (value: {hex(value)})")
+
+        await asyncio.sleep(0.1)
     
     def init(self):
         """
@@ -73,8 +81,6 @@ class Cell:
         - Configures the GPIO expander.
         """
         self.set_mux()
-        print(f"[Cell {self.cell_num}] Initializing DACs at {hex(LDO_ADDRESS)} and {hex(BUCK_ADDRESS)}")
-        print(f"[Cell {self.cell_num}] Initializing ADC at {hex(ADC_ADDRESS)}")
         # Configure GPIO expander: set configuration register (0x03) to output (0x00)
         self.bus.write_byte_data(GPIO_ADDRESS, 0x03, 0x00)
         # Set output register (0x01) to 0
@@ -111,14 +117,23 @@ class Cell:
         self.enabled = False
         print(f"[Cell {self.cell_num}] Disabled")
     
-    def get_voltage(self):
+    def get_voltage(self, verbose=False):
         """
         Read the cell output voltage.
         """
         self.set_mux()
-        # Replace with actual ADC read process if available.
-        volts = self.adc.readADC(self.adc_channels['adc_output_voltage'])
-        print(f"[Cell {self.cell_num}] Voltage read: {volts} V")
+        # Read raw ADC count from the specified channel
+        raw = self.adc.readADC(self.adc_channels['adc_output_voltage'])
+        # Convert the raw ADC value to voltage with a 4.096V reference
+        volts = raw * (6.144/ 32767.0)
+        print(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")
+        if verbose:
+            raw_ldo = self.adc.readADC(self.adc_channels['adc_ldo_voltage'])
+            raw_buck = self.adc.readADC(self.adc_channels['adc_buck_voltage'])
+            volts_buck = raw_buck * (6.144 / 32767.0)
+            volts_ldo = raw_ldo * (6.144/ 32767.0)
+            print(f"[Cell {self.cell_num}] Voltage buck read: {volts_buck:.3f} V (raw: {raw_buck})")
+            print(f"[Cell {self.cell_num}] Voltage ldo read: {volts_ldo:.3f} V (raw: {raw_ldo})")
         return volts
     
     def set_voltage(self, voltage):
@@ -139,7 +154,7 @@ class Cell:
         if ldo_voltage > self.MAX_LDO_VOLTAGE:
             ldo_voltage = self.MAX_LDO_VOLTAGE
         
-        print(f"[Cell {self.cell_num}] Setting voltage: target {voltage} V, Buck {buck_voltage} V, LDO {ldo_voltage} V")
+        print(f"[Cell {self.cell_num}] Setting voltage: target {voltage:.2f} V, Buck {buck_voltage:.2f} V, LDO {ldo_voltage:.2f} V")
         self.set_buck_voltage(buck_voltage)
         self.set_ldo_voltage(ldo_voltage)
     
@@ -152,7 +167,7 @@ class Cell:
         b = calibration[0][0] - m * calibration[0][1]
         setpoint = int(m * voltage + b)
         mode = "Buck" if use_buck_calibration else "LDO"
-        print(f"[Cell {self.cell_num}] {mode} setpoint calculated: {setpoint} for voltage {voltage} V")
+        print(f"[Cell {self.cell_num}] {mode} setpoint calculated: {setpoint} for voltage {voltage:.2f} V")
         return setpoint
     
     def set_buck_voltage(self, voltage):
@@ -161,8 +176,8 @@ class Cell:
         """
         self.set_mux()
         setpoint = self.calculate_setpoint(voltage, use_buck_calibration=True)
-        print(f"[Cell {self.cell_num}] Buck DAC set to {setpoint} (voltage: {voltage} V)")
-        self.buck_dac.value = setpoint
+        print(f"[Cell {self.cell_num}] Buck DAC set to {setpoint} (voltage: {voltage:.2f} V)")
+        self.buck_dac.raw_value = setpoint
 
     def set_ldo_voltage(self, voltage):
         """
@@ -171,7 +186,7 @@ class Cell:
         self.set_mux()
         setpoint = self.calculate_setpoint(voltage, use_buck_calibration=False)
         print(f"[Cell {self.cell_num}] LDO DAC set to {setpoint} (voltage: {voltage} V)")
-        self.ldo_dac.value(setpoint, False)
+        self.ldo_dac.raw_value = setpoint
 
     def turn_on_output_relay(self):
         """
@@ -215,7 +230,7 @@ class Cell:
         """
         self.set_mux()
         current = self.read_shunt_current()
-        print(f"[Cell {self.cell_num}] Current read: {current} A")
+        print(f"[Cell {self.cell_num}] Current read: {current:.2f} A")
         return current
     
     def read_shunt_current(self):
@@ -234,15 +249,14 @@ class Cell:
 def main():
     # Open I2C bus 1 (common on Raspberry Pi CM4)
     bus = SMBus(1)
-    test_cell = Cell(3, bus)
-    
+    test_cell = Cell(0, bus)
     test_cell.init()
     time.sleep(1)
     
     test_cell.enable()
     time.sleep(1)
     
-    test_cell.set_voltage(3.7)
+    test_cell.set_voltage(5)
     time.sleep(1)
     
     test_cell.turn_on_output_relay()
@@ -251,10 +265,9 @@ def main():
     test_cell.turn_on_load_switch()
     time.sleep(1)
     
-    voltage = test_cell.get_voltage()
-    current = test_cell.get_current()
-    print(f"Voltage: {voltage} V, Current: {current} A")
-    
+    test_cell.get_voltage(verbose=True)
+    test_cell.get_current()
+
     test_cell.turn_off_load_switch()
     time.sleep(1)
     
