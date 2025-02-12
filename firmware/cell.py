@@ -1,9 +1,16 @@
 import asyncio
+from multiprocessing import BufferTooShort
 import time
 import ADS1x15
+import logging
 from asyncI2C import AsyncSMBus
 from mcp4725 import MCP4725
+import pyinstrument
 
+logger = logging.getLogger(__name__)
+logger.info
+logger.warning
+logger.debug
 
 # I2C Addresses
 
@@ -15,17 +22,17 @@ GPIO_ADDRESS = 0x20
 TCA6408_ADDR = 0x20  # Using same value as GPIO_ADDRESS
 
 class Cell:
-    def __init__(self, cell_num, bus:AsyncSMBus, mux_channel=None):
+    def __init__(self, cell_num, bus: AsyncSMBus, mux_channel=None):
         """
         Initialize the cell.
         If mux_channel is not specified, it will use cell_num % 8.
+        Note: Do not call async methods here.
         """
         self.cell_num = cell_num
         self.mux_channel = mux_channel if mux_channel is not None else cell_num % 8
         self.bus = bus
         self.enabled = False
-        self.adc = ADS1x15.ADS1115(1)
-        self.adc.i2c = self.bus._smbus
+        self.adc = None  # will be created asynchronously in init()
         self.buck_dac = MCP4725(address=0x61)
         self.ldo_dac = MCP4725(address=0x60)
 
@@ -59,9 +66,7 @@ class Cell:
         # Calibration points: each tuple is (setpoint, voltage)
         self.BUCK_SETPOINTS = [(234, 4.5971), (2625, 1.5041)]
         self.LDO_SETPOINTS = [(42, 4.5176), (3760, 0.3334)]
-
-        # ADC configuration
-        self.adc.setGain(0)
+        # Initialize ADC gain later in async init.
     
     async def set_mux(self, verbose=False):
         """
@@ -72,77 +77,75 @@ class Cell:
         await self.bus.write_byte(MUX_ADDRESS, value)
         if verbose:
             print(f"[Cell {self.cell_num}] MUX set: channel {self.mux_channel} (value: {hex(value)})")
-
-        await asyncio.sleep(0.1)
     
-    def init(self):
+    async def init(self):
         """
         Initialize the cell.
         - Sets the MUX.
         - Configures the GPIO expander.
         """
-        self.set_mux()
-        # Configure GPIO expander: set configuration register (0x03) to output (0x00)
-        self.bus.write_byte_data(GPIO_ADDRESS, 0x03, 0x00)
-        # Set output register (0x01) to 0
-        self.bus.write_byte_data(GPIO_ADDRESS, 0x01, 0x00)
+        # await self.set_mux()
+        await self.bus.write_byte_data(GPIO_ADDRESS, 0x03, 0x00)
+        await self.bus.write_byte_data(GPIO_ADDRESS, 0x01, 0x00)
+        self.adc = await ADS1x15.ADS1115.create(1)
+        await self.adc.setGain(0)
     
-    def set_GPIO_state(self):
+    async def set_GPIO_state(self):
         """
         Update the state of the GPIO expander.
         Writes the current GPIO_STATE to the output register.
         """
-        self.set_mux()
-        self.bus.write_byte_data(TCA6408_ADDR, 0x01, self.GPIO_STATE)
-        print(f"[Cell {self.cell_num}] GPIO state set: {bin(self.GPIO_STATE)}")
+        # await self.set_mux()
+        await self.bus.write_byte_data(TCA6408_ADDR, 0x01, self.GPIO_STATE)
+        logger.debug(f"[Cell {self.cell_num}] GPIO state set: {bin(self.GPIO_STATE)}")
     
-    def enable(self):
+    async def enable(self):
         """
         Enable the cell by setting the buck and LDO enable pins high.
         """
-        self.set_mux()
+        await self.set_mux()
         self.GPIO_STATE |= (1 << self.GPIO['buck_enable'])
         self.GPIO_STATE |= (1 << self.GPIO['ldo_enable'])
-        self.set_GPIO_state()
+        await self.set_GPIO_state()
         self.enabled = True
-        print(f"[Cell {self.cell_num}] Enabled")
+        logger.debug(f"[Cell {self.cell_num}] Enabled")
     
-    def disable(self):
+    async def disable(self):
         """
         Disable the cell by clearing the buck and LDO enable pins.
         """
-        self.set_mux()
+        # await self.set_mux()
         self.GPIO_STATE &= ~(1 << self.GPIO['buck_enable'])
         self.GPIO_STATE &= ~(1 << self.GPIO['ldo_enable'])
-        self.set_GPIO_state()
+        await self.set_GPIO_state()
         self.enabled = False
-        print(f"[Cell {self.cell_num}] Disabled")
+        logger.debug(f"[Cell {self.cell_num}] Disabled")
     
-    def get_voltage(self, verbose=False):
+    async def get_voltage(self, verbose=False):
         """
         Read the cell output voltage.
         """
-        self.set_mux()
+        # await self.set_mux()
         # Read raw ADC count from the specified channel
-        raw = self.adc.readADC(self.adc_channels['adc_output_voltage'])
+        raw = await self.adc.readADC(self.adc_channels['adc_output_voltage'])
         # Convert the raw ADC value to voltage with a 4.096V reference
         volts = raw * (6.144/ 32767.0)
-        print(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")
+        logger.debug(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")
         if verbose:
-            raw_ldo = self.adc.readADC(self.adc_channels['adc_ldo_voltage'])
-            raw_buck = self.adc.readADC(self.adc_channels['adc_buck_voltage'])
+            raw_ldo = await self.adc.readADC(self.adc_channels['adc_ldo_voltage'])
+            raw_buck = await self.adc.readADC(self.adc_channels['adc_buck_voltage'])
             volts_buck = raw_buck * (6.144 / 32767.0)
             volts_ldo = raw_ldo * (6.144/ 32767.0)
-            print(f"[Cell {self.cell_num}] Voltage buck read: {volts_buck:.3f} V (raw: {raw_buck})")
-            print(f"[Cell {self.cell_num}] Voltage ldo read: {volts_ldo:.3f} V (raw: {raw_ldo})")
+            logger.debug(f"[Cell {self.cell_num}] Voltage buck read: {volts_buck:.3f} V (raw: {raw_buck})")
+            logger.debug(f"[Cell {self.cell_num}] Voltage ldo read: {volts_ldo:.3f} V (raw: {raw_ldo})")
         return volts
     
-    def set_voltage(self, voltage):
+    async def set_voltage(self, voltage):
         """
         Set the target voltage.
         Computes buck and LDO voltages, clamps them, and sets each output.
         """
-        self.set_mux()
+        # await self.set_mux()
         buck_voltage = voltage * 1.05
         ldo_voltage = voltage
         
@@ -155,11 +158,13 @@ class Cell:
         if ldo_voltage > self.MAX_LDO_VOLTAGE:
             ldo_voltage = self.MAX_LDO_VOLTAGE
         
-        print(f"[Cell {self.cell_num}] Setting voltage: target {voltage:.2f} V, Buck {buck_voltage:.2f} V, LDO {ldo_voltage:.2f} V")
-        self.set_buck_voltage(buck_voltage)
-        self.set_ldo_voltage(ldo_voltage)
+        logger.debug(f"[Cell {self.cell_num}] Setting voltage: target {voltage:.2f} V, Buck {buck_voltage:.2f} V, LDO {ldo_voltage:.2f} V")
+        await self.set_buck_voltage(buck_voltage)
+        await self.set_ldo_voltage(ldo_voltage)
+
+        # FIXME: wait for stabalisation here
     
-    def calculate_setpoint(self, voltage, use_buck_calibration=True):
+    async def calculate_setpoint(self, voltage, use_buck_calibration=True):
         """
         Calculate the DAC setpoint with linear calibration.
         """
@@ -168,114 +173,114 @@ class Cell:
         b = calibration[0][0] - m * calibration[0][1]
         setpoint = int(m * voltage + b)
         mode = "Buck" if use_buck_calibration else "LDO"
-        print(f"[Cell {self.cell_num}] {mode} setpoint calculated: {setpoint} for voltage {voltage:.2f} V")
+        logger.debug(f"[Cell {self.cell_num}] {mode} setpoint calculated: {setpoint} for voltage {voltage:.2f} V")
         return setpoint
     
-    def set_buck_voltage(self, voltage):
+    async def set_buck_voltage(self, voltage):
         """
         Set the buck converter voltage.
         """
-        self.set_mux()
-        setpoint = self.calculate_setpoint(voltage, use_buck_calibration=True)
-        print(f"[Cell {self.cell_num}] Buck DAC set to {setpoint} (voltage: {voltage:.2f} V)")
+        # await self.set_mux()
+        setpoint = await self.calculate_setpoint(voltage, use_buck_calibration=True)
+        logger.debug(f"[Cell {self.cell_num}] Buck DAC set to {setpoint} (voltage: {voltage:.2f} V)")
         self.buck_dac.raw_value = setpoint
 
-    def set_ldo_voltage(self, voltage):
+    async def set_ldo_voltage(self, voltage):
         """
         Set the LDO voltage.
         """
-        self.set_mux()
-        setpoint = self.calculate_setpoint(voltage, use_buck_calibration=False)
-        print(f"[Cell {self.cell_num}] LDO DAC set to {setpoint} (voltage: {voltage} V)")
+        # await self.set_mux()
+        setpoint = await self.calculate_setpoint(voltage, use_buck_calibration=False)
+        logger.debug(f"[Cell {self.cell_num}] LDO DAC set to {setpoint} (voltage: {voltage} V)")
         self.ldo_dac.raw_value = setpoint
 
-    def turn_on_output_relay(self):
+    async def turn_on_output_relay(self):
         """
         Turn on the output relay.
         """
-        self.set_mux()
+        # await self.set_mux()
         self.GPIO_STATE |= (1 << self.GPIO['output_relay_control'])
-        self.set_GPIO_state()
-        print(f"[Cell {self.cell_num}] Output relay turned ON")
+        await self.set_GPIO_state()
+        logger.debug(f"[Cell {self.cell_num}] Output relay turned ON")
     
-    def turn_off_output_relay(self):
+    async def turn_off_output_relay(self):
         """
         Turn off the output relay.
         """
-        self.set_mux()
+        # await self.set_mux()
         self.GPIO_STATE &= ~(1 << self.GPIO['output_relay_control'])
-        self.set_GPIO_state()
-        print(f"[Cell {self.cell_num}] Output relay turned OFF")
+        await self.set_GPIO_state()
+        logger.debug(f"[Cell {self.cell_num}] Output relay turned OFF")
     
-    def turn_on_load_switch(self):
+    async def turn_on_load_switch(self):
         """
         Turn on the load switch.
         """
-        self.set_mux()
+        # await self.set_mux()
         self.GPIO_STATE |= (1 << self.GPIO['load_switch_control'])
-        self.set_GPIO_state()
-        print(f"[Cell {self.cell_num}] Load switch turned ON")
+        await self.set_GPIO_state()
+        logger.debug(f"[Cell {self.cell_num}] Load switch turned ON")
     
-    def turn_off_load_switch(self):
+    async def turn_off_load_switch(self):
         """
         Turn off the load switch.
         """
-        self.set_mux()
+        # await self.set_mux()
         self.GPIO_STATE &= ~(1 << self.GPIO['load_switch_control'])
-        self.set_GPIO_state()
-        print(f"[Cell {self.cell_num}] Load switch turned OFF")
+        await self.set_GPIO_state()
+        logger.debug(f"[Cell {self.cell_num}] Load switch turned OFF")
     
-    def get_current(self):
+    async def get_current(self):
         """
         Read the cell current.
         """
-        self.set_mux()
-        current = self.read_shunt_current()
-        print(f"[Cell {self.cell_num}] Current read: {current:.2f} A")
+        # await self.set_mux()
+        current = await self.read_shunt_current()
+        logger.debug(f"[Cell {self.cell_num}] Current read: {current:.2f} A")
         return current
     
-    def read_shunt_current(self):
+    async def read_shunt_current(self):
         """
         Read current using the shunt resistor.
         """
-        self.set_mux()
-        shunt_voltage = self.adc.readADC(self.adc_channels['adc_output_current'])
+        # await self.set_mux()
+        shunt_voltage = await self.adc.readADC(self.adc_channels['adc_output_current'])
         current = shunt_voltage / self.SHUNT_RESISTOR_OHMS / self.SHUNT_GAIN
         return current
     
-    def __str__(self):
+    async def __str__(self):
         return f"Cell {self.cell_num} | Mux Channel: {self.mux_channel} | Enabled: {self.enabled}"
 
 # Example usage:
 async def main():
     bus = await AsyncSMBus.create(1)
     test_cell = Cell(0, bus)
-    test_cell.init()
-    time.sleep(1)
-    
-    test_cell.enable()
-    time.sleep(1)
-    
-    test_cell.set_voltage(5)
-    time.sleep(1)
-    
-    test_cell.turn_on_output_relay()
-    time.sleep(1)
-    
-    test_cell.turn_on_load_switch()
-    time.sleep(1)
-    
-    test_cell.get_voltage(verbose=True)
-    test_cell.get_current()
+    cells: list[Cell] = []
+    for x in range (0,8):
+        cells.append(Cell(x, bus))
 
-    test_cell.turn_off_load_switch()
-    time.sleep(1)
-    
-    test_cell.turn_off_output_relay()
-    time.sleep(1)
-    
-    test_cell.disable()
-    bus.close()
+    with pyinstrument.Profiler() as profiler:
+        for cell in cells:
+            await cell.init()
+
+        for _ in range(10):
+            for cell in cells:
+                await cell.enable()
+                await cell.set_voltage(1)
+                await cell.turn_on_output_relay()
+                await cell.turn_on_load_switch()
+
+                await cell.get_voltage()
+                await cell.get_current()
+
+                await cell.turn_off_load_switch()
+                await cell.turn_off_output_relay()
+                await cell.disable()
+
+        await bus.close()
+
+    profiler.write_html("trace.html")
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     asyncio.run(main())
