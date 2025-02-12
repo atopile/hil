@@ -52,8 +52,8 @@ class PDController(Module):
         F.ElectricLogic.connect_all_module_references(self, gnd_only=True)
 
         # USB connector
-        self.cc1.connect(self.pd_controller.CC1)
-        self.cc2.connect(self.pd_controller.CC2)
+        self.cc1.connect(self.pd_controller.CC1, self.pd_controller.CC1DB)
+        self.cc2.connect(self.pd_controller.CC2, self.pd_controller.CC2DB)
 
         self.vbus_vs_disch_r.resistance.constrain_subset(
             L.Range.from_center_rel(1 * P.kohm, 0.01)
