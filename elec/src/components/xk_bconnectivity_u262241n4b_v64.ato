@@ -39,7 +39,7 @@ component XKB_Connectivity_U262_241N_4BV64:
     power_vbus.vcc ~ VBUS
     power_vbus.gnd ~ GND
 
-    # Mounting holeså
+    # Mounting holes
     power_vbus.gnd ~ pin 1
     power_vbus.gnd ~ pin 2
     power_vbus.gnd ~ pin 3

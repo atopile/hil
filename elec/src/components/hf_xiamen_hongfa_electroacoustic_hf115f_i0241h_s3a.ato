@@ -1,0 +1,25 @@
+import ElectricPower
+
+component HFXiamen_Hongfa_Electroacoustic_HF115F_I_024_1HS3A:
+    """HFXiamen_Hongfa_Electroacoustic_HF115F_I_024_1HS3A component"""
+    lcsc_id = "C194245"
+    manufacturer = "HF(Xiamen Hongfa Electroacoustic)"
+    mpn = "HF115F-I/024-1HS3A"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1808071238_HF-Xiamen-Hongfa-Electroacoustic-HF115F-I-024-1HS3A_C194245.pdf"
+    designator_prefix = "K"
+
+    # pins
+    coil = new ElectricPower
+    # assert coil.voltage within 22V to 26V
+    coil.vcc ~ pin 1
+    coil.gnd ~ pin 6
+
+    power_out = new ElectricPower
+    power_out.vcc ~ pin 2
+    power_out.vcc ~ pin 5
+
+    power_in = new ElectricPower
+    power_in.vcc ~ pin 3
+    power_in.vcc ~ pin 4
+
+    power_in.gnd ~ power_out.gnd

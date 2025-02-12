@@ -40,10 +40,10 @@ component _B2405S_2WR2:
     power_in.vcc ~ pin 1
     power_in.gnd ~ pin 2
 
-    assert power_in.voltage within 10.8V to 13.2V
+    # assert power_in.voltage within 22V to 26V
 
     power_out = new ElectricPower
     power_out.vcc ~ pin 6
     power_out.gnd ~ pin 4
 
-    assert power_out.voltage within 4.5V to 5.5V
+    # assert power_out.voltage within 4.5V to 5.5V

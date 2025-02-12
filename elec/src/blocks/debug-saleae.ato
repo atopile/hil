@@ -1,0 +1,74 @@
+import ElectricPower, I2C, SPI, USB2_0, Electrical, Resistor, ElectricSignal
+from "components/PZ254-2-04-S.ato" import PZ254_2_04_S
+
+
+component _protection_resistor from Resistor:
+    resistance = 1kohm +/- 5%
+    package = "R0402"
+
+module DebugSaleae:
+    header = new PZ254_2_04_S
+    ch0 = new ElectricSignal
+    ch1 = new ElectricSignal
+    ch2 = new ElectricSignal
+    ch3 = new ElectricSignal
+
+    # Connect the grounds together
+    gnd = new Electrical
+    gnd ~ ch0.reference.gnd
+    gnd ~ ch1.reference.gnd
+    gnd ~ ch2.reference.gnd
+    gnd ~ ch3.reference.gnd
+
+    # protection resistors
+    r1 = new Resistor
+    r2 = new Resistor
+    r3 = new Resistor
+    r4 = new Resistor
+
+    r1.resistance = 100ohms +/- 5%
+    r2.resistance = 100ohms +/- 5%
+    r3.resistance = 100ohms +/- 5%
+    r4.resistance = 100ohms +/- 5%
+
+    r1.package = "R0402"
+    r2.package = "R0402"
+    r3.package = "R0402"
+    r4.package = "R0402"
+
+    # connect ios via resistors to the header
+    ch0.line ~ r1.p1; r1.p2 ~ header.p1
+    ch1.line ~ r2.p1; r2.p2 ~ header.p3
+    ch2.line ~ r3.p1; r3.p2 ~ header.p5
+    ch3.line ~ r4.p1; r4.p2 ~ header.p7
+
+    # connect the grounds together
+    gnd ~ header.p2
+    gnd ~ header.p4
+    gnd ~ header.p6
+    gnd ~ header.p8
+
+    # SPI
+    spi = new SPI
+    spi.mosi ~ ch0
+    spi.miso ~ ch1
+    spi.sclk ~ ch2
+    spi_cs = new ElectricSignal
+    spi_cs ~ ch3
+
+    # I2C
+    i2c = new I2C
+    i2c.scl ~ ch0
+    i2c.sda ~ ch1
+    i2c.scl.reference.gnd ~ gnd
+
+    # UART
+    # uart = new UART
+    # uart.tx ~ ch2.io
+    # uart.rx ~ ch3.io
+    # uart.gnd ~ gnd
+
+    # USB2
+    usb2 = new USB2_0
+    usb2.usb_if.d.p ~ ch2
+    usb2.usb_if.d.n ~ ch3

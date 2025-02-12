@@ -207,3 +207,5 @@ cython_debug/
 !.vscode/*.shared.json
 !.vscode/extensions.json
 .aider*
+
+*.code-workspace

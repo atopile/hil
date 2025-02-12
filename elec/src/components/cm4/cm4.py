@@ -36,7 +36,7 @@ class CM4_MINIMAL(Module):
     gpio_ref: F.ElectricPower
     gpio = L.list_field(28, F.ElectricLogic)
     i2s: F.I2S
-    i2c: F.I2C
+    i2c1: F.I2C
     spi3: F.SPI
     spi4: F.SPI
 
@@ -266,8 +266,8 @@ class CM4_MINIMAL(Module):
         self.i2s.sd.connect(self.gpio[21])
 
         # I2C
-        self.i2c.scl.line.connect(self.hdi_a.pins[79])
-        self.i2c.sda.line.connect(self.hdi_a.pins[81])
+        self.i2c1.scl.connect(self.gpio[9])
+        self.i2c1.sda.connect(self.gpio[8])
 
         # Power LEDs
         self.power_led_buffer.power.connect(self.power_3v3)
@@ -293,8 +293,8 @@ class CM4_MINIMAL(Module):
         F.Net.with_name("VCC_3V3").part_of.connect(self.power_3v3.hv)
         F.Net.with_name("VCC_1V8").part_of.connect(self.power_1v8.hv)
         F.Net.with_name("GND").part_of.connect(self.power_5v.lv)
-        F.Net.with_name("SCL").part_of.connect(self.i2c.scl.line)
-        F.Net.with_name("SDA").part_of.connect(self.i2c.sda.line)
+        F.Net.with_name("SCL").part_of.connect(self.i2c1.scl.line)
+        F.Net.with_name("SDA").part_of.connect(self.i2c1.sda.line)
         F.Net.with_name("HDMI0_D0_P").part_of.connect(self.hdmi0.data[0].p.line)
         F.Net.with_name("HDMI0_D0_N").part_of.connect(self.hdmi0.data[0].n.line)
         F.Net.with_name("HDMI0_D1_P").part_of.connect(self.hdmi0.data[1].p.line)
@@ -348,7 +348,14 @@ class CM4_MINIMAL(Module):
         self.power_3v3.connect(
             F.ElectricLogic.connect_all_node_references(
                 nodes=self.gpio
-                + [self.i2c, self.hdmi0, self.hdmi1, self.ethernet, self.usb2, self.i2s]
+                + [
+                    self.i2c1,
+                    self.hdmi0,
+                    self.hdmi1,
+                    self.ethernet,
+                    self.usb2,
+                    self.i2s,
+                ]
             )
         )
 

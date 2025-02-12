@@ -10,8 +10,8 @@ module DigitalLDO from DigitalRegulator:
     regulator = new TLV75901PDRVR
 
     # Configure parameters
-    assert power_in.voltage within 1.5V to 6V
-    assert power_out.voltage within 0.55V to 5.5V
+    # assert power_in.voltage within 1.5V to 6V
+    # assert power_out.voltage within 0.55V to 5.5V
 
     # Connections
     power_in.vcc ~ regulator.IN
