@@ -7,7 +7,7 @@ from "components/onsemi_mc33174d_r2g.ato" import Onsemi_MC33174DR2G
 
 module Amplifier4Ch:
     """
-    Amplifies the input signal from a given 4 channel signal. Utilizes functionality 
+    Amplifies the input signal from a given 4 channel signal. Utilizes functionality
     from 'Amplifier' Module.
     """
     # External interfaces
@@ -54,12 +54,12 @@ module Amplifier4Ch:
     output_2 ~ amplified_signal_2.output_terminal
     output_3 ~ amplified_signal_3.output_terminal
     output_4 ~ amplified_signal_4.output_terminal
-    
+
     power ~ amplified_signal_1.reference
     power ~ amplified_signal_2.reference
     power ~ amplified_signal_3.reference
     power ~ amplified_signal_4.reference
-    
+
     power.hv ~ quad_opamp.VCC
     power.lv ~ quad_opamp.VEE
 

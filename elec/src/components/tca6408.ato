@@ -2,7 +2,7 @@ import ElectricPower, I2C
 
 module Test:
     ic = new TCA6408ARGTR
-    
+
 
 component TCA6408ARGTR:
     """

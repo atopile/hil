@@ -77,4 +77,3 @@ component _KT_0603R from LED:
     # pins
     signal cathode ~ pin 1
     signal anode ~ pin 2
-

@@ -22,7 +22,7 @@ class PDController(Module):
     i2c: F.I2C
     # cc = L.list_field(2, F.ElectricLogic)
     cc1: F.ElectricLogic
-    cc2: F.ElectricLogic # hack to make it work with ato
+    cc2: F.ElectricLogic  # hack to make it work with ato
     power_vsink: F.ElectricPower  # output to power supply
     i2c: F.I2C
 

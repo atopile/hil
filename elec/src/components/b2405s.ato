@@ -8,7 +8,7 @@ module B2405S_2WR2 from Regulator:
         -Output Voltage: 5V
         -Output Current: 400mA
     """
-    power_in = new ElectricPower 
+    power_in = new ElectricPower
     power_out = new ElectricPower
 
     converter = new _B2405S_2WR2

@@ -39,7 +39,7 @@ module VariableResistor:
     # Component specifications
     feedback_div.r_top.resistance = 10kohms +/- 5%
     feedback_div.r_bottom.resistance = 1kohms +/- 5%
-    # output_resistor.resistance = 100mohms +/- 5%
+    output_resistor.resistance = 100mohms +/- 5%
     inter_stage_resistor.resistance = 100ohms +/- 5%
     stage_2_output_resistor.resistance = 100ohms +/- 5%
     base_resistor.resistance = 100ohms +/- 5%
@@ -56,8 +56,6 @@ module VariableResistor:
     stage_1_decoupling_cap.lcsc_id = "C1550"
     stage_2_decoupling_cap.lcsc_id = "C1550"
     splitter_decoupling_cap.lcsc_id = "C1550"
-    # output_resistor.package = "R1206"
-    output_resistor.lcsc_id = "C2903496"
 
 
     # Connections
@@ -106,8 +104,3 @@ module VariableResistor:
     # Output Stage
     output_resistor.p2 ~ power_in.gnd
     #TBD
-
-
-
-
-

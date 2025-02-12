@@ -6,4 +6,3 @@ component KT_0603G:
     # pins
     signal anode ~ pin 2
     signal cathode ~ pin 1
-

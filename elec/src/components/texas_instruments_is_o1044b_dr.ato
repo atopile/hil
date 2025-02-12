@@ -34,7 +34,7 @@ module Texas_Instruments_ISO1044BDR:
     decoupling_cap_5v_iso.package = "0402"
     decoupling_cap_5v_iso.capacitance = 1uF +/- 20%
     power_5v_iso ~ decoupling_cap_5v_iso.power
-    
+
 
 component _Texas_Instruments_ISO1044BDR:
     """Texas_Instruments_ISO1044BDR component"""

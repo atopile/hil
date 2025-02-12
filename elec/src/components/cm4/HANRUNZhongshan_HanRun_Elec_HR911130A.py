@@ -83,7 +83,7 @@ class _HANRUNZhongshan_HanRun_Elec_HR911130A(Module):
         self.link_led.anode.connect(self.unnamed[3])
         self.speed_led.cathode.connect(self.unnamed[0])
         self.speed_led.anode.connect(self.unnamed[1])
-        
+
         # Parameters
         self.link_led.color.alias_is(F.LED.Color.GREEN)
         self.link_led.forward_voltage.alias_is(2.1 * P.V)
@@ -91,6 +91,7 @@ class _HANRUNZhongshan_HanRun_Elec_HR911130A(Module):
         self.speed_led.color.alias_is(F.LED.Color.YELLOW)
         self.speed_led.forward_voltage.alias_is(2.1 * P.V)
         self.speed_led.max_current.alias_is(10 * P.mA)
+
 
 class HANRUNZhongshan_HanRun_Elec_HR911130A(Module):
     """
@@ -123,15 +124,24 @@ class HANRUNZhongshan_HanRun_Elec_HR911130A(Module):
         # self.link_led.led.led.specialize(self.connector.link_led)
         # self.speed_led.led.led.specialize(self.connector.speed_led)
 
-        self.power_led.hv.connect_via([self.link_led_resistor, self.connector.link_led], self.ethernet.led_link.line)
-        self.power_led.hv.connect_via([self.speed_led_resistor, self.connector.speed_led], self.ethernet.led_speed.line)
+        self.power_led.hv.connect_via(
+            [self.link_led_resistor, self.connector.link_led],
+            self.ethernet.led_link.line,
+        )
+        self.power_led.hv.connect_via(
+            [self.speed_led_resistor, self.connector.speed_led],
+            self.ethernet.led_speed.line,
+        )
 
-        self.link_led_resistor.resistance.constrain_subset(L.Range.from_center_rel(470 * P.ohm, 0.05))
-        self.speed_led_resistor.resistance.constrain_subset(L.Range.from_center_rel(470 * P.ohm, 0.05))
+        self.link_led_resistor.resistance.constrain_subset(
+            L.Range.from_center_rel(470 * P.ohm, 0.05)
+        )
+        self.speed_led_resistor.resistance.constrain_subset(
+            L.Range.from_center_rel(470 * P.ohm, 0.05)
+        )
 
         # shield
         self.ethernet.single_electric_reference.get_reference().lv.connect(
             self.connector.SHIELD0, self.connector.SHIELD1
         )
         self.power_led.lv.connect(self.connector.SHIELD0, self.connector.SHIELD1)
-

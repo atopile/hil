@@ -6,14 +6,14 @@ from "components/digital-regulator.ato" import DigitalRegulator
 module DigitalBuck from DigitalRegulator:
     """
     Buck regulator with adjustable output voltage
-    controled via a DAC with I2C interface 
+    controled via a DAC with I2C interface
     """
     regulator = new TPS563201DDCR
 
     # Connections
     power_in.vcc ~ regulator.VIN
     power_in.gnd ~ regulator.GND
-    power_out.gnd ~ regulator.GND   
+    power_out.gnd ~ regulator.GND
 
     # Feedback
     regulator.VFB ~ feedback_div.output.line

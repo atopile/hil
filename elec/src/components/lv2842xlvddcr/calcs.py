@@ -2,7 +2,7 @@ def calculate_min_inductance(Vin_max, Vout, Io, K_IND, fsw):
     """
     Calculate the minimum inductance required for an output inductor in a buck converter,
     correcting the previous misunderstanding in the formula application.
-    
+
     Parameters:
     - Vin_max: Maximum input voltage (V)
     - Vout: Output voltage (V)
@@ -16,6 +16,7 @@ def calculate_min_inductance(Vin_max, Vout, Io, K_IND, fsw):
     # Correcting the formula based on the typical approach for calculating minimum inductance
     Lmin = (Vin_max - Vout) * Vout / (Vin_max * Io * K_IND * fsw)
     return Lmin
+
 
 # Correcting the example values and recalculating
 Vin_max = 12  # Assuming a more typical maximum input voltage of 12V
