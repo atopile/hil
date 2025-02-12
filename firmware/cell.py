@@ -1,9 +1,9 @@
 import asyncio
 import time
 import ADS1x15
-from smbus2 import SMBus
+from asyncI2C import AsyncSMBus
 from mcp4725 import MCP4725
-import asyncI2C
+
 
 # I2C Addresses
 
@@ -15,7 +15,7 @@ GPIO_ADDRESS = 0x20
 TCA6408_ADDR = 0x20  # Using same value as GPIO_ADDRESS
 
 class Cell:
-    def __init__(self, cell_num, bus: SMBus, mux_channel=None):
+    def __init__(self, cell_num, bus:AsyncSMBus, mux_channel=None):
         """
         Initialize the cell.
         If mux_channel is not specified, it will use cell_num % 8.
@@ -25,6 +25,7 @@ class Cell:
         self.bus = bus
         self.enabled = False
         self.adc = ADS1x15.ADS1115(1)
+        self.adc.i2c = self.bus._smbus
         self.buck_dac = MCP4725(address=0x61)
         self.ldo_dac = MCP4725(address=0x60)
 
@@ -246,9 +247,8 @@ class Cell:
         return f"Cell {self.cell_num} | Mux Channel: {self.mux_channel} | Enabled: {self.enabled}"
 
 # Example usage:
-def main():
-    # Open I2C bus 1 (common on Raspberry Pi CM4)
-    bus = SMBus(1)
+async def main():
+    bus = await AsyncSMBus.create(1)
     test_cell = Cell(0, bus)
     test_cell.init()
     time.sleep(1)
@@ -278,4 +278,4 @@ def main():
     bus.close()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
