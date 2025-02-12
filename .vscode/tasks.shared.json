@@ -1,0 +1,49 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "deploy-code",
+            "type": "shell",
+            "command": "rsync -avz -h -P --exclude-from=./.gitignore ${workspaceFolder}/ ${input:remoteHost}:${input:remoteRoot} && uv sync",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "start-remote-debugger",
+            "type": "shell",
+            "command": "ssh ${input:remoteHost} 'cd ${input:remoteRoot} && python -m debugpy --listen 0.0.0.0:5678 --wait-for-client ${relativeFile}'",
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^.*$",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^.*Waiting for client.*$",
+                    "endsPattern": "^.*$"
+                }
+            },
+            "dependsOn": [
+                "deploy-code"
+            ]
+        },
+        {
+            "label": "terminate-remote-debugger",
+            "type": "shell",
+            "command": "ssh ${input:remoteHost} 'pkill -f \"python -m debugpy\"'",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}
