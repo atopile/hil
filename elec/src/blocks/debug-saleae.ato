@@ -21,10 +21,20 @@ module DebugSaleae:
     gnd ~ ch3.reference.gnd
 
     # protection resistors
-    r1 = new _protection_resistor
-    r2 = new _protection_resistor
-    r3 = new _protection_resistor
-    r4 = new _protection_resistor
+    r1 = new Resistor
+    r2 = new Resistor
+    r3 = new Resistor
+    r4 = new Resistor
+
+    r1.resistance = 100ohms +/- 5%
+    r2.resistance = 100ohms +/- 5%
+    r3.resistance = 100ohms +/- 5%
+    r4.resistance = 100ohms +/- 5%
+
+    r1.package = "R0402"
+    r2.package = "R0402"
+    r3.package = "R0402"
+    r4.package = "R0402"
 
     # connect ios via resistors to the header
     ch0.line ~ r1.p1; r1.p2 ~ header.p1
@@ -39,12 +49,12 @@ module DebugSaleae:
     gnd ~ header.p8
 
     # SPI
-    # spi = new SPI
-    # spi.mosi ~ ch0.io
-    # spi.miso ~ ch1.io
-    # spi.sck ~ ch2.io
-    # spi.cs ~ ch3.io
-    # spi.gnd ~ gnd
+    spi = new SPI
+    spi.mosi ~ ch0
+    spi.miso ~ ch1
+    spi.sclk ~ ch2
+    spi_cs = new ElectricSignal
+    spi_cs ~ ch3
 
     # I2C
     i2c = new I2C

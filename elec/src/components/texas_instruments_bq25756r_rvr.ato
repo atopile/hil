@@ -295,6 +295,19 @@ module CapBank:
     power_in ~ cap10.power
     power_in ~ cap11.power
 
+    # Set package
+    # cap1.package = "C1210"
+    # cap2.package = "C1210"
+    # cap3.package = "C1210"
+    # cap4.package = "C1210"
+    # cap5.package = "C1210"
+    # cap6.package = "C1210"
+    # cap7.package = "C1210"
+    # cap8.package = "C1206"
+    # cap9.package = "C0805"
+    # cap10.package = "C0805"
+    # cap11.package = "C1210"
+
 
 module ShuntInput:
     """Shunt input for buck/boost with low pass filter"""
@@ -314,7 +327,9 @@ module ShuntInput:
     filter_p.resistor.resistance = 10ohm +/- 1%
     filter_n.capacitor.capacitance = 100nF +/- 20%
     filter_p.capacitor.capacitance = 100nF +/- 20%
-    shunt.resistance = 5mohm +/- 1%
+    # shunt.resistance = 5mohm +/- 1%
+    # shunt.package = "R1206"
+    shunt.lcsc_id = "C316225"
 
     filter_n.cutoff_frequency = 1Hz to 1GHz
     filter_p.cutoff_frequency = 1Hz to 1GHz
