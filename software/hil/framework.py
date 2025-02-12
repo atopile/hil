@@ -49,14 +49,23 @@ class during:
 
 
 class record[T]:
-    def __init__(self, source: Callable[[], Awaitable[T]], name: str | None = None):
+    def __init__(
+        self,
+        source: Callable[[], Awaitable[T]],
+        *,
+        name: str | None = None,
+        minimum_interval: float | None = None,
+    ):
         self._task: asyncio.Task | None = None
+
+        # TODO: accept and upgrade synchronous sources
         self._source = source
         self._data: list[T] = []
         self._timestamps: list[datetime] = []
         self._trace: pl.DataFrame | None = None
         self._name = name or source.__name__
         self._result_future: asyncio.Future[T] | None = None
+        self._minimum_interval = minimum_interval
 
     def __enter__(self) -> Self:
         self.start()
@@ -68,6 +77,14 @@ class record[T]:
     def start(self) -> None:
         async def _trace() -> None:
             while True:
+                if self._minimum_interval is not None and self._timestamps:
+                    last_timestamp = self._timestamps[-1]
+                    remaining_time_to_next = (
+                        last_timestamp + self._minimum_interval - datetime.now()
+                    )
+                    if remaining_time_to_next > 0:
+                        await asyncio.sleep(remaining_time_to_next)
+
                 data = await self._source()
                 self._data.append(data)
                 self._timestamps.append(datetime.now())
