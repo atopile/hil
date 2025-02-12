@@ -5,4 +5,3 @@ component NRVA4007T3G:
     # pins
     signal _1 ~ pin 1
     signal _2 ~ pin 2
-

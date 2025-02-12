@@ -19,11 +19,11 @@ module Texas_Instruments_TPS55340RTER from AdjustableRegulator:
 
     cap_in1 = new Capacitor
     cap_in2 = new Capacitor
-    
+
     cap_out1 = new Capacitor
     cap_out2 = new Capacitor
     cap_out3 = new Capacitor
-    
+
 
     # Values
     switching_frequency = 600kHz +/- 10%

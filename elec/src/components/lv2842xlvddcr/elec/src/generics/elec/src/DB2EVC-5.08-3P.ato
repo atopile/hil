@@ -6,4 +6,3 @@ component DB2EVC_5_08_3P:
     signal _1 ~ pin 1
     signal _2 ~ pin 2
     signal _3 ~ pin 3
-

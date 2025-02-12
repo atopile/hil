@@ -114,11 +114,11 @@ module W5500Ethernet:
     rx_minus_damping = new Resistor
     rx_minus_damping.package = "0402"
     rx_minus_damping.value = 33ohm +/- 1%
-    
+
     rx_minus_cap = new Capacitor
     rx_minus_cap.package = "0402"
     rx_minus_cap.value = 6.8nF +/- 10%
-    
+
     w5500.RXN ~ rx_minus_damping.p1
     rx_minus_damping.p2 ~ rx_minus_cap.p1
     rx_minus_cap.p2 ~ rj45.RD_minus
@@ -127,11 +127,11 @@ module W5500Ethernet:
     rx_plus_damping = new Resistor
     rx_plus_damping.package = "0402"
     rx_plus_damping.value = 33ohm +/- 1%
-    
+
     rx_plus_cap = new Capacitor
     rx_plus_cap.package = "0402"
     rx_plus_cap.value = 6.8nF +/- 10%
-    
+
     w5500.RXP ~ rx_plus_damping.p1
     rx_plus_damping.p2 ~ rx_plus_cap.p1
     rx_plus_cap.p2 ~ rj45.RD_plus
@@ -238,7 +238,7 @@ module W5500Ethernet:
 
     # 1M resistor across crystal pins for stability
     osc_resistor = new Resistor
-    osc_resistor.package = "0402" 
+    osc_resistor.package = "0402"
     osc_resistor.value = 1Mohm +/- 10%
     oscillator.xin.io ~ osc_resistor.p1
     oscillator.xout.io ~ osc_resistor.p2

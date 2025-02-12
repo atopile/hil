@@ -7,4 +7,3 @@ component _1TS003B_1400_3500A:
     signal _2 ~ pin 2
     signal _3 ~ pin 3
     signal _4 ~ pin 4
-

@@ -43,4 +43,4 @@ module AnalogOut4ch:
     tvs_ch2.output ~ output_2
     tvs_ch3.output ~ output_3
     tvs_ch4.output ~ output_4
-    
+

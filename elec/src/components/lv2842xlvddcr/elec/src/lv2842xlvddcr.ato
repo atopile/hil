@@ -9,4 +9,3 @@ component LV2842XLVDDCR:
     signal SHDN_hash ~ pin 4
     signal VIN ~ pin 5
     signal SW ~ pin 6
-

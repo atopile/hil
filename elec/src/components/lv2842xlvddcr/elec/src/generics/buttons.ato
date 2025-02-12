@@ -3,7 +3,7 @@ from "resistors.ato" import Resistor
 
 module NoButton:
     """
-    Its a little confusing how this works, but the idea is that you might optionally want a button in your design. 
+    Its a little confusing how this works, but the idea is that you might optionally want a button in your design.
     To achieve this with our current compiler, we need an empty module 'NoButon' (Normally Open) that can be
     replaced using the '->' operator with another module that has a button. FOr example the 'ButtonSKRPACE010'.
 

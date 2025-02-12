@@ -13,6 +13,7 @@ class HDMI(ModuleInterface):
     """
     HDMI interface
     """
+
     data0: F.DifferentialPair
     data1: F.DifferentialPair
     data2: F.DifferentialPair

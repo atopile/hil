@@ -6,7 +6,7 @@ component ADS1115IDGSR:
     """
     lcsc_id = "C37593"
     mpn = "ADS1115IDGSR"
-    
+
     # pins
     i2c = new I2C
     i2c.sda.line ~ pin 9
