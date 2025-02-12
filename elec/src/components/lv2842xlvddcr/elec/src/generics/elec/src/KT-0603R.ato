@@ -5,4 +5,3 @@ component KT_0603R:
     # pins
     signal cathode ~ pin 1
     signal anode ~ pin 2
-

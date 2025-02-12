@@ -16,7 +16,7 @@ component MCP4725A0T:
     power = new ElectricPower
     power.vcc ~ pin 3
     power.gnd ~ pin 2
-    
+
     output = new ElectricSignal
     output.line ~ pin 1
     power.gnd ~ output.reference.gnd

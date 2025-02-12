@@ -34,7 +34,7 @@ class XT30PW(Module):
     @L.rt_field
     def pin_association_heuristic(self):
         return F.has_pin_association_heuristic_lookup_table(
-            mapping={self.power.lv: ["1","3","4"], self.power.hv: ["2"]},
+            mapping={self.power.lv: ["1", "3", "4"], self.power.hv: ["2"]},
             accept_prefix=False,
             case_sensitive=False,
         )
@@ -48,4 +48,3 @@ class XT30PW(Module):
         #          parametrization
         # ------------------------------------
         pass
-

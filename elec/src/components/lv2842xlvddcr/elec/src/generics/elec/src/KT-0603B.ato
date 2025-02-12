@@ -7,4 +7,3 @@ component KT_0603B from LED:
     # pins
     signal cathode ~ pin 1
     signal anode ~ pin 2
-

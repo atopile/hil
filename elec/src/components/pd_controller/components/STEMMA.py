@@ -37,10 +37,10 @@ class STEMMA_RIGHT_ANGLE(Module):
     def pin_association_heuristic(self):
         return F.has_pin_association_heuristic_lookup_table(
             mapping={
-                self.power.lv: ["1","5","6"],
+                self.power.lv: ["1", "5", "6"],
                 self.power.hv: ["2"],
                 self.i2c.sda.line: ["3"],
-                self.i2c.scl.line: ["4"]
+                self.i2c.scl.line: ["4"],
             },
             accept_prefix=False,
             case_sensitive=False,

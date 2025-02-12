@@ -104,8 +104,3 @@ module VariableResistor:
     # Output Stage
     output_resistor.p2 ~ power_in.gnd
     #TBD
-
-
-
-
-

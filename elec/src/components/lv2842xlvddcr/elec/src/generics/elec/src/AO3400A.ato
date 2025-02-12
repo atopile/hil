@@ -6,4 +6,3 @@ component AO3400A:
     signal D ~ pin 3
     signal G ~ pin 1
     signal S ~ pin 2
-

@@ -13,16 +13,16 @@ class GigabitEthernet(ModuleInterface):
     """
     1000BASE-T Gigabit Ethernet Interface
     """
+
     # Ethernet pairs
     pair0: F.DifferentialPair  # Ethernet_Pair0_P/N
     pair1: F.DifferentialPair  # Ethernet_Pair1_P/N
     pair2: F.DifferentialPair  # Ethernet_Pair2_P/N
     pair3: F.DifferentialPair  # Ethernet_Pair3_P/N
-    
+
     # Status LEDs
     led_speed: F.ElectricLogic  # Speed LED
-    led_link: F.ElectricLogic     # Link LED
-
+    led_link: F.ElectricLogic  # Link LED
 
     @L.rt_field
     def single_electric_reference(self):

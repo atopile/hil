@@ -61,7 +61,7 @@ module Microchip_Tech_MCP2518FDT_E_QBB:
     oscillator.xin.io ~ controller.OSC1
     oscillator.xout.io ~ controller.OSC2
     oscillator.gnd ~ power_3v3.gnd
-    
+
 
 component _Microchip_Tech_MCP2518FDT_E_QBB:
     """Microchip_Tech_MCP2518FDT_E_QBB component"""
