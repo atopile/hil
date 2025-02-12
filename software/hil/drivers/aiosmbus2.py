@@ -1,8 +1,5 @@
 import asyncio
-from typing import Callable, TypeVar
-
-T = TypeVar("T")  # Input type
-U = TypeVar("U")  # Output type
+from smbus2 import SMBus
 
 
 class AsyncSMBus:
@@ -34,7 +31,6 @@ class AsyncSMBus:
         """
         Open the given I2C bus (e.g., an integer 0 or 1 or a device path).
         """
-        from smbus2 import SMBus  # Import here to avoid circular dependencies.
         # Instantiate the synchronous SMBus in a thread.
         self._smbus = await asyncio.to_thread(SMBus, bus, self.force)
 
@@ -92,61 +88,81 @@ class AsyncSMBus:
         """
         Read a single byte from a designated register.
         """
-        return await asyncio.to_thread(self._smbus.read_byte_data, i2c_addr, register, force)
+        return await asyncio.to_thread(
+            self._smbus.read_byte_data, i2c_addr, register, force
+        )
 
     async def write_byte_data(self, i2c_addr, register, value, force=None):
         """
         Write a byte to a given register.
         """
-        await asyncio.to_thread(self._smbus.write_byte_data, i2c_addr, register, value, force)
+        await asyncio.to_thread(
+            self._smbus.write_byte_data, i2c_addr, register, value, force
+        )
 
     async def read_word_data(self, i2c_addr, register, force=None):
         """
         Read a 2-byte word from a given register.
         """
-        return await asyncio.to_thread(self._smbus.read_word_data, i2c_addr, register, force)
+        return await asyncio.to_thread(
+            self._smbus.read_word_data, i2c_addr, register, force
+        )
 
     async def write_word_data(self, i2c_addr, register, value, force=None):
         """
         Write a 2-byte word to a given register.
         """
-        await asyncio.to_thread(self._smbus.write_word_data, i2c_addr, register, value, force)
+        await asyncio.to_thread(
+            self._smbus.write_word_data, i2c_addr, register, value, force
+        )
 
     async def process_call(self, i2c_addr, register, value, force=None):
         """
         Execute a process call (sending a 16-bit value and receiving a 16-bit response).
         """
-        return await asyncio.to_thread(self._smbus.process_call, i2c_addr, register, value, force)
+        return await asyncio.to_thread(
+            self._smbus.process_call, i2c_addr, register, value, force
+        )
 
     async def read_block_data(self, i2c_addr, register, force=None):
         """
         Read a block of up to 32 bytes from a given register.
         """
-        return await asyncio.to_thread(self._smbus.read_block_data, i2c_addr, register, force)
+        return await asyncio.to_thread(
+            self._smbus.read_block_data, i2c_addr, register, force
+        )
 
     async def write_block_data(self, i2c_addr, register, data, force=None):
         """
         Write a block of byte data to a given register.
         """
-        await asyncio.to_thread(self._smbus.write_block_data, i2c_addr, register, data, force)
+        await asyncio.to_thread(
+            self._smbus.write_block_data, i2c_addr, register, data, force
+        )
 
     async def block_process_call(self, i2c_addr, register, data, force=None):
         """
         Execute a block process call.
         """
-        return await asyncio.to_thread(self._smbus.block_process_call, i2c_addr, register, data, force)
+        return await asyncio.to_thread(
+            self._smbus.block_process_call, i2c_addr, register, data, force
+        )
 
     async def read_i2c_block_data(self, i2c_addr, register, length, force=None):
         """
         Read a block of byte data from a given register.
         """
-        return await asyncio.to_thread(self._smbus.read_i2c_block_data, i2c_addr, register, length, force)
+        return await asyncio.to_thread(
+            self._smbus.read_i2c_block_data, i2c_addr, register, length, force
+        )
 
     async def write_i2c_block_data(self, i2c_addr, register, data, force=None):
         """
         Write a block of byte data to a given register.
         """
-        await asyncio.to_thread(self._smbus.write_i2c_block_data, i2c_addr, register, data, force)
+        await asyncio.to_thread(
+            self._smbus.write_i2c_block_data, i2c_addr, register, data, force
+        )
 
     async def i2c_rdwr(self, *i2c_msgs):
         """

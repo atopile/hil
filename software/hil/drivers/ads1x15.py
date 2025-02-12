@@ -1,5 +1,5 @@
 import time
-from asyncI2C import AsyncSMBus
+from hil.drivers.aiosmbus2 import AsyncSMBus
 
 # Added global constant for GPIO expander address (fixes "Undefined name GPIO_ADDRESS" error)
 GPIO_ADDRESS = 0x20
