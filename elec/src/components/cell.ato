@@ -133,7 +133,7 @@ module Cell:
     _power_3v3 ~ ldo.power_3v3
     _power_3v3 ~ gpio.power
     _power_3v3 ~ current_sense.power
-    _power_5v ~ output_relay.power_relay 
+    _power_5v ~ output_relay.power_relay
     power_5v ~ dmm_relay.power_relay
 
     #TODO: do the math in ato

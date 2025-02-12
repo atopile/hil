@@ -5,4 +5,3 @@ component SS34_C8678:
     # pins
     signal A ~ pin 2
     signal K ~ pin 1
-

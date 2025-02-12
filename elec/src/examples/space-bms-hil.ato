@@ -4,4 +4,3 @@ from "blocks/power-usbpd.ato" import PowerUSBPD
 module SpaceBMSHIL:
     controller = new ControllerCM4
     power = new PowerUSBPD
-

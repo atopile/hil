@@ -41,4 +41,3 @@ class ESDA25W(Module):
                 "2": self.K2,
             }
         )
-

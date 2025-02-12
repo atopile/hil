@@ -11,6 +11,7 @@ from faebryk.libs.picker.picker import DescriptiveProperties
 
 logger = logging.getLogger(__name__)
 
+
 class _Texas_Instruments_SN74LVC1G07DBVR(Module):
     """
     TODO: Docstring describing your module
@@ -65,10 +66,12 @@ class _Texas_Instruments_SN74LVC1G07DBVR(Module):
         # ------------------------------------
         pass
 
+
 class Texas_Instruments_SN74LVC1G07DBVR(Module):
     """
     Buffer
     """
+
     power: F.ElectricPower
     input: F.ElectricLogic
     output: F.ElectricLogic

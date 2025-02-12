@@ -5,4 +5,3 @@ component WJ15EDGRC_3_81_2P:
     # pins
     signal _1 ~ pin 1
     signal _2 ~ pin 2
-

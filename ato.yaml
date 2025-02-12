@@ -60,14 +60,14 @@ builds:
     exclude_targets: [mfg-data]
 
   buck-boost:
-    entry: 
+    entry:
       elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
-  
+
   analog-out-4ch:
     entry: elec/src/blocks/analog-out-4ch.ato:AnalogOut4ch
     exclude_targets: [mfg-data]
- 
+
   boost-converter:
     entry: elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
     exclude_targets: [mfg-data]

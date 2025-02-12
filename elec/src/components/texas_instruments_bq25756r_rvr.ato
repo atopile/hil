@@ -134,7 +134,7 @@ module Texas_Instruments_BQ25756RRVR:
     power_in.gnd ~ controller.PGND
 
         # Set switching frequency
-    
+
     fsw_res = new Resistor
     fsw_res.resistance = 50kohm +/- 1% # 500kHz
     fsw_res.package = "R0402"
@@ -432,9 +432,3 @@ module BuckBoostCore:
     gate_input_ls ~ fet_input_ls.gate
     gate_output_hs ~ fet_output_hs.gate
     gate_output_ls ~ fet_output_ls.gate
-
-
-
-
-
-

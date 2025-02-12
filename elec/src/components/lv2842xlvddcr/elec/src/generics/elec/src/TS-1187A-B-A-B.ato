@@ -7,4 +7,3 @@ component TS_1187A_B_A_B:
     signal A ~ pin 1
     signal D ~ pin 4
     signal C ~ pin 3
-

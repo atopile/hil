@@ -117,8 +117,12 @@ class CM4_MINIMAL(Module):
         self.spi4_cs.connect(self.gpio[4])
 
         # UART
-        F.Net.with_name("UART_TX").part_of.connect(self.gpio[13].line, self.uart_tx.line)
-        F.Net.with_name("UART_RX").part_of.connect(self.gpio[14].line, self.uart_rx.line)
+        F.Net.with_name("UART_TX").part_of.connect(
+            self.gpio[13].line, self.uart_tx.line
+        )
+        F.Net.with_name("UART_RX").part_of.connect(
+            self.gpio[14].line, self.uart_rx.line
+        )
 
         # Power
         # 5V power pins
@@ -276,7 +280,9 @@ class CM4_MINIMAL(Module):
         self.power_led_resistor.add(F.has_package("R0402"))
 
         # Activity LED
-        self.power_3v3.hv.connect_via([self.activity_led, self.activity_led_resistor], self.hdi_a.pins[19])
+        self.power_3v3.hv.connect_via(
+            [self.activity_led, self.activity_led_resistor], self.hdi_a.pins[19]
+        )
         # self.activity_led.color.constrain_subset(F.LED.Color.YELLOW)
         self.activity_led.add(F.has_descriptive_properties_defined({"LCSC": "C72038"}))
         self.activity_led_resistor.add(F.has_package("R0402"))

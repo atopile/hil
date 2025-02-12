@@ -7,7 +7,7 @@ module Amplifier:
     Amplifies the input signal by a given gain.
     Uses a Non-Inverting Opamp and a feedback resistor divider.
     """
-    power_in = new ElectricPower 
+    power_in = new ElectricPower
     input = new ElectricSignal
     output = new ElectricSignal
 
