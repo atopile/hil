@@ -6,6 +6,18 @@ from collections.abc import Callable
 import polars as pl
 
 
+def milliseconds(n: float) -> timedelta:
+    return timedelta(milliseconds=n)
+
+
+def microseconds(n: float) -> timedelta:
+    return timedelta(microseconds=n)
+
+
+def seconds(n: float) -> timedelta:
+    return timedelta(seconds=n)
+
+
 class during:
     def __init__(self, duration: float):
         self.duration = duration
@@ -97,6 +109,18 @@ class Trace[T]:
 
         return self._polars
 
+    @property
+    def value(self) -> pl.Expr:
+        return pl.col(self._name)
+
+    @property
+    def timestamp(self) -> pl.Expr:
+        return pl.col(self.TIMESTAMP_COLUMN)
+
+    @property
+    def elapsed_time(self) -> pl.Expr:
+        return self.timestamp - self.timestamp.min()
+
     def derive(self, data: pl.DataFrame) -> Self:
         return self.__class__(self._name, data)
 
@@ -141,6 +165,28 @@ class Trace[T]:
 
     async def __anext__(self) -> T:
         return await self.new_data()
+
+    def __gt__(self, other: float) -> "Query":
+        return Query(self) > other
+
+    def __lt__(self, other: float) -> "Query":
+        return Query(self) < other
+
+    def rolling_minimum(self, duration: timedelta) -> "Query":
+        return Query(self).rolling_minimum(duration)
+
+    def rolling_maximum(self, duration: timedelta) -> "Query":
+        return Query(self).rolling_maximum(duration)
+
+    async def ever(
+        self, expr: pl.Expr, timeout: timedelta = seconds(10)
+    ) -> Awaitable[bool]:
+        return ever(Query(self, expr), timeout)
+
+    async def always(
+        self, expr: pl.Expr, timeout: timedelta = seconds(10)
+    ) -> Awaitable[bool]:
+        return always(Query(self, expr), timeout)
 
 
 class record[T]:
@@ -233,3 +279,114 @@ class record[T]:
             raise StopAsyncIteration
 
         return await self.trace.new_data()
+
+
+class Query:
+    """
+    Builds a polars query over values from a trace.
+    """
+
+    def __init__(self, trace: Trace, expr: pl.Expr | None = None):
+        if expr is None:
+            expr = pl.col(trace._name)
+
+        self.trace = trace
+        self._expr = expr
+        self._timestamp = trace.TIMESTAMP_COLUMN
+
+    def _evaluate(self) -> bool:
+        results = self.trace.to_polars().select(self._expr)
+
+        if results.shape[1] > 1:
+            raise ValueError("Query returned too many columns")
+
+        if results.dtypes[0] != pl.Boolean:
+            raise ValueError("Query returned non-boolean value(s)")
+
+        if results.shape[0] != 1:
+            return results.get_column(results.columns[0]).any()
+
+        return bool(results.item())
+
+    def __gt__(self, other: float) -> Self:
+        self._expr = self._expr > other
+        return self
+
+    def __lt__(self, other: float) -> Self:
+        self._expr = self._expr < other
+        return self
+
+    def __bool__(self) -> bool:
+        return self._evaluate()
+
+    def _after(self, duration: timedelta) -> pl.Expr:
+        return self._expr.where(
+            (pl.col(self._timestamp).max() - pl.col(self._timestamp).min()) >= duration
+        )
+
+    def rolling_minimum(self, duration: timedelta) -> Self:
+        self._expr = (
+            (self)
+            ._after(duration)
+            .rolling_min_by(
+                self._timestamp,
+                window_size=f"{duration.total_seconds()}s",
+                min_samples=2,
+            )
+        )
+        return self
+
+    def rolling_maximum(self, duration: timedelta) -> Self:
+        self._expr = (
+            (self)
+            ._after(duration)
+            .rolling_max_by(
+                self._timestamp,
+                window_size=f"{duration.total_seconds()}s",
+                min_samples=2,
+            )
+        )
+        return self
+
+    def any(self) -> Self:
+        self._expr = self._expr.any()
+        return self
+
+    def all(self) -> Self:
+        self._expr = self._expr.all()
+        return self
+
+    async def ever(self, timeout: timedelta = seconds(10)) -> bool:
+        """
+        Returns True if the query succeeds at any point
+        """
+        self._expr = self._expr.any()
+
+        async for _ in during(timeout.total_seconds()).any(self.trace.new_data):
+            if self._evaluate():
+                return True
+
+        return False
+
+    async def always(self, timeout: timedelta = seconds(10)) -> bool:
+        """
+        Returns False if the query fails at any point
+        """
+        self._expr = self._expr.all()
+
+        try:
+            async for _ in during(timeout.total_seconds()).any(self.trace.new_data):
+                if not self._evaluate():
+                    return False
+        except TimeoutError:
+            pass
+
+        return True
+
+
+async def ever(query: Query, timeout: timedelta = seconds(10)) -> bool:
+    return await query.ever(timeout=timeout)
+
+
+async def always(query: Query, timeout: timedelta = seconds(10)) -> bool:
+    return await query.always(timeout=timeout)
