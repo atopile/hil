@@ -1,9 +1,12 @@
 import asyncio
-
+import pytest
 import pytest_asyncio
 from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.cell import Cell
 from hil.drivers.tca9548a import TCA9548A
+
+# Mark the module as using asyncio
+pytestmark = pytest.mark.asyncio
 
 
 class CellSim:
@@ -36,14 +39,16 @@ class Hil:
 
     cellsim: CellSim
 
+    @classmethod
     async def create(cls):
         self = cls()
         physical_bus = AsyncSMBusPeripheral(1)
-        self.cellsim = CellSim(physical_bus)
+        self.physical_bus = physical_bus
+        self.cellsim = await CellSim.create(physical_bus)
         return self
 
 
-@pytest_asyncio.fixture(loop_scope="session")
+@pytest.fixture(scope="session")
 async def hil():
     hil = await Hil.create()
     async with hil.physical_bus:
@@ -70,3 +75,28 @@ async def test_performance(hil: Hil):
             await cell.open_load_switch()
             await cell.turn_off_output_relay()
             await cell.disable()
+
+@pytest.mark.parametrize("voltage", [v/10 for v in range(5, 44)])  # 0.5V to 4.3V in 0.1V steps
+async def test_voltage_accuracy(hil: Hil, voltage: float):
+    # Test each cell
+    for cell in hil.cellsim.cells:
+        await cell.setup()
+        await cell.enable()
+        await cell.set_voltage(voltage)
+        await cell.turn_on_output_relay()
+        
+        # Allow voltage to settle
+        await asyncio.sleep(0.1)
+        
+        # Measure voltage and check accuracy
+        measured_voltage = await cell.get_voltage()
+        
+        # Assert voltage is within 1% tolerance
+        assert abs(measured_voltage - voltage) <= voltage * 0.01, \
+            f"Cell {cell} voltage accuracy error: set={voltage}V, measured={measured_voltage}V"
+        
+        # Cleanup
+        await cell.turn_off_output_relay()
+        await cell.disable()
+
+
