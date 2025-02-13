@@ -109,6 +109,18 @@ class Trace[T]:
 
         return self._polars
 
+    @property
+    def value(self) -> pl.Expr:
+        return pl.col(self._name)
+
+    @property
+    def timestamp(self) -> pl.Expr:
+        return pl.col(self.TIMESTAMP_COLUMN)
+
+    @property
+    def elapsed_time(self) -> pl.Expr:
+        return self.timestamp - self.timestamp.min()
+
     def derive(self, data: pl.DataFrame) -> Self:
         return self.__class__(self._name, data)
 
@@ -160,11 +172,21 @@ class Trace[T]:
     def __lt__(self, other: float) -> "Query":
         return Query(self) < other
 
-    def min_over_period(self, duration: timedelta) -> "Query":
-        return Query(self).min_over_period(duration)
+    def rolling_minimum(self, duration: timedelta) -> "Query":
+        return Query(self).rolling_minimum(duration)
 
-    def max_over_period(self, duration: timedelta) -> "Query":
-        return Query(self).max_over_period(duration)
+    def rolling_maximum(self, duration: timedelta) -> "Query":
+        return Query(self).rolling_maximum(duration)
+
+    async def ever(
+        self, expr: pl.Expr, timeout: timedelta = seconds(10)
+    ) -> Awaitable[bool]:
+        return ever(Query(self, expr), timeout)
+
+    async def always(
+        self, expr: pl.Expr, timeout: timedelta = seconds(10)
+    ) -> Awaitable[bool]:
+        return always(Query(self, expr), timeout)
 
 
 class record[T]:
@@ -264,9 +286,12 @@ class Query:
     Builds a polars query over values from a trace.
     """
 
-    def __init__(self, trace: Trace):
+    def __init__(self, trace: Trace, expr: pl.Expr | None = None):
+        if expr is None:
+            expr = pl.col(trace._name)
+
         self.trace = trace
-        self._expr: pl.Expr = pl.col(trace._name)
+        self._expr = expr
         self._timestamp = trace.TIMESTAMP_COLUMN
 
     def _evaluate(self) -> bool:
@@ -285,7 +310,7 @@ class Query:
             (pl.col(self._timestamp).max() - pl.col(self._timestamp).min()) >= duration
         )
 
-    def min_over_period(self, duration: timedelta) -> Self:
+    def rolling_minimum(self, duration: timedelta) -> Self:
         self._expr = (
             (self)
             ._after(duration)
@@ -297,7 +322,7 @@ class Query:
         )
         return self
 
-    def max_over_period(self, duration: timedelta) -> Self:
+    def rolling_maximum(self, duration: timedelta) -> Self:
         self._expr = (
             (self)
             ._after(duration)
@@ -317,31 +342,37 @@ class Query:
         self._expr = self._expr.all()
         return self
 
+    async def ever(self, timeout: timedelta = seconds(10)) -> bool:
+        """
+        Returns True if the query succeeds at any point
+        """
+        self._expr = self._expr.any()
 
-# TODO: allow giving ever() and always() a predicate to evaluate against the trace
+        async for _ in during(timeout.total_seconds()).any(self.trace.new_data):
+            if self._evaluate():
+                return True
+
+        return False
+
+    async def always(self, timeout: timedelta = seconds(10)) -> bool:
+        """
+        Returns False if the query fails at any point
+        """
+        self._expr = self._expr.all()
+
+        try:
+            async for _ in during(timeout.total_seconds()).any(self.trace.new_data):
+                if not self._evaluate():
+                    return False
+        except TimeoutError:
+            pass
+
+        return True
 
 
-async def ever(query: Query, timeout: float = 10, interval: float = 0.1) -> bool:
-    """
-    Returns True if the query succeeds at any point
-    """
-
-    # TODO: only evaluate at intervals
-    async for _ in during(timeout).any(query.trace.new_data):
-        if query._evaluate():
-            return True
-
-    return False
+async def ever(query: Query, timeout: timedelta = seconds(10)) -> bool:
+    return await query.ever(timeout=timeout)
 
 
-async def always(query: Query, timeout: float = 10, interval: float = 0.1) -> bool:
-    """
-    Returns False if the query fails at any point
-    """
-
-    # TODO: only evaluate at intervals
-    async for _ in during(timeout).any(query.trace.new_data):
-        if not query._evaluate():
-            return False
-
-    return True
+async def always(query: Query, timeout: timedelta = seconds(10)) -> bool:
+    return await query.always(timeout=timeout)
