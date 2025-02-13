@@ -11,6 +11,6 @@ async def test_create():
 async def test_branch():
     async with AsyncSMBus(0) as bus:
         mux = TCA9548A(bus)
-        branches = AsyncSMBusBranch.from_channels(bus, mux, [0, 1, 2])
-        async with branches[0]() as handle:
+        a, b, c = AsyncSMBusBranch.from_channels(bus, mux, [0, 1, 2])
+        async with a() as handle:
             assert handle is not None
