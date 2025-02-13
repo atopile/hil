@@ -46,7 +46,7 @@ class ADS1x15:
         SINGLE = 1
 
     # Data rate configuration
-    class DataRateConfig(IntEnum):
+    class ADS101XDataRate(IntEnum):
         RATE_128 = 0
         RATE_250 = 1
         RATE_490 = 2
@@ -54,6 +54,8 @@ class ADS1x15:
         RATE_1600 = 4
         RATE_2400 = 5
         RATE_3300 = 6
+
+    class ADS111XDataRate(IntEnum):
         RATE_8 = 0
         RATE_16 = 1
         RATE_32 = 2
@@ -99,6 +101,8 @@ class ADS1x15:
 
     # Default conversion lengths
     _adcBits = 16
+
+    _data_rate_enum = ADS111XDataRate
 
     def __init__(self):
         # Private constructor; use ADS1x15.create() instead.
@@ -196,18 +200,17 @@ class ADS1x15:
         "Get device operating mode configuration"
         return self.ModeConfig((self._config & 0x0100) >> 8)
 
-    async def _set_data_rate(self, dataRate: DataRateConfig):
+    async def _set_data_rate(self, dataRate: ADS101XDataRate | ADS111XDataRate):
         "Set data rate configuration"
-        if dataRate < 0 or dataRate > 7:
-            raise ValueError(f"Invalid data rate: {dataRate}")
-
+        if not isinstance(dataRate, self._data_rate_enum):
+            raise ValueError(f"Invalid data rate for device: {dataRate}")
         dataRateRegister = dataRate << 5
         self._config = (self._config & 0xFF1F) | dataRateRegister
         await self._write_register(self.CONFIG_REG, self._config)
 
-    def get_data_rate(self) -> DataRateConfig:
+    def get_data_rate(self) -> ADS101XDataRate | ADS111XDataRate:
         "Get data rate configuration"
-        return self.DataRateConfig((self._config & 0x00E0) >> 5)
+        return self._data_rate_enum((self._config & 0x00E0) >> 5)
 
     async def set_comparator_mode(self, comparatorMode: ComparatorMode):
         "Set comparator mode configuration"
@@ -313,7 +316,7 @@ class ADS1x15:
         self,
         gain: GainConfig | None = None,
         mode: ModeConfig | None = None,
-        dataRate: DataRateConfig | None = None,
+        dataRate: ADS101XDataRate | ADS111XDataRate | None = None,
     ):
         "Set configuration of the ADC"
         if gain is not None and gain != self.get_gain():
@@ -327,7 +330,7 @@ class ADS1x15:
         self,
         gain: GainConfig | None = None,
         mode: ModeConfig | None = None,
-        dataRate: DataRateConfig | None = None,
+        dataRate: ADS101XDataRate | ADS111XDataRate | None = None,
     ):
         "Set configuration of the ADC"
         async with self._lock:
@@ -338,7 +341,7 @@ class ADS1x15:
         pin: int,
         gain: GainConfig | None = None,
         mode: ModeConfig | None = None,
-        dataRate: DataRateConfig | None = None,
+        dataRate: ADS101XDataRate | ADS111XDataRate | None = None,
     ):
         "Asynchronously get ADC value of a pin"
         async with self._lock:
@@ -351,7 +354,7 @@ class ADS1x15:
         input: InputConfig,
         gain: GainConfig | None = None,
         mode: ModeConfig | None = None,
-        dataRate: DataRateConfig | None = None,
+        dataRate: ADS101XDataRate | ADS111XDataRate | None = None,
     ):
         "Asynchronously get ADC value of a pin"
         async with self._lock:
@@ -383,6 +386,8 @@ class ADS1x15:
 class ADS1013(ADS1x15):
     "ADS1013 class derived from general ADS1x15 class"
 
+    _data_rate_enum = ADS1x15.ADS101XDataRate
+
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
         "Initialize ADS1013 with SMBus and I2C address configuration"
@@ -399,6 +404,8 @@ class ADS1013(ADS1x15):
 
 class ADS1014(ADS1x15):
     "ADS1014 class derived from general ADS1x15 class"
+
+    _data_rate_enum = ADS1x15.ADS101XDataRate
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -417,6 +424,8 @@ class ADS1014(ADS1x15):
 class ADS1015(ADS1x15):
     "ADS1015 class derived from general ADS1x15 class"
 
+    _data_rate_enum = ADS1x15.ADS101XDataRate
+
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
         "Initialize ADS1015 with SMBus and I2C address configuration"
@@ -433,6 +442,8 @@ class ADS1015(ADS1x15):
 
 class ADS1113(ADS1x15):
     "ADS1113 class derived from general ADS1x15 class"
+
+    _data_rate_enum = ADS1x15.ADS111XDataRate
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -451,6 +462,8 @@ class ADS1113(ADS1x15):
 class ADS1114(ADS1x15):
     "ADS1114 class derived from general ADS1x15 class"
 
+    _data_rate_enum = ADS1x15.ADS111XDataRate
+
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
         "Initialize ADS1114 with SMBus and I2C address configuration"
@@ -467,6 +480,8 @@ class ADS1114(ADS1x15):
 
 class ADS1115(ADS1x15):
     "ADS1115 class derived from general ADS1x15 class"
+
+    _data_rate_enum = ADS1x15.ADS111XDataRate
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
