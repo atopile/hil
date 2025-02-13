@@ -155,6 +155,12 @@ class AsyncSMBusPeripheral:
         self._bus = bus
         self._force = force
 
+    @classmethod
+    async def create(cls, bus: int | os.PathLike | None = None, force: bool | None = None) -> Self:
+        instance = cls(bus, force)
+        await instance.open()
+        return instance
+
     async def __aenter__(self) -> Self:
         try:
             await self.open()
