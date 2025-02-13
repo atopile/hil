@@ -1,5 +1,6 @@
 from pathlib import Path
-import pyinstrument
+
+# import pyinstrument
 import asyncio
 
 from hil.drivers.aiosmbus2 import AsyncSMBusPeripheral, AsyncSMBusBranch
@@ -18,32 +19,32 @@ async def test_performance():
         await Cell.create(i, bus) for i, bus in enumerate(branch_buses)
     ]
 
-    profiler = pyinstrument.Profiler(interval=0.01)
+    # profiler = pyinstrument.Profiler(interval=0.01)
 
     async with physical_bus:
         for cell in cells:
             await cell.setup()
 
-        with profiler:
-            for _ in range(10):
-                for cell in cells:
-                    await asyncio.gather(
-                        cell.enable(),
-                        cell.set_voltage(1),
-                        cell.turn_on_output_relay(),
-                        cell.close_load_switch(),
-                    )
+        # with profiler:
+        for _ in range(10):
+            for cell in cells:
+                await asyncio.gather(
+                    cell.enable(),
+                    cell.set_voltage(1),
+                    cell.turn_on_output_relay(),
+                    cell.close_load_switch(),
+                )
 
-                    voltage, current = await asyncio.gather(
-                        cell.get_voltage(),
-                        cell.get_current(),
-                    )
+                voltage, current = await asyncio.gather(
+                    cell.get_voltage(),
+                    cell.get_current(),
+                )
 
-                    await asyncio.gather(
-                        cell.open_load_switch(),
-                        cell.turn_off_output_relay(),
-                        cell.disable(),
-                    )
+                await asyncio.gather(
+                    cell.open_load_switch(),
+                    cell.turn_off_output_relay(),
+                    cell.disable(),
+                )
 
-    ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
-    profiler.write_html(ARTIFACTS_DIR / "cell_performance.html")
+    # ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
+    # profiler.write_html(ARTIFACTS_DIR / "cell_performance.html")
