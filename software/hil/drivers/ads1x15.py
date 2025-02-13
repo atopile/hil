@@ -139,12 +139,8 @@ class ADS1x15:
             value = value - (2 ** (self._adcBits))
         return value
 
-    async def _set_input(self, input: int):
+    async def _set_input(self, input: InputConfig):
         "Set input multiplexer configuration"
-        # Filter input argument
-        if input < 0 or input > 7:
-            raise ValueError(f"Invalid input number: {input}")
-
         inputRegister = input << 12
         # Masking input argument bits (bit 12-14) to config register
         self._config = (self._config & 0x8FFF) | inputRegister
@@ -296,7 +292,7 @@ class ADS1x15:
         "Check if device currently performing conversion"
         return not await self.is_ready()
 
-    async def _request_adc(self, input):
+    async def _request_input(self, input: InputConfig):
         "Private method for starting a single-shot conversion"
         await self._set_input(input)
         # Set single-shot conversion start (bit 15)
@@ -313,40 +309,55 @@ class ADS1x15:
                 break
         return await self._get_conversion_value()
 
-    async def _request_adc(self, pin: int):
-        "Request single-shot conversion of a pin to ground (asynchronously)"
-        if pin >= self._maxPorts or pin < 0:
-            raise ValueError(f"Invalid pin number: {pin}")
+    async def _set_adc_config(
+        self,
+        gain: GainConfig | None = None,
+        mode: ModeConfig | None = None,
+        dataRate: DataRateConfig | None = None,
+    ):
+        "Set configuration of the ADC"
+        if gain is not None and gain != self.get_gain():
+            await self._set_gain(gain)
+        if mode is not None and mode != self.get_mode():
+            await self._set_mode(mode)
+        if dataRate is not None and dataRate != self.get_data_rate():
+            await self._set_data_rate(dataRate)
 
-        await self._request_adc(pin + 4)
+    async def set_adc_config(
+        self,
+        gain: GainConfig | None = None,
+        mode: ModeConfig | None = None,
+        dataRate: DataRateConfig | None = None,
+    ):
+        "Set configuration of the ADC"
+        async with self._lock:
+            await self._set_adc_config(gain, mode, dataRate)
 
-    async def readADC(self, pin: int):
+    async def read_pin(
+        self,
+        pin: int,
+        gain: GainConfig | None = None,
+        mode: ModeConfig | None = None,
+        dataRate: DataRateConfig | None = None,
+    ):
         "Asynchronously get ADC value of a pin"
-        if pin >= self._maxPorts or pin < 0:
-            raise ValueError(f"Invalid pin number: {pin}")
+        async with self._lock:
+            await self._set_adc_config(gain, mode, dataRate)
+            await self._request_input(self.InputConfig(pin + 4))
+            return await self._get_adc()
 
-        await self._request_adc(pin)
-        return await self._get_adc()
-
-    async def readADC_Differential_0_1(self):
-        "Get ADC value between pin 0 and pin 1"
-        await self._request_adc(0)
-        return await self._get_adc()
-
-    async def readADC_Differential_0_3(self):
-        "Get ADC value between pin 0 and pin 3"
-        await self._request_adc(1)
-        return await self._get_adc()
-
-    async def readADC_Differential_1_3(self):
-        "Get ADC value between pin 1 and pin 3"
-        await self._request_adc(2)
-        return await self._get_adc()
-
-    async def readADC_Differential_2_3(self):
-        "Get ADC value between pin 2 and pin 3"
-        await self._request_adc(3)
-        return await self._get_adc()
+    async def read_adc(
+        self,
+        input: InputConfig,
+        gain: GainConfig | None = None,
+        mode: ModeConfig | None = None,
+        dataRate: DataRateConfig | None = None,
+    ):
+        "Asynchronously get ADC value of a pin"
+        async with self._lock:
+            await self._set_adc_config(gain, mode, dataRate)
+            await self._request_input(input)
+            return await self._get_adc()
 
     def get_max_voltage(self) -> float:
         "Get maximum voltage conversion range"
@@ -370,7 +381,7 @@ class ADS1x15:
 
 
 class ADS1013(ADS1x15):
-    "ADS1013 class derifed from general ADS1x15 class"
+    "ADS1013 class derived from general ADS1x15 class"
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -387,7 +398,7 @@ class ADS1013(ADS1x15):
 
 
 class ADS1014(ADS1x15):
-    "ADS1014 class derifed from general ADS1x15 class"
+    "ADS1014 class derived from general ADS1x15 class"
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -404,7 +415,7 @@ class ADS1014(ADS1x15):
 
 
 class ADS1015(ADS1x15):
-    "ADS1015 class derifed from general ADS1x15 class"
+    "ADS1015 class derived from general ADS1x15 class"
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -419,36 +430,9 @@ class ADS1015(ADS1x15):
         self._config = await self._read_register(self.CONFIG_REG)
         return self
 
-    async def requestADC_Differential_0_3(self):
-        "Request single-shot conversion between pin 0 and pin 3"
-        await self._request_adc(1)
-
-    async def readADC_Differential_0_3(self):
-        "Get ADC value between pin 0 and pin 3"
-        await self.requestADC_Differential_0_3()
-        return await self._get_adc()
-
-    async def requestADC_Differential_1_3(self):
-        "Request single-shot conversion between pin 1 and pin 3"
-        await self._request_adc(2)
-
-    async def readADC_Differential_1_3(self):
-        "Get ADC value between pin 1 and pin 3"
-        await self.requestADC_Differential_1_3()
-        return await self._get_adc()
-
-    async def requestADC_Differential_2_3(self):
-        "Request single-shot conversion between pin 2 and pin 3"
-        await self._request_adc(3)
-
-    async def readADC_Differential_2_3(self):
-        "Get ADC value between pin 2 and pin 3"
-        await self.requestADC_Differential_2_3()
-        return await self._get_adc()
-
 
 class ADS1113(ADS1x15):
-    "ADS1113 class derifed from general ADS1x15 class"
+    "ADS1113 class derived from general ADS1x15 class"
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -465,7 +449,7 @@ class ADS1113(ADS1x15):
 
 
 class ADS1114(ADS1x15):
-    "ADS1114 class derifed from general ADS1x15 class"
+    "ADS1114 class derived from general ADS1x15 class"
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -482,7 +466,7 @@ class ADS1114(ADS1x15):
 
 
 class ADS1115(ADS1x15):
-    "ADS1115 class derifed from general ADS1x15 class"
+    "ADS1115 class derived from general ADS1x15 class"
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -496,30 +480,3 @@ class ADS1115(ADS1x15):
         # Store initial config resgister to config property
         self._config = await self._read_register(self.CONFIG_REG)
         return self
-
-    async def requestADC_Differential_0_3(self):
-        "Request single-shot conversion between pin 0 and pin 3"
-        await self._request_adc(1)
-
-    async def readADC_Differential_0_3(self):
-        "Get ADC value between pin 0 and pin 3"
-        await self.requestADC_Differential_0_3()
-        return await self._get_adc()
-
-    async def requestADC_Differential_1_3(self):
-        "Request single-shot conversion between pin 1 and pin 3"
-        await self._request_adc(2)
-
-    async def readADC_Differential_1_3(self):
-        "Get ADC value between pin 1 and pin 3"
-        await self.requestADC_Differential_1_3()
-        return await self._get_adc()
-
-    async def requestADC_Differential_2_3(self):
-        "Request single-shot conversion between pin 2 and pin 3"
-        await self._request_adc(3)
-
-    async def readADC_Differential_2_3(self):
-        "Get ADC value between pin 2 and pin 3"
-        await self.requestADC_Differential_2_3()
-        return await self._get_adc()
