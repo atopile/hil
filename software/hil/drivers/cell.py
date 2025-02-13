@@ -69,7 +69,9 @@ class Cell:
         self.adc = None  # will be created asynchronously in init()
         self.buck_dac = await MCP4725.create(bus, BUCK_ADDRESS)
         self.ldo_dac = await MCP4725.create(bus, LDO_ADDRESS)
-        self._gpio_state = 0x00  # 8-bit register representing the current state of GPIO pins.
+        self._gpio_state = (
+            0x00  # 8-bit register representing the current state of GPIO pins.
+        )
         return self
 
     async def setup(self):

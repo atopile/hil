@@ -7,7 +7,9 @@ async def test_performance():
     physical_bus = AsyncSMBusPeripheral(1)
     mux = TCA9548A(physical_bus)
     branch_buses = AsyncSMBusBranch.from_channels(physical_bus, mux, list(range(0, 8)))
-    cells: list[Cell] = [await Cell.create(i, bus) for i, bus in enumerate(branch_buses)]
+    cells: list[Cell] = [
+        await Cell.create(i, bus) for i, bus in enumerate(branch_buses)
+    ]
 
     async with physical_bus:
         for cell in cells:
