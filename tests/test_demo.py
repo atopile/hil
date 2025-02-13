@@ -1,7 +1,7 @@
 import asyncio
 from datetime import datetime
 
-from software.hil.framework import ever, record, during, seconds
+from hil.framework import ever, record, during, seconds
 
 
 async def source_1() -> float:
