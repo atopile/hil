@@ -3,12 +3,12 @@ from hil.utils.composable_future import Future, composable
 
 class Demo[T](Future[T]):
     @composable
-    def operation1(self, a: int, list_: list) -> "Demo[int]":
+    def operation1(self, a: int, list_: list) -> int:
         list_.append(a)
         return a
 
     @composable
-    def operation2(self, b: str, list_: list) -> "Demo[str]":
+    def operation2(self, b: str, list_: list) -> str:
         list_.append(b)
         return b
 

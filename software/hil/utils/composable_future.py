@@ -9,7 +9,7 @@ in a separate thread.
 import asyncio
 import collections.abc
 import functools
-from typing import Awaitable, Callable
+from typing import Awaitable, Callable, Concatenate, ParamSpec, Self
 import warnings
 
 
@@ -86,7 +86,12 @@ class Future[T](collections.abc.Awaitable):
             )
 
 
-def composable(func):
+P = ParamSpec("P")
+
+
+def composable[T, S: Self](
+    func: Callable[Concatenate[S, P], T],
+) -> Callable[Concatenate[S, P], S]:
     """Decorator that makes a method composable within a Future chain.
 
     This decorator allows methods to be chained together on a Future instance.
@@ -120,7 +125,7 @@ def composable(func):
     """
 
     @functools.wraps(func)
-    def wrapper(self: Future, *args, **kwargs):
+    def wrapper(self, *args, **kwargs):
         self._operations.append(lambda: func(self, *args, **kwargs))
         return self
 
