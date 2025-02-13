@@ -2,140 +2,149 @@ import asyncio
 from contextlib import asynccontextmanager
 import os
 from typing import AsyncContextManager, Protocol, Self
+from hil.utils.composable_future import Future, composable
 from smbus2 import SMBus
 
 
-class _BusHandle:
+class _BusHandle[T](Future[T]):
     def __init__(self, smbus: SMBus):
+        super().__init__()
         self._smbus = smbus
 
-    async def _get_pec(self):
+    @composable
+    def _get_pec(self) -> "Future[int]":
         """
         Get Packet Error Check (PEC) status.
         """
-        return await asyncio.to_thread(self._smbus._get_pec)
+        return self._smbus._get_pec()
 
-    async def enable_pec(self, enable=True):
+    @composable
+    def enable_pec(self, enable=True) -> "Future[None]":
         """
         Enable or disable PEC.
         """
-        await asyncio.to_thread(self._smbus.enable_pec, enable)
+        self._smbus.enable_pec(enable)
 
-    async def _set_address(self, address, force=None):
+    @composable
+    def _set_address(self, address, force=None) -> "Future[None]":
         """
         Set the I2C slave address.
         """
-        await asyncio.to_thread(self._smbus._set_address, address, force)
+        self._smbus._set_address(address, force)
 
-    async def _get_funcs(self):
+    @composable
+    def _get_funcs(self) -> "Future[int]":
         """
         Get the functionality mask of the I2C adapter.
         """
-        return await asyncio.to_thread(self._smbus._get_funcs)
+        return self._smbus._get_funcs()
 
-    async def write_quick(self, i2c_addr, force=None):
+    @composable
+    def write_quick(self, i2c_addr, force=None) -> "Future[None]":
         """
         Perform a quick write transaction.
         """
-        await asyncio.to_thread(self._smbus.write_quick, i2c_addr, force)
+        self._smbus.write_quick(i2c_addr, force)
 
-    async def read_byte(self, i2c_addr, force=None):
+    @composable
+    def read_byte(self, i2c_addr, force=None) -> "Future[int]":
         """
         Read a single byte from a device.
         """
-        return await asyncio.to_thread(self._smbus.read_byte, i2c_addr, force)
+        return self._smbus.read_byte(i2c_addr, force)
 
-    async def write_byte(self, i2c_addr, value, force=None):
+    @composable
+    def write_byte(self, i2c_addr, value, force=None) -> "Future[None]":
         """
         Write a single byte to a device.
         """
-        await asyncio.to_thread(self._smbus.write_byte, i2c_addr, value, force)
+        self._smbus.write_byte(i2c_addr, value, force)
 
-    async def read_byte_data(self, i2c_addr, register, force=None):
+    @composable
+    def read_byte_data(self, i2c_addr, register, force=None) -> "Future[int]":
         """
         Read a single byte from a designated register.
         """
-        return await asyncio.to_thread(
-            self._smbus.read_byte_data, i2c_addr, register, force
-        )
+        return self._smbus.read_byte_data(i2c_addr, register, force)
 
-    async def write_byte_data(self, i2c_addr, register, value, force=None):
+    @composable
+    def write_byte_data(self, i2c_addr, register, value, force=None) -> "Future[None]":
         """
         Write a byte to a given register.
         """
-        await asyncio.to_thread(
-            self._smbus.write_byte_data, i2c_addr, register, value, force
-        )
+        self._smbus.write_byte_data(i2c_addr, register, value, force)
 
-    async def read_word_data(self, i2c_addr, register, force=None):
+    @composable
+    def read_word_data(self, i2c_addr, register, force=None) -> "Future[int]":
         """
         Read a 2-byte word from a given register.
         """
-        return await asyncio.to_thread(
-            self._smbus.read_word_data, i2c_addr, register, force
-        )
+        return self._smbus.read_word_data(i2c_addr, register, force)
 
-    async def write_word_data(self, i2c_addr, register, value, force=None):
+    @composable
+    def write_word_data(self, i2c_addr, register, value, force=None) -> "Future[None]":
         """
         Write a 2-byte word to a given register.
         """
-        await asyncio.to_thread(
-            self._smbus.write_word_data, i2c_addr, register, value, force
-        )
+        self._smbus.write_word_data(i2c_addr, register, value, force)
 
-    async def process_call(self, i2c_addr, register, value, force=None):
+    @composable
+    def process_call(self, i2c_addr, register, value, force=None) -> "Future[int]":
         """
         Execute a process call (sending a 16-bit value and receiving a 16-bit response).
         """
-        return await asyncio.to_thread(
-            self._smbus.process_call, i2c_addr, register, value, force
-        )
+        return self._smbus.process_call(i2c_addr, register, value, force)
 
-    async def read_block_data(self, i2c_addr, register, force=None):
+    @composable
+    def read_block_data(self, i2c_addr, register, force=None) -> "Future[list[int]]":
         """
         Read a block of up to 32 bytes from a given register.
+        Returns a list of integer byte values.
         """
-        return await asyncio.to_thread(
-            self._smbus.read_block_data, i2c_addr, register, force
-        )
+        return self._smbus.read_block_data(i2c_addr, register, force)
 
-    async def write_block_data(self, i2c_addr, register, data, force=None):
+    @composable
+    def write_block_data(self, i2c_addr, register, data, force=None) -> "Future[None]":
         """
         Write a block of byte data to a given register.
         """
-        await asyncio.to_thread(
-            self._smbus.write_block_data, i2c_addr, register, data, force
-        )
+        self._smbus.write_block_data(i2c_addr, register, data, force)
 
-    async def block_process_call(self, i2c_addr, register, data, force=None):
+    @composable
+    def block_process_call(
+        self, i2c_addr, register, data, force=None
+    ) -> "Future[list[int]]":
         """
-        Execute a block process call.
+        Execute a SMBus Block Process Call (variable-length Tx/Rx).
+        Returns a list of integer byte values.
         """
-        return await asyncio.to_thread(
-            self._smbus.block_process_call, i2c_addr, register, data, force
-        )
+        return self._smbus.block_process_call(i2c_addr, register, data, force)
 
-    async def read_i2c_block_data(self, i2c_addr, register, length, force=None):
+    @composable
+    def read_i2c_block_data(
+        self, i2c_addr, register, length, force=None
+    ) -> "Future[list[int]]":
         """
-        Read a block of byte data from a given register.
+        Read a block of exactly 'length' bytes from the given register.
+        Returns a list of integer byte values.
         """
-        return await asyncio.to_thread(
-            self._smbus.read_i2c_block_data, i2c_addr, register, length, force
-        )
+        return self._smbus.read_i2c_block_data(i2c_addr, register, length, force)
 
-    async def write_i2c_block_data(self, i2c_addr, register, data, force=None):
+    @composable
+    def write_i2c_block_data(
+        self, i2c_addr, register, data, force=None
+    ) -> "Future[None]":
         """
         Write a block of byte data to a given register.
         """
-        await asyncio.to_thread(
-            self._smbus.write_i2c_block_data, i2c_addr, register, data, force
-        )
+        self._smbus.write_i2c_block_data(i2c_addr, register, data, force)
 
-    async def i2c_rdwr(self, *i2c_msgs):
+    @composable
+    def i2c_rdwr(self, *i2c_msgs) -> "Future[None]":
         """
         Perform a combined I2C read/write transaction.
         """
-        await asyncio.to_thread(self._smbus.i2c_rdwr, *i2c_msgs)
+        self._smbus.i2c_rdwr(*i2c_msgs)
 
 
 class AsyncSMBusPeripheral:
