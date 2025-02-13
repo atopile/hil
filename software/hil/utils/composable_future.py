@@ -10,6 +10,7 @@ import asyncio
 import collections.abc
 import functools
 from typing import Awaitable, Callable
+import warnings
 
 
 class Future[T](collections.abc.Awaitable):
@@ -75,6 +76,14 @@ class Future[T](collections.abc.Awaitable):
             Generator: An awaitable that yields the final result.
         """
         return self.execute().__await__()
+
+    def __del__(self):
+        """Delete the Future and warn about any pending operations."""
+        if self._operations:
+            warnings.warn(
+                "Future was deleted with pending operations. This will not execute the operations.",
+                stacklevel=2,
+            )
 
 
 def composable(func):
