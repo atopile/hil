@@ -13,20 +13,20 @@ async def test_performance():
     ]
 
     async with physical_bus:
-        for cell in cells:
-            await cell.setup()
-            await cell.enable()
-            await cell.set_voltage(1)
-            await cell.turn_on_output_relay()
-            await cell.close_load_switch()
-
         for _ in range(10):
+            for cell in cells:
+                await cell.setup()
+                await cell.enable()
+                await cell.set_voltage(1)
+                await cell.turn_on_output_relay()
+                await cell.close_load_switch()
+
             await asyncio.gather(
                 *[cell.get_voltage() for cell in cells],
                 *[cell.get_current() for cell in cells],
             )
 
-        for cell in cells:
-            await cell.open_load_switch()
-            await cell.turn_off_output_relay()
-            await cell.disable()
+            for cell in cells:
+                await cell.open_load_switch()
+                await cell.turn_off_output_relay()
+                await cell.disable()
