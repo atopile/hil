@@ -231,7 +231,7 @@ class AsyncSMBusPeripheral:
 
 
 class Mux(Protocol):
-    def set_mux(self, channel: int):
+    async def set_mux(self, channel: int):
         """
         Set the MUX to the given channel.
         """
