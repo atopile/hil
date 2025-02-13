@@ -84,10 +84,3 @@ Add/modify the following line:
 Reboot to apply changes:
 
 ```sudo reboot```
-
-
-
-
-
-
-# Setup UART
