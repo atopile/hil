@@ -104,9 +104,12 @@ class ADS1x15:
 
     _data_rate_enum = ADS111XDataRate
 
+    _lock: asyncio.Lock
+
     def __init__(self):
-        # Private constructor; use ADS1x15.create() instead.
-        self._lock = asyncio.Lock()
+        """
+        Private constructor; use ADS1x15.create() instead.
+        """
 
     @classmethod
     async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
@@ -120,6 +123,7 @@ class ADS1x15:
         self._maxPorts = 4
         self._adcBits = 16
         self._config = await self._read_register(self.CONFIG_REG)
+        self._lock = asyncio.Lock()
         return self
 
     async def _write_register(self, address: int, value):
@@ -399,6 +403,7 @@ class ADS1013(ADS1x15):
         self._adcBits = 12
         # Store initial config resgister to config property
         self._config = await self._read_register(self.CONFIG_REG)
+        self._lock = asyncio.Lock()
         return self
 
 
@@ -418,6 +423,7 @@ class ADS1014(ADS1x15):
         self._adcBits = 12
         # Store initial config resgister to config property
         self._config = await self._read_register(self.CONFIG_REG)
+        self._lock = asyncio.Lock()
         return self
 
 
@@ -437,6 +443,7 @@ class ADS1015(ADS1x15):
         self._adcBits = 12
         # Store initial config resgister to config property
         self._config = await self._read_register(self.CONFIG_REG)
+        self._lock = asyncio.Lock()
         return self
 
 
@@ -456,6 +463,7 @@ class ADS1113(ADS1x15):
         self._adcBits = 16
         # Store initial config resgister to config property
         self._config = await self._read_register(self.CONFIG_REG)
+        self._lock = asyncio.Lock()
         return self
 
 
@@ -475,6 +483,7 @@ class ADS1114(ADS1x15):
         self._adcBits = 16
         # Store initial config resgister to config property
         self._config = await self._read_register(self.CONFIG_REG)
+        self._lock = asyncio.Lock()
         return self
 
 
@@ -494,4 +503,5 @@ class ADS1115(ADS1x15):
         self._adcBits = 16
         # Store initial config resgister to config property
         self._config = await self._read_register(self.CONFIG_REG)
+        self._lock = asyncio.Lock()
         return self
