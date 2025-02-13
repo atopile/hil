@@ -1,9 +1,9 @@
-from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch
+from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.tca9548a import TCA9548A
 
 
 async def test_create():
-    async with AsyncSMBus(0) as bus:
+    async with AsyncSMBusPeripheral(0) as bus:
         async with bus() as handle:
             assert handle is not None
 
