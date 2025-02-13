@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 import inspect
 from typing import Any, AsyncGenerator, Awaitable, Self, cast
 from collections.abc import Callable
-import numpy as np
 import polars as pl
+import numpy as np
 
 
 class during:
