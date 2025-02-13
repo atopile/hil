@@ -83,7 +83,7 @@ class Cell:
             await handle.write_byte_data(GPIO_ADDRESS, 0x01, 0x00)
 
         self.adc = await ADS1115.create(self.bus, ADC_ADDRESS)
-        await self.adc.setGain(0)
+        await self.adc.set_adc_config(gain=ADS1115.GainConfig.UPTO_6_144V)
 
     def _set_gpio(self, channel: GpioChannels, value: bool):
         if value:
@@ -131,7 +131,7 @@ class Cell:
         Read the cell output voltage.
         """
         # Read raw ADC count from the specified channel
-        raw = await self.adc.readADC(self.AdcChannels.OUTPUT_VOLTAGE)
+        raw = await self.adc.read_pin(self.AdcChannels.OUTPUT_VOLTAGE)
         # Convert the raw ADC value to voltage with a 4.096V reference
         volts = raw * (6.144 / 32767.0)
         logger.debug(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")
@@ -221,7 +221,7 @@ class Cell:
         """
         Read the cell current.
         """
-        raw = await self.adc.readADC(self.AdcChannels.OUTPUT_CURRENT)
+        raw = await self.adc.read_pin(self.AdcChannels.OUTPUT_CURRENT)
         volts = raw * (6.144 / 32767.0)
         current = volts / (self.SHUNT_RESISTOR_OHMS * self.SHUNT_GAIN)
         logger.debug(f"[Cell {self.cell_num}] Current read: {current:.2f} A")
@@ -231,7 +231,7 @@ class Cell:
         """
         Read current using the shunt resistor.
         """
-        shunt_voltage = await self.adc.readADC(self.AdcChannels.OUTPUT_CURRENT)
+        shunt_voltage = await self.adc.read_pin(self.AdcChannels.OUTPUT_CURRENT)
         current = shunt_voltage / self.SHUNT_RESISTOR_OHMS / self.SHUNT_GAIN
         return current
 
