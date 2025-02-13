@@ -18,7 +18,7 @@ async def test_performance():
         await Cell.create(i, bus) for i, bus in enumerate(branch_buses)
     ]
 
-    profiler = pyinstrument.Profiler()
+    profiler = pyinstrument.Profiler(interval=0.01)
 
     async with physical_bus:
         for cell in cells:
