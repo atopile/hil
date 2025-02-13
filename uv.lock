@@ -72,11 +72,13 @@ dependencies = [
     { name = "polars" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "smbus2" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "pre-commit" },
+    { name = "pyinstrument" },
     { name = "ruff" },
 ]
 
@@ -87,11 +89,13 @@ requires-dist = [
     { name = "polars", specifier = ">=1.22.0" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "pytest-asyncio", specifier = ">=0.25.3" },
+    { name = "smbus2", specifier = ">=0.5.0" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "pre-commit", specifier = ">=4.1.0" },
+    { name = "pyinstrument", specifier = ">=5.0.1" },
     { name = "ruff", specifier = ">=0.9.6" },
 ]
 
@@ -284,6 +288,24 @@ wheels = [
 ]
 
 [[package]]
+name = "pyinstrument"
+version = "5.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/64/6e/85c2722e40cab4fd9df6bbe68a0d032e237cf8cfada71e5f067e4e433214/pyinstrument-5.0.1.tar.gz", hash = "sha256:f4fd0754d02959c113a4b1ebed02f4627b6e2c138719ddf43244fd95f201c8c9", size = 263162 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0f/ae/f8f84ecd0dc2c4f0d84920cb4ffdbea52a66e4b4abc2110f18879b57f538/pyinstrument-5.0.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:f5065639dfedc3b8e537161f9aaa8c550c8717c935a962e9bf1e843bf0e8791f", size = 128900 },
+    { url = "https://files.pythonhosted.org/packages/23/2f/b742c46d86d4c1f74ec0819f091bbc2fad0bab786584a18d89d9178802f1/pyinstrument-5.0.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:b5d20802b0c2bd1ddb95b2e96ebd3e9757dbab1e935792c2629166f1eb267bb2", size = 121445 },
+    { url = "https://files.pythonhosted.org/packages/d9/e0/297dc8454ed437aec0fbdc3cc1a6a5fdf6701935b91dd31caf38c5e3ff92/pyinstrument-5.0.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6e6f5655d580429e7992c37757cc5f6e74ca81b0f2768b833d9711631a8cb2f7", size = 144904 },
+    { url = "https://files.pythonhosted.org/packages/8b/df/e4faff09fdbad7e685ceb0f96066d434fc8350382acf8df47577653f702b/pyinstrument-5.0.1-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b4c8c9ad93f62f0bf2ddc7fb6fce3a91c008d422873824e01c5e5e83467fd1fb", size = 143801 },
+    { url = "https://files.pythonhosted.org/packages/b1/63/ed2955d980bbebf17155119e2687ac15e170b6221c4bb5f5c37f41323fe5/pyinstrument-5.0.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:db15d1854b360182d242da8de89761a0ffb885eea61cb8652e40b5b9a4ef44bc", size = 145204 },
+    { url = "https://files.pythonhosted.org/packages/c4/18/31b8dcdade9767afc7a36a313d8cf9c5690b662e9755fe7bd0523125e06f/pyinstrument-5.0.1-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:c803f7b880394b7bba5939ff8a59d6962589e9a0140fc33c3a6a345c58846106", size = 144881 },
+    { url = "https://files.pythonhosted.org/packages/1f/14/cd19894eb03dd28093f564e8bcf7ae4edc8e315ce962c8155cf795fc0784/pyinstrument-5.0.1-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:84e37ffabcf26fe820d354a1f7e9fc26949f953addab89b590c5000b3ffa60d0", size = 144643 },
+    { url = "https://files.pythonhosted.org/packages/80/54/3dd08f5a869d3b654ff7e4e4c9d2b34f8de73fb0f2f792fac5024a312e0f/pyinstrument-5.0.1-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:a0d23d3763ec95da0beb390c2f7df7cbe36ea62b6a4d5b89c4eaab81c1c649cf", size = 145070 },
+    { url = "https://files.pythonhosted.org/packages/5d/dc/ac8e798235a1dbccefc1b204a16709cef36f02c07587763ba8eb510fc8bc/pyinstrument-5.0.1-cp313-cp313-win32.whl", hash = "sha256:967f84bd82f14425543a983956ff9cfcf1e3762755ffcec8cd835c6be22a7a0a", size = 123030 },
+    { url = "https://files.pythonhosted.org/packages/52/59/adcb3e85c9105c59382723a67f682012aa7f49027e270e721f2d59f63fcf/pyinstrument-5.0.1-cp313-cp313-win_amd64.whl", hash = "sha256:70b16b5915534d8df40dcf04a7cc78d3290464c06fa358a4bc324280af4c74e0", size = 123825 },
+]
+
+[[package]]
 name = "pytest"
 version = "8.3.4"
 source = { registry = "https://pypi.org/simple" }
@@ -397,6 +419,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a5/7d/7b461ab0e2404293c0627125bb70ac642c2e8d55bf590f6fce85f508f1b2/ruff-0.9.6-py3-none-win32.whl", hash = "sha256:194d8402bceef1b31164909540a597e0d913c0e4952015a5b40e28c146121b5d", size = 9949214 },
     { url = "https://files.pythonhosted.org/packages/ee/30/c3cee10f915ed75a5c29c1e57311282d1a15855551a64795c1b2bbe5cf37/ruff-0.9.6-py3-none-win_amd64.whl", hash = "sha256:03482d5c09d90d4ee3f40d97578423698ad895c87314c4de39ed2af945633caa", size = 10999914 },
     { url = "https://files.pythonhosted.org/packages/e8/a8/d71f44b93e3aa86ae232af1f2126ca7b95c0f515ec135462b3e1f351441c/ruff-0.9.6-py3-none-win_arm64.whl", hash = "sha256:0e2bb706a2be7ddfea4a4af918562fdc1bcb16df255e5fa595bbd800ce322a5a", size = 10177499 },
+]
+
+[[package]]
+name = "smbus2"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/10/c9/6d85aa809e107adf85303010a59b340be109c8f815cbedc5c08c73bcffef/smbus2-0.5.0.tar.gz", hash = "sha256:4a5946fd82277870c2878befdb1a29bb28d15cda14ea4d8d2d54cf3d4bdcb035", size = 16950 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/85/9f/2235ba9001e3c29fc342eeb222104420bcb7bac51555f0c034376a744075/smbus2-0.5.0-py2.py3-none-any.whl", hash = "sha256:1a15c3b9fa69357beb038cc0b5d37939702f8bfde1ddc89ca9f17d8461dbe949", size = 11527 },
 ]
 
 [[package]]
