@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hil"
+version = "0.1.0"
+description = "atopile Hardware-in-the-Loop Testing Framework"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "altair>=5.5.0",
+    "numpy>=2.2.2",
+    "polars>=1.22.0",
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.3",
+    "smbus2>=0.5.0",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.1.0",
+    "pyinstrument>=5.0.1",
+    "ruff>=0.9.6",
+]
+
+[tool.hatch.build]
+sources = ["software"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["software/hil"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 88
