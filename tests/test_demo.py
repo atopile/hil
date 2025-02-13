@@ -39,6 +39,5 @@ def seconds(n: float) -> timedelta:
 async def test_demo_assert_ever():
     with record(source_1) as trace_1:
         assert await ever(
-            (trace_1.after(seconds(0.5)).min_over_period(seconds(0.5)) >= 5).all(),
-            timeout=seconds(10),
+            (trace_1.min_over_period(seconds(0.5)) >= 5).all(), timeout=seconds(10)
         )

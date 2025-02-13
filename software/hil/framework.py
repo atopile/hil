@@ -148,9 +148,6 @@ class Trace[T]:
     def __lt__(self, other: float) -> "Query":
         return Query(self) < other
 
-    def after(self, duration: timedelta) -> "Query":
-        return Query(self).after(duration)
-
     def min_over_period(self, duration: timedelta) -> "Query":
         return Query(self).min_over_period(duration)
 
@@ -271,25 +268,32 @@ class Query:
         self._expr = self._expr < other
         return self
 
-    def after(self, duration: timedelta) -> Self:
-        self._expr = self._expr.where(
+    def _after(self, duration: timedelta) -> pl.Expr:
+        return self._expr.where(
             (pl.col(self._timestamp).max() - pl.col(self._timestamp).min()) >= duration
         )
-        return self
 
     def min_over_period(self, duration: timedelta) -> Self:
-        self._expr = self._expr.rolling_min_by(
-            self._timestamp,
-            window_size=f"{duration.total_seconds()}s",
-            min_samples=2,
+        self._expr = (
+            (self)
+            ._after(duration)
+            .rolling_min_by(
+                self._timestamp,
+                window_size=f"{duration.total_seconds()}s",
+                min_samples=2,
+            )
         )
         return self
 
     def max_over_period(self, duration: timedelta) -> Self:
-        self._expr = self._expr.rolling_max_by(
-            self._timestamp,
-            window_size=f"{duration.total_seconds()}s",
-            min_samples=2,
+        self._expr = (
+            (self)
+            ._after(duration)
+            .rolling_max_by(
+                self._timestamp,
+                window_size=f"{duration.total_seconds()}s",
+                min_samples=2,
+            )
         )
         return self
 
