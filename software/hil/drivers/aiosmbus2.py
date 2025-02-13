@@ -138,7 +138,7 @@ class _BusHandle:
         await asyncio.to_thread(self._smbus.i2c_rdwr, *i2c_msgs)
 
 
-class AsyncSMBus:
+class AsyncSMBusPeripheral:
     class BusAlreadyOpen(Exception):
         """
         Exception raised when the bus is already open.
@@ -226,7 +226,7 @@ class Mux(Protocol):
 
 class AsyncSMBusBranch:
     class _AsyncSMBusMux:
-        def __init__(self, upstream: AsyncSMBus | Self, mux: Mux):
+        def __init__(self, upstream: "AsyncSMBus", mux: Mux):
             self.upstream = upstream
             self.mux = mux
             self.lock = asyncio.Lock()
@@ -245,7 +245,10 @@ class AsyncSMBusBranch:
 
     @classmethod
     def from_channels(
-        cls, upstream: AsyncSMBus | Self, mux: Mux, channels: list[int]
+        cls, upstream: "AsyncSMBus", mux: Mux, channels: list[int]
     ) -> list[Self]:
         _mux = cls._AsyncSMBusMux(upstream, mux)
         return [cls(_mux, channel) for channel in channels]
+
+
+AsyncSMBus = AsyncSMBusPeripheral | AsyncSMBusBranch
