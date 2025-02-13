@@ -69,10 +69,10 @@ Project goals and aspirations:
 ## CM4/5 Setup
 Instructions for setting up the CM4/5 for HiL testing.
 
-# Flash OS to eMMC
+### Flash OS to eMMC
 https://www.jeffgeerling.com/blog/2020/how-flash-raspberry-pi-os-compute-module-4-emmc-usbboot
 
-# Setup I2C
+### Setup I2C
 SSH into the CM4/5 and run:
 
 ```sudo nano /boot/firmware/config.txt```
