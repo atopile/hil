@@ -1,46 +1,13 @@
 import asyncio
+from contextlib import asynccontextmanager
+import os
+from typing import AsyncContextManager, Protocol, Self
 from smbus2 import SMBus
 
 
-class AsyncSMBus:
-    def __init__(self, force=False):
-        """
-        Synchronous initializer.
-        Use the async class method `create(bus, force)` to get an instance with a bus open.
-        """
-        self.force = force
-        self._smbus = None
-
-    @classmethod
-    async def create(cls, bus, force=False):
-        """
-        Asynchronous constructor.
-        This creates an instance, opens the bus asynchronously, and returns the instance.
-        """
-        instance = cls(force=force)
-        await instance.open(bus)
-        return instance
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.close()
-
-    async def open(self, bus):
-        """
-        Open the given I2C bus (e.g., an integer 0 or 1 or a device path).
-        """
-        # Instantiate the synchronous SMBus in a thread.
-        self._smbus = await asyncio.to_thread(SMBus, bus, self.force)
-
-    async def close(self):
-        """
-        Close the I2C connection.
-        """
-        if self._smbus is not None:
-            await asyncio.to_thread(self._smbus.close)
-            self._smbus = None
+class _BusHandle:
+    def __init__(self, smbus: SMBus):
+        self._smbus = smbus
 
     async def _get_pec(self):
         """
@@ -169,3 +136,116 @@ class AsyncSMBus:
         Perform a combined I2C read/write transaction.
         """
         await asyncio.to_thread(self._smbus.i2c_rdwr, *i2c_msgs)
+
+
+class AsyncSMBus:
+    class BusAlreadyOpen(Exception):
+        """
+        Exception raised when the bus is already open.
+        """
+
+    def __init__(self, bus: int | os.PathLike | None = None, force: bool | None = None):
+        """
+        Synchronous initializer.
+        Use the async class method `create(bus, force)` to get an instance with a bus open.
+        """
+        self._lock = asyncio.Lock()
+        self._handle: _BusHandle | None = None
+        self._smbus = None
+        self._bus = bus
+        self._force = force
+
+    async def __aenter__(self) -> Self:
+        try:
+            await self.open()
+        except self.BusAlreadyOpen:
+            pass
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()
+
+    async def open(
+        self, bus: int | os.PathLike | None = None, force: bool | None = None
+    ) -> Self:
+        """
+        Open the given I2C bus (e.g., an integer 0 or 1 or a device path).
+        """
+        if bus is None and self._bus is None:
+            raise ValueError("bus not provided")
+        if bus is not None:
+            self._bus = bus
+
+        if force is not None:
+            self._force = force
+        if self._force is None:
+            self._force = False
+
+        with self._lock:
+            if self._smbus is not None:
+                raise self.BusAlreadyOpen()
+
+            self._smbus = await asyncio.to_thread(SMBus, str(self._bus), self._force)
+            self._handle = _BusHandle(self._smbus)
+
+    async def close(self):
+        """
+        Close the I2C connection.
+        """
+        with self._lock:
+            if self._smbus is not None:
+                await asyncio.to_thread(self._smbus.close)
+                self._smbus = None
+
+    def __call__(self) -> AsyncContextManager[_BusHandle]:
+        @asynccontextmanager
+        async def _enter():
+            try:
+                await self.aquire()
+                if self._handle is None:
+                    raise RuntimeError("bus not open")
+                yield self._handle
+            finally:
+                await self.release()
+
+        return _enter()
+
+    async def aquire(self):
+        await self._lock.acquire()
+
+    async def release(self):
+        await self._lock.release()
+
+
+class Mux(Protocol):
+    def set_mux(self, channel: int):
+        """
+        Set the MUX to the given channel.
+        """
+
+
+class AsyncSMBusBranch:
+    class _AsyncSMBusMux:
+        def __init__(self, upstream: AsyncSMBus | Self, mux: Mux):
+            self.upstream = upstream
+            self.mux = mux
+            self.lock = asyncio.Lock()
+
+    def __init__(self, mux: _AsyncSMBusMux, channel: int):
+        self._mux = mux
+        self._channel = channel
+
+    def __call__(self) -> AsyncContextManager[_BusHandle]:
+        @asynccontextmanager
+        async def _enter():
+            async with self._mux.lock:
+                self._mux.mux.set_mux(self._channel)
+                async with self._mux.upstream() as handle:
+                    yield handle
+
+    @classmethod
+    def from_channels(
+        cls, upstream: AsyncSMBus | Self, mux: Mux, channels: list[int]
+    ) -> list[Self]:
+        _mux = cls._AsyncSMBusMux(upstream, mux)
+        return [cls(_mux, channel) for channel in channels]
