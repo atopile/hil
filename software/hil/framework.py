@@ -295,7 +295,18 @@ class Query:
         self._timestamp = trace.TIMESTAMP_COLUMN
 
     def _evaluate(self) -> bool:
-        return bool(self.trace.to_polars().select(self._expr).item())
+        results = self.trace.to_polars().select(self._expr)
+
+        if results.shape[1] > 1:
+            raise ValueError("Query returned too many columns")
+
+        if results.dtypes[0] != pl.Boolean:
+            raise ValueError("Query returned non-boolean value(s)")
+
+        if results.shape[0] != 1:
+            return results.get_column(results.columns[0]).any()
+
+        return bool(results.item())
 
     def __gt__(self, other: float) -> Self:
         self._expr = self._expr > other
@@ -304,6 +315,9 @@ class Query:
     def __lt__(self, other: float) -> Self:
         self._expr = self._expr < other
         return self
+
+    def __bool__(self) -> bool:
+        return self._evaluate()
 
     def _after(self, duration: timedelta) -> pl.Expr:
         return self._expr.where(
