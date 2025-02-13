@@ -4,7 +4,6 @@ import inspect
 from typing import Any, AsyncGenerator, Awaitable, Self, cast
 from collections.abc import Callable
 import polars as pl
-import numpy as np
 
 
 class during:
@@ -142,17 +141,6 @@ class Trace[T]:
 
     async def __anext__(self) -> T:
         return await self.new_data()
-
-    def __gt__(self, other: Any) -> bool:
-        if isinstance(other, datetime):
-            return self.get_last()
-        return np.all(self.duration > other)
-
-    def __ge__(self, other: Any) -> bool:
-        return self.duration >= other
-
-    def __lt__(self, other: Any) -> bool:
-        return self.duration < other
 
 
 class record[T]:
