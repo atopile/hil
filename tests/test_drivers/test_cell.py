@@ -4,7 +4,7 @@ from hil.drivers.cell import Cell
 
 async def test_performance():
     async with AsyncSMBusPeripheral(1) as bus:
-        cells: list[Cell] = [Cell(x, bus) for x in range(0, 8)]
+        cells: list[Cell] = [await Cell.create(x, bus) for x in range(0, 8)]
 
         for cell in cells:
             await cell.setup()
