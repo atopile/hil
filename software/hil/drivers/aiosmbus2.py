@@ -156,7 +156,9 @@ class AsyncSMBusPeripheral:
         self._force = force
 
     @classmethod
-    async def create(cls, bus: int | os.PathLike | None = None, force: bool | None = None) -> Self:
+    async def create(
+        cls, bus: int | os.PathLike | None = None, force: bool | None = None
+    ) -> Self:
         instance = cls(bus, force)
         await instance.open()
         return instance
@@ -250,6 +252,8 @@ class AsyncSMBusBranch:
                 self._mux.mux.set_mux(self._channel)
                 async with self._mux.upstream() as handle:
                     yield handle
+
+        return _enter()
 
     @classmethod
     def from_channels(
