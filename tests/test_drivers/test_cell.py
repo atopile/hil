@@ -3,6 +3,7 @@ import pytest
 from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.cell import Cell
 from hil.drivers.tca9548a import TCA9548A
+from itertools import product
 
 # Mark all async test functions in this module
 # pytestmark = pytest.mark.asyncio
@@ -75,27 +76,33 @@ async def test_performance(hil: Hil):
             await cell.turn_off_output_relay()
             await cell.disable()
 
-@pytest.mark.parametrize("voltage", [v/10 for v in range(5, 44)])  # 0.5V to 4.3V in 0.1V steps
-async def test_voltage_accuracy(hil: Hil, voltage: float):
-    # Test each cell
-    for cell in hil.cellsim.cells:
-        await cell.setup()
-        await cell.enable()
-        await cell.set_voltage(voltage)
-        await cell.turn_on_output_relay()
-        
-        # Allow voltage to settle
-        await asyncio.sleep(0.1)
-        
-        # Measure voltage and check accuracy
-        measured_voltage = await cell.get_voltage()
-        
-        # Assert voltage is within 1% tolerance
-        assert abs(measured_voltage - voltage) <= voltage * 0.2, \
-            f"ERROR: set={voltage}V, measured={measured_voltage}V"
-        
-        # Cleanup
-        await cell.turn_off_output_relay()
-        await cell.disable()
+# Generate voltage points from 0.5V to 4.3V in 0.1V steps
+VOLTAGES = [v/10 for v in range(5, 44)]
+
+@pytest.mark.parametrize("cell_idx,voltage", [
+    (cell_idx, voltage) 
+    for cell_idx in range(8)  # For all 8 cells
+    for voltage in VOLTAGES
+])
+async def test_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
+    # Get the specific cell to test
+    cell = hil.cellsim.cells[cell_idx]
+    
+    # Set up the cell
+    await cell.setup()
+    await cell.enable()
+    await cell.set_voltage(voltage)
+    await cell.turn_on_output_relay()
+    
+    # Allow voltage to settle
+    await asyncio.sleep(0.1)
+    
+    # Measure and check accuracy
+    measured_voltage = await cell.get_voltage()
+    assert measured_voltage == pytest.approx(voltage, rel= 0.2)
+    
+    # Cleanup
+    await cell.turn_off_output_relay()
+    await cell.disable()
 
 
