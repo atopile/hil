@@ -249,7 +249,7 @@ class AsyncSMBusBranch:
         @asynccontextmanager
         async def _enter():
             async with self._mux.lock:
-                self._mux.mux.set_mux(self._channel)
+                await self._mux.mux.set_mux(self._channel)
                 async with self._mux.upstream() as handle:
                     yield handle
 
