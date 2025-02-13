@@ -43,7 +43,9 @@ class Future[T](collections.abc.Awaitable):
         """
 
         def _execute():
-            return tuple(operation() for operation in self._operations)
+            results = tuple(operation() for operation in self._operations)
+            self._operations.clear()
+            return results
 
         return await asyncio.to_thread(_execute)
 
@@ -62,7 +64,10 @@ class Future[T](collections.abc.Awaitable):
                 operation()
 
             if last_op := self._operations[-1:]:
-                return last_op[0]()
+                result = last_op[0]()
+
+            self._operations.clear()
+            return result
 
         return await asyncio.to_thread(_execute)
 
