@@ -181,6 +181,8 @@ class AsyncSMBusPeripheral:
             raise ValueError("bus not provided")
         if bus is not None:
             self._bus = bus
+        if not isinstance(self._bus, int):
+            self._bus = str(self._bus)
 
         if force is not None:
             self._force = force
@@ -191,7 +193,7 @@ class AsyncSMBusPeripheral:
             if self._smbus is not None:
                 raise self.BusAlreadyOpen()
 
-            self._smbus = await asyncio.to_thread(SMBus, str(self._bus), self._force)
+            self._smbus = await asyncio.to_thread(SMBus, self._bus, self._force)
             self._handle = _BusHandle(self._smbus)
 
     async def close(self):
