@@ -1,3 +1,4 @@
+import asyncio
 from hil.drivers.aiosmbus2 import AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.cell import Cell
 from hil.drivers.tca9548a import TCA9548A
@@ -20,9 +21,10 @@ async def test_performance():
             await cell.close_load_switch()
 
         for _ in range(10):
-            for cell in cells:
-                await cell.get_voltage()
-                await cell.get_current()
+            await asyncio.gather(
+                *[cell.get_voltage() for cell in cells],
+                *[cell.get_current() for cell in cells],
+            )
 
         for cell in cells:
             await cell.open_load_switch()
