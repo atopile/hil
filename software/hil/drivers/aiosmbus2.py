@@ -12,91 +12,91 @@ class _BusHandle[T](Future[T]):
         self._smbus = smbus
 
     @composable
-    def _get_pec(self) -> "Future[int]":
+    def _get_pec(self) -> int:
         """
         Get Packet Error Check (PEC) status.
         """
         return self._smbus._get_pec()
 
     @composable
-    def enable_pec(self, enable=True) -> "Future[None]":
+    def enable_pec(self, enable=True) -> None:
         """
         Enable or disable PEC.
         """
         self._smbus.enable_pec(enable)
 
     @composable
-    def _set_address(self, address, force=None) -> "Future[None]":
+    def _set_address(self, address, force=None) -> None:
         """
         Set the I2C slave address.
         """
         self._smbus._set_address(address, force)
 
     @composable
-    def _get_funcs(self) -> "Future[int]":
+    def _get_funcs(self) -> int:
         """
         Get the functionality mask of the I2C adapter.
         """
         return self._smbus._get_funcs()
 
     @composable
-    def write_quick(self, i2c_addr, force=None) -> "Future[None]":
+    def write_quick(self, i2c_addr, force=None) -> None:
         """
         Perform a quick write transaction.
         """
         self._smbus.write_quick(i2c_addr, force)
 
     @composable
-    def read_byte(self, i2c_addr, force=None) -> "Future[int]":
+    def read_byte(self, i2c_addr, force=None) -> int:
         """
         Read a single byte from a device.
         """
         return self._smbus.read_byte(i2c_addr, force)
 
     @composable
-    def write_byte(self, i2c_addr, value, force=None) -> "Future[None]":
+    def write_byte(self, i2c_addr, value, force=None) -> None:
         """
         Write a single byte to a device.
         """
         self._smbus.write_byte(i2c_addr, value, force)
 
     @composable
-    def read_byte_data(self, i2c_addr, register, force=None) -> "Future[int]":
+    def read_byte_data(self, i2c_addr, register, force=None) -> int:
         """
         Read a single byte from a designated register.
         """
         return self._smbus.read_byte_data(i2c_addr, register, force)
 
     @composable
-    def write_byte_data(self, i2c_addr, register, value, force=None) -> "Future[None]":
+    def write_byte_data(self, i2c_addr, register, value, force=None) -> None:
         """
         Write a byte to a given register.
         """
         self._smbus.write_byte_data(i2c_addr, register, value, force)
 
     @composable
-    def read_word_data(self, i2c_addr, register, force=None) -> "Future[int]":
+    def read_word_data(self, i2c_addr, register, force=None) -> int:
         """
         Read a 2-byte word from a given register.
         """
         return self._smbus.read_word_data(i2c_addr, register, force)
 
     @composable
-    def write_word_data(self, i2c_addr, register, value, force=None) -> "Future[None]":
+    def write_word_data(self, i2c_addr, register, value, force=None) -> None:
         """
         Write a 2-byte word to a given register.
         """
         self._smbus.write_word_data(i2c_addr, register, value, force)
 
     @composable
-    def process_call(self, i2c_addr, register, value, force=None) -> "Future[int]":
+    def process_call(self, i2c_addr, register, value, force=None) -> int:
         """
         Execute a process call (sending a 16-bit value and receiving a 16-bit response).
         """
         return self._smbus.process_call(i2c_addr, register, value, force)
 
     @composable
-    def read_block_data(self, i2c_addr, register, force=None) -> "Future[list[int]]":
+    def read_block_data(self, i2c_addr, register, force=None) -> list[int]:
         """
         Read a block of up to 32 bytes from a given register.
         Returns a list of integer byte values.
@@ -104,16 +104,14 @@ class _BusHandle[T](Future[T]):
         return self._smbus.read_block_data(i2c_addr, register, force)
 
     @composable
-    def write_block_data(self, i2c_addr, register, data, force=None) -> "Future[None]":
+    def write_block_data(self, i2c_addr, register, data, force=None) -> None:
         """
         Write a block of byte data to a given register.
         """
         self._smbus.write_block_data(i2c_addr, register, data, force)
 
     @composable
-    def block_process_call(
-        self, i2c_addr, register, data, force=None
-    ) -> "Future[list[int]]":
+    def block_process_call(self, i2c_addr, register, data, force=None) -> list[int]:
         """
         Execute a SMBus Block Process Call (variable-length Tx/Rx).
         Returns a list of integer byte values.
@@ -121,9 +119,7 @@ class _BusHandle[T](Future[T]):
         return self._smbus.block_process_call(i2c_addr, register, data, force)
 
     @composable
-    def read_i2c_block_data(
-        self, i2c_addr, register, length, force=None
-    ) -> "Future[list[int]]":
+    def read_i2c_block_data(self, i2c_addr, register, length, force=None) -> list[int]:
         """
         Read a block of exactly 'length' bytes from the given register.
         Returns a list of integer byte values.
@@ -131,16 +127,14 @@ class _BusHandle[T](Future[T]):
         return self._smbus.read_i2c_block_data(i2c_addr, register, length, force)
 
     @composable
-    def write_i2c_block_data(
-        self, i2c_addr, register, data, force=None
-    ) -> "Future[None]":
+    def write_i2c_block_data(self, i2c_addr, register, data, force=None) -> None:
         """
         Write a block of byte data to a given register.
         """
         self._smbus.write_i2c_block_data(i2c_addr, register, data, force)
 
     @composable
-    def i2c_rdwr(self, *i2c_msgs) -> "Future[None]":
+    def i2c_rdwr(self, *i2c_msgs) -> None:
         """
         Perform a combined I2C read/write transaction.
         """
