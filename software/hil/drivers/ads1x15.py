@@ -91,12 +91,12 @@ class ADS1x15:
         pass
 
     @classmethod
-    async def create(cls, busId: int, address: int = I2C_address):
+    async def create(cls, bus: AsyncSMBus, address: int = I2C_address):
         """
         Asynchronously create an instance of ADS1x15.
         """
         self = cls.__new__(cls)
-        self.i2c = await AsyncSMBus.create(busId)
+        self.i2c = bus
         self._address = address
         self._conversionDelay = 8
         self._maxPorts = 4
@@ -366,41 +366,50 @@ class ADS1x15:
 class ADS1013(ADS1x15) :
     "ADS1013 class derifed from general ADS1x15 class"
 
-    def __init__(self, busId: int, address: int = I2C_address) :
-        "Initialize ADS1013 with SMBus ID and I2C address configuration"
-        self.i2c = AsyncSMBus(busId)
+    @classmethod
+    async def create(cls, bus: AsyncSMBus, address: int = I2C_address) :
+        "Initialize ADS1013 with SMBus and I2C address configuration"
+        self = cls.__new__(cls)
+        self.i2c = bus
         self._address = address
         self._conversionDelay = 2
         self._maxPorts = 1
         self._adcBits = 12
         # Store initial config resgister to config property
-        self._config = self.readRegister(self.CONFIG_REG)
+        self._config = await self.readRegister(self.CONFIG_REG)
+        return self
 
 class ADS1014(ADS1x15) :
     "ADS1014 class derifed from general ADS1x15 class"
 
-    def __init__(self, busId: int, address: int = I2C_address) :
-        "Initialize ADS1014 with SMBus ID and I2C address configuration"
-        self.i2c = AsyncSMBus(busId)
+    @classmethod
+    async def create(cls, bus: AsyncSMBus, address: int = I2C_address) :
+        "Initialize ADS1014 with SMBus and I2C address configuration"
+        self = cls.__new__(cls)
+        self.i2c = bus
         self._address = address
         self._conversionDelay = 2
         self._maxPorts = 1
         self._adcBits = 12
         # Store initial config resgister to config property
-        self._config = self.readRegister(self.CONFIG_REG)
+        self._config = await self.readRegister(self.CONFIG_REG)
+        return self
 
 class ADS1015(ADS1x15) :
     "ADS1015 class derifed from general ADS1x15 class"
 
-    def __init__(self, busId: int, address: int = I2C_address) :
-        "Initialize ADS1015 with SMBus ID and I2C address configuration"
-        self.i2c = AsyncSMBus(busId)
+    @classmethod
+    async def create(cls, bus: AsyncSMBus, address: int = I2C_address) :
+        "Initialize ADS1015 with SMBus and I2C address configuration"
+        self = cls.__new__(cls)
+        self.i2c = bus
         self._address = address
         self._conversionDelay = 2
         self._maxPorts = 4
         self._adcBits = 12
         # Store initial config resgister to config property
-        self._config = self.readRegister(self.CONFIG_REG)
+        self._config = await self.readRegister(self.CONFIG_REG)
+        return self
 
     async def requestADC_Differential_0_3(self) :
         "Request single-shot conversion between pin 0 and pin 3"
@@ -432,41 +441,50 @@ class ADS1015(ADS1x15) :
 class ADS1113(ADS1x15) :
     "ADS1113 class derifed from general ADS1x15 class"
 
-    def __init__(self, busId: int, address: int = I2C_address) :
-        "Initialize ADS1113 with SMBus ID and I2C address configuration"
-        self.i2c = AsyncSMBus(busId)
+    @classmethod
+    async def create(cls, bus: AsyncSMBus, address: int = I2C_address) :
+        "Initialize ADS1113 with SMBus and I2C address configuration"
+        self = cls.__new__(cls)
+        self.i2c = bus
         self._address = address
         self._conversionDelay = 8
         self._maxPorts = 1
         self._adcBits = 16
         # Store initial config resgister to config property
-        self._config = self.readRegister(self.CONFIG_REG)
+        self._config = await self.readRegister(self.CONFIG_REG)
+        return self
 
 class ADS1114(ADS1x15) :
     "ADS1114 class derifed from general ADS1x15 class"
 
-    def __init__(self, busId: int, address: int = I2C_address) :
-        "Initialize ADS1114 with SMBus ID and I2C address configuration"
-        self.i2c = AsyncSMBus(busId)
+    @classmethod
+    async def create(cls, bus: AsyncSMBus, address: int = I2C_address) :
+        "Initialize ADS1114 with SMBus and I2C address configuration"
+        self = cls.__new__(cls)
+        self.i2c = bus
         self._address = address
         self._conversionDelay = 8
         self._maxPorts = 1
         self._adcBits = 16
         # Store initial config resgister to config property
-        self._config = self.readRegister(self.CONFIG_REG)
+        self._config = await self.readRegister(self.CONFIG_REG)
+        return self
 
 class ADS1115(ADS1x15) :
     "ADS1115 class derifed from general ADS1x15 class"
 
-    def __init__(self, busId: int, address: int = I2C_address) :
-        "Initialize ADS1115 with SMBus ID and I2C address configuration"
-        self.i2c = AsyncSMBus(busId)
+    @classmethod
+    async def create(cls, bus: AsyncSMBus, address: int = I2C_address) :
+        "Initialize ADS1115 with SMBus and I2C address configuration"
+        self = cls.__new__(cls)
+        self.i2c = bus
         self._address = address
         self._conversionDelay = 8
         self._maxPorts = 4
         self._adcBits = 16
         # Store initial config resgister to config property
-        self._config = self.readRegister(self.CONFIG_REG)
+        self._config = await self.readRegister(self.CONFIG_REG)
+        return self
 
     async def requestADC_Differential_0_3(self) :
         "Request single-shot conversion between pin 0 and pin 3"
