@@ -1,3 +1,5 @@
+from pathlib import Path
+import pyinstrument
 import asyncio
 
 from hil.drivers.aiosmbus2 import AsyncSMBusPeripheral, AsyncSMBusBranch
@@ -13,26 +15,33 @@ async def test_performance():
         await Cell.create(i, bus) for i, bus in enumerate(branch_buses)
     ]
 
+    profiler = pyinstrument.Profiler()
+
     async with physical_bus:
         for cell in cells:
             await cell.setup()
 
-        for _ in range(10):
-            for cell in cells:
-                await asyncio.gather(
-                    cell.enable(),
-                    cell.set_voltage(1),
-                    cell.turn_on_output_relay(),
-                    cell.turn_on_load_switch(),
-                )
+        with profiler:
+            for _ in range(10):
+                for cell in cells:
+                    await asyncio.gather(
+                        cell.enable(),
+                        cell.set_voltage(1),
+                        cell.turn_on_output_relay(),
+                        cell.close_load_switch(),
+                    )
 
-                voltage, current = await asyncio.gather(
-                    cell.get_voltage(),
-                    cell.get_current(),
-                )
+                    voltage, current = await asyncio.gather(
+                        cell.get_voltage(),
+                        cell.get_current(),
+                    )
 
-                await asyncio.gather(
-                    cell.turn_off_load_switch(),
-                    cell.turn_off_output_relay(),
-                    cell.disable(),
-                )
+                    await asyncio.gather(
+                        cell.open_load_switch(),
+                        cell.turn_off_output_relay(),
+                        cell.disable(),
+                    )
+
+    profiler.write_html(
+        Path(__file__).parent.parent.parent / "artifacts" / "cell_performance.html"
+    )

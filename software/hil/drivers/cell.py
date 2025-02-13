@@ -203,7 +203,7 @@ class Cell:
         await self._write_gpio_state()
         logger.debug(f"[Cell {self.cell_num}] Output relay turned OFF")
 
-    async def turn_on_load_switch(self):
+    async def close_load_switch(self):
         """
         Turn on the load switch.
         """
@@ -211,7 +211,7 @@ class Cell:
         await self._write_gpio_state()
         logger.debug(f"[Cell {self.cell_num}] Load switch turned ON")
 
-    async def turn_off_load_switch(self):
+    async def open_load_switch(self):
         """
         Turn off the load switch.
         """
