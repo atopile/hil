@@ -7,6 +7,9 @@ from hil.drivers.cell import Cell
 from hil.drivers.tca9548a import TCA9548A
 
 
+ARTIFACTS_DIR = Path(__file__).parent.parent.parent / "artifacts"
+
+
 async def test_performance():
     physical_bus = AsyncSMBusPeripheral(1)
     mux = TCA9548A(physical_bus)
@@ -42,6 +45,5 @@ async def test_performance():
                         cell.disable(),
                     )
 
-    profiler.write_html(
-        Path(__file__).parent.parent.parent / "artifacts" / "cell_performance.html"
-    )
+    ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
+    profiler.write_html(ARTIFACTS_DIR / "cell_performance.html")
