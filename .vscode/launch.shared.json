@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Remote Debug",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "${input:remoteHost}",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "${input:remoteRoot}"
+                }
+            ],
+            "justMyCode": true,
+            "preLaunchTask": "deploy-code",
+            "postDebugTask": "terminate-remote-debugger"
+        }
+    ]
+}
