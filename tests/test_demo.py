@@ -1,7 +1,7 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from hil.framework import record, during
+from hil.framework import record, during, ever
 
 
 async def source_1() -> float:
@@ -30,3 +30,14 @@ async def test_demo():
 
     print(t1)
     print(t2)
+
+
+def seconds(n: float) -> timedelta:
+    return timedelta(seconds=n)
+
+
+async def test_demo_assert_ever():
+    with record(source_1) as trace_1:
+        assert await ever(
+            (trace_1.min_over_period(seconds(0.5)) >= 5).all(), timeout=seconds(10)
+        )
