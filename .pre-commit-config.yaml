@@ -10,9 +10,6 @@ repos:
     rev: 0.5.30
     hooks:
       - id: uv-lock
-        name: uv-lock-components
-        args: ['--directory', 'services/components']
-      - id: uv-lock
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
