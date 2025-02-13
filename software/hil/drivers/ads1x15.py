@@ -70,7 +70,7 @@ class ADS1x15:
     COMP_QUE_NONE = 3
 
     # I2C object will be provided via AsyncSMBus
-    bus = None
+    bus: AsyncSMBus | None = None
 
     # I2C address
     _address = I2C_address
@@ -368,18 +368,6 @@ class ADS1x15:
         "Transform an ADC value to nominal voltage"
         volts = self.getMaxVoltage() * value
         return volts / ((2 ** (self._adcBits - 1)) - 1)
-
-    async def init(self):
-        """
-        Asynchronously initialize the cell.
-        - Sets the MUX.
-        - Configures the GPIO expander.
-        """
-        await self.set_mux()
-        # Configure GPIO expander: set configuration register (0x03) to output (0x00)
-        await self.bus.write_byte_data(GPIO_ADDRESS, 0x03, 0x00)
-        # Set output register (0x01) to 0
-        await self.bus.write_byte_data(GPIO_ADDRESS, 0x01, 0x00)
 
 
 class ADS1013(ADS1x15):
