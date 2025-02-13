@@ -3,7 +3,7 @@ component Onsemi_MC33174DR2G:
     lcsc_id = "C113552"
     manufacturer = "onsemi"
     mpn = "MC33174DR2G"
-    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_onsemi-MC33174DR2G_C113552.pdf"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_onsemi-MC33174DR2G_C113552.pdf"
     designator_prefix = "U"
 
     # pins

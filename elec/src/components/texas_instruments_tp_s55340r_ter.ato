@@ -28,8 +28,8 @@ module Texas_Instruments_TPS55340RTER from AdjustableRegulator:
     # Values
     switching_frequency = 600kHz +/- 10%
     duty_cycle = 0.167
-    v_in = 20V +/- 2%
-    v_out = 24V +/- 2%
+    # v_in = 20V +/- 2%
+    # v_out = 24V +/- 2%
 
     cap_soft_start.capacitance = 4.7uF +/- 20%
     res_freq.resistance = 78.7kohms +/- 10%
