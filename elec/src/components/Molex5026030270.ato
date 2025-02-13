@@ -1,0 +1,16 @@
+from "generics/interfaces.ato" import Power
+
+component Molex5026030270:
+    """
+    Molex 5026030270 2P 2.00mm pitch connector
+    """
+    footprint = "CONN-TH_2P-P2.00-5026030270"
+    lcsc_id = "C17267869"
+    mpn = "C17267869"
+    # pins
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+
+    power = new Power
+    power.vcc ~ p1
+    power.gnd ~ p2

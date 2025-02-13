@@ -1,4 +1,4 @@
-import ElectricPower, Capacitor, Resistor, SPI
+import ElectricPower, Capacitor, Resistor, SPI, ElectricLogic
 from "interfaces.ato" import CAN
 
 from "components/ylptec_b0505s2wr3.ato" import YLPTEC_B0505S_2WR3
@@ -15,6 +15,7 @@ module ComsCANISO:
     """
     # external interfaces
     spi = new SPI
+    spi_cs = new ElectricLogic
     can = new CAN
     power_3v3 = new ElectricPower
     power_5v = new ElectricPower
@@ -39,6 +40,7 @@ module ComsCANISO:
 
     # Data
     spi ~ controller.spi
+    spi_cs ~ controller.spi_cs
     controller.can_ttl ~ transceiver.can_ttl
     transceiver.can ~ can
 

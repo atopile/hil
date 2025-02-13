@@ -1,0 +1,25 @@
+
+component Molex5051101292:
+    """
+    Molex 5051101292 FFC/FPC connector
+    """
+    mpn = "Molex5051101292"
+    lcsc_id = "C585301"
+    footprint = "CON_5051101292_MOL"
+
+    # Pins
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+    signal p5 ~ pin 5
+    signal p6 ~ pin 6
+    signal p7 ~ pin 7
+    signal p8 ~ pin 8
+    signal p9 ~ pin 9
+    signal p10 ~ pin 10
+    signal p11 ~ pin 11
+    signal p12 ~ pin 12
+
+    # signal mount1 ~ pin "P1"
+    # signal mount2 ~ pin "P2"

@@ -115,7 +115,7 @@ module Texas_Instruments_BQ25756RRVR:
     # Input Current limit resistor
     ilim_resistor = new Resistor
     # TODO: make this a variable
-    ilim_resistor.package = "0402"
+    ilim_resistor.package = "R0402"
     ilim_resistor.resistance = 2.49kohm +/- 1%  # Application note value for 8A current limit
     controller.ILIM_HIZ ~ ilim_resistor.p1
     ilim_resistor.p2 ~ controller.PGND
@@ -194,7 +194,7 @@ component _Texas_Instruments_BQ25756RRVR:
     lcsc_id = "C19272232"
     manufacturer = "Texas Instruments"
     mpn = "BQ25756RRVR"
-    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2312012001_Texas-Instruments-BQ25756RRVR_C19272232.pdf"
+    # datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2312012001_Texas-Instruments-BQ25756RRVR_C19272232.pdf"
     designator_prefix = "U"
 
     # pins
@@ -295,6 +295,19 @@ module CapBank:
     power_in ~ cap10.power
     power_in ~ cap11.power
 
+    # Set package
+    # cap1.package = "C1210"
+    # cap2.package = "C1210"
+    # cap3.package = "C1210"
+    # cap4.package = "C1210"
+    # cap5.package = "C1210"
+    # cap6.package = "C1210"
+    # cap7.package = "C1210"
+    # cap8.package = "C1206"
+    # cap9.package = "C0805"
+    # cap10.package = "C0805"
+    # cap11.package = "C1210"
+
 
 module ShuntInput:
     """Shunt input for buck/boost with low pass filter"""
@@ -314,7 +327,9 @@ module ShuntInput:
     filter_p.resistor.resistance = 10ohm +/- 1%
     filter_n.capacitor.capacitance = 100nF +/- 20%
     filter_p.capacitor.capacitance = 100nF +/- 20%
-    shunt.resistance = 5mohm +/- 1%
+    # shunt.resistance = 5mohm +/- 1%
+    # shunt.package = "R1206"
+    shunt.lcsc_id = "C316225"
 
     filter_n.cutoff_frequency = 1Hz to 1GHz
     filter_p.cutoff_frequency = 1Hz to 1GHz
