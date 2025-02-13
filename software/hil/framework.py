@@ -1,8 +1,8 @@
 import asyncio
 from datetime import datetime, timedelta
 import inspect
-from numbers import Number
-from typing import Any, AsyncGenerator, Awaitable, Callable, Self
+from typing import Any, AsyncGenerator, Awaitable, Self, cast
+from collections.abc import Callable
 import numpy as np
 import polars as pl
 
@@ -35,24 +35,31 @@ class during:
 
     @property
     def elapsed(self) -> float:
+        if self.start_time is None:
+            return 0
+
         return (datetime.now() - self.start_time).total_seconds()
 
     @property
     def remaining(self) -> float:
         return self.duration - self.elapsed
 
-    async def any(self, *others: Callable[[], Awaitable] | AsyncGenerator[Any, None]) -> AsyncGenerator[None, None]:
-        def _make_awaitable(other: Callable[[], Awaitable] | AsyncGenerator[Any, None]) -> Awaitable[Any]:
+    async def any(
+        self, *others: Callable[[], Awaitable] | AsyncGenerator[Any, None]
+    ) -> AsyncGenerator[None, None]:
+        def _make_awaitable(
+            other: Callable[[], Awaitable] | AsyncGenerator[Any, None],
+        ) -> Awaitable[Any]:
             if inspect.iscoroutinefunction(other):
                 return other()
             elif inspect.isasyncgenfunction(other):
-                return other
+                return cast(Awaitable[Any], other())
             else:
                 raise ValueError(f"Invalid argument: {other}")
 
         async for _ in self:
             await asyncio.wait(
-                [_make_awaitable(other) for other in others],
+                [_make_awaitable(other) for other in others],  # type: ignore
                 timeout=self.remaining,
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -98,7 +105,7 @@ class Trace[T]:
         self, duration: float | int | timedelta, from_: datetime | None = None
     ) -> Self:
         """Get the last <duration> of data from the trace"""
-        if isinstance(duration, Number):
+        if isinstance(duration, (int, float)):
             duration = timedelta(seconds=duration)
 
         if from_ is None:
@@ -120,7 +127,9 @@ class Trace[T]:
 
     @property
     def duration(self) -> timedelta:
-        return self.timestamps.max() - self.timestamps.min()
+        max_timestamp = cast(datetime, self.timestamps.max())
+        min_timestamp = cast(datetime, self.timestamps.min())
+        return max_timestamp - min_timestamp
 
     @property
     def duration_s(self) -> float:
@@ -164,7 +173,11 @@ class record[T]:
             self._source = lambda: asyncio.to_thread(source)
 
         self._trace = Trace[T](name or source.__name__)
-        self._minimum_interval = minimum_interval
+        self._minimum_interval = (
+            timedelta(seconds=minimum_interval)
+            if minimum_interval is not None
+            else None
+        )
         self._last_timestamp: datetime | None = None
 
     def __enter__(self) -> Trace[T]:
@@ -184,16 +197,18 @@ class record[T]:
                     remaining_time_to_next = (
                         self._last_timestamp + self._minimum_interval - datetime.now()
                     )
-                    if remaining_time_to_next > 0:
-                        await asyncio.sleep(remaining_time_to_next)
+                    if remaining_time_to_next > timedelta(0):
+                        await asyncio.sleep(remaining_time_to_next.total_seconds())
 
                 data = await self._source()
+                data = cast(T, data)
                 self._trace.append(datetime.now(), data)
 
         self._task = asyncio.create_task(_trace())
 
     def close(self) -> None:
-        self._task.cancel()
+        if self._task is not None:
+            self._task.cancel()
 
     @property
     def trace(self) -> Trace[T]:
@@ -205,7 +220,10 @@ class record[T]:
 
     @property
     def finished(self) -> bool:
-        return self.started and self._task.done()
+        if self._task is None:
+            return False
+
+        return self._task.done()
 
     @property
     def running(self) -> bool:
@@ -213,7 +231,11 @@ class record[T]:
 
     @classmethod
     def from_property(cls, obj: Any, prop: property) -> Self:
-        return cls(lambda: prop.fget(obj))
+        def func() -> T:
+            assert prop.fget is not None
+            return prop.fget(obj)
+
+        return cls(func)
 
     async def __anext__(self) -> T:
         if not self.started:
