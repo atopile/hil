@@ -6,6 +6,18 @@ from collections.abc import Callable
 import polars as pl
 
 
+def milliseconds(n: float) -> timedelta:
+    return timedelta(milliseconds=n)
+
+
+def microseconds(n: float) -> timedelta:
+    return timedelta(microseconds=n)
+
+
+def seconds(n: float) -> timedelta:
+    return timedelta(seconds=n)
+
+
 class during:
     def __init__(self, duration: float):
         self.duration = duration

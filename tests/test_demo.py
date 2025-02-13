@@ -1,7 +1,7 @@
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from hil.framework import record, during, ever
+from software.hil.framework import ever, record, during, seconds
 
 
 async def source_1() -> float:
@@ -30,10 +30,6 @@ async def test_demo():
 
     print(t1)
     print(t2)
-
-
-def seconds(n: float) -> timedelta:
-    return timedelta(seconds=n)
 
 
 async def test_demo_assert_ever():
