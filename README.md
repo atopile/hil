@@ -64,3 +64,23 @@ Project goals and aspirations:
 ### Non-goals
 
  - Generic lab equipment. Sometimes these things look really similar, however generic lab equipment places an emphasis on performance, robustness and self-containedness that makes it a generic tool, rather than an embedded custom-built tool for a specific application. If there are modules in this suite you want to use generically, **awesome!**. It however isn't our goal to create them
+
+
+## CM4/5 Setup
+Instructions for setting up the CM4/5 for HiL testing.
+
+# Flash OS to eMMC
+https://www.jeffgeerling.com/blog/2020/how-flash-raspberry-pi-os-compute-module-4-emmc-usbboot
+
+# Setup I2C
+SSH into the CM4/5 and run:
+
+```sudo nano /boot/firmware/config.txt```
+
+Add/modify the following line:
+
+```dtparam=i2c_arm=on,i2c_arm_baudrate=400000```
+
+Reboot to apply changes:
+
+```sudo reboot```
