@@ -13,11 +13,13 @@ async def test_performance():
     ]
 
     async with physical_bus:
+        for cell in cells:
+            await cell.setup()
+            await cell.set_voltage(1)
+
         for _ in range(10):
             for cell in cells:
-                await cell.setup()
                 await cell.enable()
-                await cell.set_voltage(1)
                 await cell.turn_on_output_relay()
                 await cell.close_load_switch()
 
