@@ -56,7 +56,7 @@ class Cell:
         pass
 
     @classmethod
-    async def create(cls, cell_num, bus: AsyncSMBus, mux_channel=None):
+    async def create(cls, cell_num, bus: AsyncSMBus):
         """
         Initialize the cell.
         If mux_channel is not specified, it will use cell_num % 8.
@@ -64,7 +64,6 @@ class Cell:
         """
         self = cls.__new__(cls)
         self.cell_num = cell_num
-        self.mux_channel = mux_channel if mux_channel is not None else cell_num % 8
         self.bus = bus
         self.enabled = False
         self.adc = None  # will be created asynchronously in init()
@@ -237,4 +236,4 @@ class Cell:
         return current
 
     async def __str__(self):
-        return f"Cell {self.cell_num} | Mux Channel: {self.mux_channel} | Enabled: {self.enabled}"
+        return f"Cell {self.cell_num} | Bus: {self.bus} | Enabled: {self.enabled}"
