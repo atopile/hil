@@ -1,6 +1,5 @@
 import ElectricSignal, Resistor, ElectricPower, DifferentialPair
 
-
 module CurrentSensor:
     sensor = new INA185A2IDRLR
     shunt = new Resistor
@@ -37,8 +36,11 @@ module CurrentSensor:
 
 component INA185A2IDRLR:
     """Current sense amplifier IC"""
+    """Current sense amplifier IC"""
     footprint = "SOT-563_L1.6-W1.2-P0.50-LS1.6-TL"
     lcsc_id = "C2059320"
+
+    # Fixed gain provided by this variant
 
     # Fixed gain provided by this variant
     gain = 50
@@ -49,11 +51,9 @@ component INA185A2IDRLR:
 
     output = new ElectricSignal
     output.line ~ pin 1
-    output.reference ~ power
 
     ref = new ElectricSignal
     ref.line ~ pin 5
-    ref.reference ~ power
 
     input = new DifferentialPair
     input.p.line ~ pin 3
