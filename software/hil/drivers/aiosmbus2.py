@@ -214,15 +214,15 @@ class AsyncSMBusPeripheral:
                     raise RuntimeError("bus not open")
                 yield self._handle
             finally:
-                await self.release()
+                self.release()
 
         return _enter()
 
     async def aquire(self):
         await self._lock.acquire()
 
-    async def release(self):
-        await self._lock.release()
+    def release(self):
+        self._lock.release()
 
 
 class Mux(Protocol):
