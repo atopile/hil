@@ -187,7 +187,7 @@ class AsyncSMBusPeripheral:
         if self._force is None:
             self._force = False
 
-        with self._lock:
+        async with self._lock:
             if self._smbus is not None:
                 raise self.BusAlreadyOpen()
 
@@ -198,7 +198,7 @@ class AsyncSMBusPeripheral:
         """
         Close the I2C connection.
         """
-        with self._lock:
+        async with self._lock:
             if self._smbus is not None:
                 await asyncio.to_thread(self._smbus.close)
                 self._smbus = None
