@@ -106,6 +106,10 @@ class Trace[T]:
         return self._polars
 
     @property
+    def name(self) -> str:
+        return self._name
+
+    @property
     def value(self) -> pl.Expr:
         return pl.col(self._name)
 
@@ -288,7 +292,7 @@ class record[T]:
 
     @classmethod
     def from_property(cls, obj: Any, prop: property) -> Self:
-        def func() -> T:
+        async def func() -> T:
             assert prop.fget is not None
             return prop.fget(obj)
 

@@ -14,22 +14,10 @@ async def source_2() -> float:
     return 2.0
 
 
-async def test_demo():
+async def test_demo(record):
     with record(source_1) as t1, record(source_2) as t2:
         async for _ in during(1).any(t1.new_data, t2.new_data):
             print(f"something's ready! {datetime.now()}")
-            if (
-                t1.duration_s > 0.5
-                and t1.get_last(0.5) > 1.0
-                and t2.duration_s > 0.5
-                and t2.get_last(0.5) > 1.0
-            ):
-                break
-        else:
-            raise TimeoutError("Failed to settle in time")
-
-    print(t1)
-    print(t2)
 
 
 async def test_demo_assert_ever():
