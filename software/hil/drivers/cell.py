@@ -131,12 +131,12 @@ class Cell:
         self.enabled = False
         logger.debug(f"[Cell {self.cell_num}] Disabled")
 
-    async def get_voltage(self):
+    async def get_voltage(self, channel = AdcChannels.OUTPUT_VOLTAGE):
         """
         Read the cell output voltage.
         """
         # Read raw ADC count from the specified channel
-        raw = await self.adc.read_pin(self.AdcChannels.OUTPUT_VOLTAGE)
+        raw = await self.adc.read_pin(channel)
         # Convert the raw ADC value to voltage with a 4.096V reference
         volts = raw * (6.144 / 32767.0)
         logger.debug(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")

@@ -89,26 +89,48 @@ async def test_performance(hil: Hil):
 
 # Generate voltage points from 0.5V to 4.3V in 0.1V steps
 VOLTAGES = [v/10 for v in range(5, 44)]
-
-
 @pytest.mark.parametrize("cell_idx,voltage", [
     (cell_idx, voltage) 
     for cell_idx in range(8)  # For all 8 cells
     for voltage in VOLTAGES
 ])
-async def test_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
+async def test_output_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
     cell = hil.cellsim.cells[cell_idx]
     async with aclosing(cell):
         # Set up the cell
         await cell.enable()
         await cell.set_voltage(voltage)
         await cell.turn_on_output_relay()
-        
+        await cell.close_load_switch()
+
         # Allow voltage to settle
         await asyncio.sleep(0.1)
         
         # Measure and check accuracy
         measured_voltage = await cell.get_voltage()
+        assert measured_voltage == pytest.approx(voltage, rel=0.2)
+
+
+BUCK_VOLTAGES = [v/10 for v in range(15, 45)]
+@pytest.mark.parametrize("cell_idx,voltage", [
+    (cell_idx, voltage) 
+    for cell_idx in range(8)  # For all 8 cells
+    for voltage in BUCK_VOLTAGES
+])
+async def test_buck_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
+    cell = hil.cellsim.cells[cell_idx]
+    async with aclosing(cell):
+        # Set up the cell
+        await cell.enable()
+        await cell._set_buck_voltage(voltage)
+        await cell.turn_on_output_relay()
+        await cell.close_load_switch()
+        
+        # Allow voltage to settle
+        await asyncio.sleep(0.1)
+        
+        # Measure and check accuracy
+        measured_voltage = await cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
         assert measured_voltage == pytest.approx(voltage, rel=0.2)
 
 async def test_mux(hil: Hil):
