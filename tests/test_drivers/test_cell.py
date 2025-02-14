@@ -107,6 +107,7 @@ async def test_output_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
     async with cell:
         # Set up the cell
         await cell.enable()
+        await cell.calibrate()
         await cell.set_voltage(voltage)
         await cell.turn_on_output_relay()
         await cell.close_load_switch()
@@ -133,6 +134,7 @@ async def test_buck_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
     async with cell:
         # Set up the cell
         await cell.enable()
+        await cell.calibrate()
         await cell._set_buck_voltage(voltage)
         await cell.turn_on_output_relay()
         await cell.close_load_switch()
