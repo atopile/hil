@@ -219,7 +219,7 @@ class Trace[T]:
 
         # TODO: early stopping if stable at wrong value
 
-        return ever(
+        return await ever(
             Query(self).rolling_within_tolerance(
                 target=target,
                 rel_tol=rel_tol,
