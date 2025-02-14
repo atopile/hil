@@ -78,6 +78,14 @@ builds:
       elec/src/blocks/variable-resistor.ato:VariableResistor
     exclude_targets: [mfg-data]
 
+  cellsim-8ch:
+    entry: elec/src/blocks/cellsim-8ch.ato:CellSim8Ch
+    exclude_targets: [mfg-data]
+
+  multiplexer-i2c-8ch:
+    entry: elec/src/blocks/multiplexer-i2c-8ch.ato:MultiplexerI2C8Ch
+    exclude_targets: [mfg-data]
+
 dependencies:
 - name: generics
   version_spec:

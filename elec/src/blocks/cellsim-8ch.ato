@@ -1,0 +1,87 @@
+import ElectricPower, ElectricLogic, I2C
+from "components/tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
+from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
+from "blocks/relay.ato" import PowerRelay
+from "components/cell.ato" import Cell
+
+module CellSim8Ch:
+
+    # External interfaces
+    power_24v = new ElectricPower
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
+    led_data = new ElectricLogic
+    dmm_out = new ElectricPower
+    dmm_relay_enable = new ElectricLogic
+    i2c = new I2C
+
+    # Cells
+    cell1 = new Cell
+    cell2 = new Cell
+    cell3 = new Cell
+    cell4 = new Cell
+    cell5 = new Cell
+    cell6 = new Cell
+    cell7 = new Cell
+    cell8 = new Cell
+
+    # Mux
+    i2c_mux = new TCA9548APWR
+    gpio_mux = new MultiplexerI2C8Ch
+
+    power_3v3 ~ i2c_mux.power
+    power_3v3 ~ gpio_mux.power_3v3
+
+    i2c ~ i2c_mux.i2c #0x70
+    i2c ~ gpio_mux.i2c #0x21
+
+    # DMM
+    dmm_relay = new PowerRelay
+    power_5v ~ dmm_relay.power_relay
+    dmm_relay.power_out ~ dmm_out
+    dmm_relay.input ~ dmm_relay_enable
+
+    # Cell Power
+    power_24v ~ cell1.power_in
+    power_24v ~ cell2.power_in
+    power_24v ~ cell3.power_in
+    power_24v ~ cell4.power_in
+    power_24v ~ cell5.power_in
+    power_24v ~ cell6.power_in
+    power_24v ~ cell7.power_in
+
+    power_5v ~ cell1.power_5v
+    power_5v ~ cell2.power_5v
+    power_5v ~ cell3.power_5v
+    power_5v ~ cell4.power_5v
+    power_5v ~ cell5.power_5v
+    power_5v ~ cell6.power_5v
+    power_5v ~ cell7.power_5v
+
+    # Cell to cell connections
+    cell1.cell_up ~ cell2.cell_down
+    cell2.cell_up ~ cell3.cell_down
+    cell3.cell_up ~ cell4.cell_down
+    cell4.cell_up ~ cell5.cell_down
+    cell5.cell_up ~ cell6.cell_down
+    cell6.cell_up ~ cell7.cell_down
+    cell7.cell_up ~ cell8.cell_down
+
+    # Cell to i2c mux connections
+    i2c_mux.i2c0 ~ cell1.i2c
+    i2c_mux.i2c1 ~ cell2.i2c
+    i2c_mux.i2c2 ~ cell3.i2c
+    i2c_mux.i2c3 ~ cell4.i2c
+    i2c_mux.i2c4 ~ cell5.i2c
+    i2c_mux.i2c5 ~ cell6.i2c
+    i2c_mux.i2c6 ~ cell7.i2c
+    i2c_mux.i2c7 ~ cell8.i2c
+
+    # Cell to dmm mux connections
+    gpio_mux.output_1 ~ cell1.dmm_relay_enable
+    gpio_mux.output_2 ~ cell2.dmm_relay_enable
+    gpio_mux.output_3 ~ cell3.dmm_relay_enable
+    gpio_mux.output_4 ~ cell4.dmm_relay_enable
+    gpio_mux.output_5 ~ cell5.dmm_relay_enable
+    gpio_mux.output_6 ~ cell6.dmm_relay_enable
+    gpio_mux.output_7 ~ cell7.dmm_relay_enable
