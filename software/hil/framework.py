@@ -86,6 +86,12 @@ class Trace[T]:
         self._timestamps: list[datetime] = []
         self._polars: pl.DataFrame | None = data
         self._result_future: asyncio.Future[T] | None = None
+        self._schema = pl.Schema(
+            {
+                self.TIMESTAMP_COLUMN: pl.Datetime(time_unit="ms"),
+                self._name: pl.Float64,
+            }
+        )
 
     def append(self, timestamp: datetime, data: T) -> None:
         self._timestamps.append(timestamp)
@@ -97,13 +103,14 @@ class Trace[T]:
 
     def to_polars(self) -> pl.DataFrame:
         new_df = pl.DataFrame(
-            {self.TIMESTAMP_COLUMN: self._timestamps, self._name: self._data}
+            {self.TIMESTAMP_COLUMN: self._timestamps, self._name: self._data},
+            schema=self._schema,
         )
         self._timestamps.clear()
         self._data.clear()
 
         if self._polars is not None:
-            self._polars.extend(new_df)
+            self._polars = pl.concat([self._polars, new_df])
         else:
             self._polars = new_df
 
