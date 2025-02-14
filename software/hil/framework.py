@@ -56,21 +56,11 @@ class during:
         return self.duration - self.elapsed
 
     async def any(
-        self, *others: Callable[[], Awaitable] | AsyncGenerator[Any, None]
+        self, *others: Callable[[], asyncio.Task | asyncio.Future]
     ) -> AsyncGenerator[None, None]:
-        def _make_awaitable(
-            other: Callable[[], Awaitable] | AsyncGenerator[Any, None],
-        ) -> Awaitable[Any]:
-            if inspect.iscoroutinefunction(other):
-                return other()
-            elif inspect.isasyncgenfunction(other):
-                return cast(Awaitable[Any], other())
-            else:
-                raise ValueError(f"Invalid argument: {other}")
-
         async for _ in self:
             await asyncio.wait(
-                [_make_awaitable(other) for other in others],  # type: ignore
+                [other() for other in others],
                 timeout=self.remaining.total_seconds(),
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -234,20 +224,13 @@ class Trace[T]:
 class record[T]:
     def __init__(
         self,
-        source: Callable[[], Awaitable[T]] | Callable[[], T],
+        source: Callable[[], Awaitable[T]],
         *,
         name: str | None = None,
         minimum_interval: float | None = None,
     ):
         self._task: asyncio.Task | None = None
-
-        # Check if the source is a synchronous function
-        # or an asynchronous function
-        if inspect.iscoroutinefunction(source):
-            self._source = source
-        else:
-            self._source = lambda: asyncio.to_thread(source)
-
+        self._source = source
         self._trace = Trace[T](name or source.__name__)
         self._minimum_interval = (
             timedelta(seconds=minimum_interval)
