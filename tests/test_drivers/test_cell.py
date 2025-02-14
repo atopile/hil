@@ -100,6 +100,8 @@ async def test_buck_voltage_per_cell(hil: "Hil"):
                     *(_check_voltage(t) for t in traces), name=f"{voltage}V"
                 )
 
+    await asyncio.sleep(0)
+
 
 async def test_mux(hil: "Hil"):
     async with hil:
