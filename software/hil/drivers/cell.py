@@ -8,11 +8,6 @@ from hil.drivers.mcp4725 import MCP4725
 logger = logging.getLogger(__name__)
 
 # I2C Addresses
-LDO_ADDRESS = 0x60
-BUCK_ADDRESS = 0x61
-ADC_ADDRESS = 0x48
-GPIO_ADDRESS = 0x20
-TCA6408_ADDR = 0x20  # Using same value as GPIO_ADDRESS
 
 
 class Cell:
@@ -24,6 +19,12 @@ class Cell:
     buck_dac: MCP4725
     ldo_dac: MCP4725
     _gpio_state: int
+
+    class Devices(IntEnum):
+        LDO = 0x60
+        BUCK = 0x61
+        ADC = 0x48
+        GPIO = 0x20
 
     class GpioChannels(IntEnum):
         BUCK_ENABLE = 2
@@ -67,24 +68,26 @@ class Cell:
         self.bus = bus
         self.enabled = False
         self.adc = None  # will be created asynchronously in init()
-        self.buck_dac = await MCP4725.create(bus, BUCK_ADDRESS)
-        self.ldo_dac = await MCP4725.create(bus, LDO_ADDRESS)
+        self.buck_dac = await MCP4725.create(bus, self.Devices.BUCK)
+        self.ldo_dac = await MCP4725.create(bus, self.Devices.LDO)
+        self.adc = await ADS1115.create(self.bus, self.Devices.ADC)
         self._gpio_state = (
             0x00  # 8-bit register representing the current state of GPIO pins.
         )
+        await self.reset()
+
         return self
 
-    async def setup(self):
+    async def reset(self):
         """
-        Initialize the cell.
-        - Sets the MUX.
-        - Configures the GPIO expander.
+        Reset the cell.
+        - Clears the GPIO state.
+        - Resets the ADC gain.
         """
         async with self.bus() as handle:
-            await handle.write_byte_data(GPIO_ADDRESS, 0x03, 0x00)
-            await handle.write_byte_data(GPIO_ADDRESS, 0x01, 0x00)
+            await handle.write_byte_data(self.Devices.GPIO, 0x03, 0x00)
+            await handle.write_byte_data(self.Devices.GPIO, 0x01, 0x00)
 
-        self.adc = await ADS1115.create(self.bus, ADC_ADDRESS)
         await self.adc.set_adc_config(gain=ADS1115.GainConfig.UPTO_6_144V)
 
     def _set_gpio(self, channel: GpioChannels, value: bool):
@@ -99,7 +102,7 @@ class Cell:
         Writes the current GPIO_STATE to the output register.
         """
         async with self.bus() as handle:
-            await handle.write_byte_data(TCA6408_ADDR, 0x01, self._gpio_state)
+            await handle.write_byte_data(self.Devices.GPIO, 0x01, self._gpio_state)
         logger.debug(f"[Cell {self.cell_num}] GPIO state set: {bin(self._gpio_state)}")
 
     async def enable(self):
@@ -128,12 +131,12 @@ class Cell:
         self.enabled = False
         logger.debug(f"[Cell {self.cell_num}] Disabled")
 
-    async def get_voltage(self):
+    async def get_voltage(self, channel=AdcChannels.OUTPUT_VOLTAGE):
         """
         Read the cell output voltage.
         """
         # Read raw ADC count from the specified channel
-        raw = await self.adc.read_pin(self.AdcChannels.OUTPUT_VOLTAGE)
+        raw = await self.adc.read_pin(channel)
         # Convert the raw ADC value to voltage with a 4.096V reference
         volts = raw * (6.144 / 32767.0)
         logger.debug(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")
@@ -239,3 +242,13 @@ class Cell:
 
     async def __str__(self):
         return f"Cell {self.cell_num} | Bus: {self.bus} | Enabled: {self.enabled}"
+
+    async def aclose(self):
+        await self.turn_off_output_relay()
+        await self.disable()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        await self.aclose()

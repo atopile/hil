@@ -188,6 +188,40 @@ class Trace[T]:
     ) -> Awaitable[bool]:
         return always(Query(self, expr), timeout)
 
+    async def approx_once_settled(
+        self,
+        target: float,
+        rel_tol: float = 1e-6,
+        abs_tol: float = 1e-12,
+        stability_lookback: timedelta = seconds(0.5),
+        stability_min_samples: int = 10,
+        timeout: timedelta = milliseconds(1000),
+    ):
+        """
+        Monitor the trace. If it reaches a stable value within the permitted time, check that value is within the given tolerance.
+
+        Args:
+            target: Target value to check against
+            rel_tol: Relative tolerance for the target value
+            abs_tol: Absolute tolerance for the target value
+            stability_lookback: Lookback period during which the trace value must be within bounds
+            stability_min_samples: Minimum number of samples in a valid lookback period
+            timeout: Timeout for the trace to reach a settled and correct value
+        """
+
+        # TODO: early stopping if stable at wrong value
+
+        return ever(
+            Query(self).rolling_within_tolerance(
+                target=target,
+                rel_tol=rel_tol,
+                abs_tol=abs_tol,
+                duration=stability_lookback,
+                min_samples=stability_min_samples,
+            ),
+            timeout,
+        )
+
 
 class record[T]:
     def __init__(
@@ -328,11 +362,7 @@ class Query:
         self._expr = (
             (self)
             ._after(duration)
-            .rolling_min_by(
-                self._timestamp,
-                window_size=f"{duration.total_seconds()}s",
-                min_samples=2,
-            )
+            .rolling_min_by(self._timestamp, window_size=duration, min_samples=2)
         )
         return self
 
@@ -340,12 +370,33 @@ class Query:
         self._expr = (
             (self)
             ._after(duration)
-            .rolling_max_by(
-                self._timestamp,
-                window_size=f"{duration.total_seconds()}s",
-                min_samples=2,
-            )
+            .rolling_max_by(self._timestamp, window_size=duration, min_samples=2)
         )
+        return self
+
+    def rolling_within_tolerance(
+        self,
+        target: float,
+        rel_tol: float,
+        abs_tol: float,
+        duration: timedelta,
+        min_samples: int,
+    ) -> Self:
+        lower_bound = min(target * (1 - rel_tol), target - abs_tol)
+        upper_bound = max(target * (1 + rel_tol), target + abs_tol)
+
+        self._expr = (
+            self._expr.rolling_min_by(
+                self._timestamp, window_size=duration, min_samples=min_samples
+            )
+            > lower_bound
+        ) & (
+            self._expr.rolling_max_by(
+                self._timestamp, window_size=duration, min_samples=min_samples
+            )
+            < upper_bound
+        ).where(self.trace.elapsed_time >= duration)
+
         return self
 
     def any(self) -> Self:
