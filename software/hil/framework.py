@@ -56,21 +56,11 @@ class during:
         return self.duration - self.elapsed
 
     async def any(
-        self, *others: Callable[[], Awaitable] | AsyncGenerator[Any, None]
+        self, *others: Callable[[], asyncio.Task | asyncio.Future]
     ) -> AsyncGenerator[None, None]:
-        def _make_awaitable(
-            other: Callable[[], Awaitable] | AsyncGenerator[Any, None],
-        ) -> Awaitable[Any]:
-            if inspect.iscoroutinefunction(other):
-                return other()
-            elif inspect.isasyncgenfunction(other):
-                return cast(Awaitable[Any], other())
-            else:
-                raise ValueError(f"Invalid argument: {other}")
-
         async for _ in self:
             await asyncio.wait(
-                [_make_awaitable(other) for other in others],  # type: ignore
+                [other() for other in others],
                 timeout=self.remaining,
                 return_when=asyncio.FIRST_COMPLETED,
             )
@@ -108,6 +98,10 @@ class Trace[T]:
             self._polars = new_df
 
         return self._polars
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     @property
     def value(self) -> pl.Expr:
@@ -240,7 +234,7 @@ class record[T]:
         else:
             self._source = lambda: asyncio.to_thread(source)
 
-        self._trace = Trace[T](name or source.__name__)
+        self._trace = Trace[T](name or source.__qualname__)
         self._minimum_interval = (
             timedelta(seconds=minimum_interval)
             if minimum_interval is not None
