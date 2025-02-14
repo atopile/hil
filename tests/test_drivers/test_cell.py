@@ -119,7 +119,9 @@ async def test_output_voltage_per_cell(hil: Hil):
                         voltage, rel_tol=0.2, timeout=seconds(0.1)
                     )
 
-                await gather_row(_check_voltage(t) for t in traces)
+                await gather_row(
+                    *(_check_voltage(t) for t in traces), name=f"{voltage}V"
+                )
 
 
 BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
