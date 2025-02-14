@@ -10,15 +10,22 @@ References:
 
 import logging
 from collections import defaultdict
+from pathlib import Path
 from typing import Protocol
-from functools import reduce
 
 import altair as alt
+import pathvalidate
+import polars as pl
 import pytest
+from pytest_html import extras as html_extras
 
 from .framework import record as hil_record
 
 logger = logging.getLogger(__name__)
+
+
+REPO_ROOT = Path(__file__).parent.parent.parent
+ARTIFACTS = REPO_ROOT / "artifacts"
 
 
 class _Config(Protocol):
@@ -110,12 +117,18 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
             return
         print(f"Found {len(records)} records for {item.nodeid}")
 
-        # Combine all records into one Polars DataFrame, joining on "timestamp"
-        combined = reduce(
-            lambda left, right: left.join(
-                right, on="timestamp", how="full", coalesce=True
-            ),
-            (rec.trace.to_polars() for rec in records),
+        # Convert each trace directly to long format and concatenate
+        combined = pl.concat(
+            [
+                pl.DataFrame(
+                    {
+                        "timestamp": rec.trace.timestamps,
+                        "trace": [rec.trace.name] * len(rec.trace.timestamps),
+                        "value": rec.trace.data,
+                    }
+                )
+                for rec in records
+            ]
         ).sort("timestamp")
 
         print(combined)
@@ -125,49 +138,60 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
             print(f"No data found for {item.nodeid}")
             return
 
-        # Get all non-timestamp column names (these are our trace names)
-        trace_names = [col for col in combined.columns if col != "timestamp"]
-        print(trace_names)
-
         # Create a layered chart with one line per trace
-        base = alt.Chart(combined).encode(
-            x=alt.X(
-                "timestamp:T",
-                title="Time",
-                axis=alt.Axis(
-                    format="%H:%M:%S.%L",  # Show hours:minutes:seconds.milliseconds
-                    labelAngle=-45,  # Angle the labels for better readability
+        chart_height = 400
+        chart = (
+            alt.Chart(combined)
+            .mark_line(interpolate="monotone")
+            .encode(
+                x=alt.X(
+                    "timestamp:T",
+                    title="Time",
+                    axis=alt.Axis(
+                        format="%Y-%m-%d %H:%M:%S.%L",
+                        labelAngle=-45,
+                        tickCount=10,
+                        tickMinStep=0.01,
+                    ),
                 ),
+                y="value:Q",
+                color="trace:N",
             )
+            .properties(width="container", height=chart_height)
+            .interactive()
         )
 
-        layers = []
-        for trace_name in trace_names:
-            layer = base.mark_line().encode(
-                y=alt.Y(f"{trace_name}:Q", title=trace_name),
-                color=alt.Color(f"{trace_name}:N", title=trace_name),
+        # Add points to the chart
+        points = (
+            alt.Chart(combined)
+            .mark_point()
+            .encode(
+                x="timestamp:T",
+                y="value:Q",
+                color="trace:N",
                 tooltip=[
-                    alt.Tooltip("timestamp:T", title="Time"),
-                    alt.Tooltip(f"{trace_name}:Q", title=trace_name),
+                    alt.Tooltip("trace:N", title="Trace"),
+                    alt.Tooltip("timestamp:T", title="Timestamp"),
+                    alt.Tooltip("value:Q", title="Value"),
                 ],
             )
-            layers.append(layer)
-
-        # Combine all layers into one chart
-        chart = (
-            alt.layer(*layers)
-            .properties(width=600, height=400, title=f"Test Traces: {item.nodeid}")
-            .configure_axis(
-                gridColor="#f6f6f6",  # Lighter grid lines
-                domainColor="#ccc",  # Lighter axis lines
-            )
         )
 
-        # Instead of adding a new column, add our chart as extra content so it appears under the log.
-        # try:
-        #     # from pytest_html import extras as html_extras
-        #     # report.extras.append(html_extras.html(chart.to_html(fullhtml=False)))
-        #     # print("Added HiL Trace extras")
-        # except ImportError:
-        #     print("pytest-html is not installed")
-        chart.save("chart.html")
+        # Combine line and points
+        final_chart = chart + points
+        sanitized_nodeid = (
+            pathvalidate.sanitize_filename(item.nodeid)
+            .replace(":", "-")
+            .replace("/", "-")
+            .replace(".", "-")
+        )
+        chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
+        final_chart.save(chart_path)
+
+        # Append the chart HTML to the report extras
+        report.extras.append(html_extras.url(f"./{chart_path.name}", name="Traces"))
+        report.extras.append(
+            html_extras.html(
+                f"<iframe style='width: 100%; height: {chart_height + 150}px; border: none;' src='./{chart_path.name}'></iframe>"
+            )
+        )
