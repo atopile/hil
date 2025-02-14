@@ -406,11 +406,13 @@ class Query:
         Returns True if the query succeeds at any point
         """
         self._expr = self._expr.any()
-
-        async for _ in during(timeout).any(self.trace.new_data):
-            if self._evaluate():
-                return True
-
+        agen = during(timeout).any(self.trace.new_data)
+        try:
+            async for _ in agen:
+                if self._evaluate():
+                    return True
+        finally:
+            await agen.aclose()
         return False
 
     async def always(self, timeout: timedelta = seconds(10)) -> bool:
@@ -418,14 +420,15 @@ class Query:
         Returns False if the query fails at any point
         """
         self._expr = self._expr.all()
-
+        agen = during(timeout).any(self.trace.new_data)
         try:
-            async for _ in during(timeout).any(self.trace.new_data):
+            async for _ in agen:
                 if not self._evaluate():
                     return False
         except TimeoutError:
             pass
-
+        finally:
+            await agen.aclose()
         return True
 
 
