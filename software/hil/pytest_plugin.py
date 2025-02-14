@@ -110,6 +110,7 @@ def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | No
     # Create a layered chart with one line per trace
     chart = (
         alt.Chart(combined)
+        .mark_line(point=True)
         .mark_line(interpolate="monotone")
         .encode(
             x=alt.X(
@@ -129,26 +130,9 @@ def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | No
         .interactive()
     )
 
-    # Add points to the chart
-    points = (
-        alt.Chart(combined)
-        .mark_point()
-        .encode(
-            x="timestamp:T",
-            y="value:Q",
-            color="trace:N",
-            tooltip=[
-                alt.Tooltip("trace:N", title="Trace"),
-                alt.Tooltip("timestamp:T", title="Timestamp"),
-                alt.Tooltip("value:Q", title="Value"),
-            ],
-        )
-    )
-
     # Combine line and points
-    final_chart = chart + points
     chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
-    final_chart.save(chart_path)
+    chart.save(chart_path)
     return chart_path
 
 
