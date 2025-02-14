@@ -14,7 +14,6 @@ from typing import Protocol
 from functools import reduce
 
 import altair as alt
-from markupsafe import Markup
 import pytest
 
 from .framework import record as hil_record
@@ -99,10 +98,10 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
     Called to create a _TestReport for each phase of a test run (setup/call/teardown).
     """
     outcome = yield
+    report = outcome.get_result()
+    report.extras = getattr(report, "extras", [])
 
     if call.when == "call":
-        report = outcome.get_result()
-
         # Retrieve ALL record objects we stored for this test node.
         print(f"Retrieving records for {item.nodeid}")
         records = item.config._hil_recorded_traces.get(item.nodeid, [])
@@ -113,9 +112,13 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
 
         # Combine all records into one Polars DataFrame, joining on "timestamp"
         combined = reduce(
-            lambda left, right: left.join(right, on="timestamp", how="full"),
+            lambda left, right: left.join(
+                right, on="timestamp", how="full", coalesce=True
+            ),
             (rec.trace.to_polars() for rec in records),
-        )
+        ).sort("timestamp")
+
+        print(combined)
 
         # If we have no data or only an empty frame, skip
         if combined is None or combined.is_empty():
@@ -124,14 +127,25 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
 
         # Get all non-timestamp column names (these are our trace names)
         trace_names = [col for col in combined.columns if col != "timestamp"]
+        print(trace_names)
 
         # Create a layered chart with one line per trace
-        base = alt.Chart(combined).encode(x=alt.X("timestamp:T", title="Time"))
+        base = alt.Chart(combined).encode(
+            x=alt.X(
+                "timestamp:T",
+                title="Time",
+                axis=alt.Axis(
+                    format="%H:%M:%S.%L",  # Show hours:minutes:seconds.milliseconds
+                    labelAngle=-45,  # Angle the labels for better readability
+                ),
+            )
+        )
 
         layers = []
         for trace_name in trace_names:
             layer = base.mark_line().encode(
                 y=alt.Y(f"{trace_name}:Q", title=trace_name),
+                color=alt.Color(f"{trace_name}:N", title=trace_name),
                 tooltip=[
                     alt.Tooltip("timestamp:T", title="Time"),
                     alt.Tooltip(f"{trace_name}:Q", title=trace_name),
@@ -143,38 +157,17 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
         chart = (
             alt.layer(*layers)
             .properties(width=600, height=400, title=f"Test Traces: {item.nodeid}")
-            .resolve_scale()
+            .configure_axis(
+                gridColor="#f6f6f6",  # Lighter grid lines
+                domainColor="#ccc",  # Lighter axis lines
+            )
         )
 
-        # Convert the Altair chart to HTML so we can embed it in the test report
-        chart_html = chart.to_html(fullhtml=False)
-        print(f"Chart HTML generated for {item.nodeid}")
-
-        # Store the chart HTML in pytest's user_properties
-        report.user_properties.append(("hil_chart_html", chart_html))
-
-
-def pytest_html_results_table_header(cells):
-    """
-    Called to modify the table header cells in the pytest-html output.
-    We insert a new <th> column labeled 'HiL Trace' to contain the chart.
-    """
-    cells.append("<th>HiL Trace</th>")
-
-
-def pytest_html_results_table_row(report, cells):
-    """
-    Called to populate each row of the pytest-html results table.
-    We look for 'hil_chart_html' among the user_properties to embed the chart.
-    """
-    # Only modify the final row (usually the 'call' phase is used for the summary)
-    if report.when == "call":
-        print("in call phase")
-        for name, value in report.user_properties:
-            if name == "hil_chart_html" and value:
-                print("found hil_chart_html")
-                cells.append(f"<td>{Markup(value)}</td>")
-                return
-        else:
-            print("no hil_chart_html")
-            cells.append("<td>-</td>")
+        # Instead of adding a new column, add our chart as extra content so it appears under the log.
+        # try:
+        #     # from pytest_html import extras as html_extras
+        #     # report.extras.append(html_extras.html(chart.to_html(fullhtml=False)))
+        #     # print("Added HiL Trace extras")
+        # except ImportError:
+        #     print("pytest-html is not installed")
+        chart.save("chart.html")
