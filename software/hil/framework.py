@@ -55,7 +55,9 @@ class during:
     def remaining(self) -> float:
         return self.duration - self.elapsed
 
-    async def any(self, *others: Callable[[], Awaitable]) -> AsyncGenerator[None, None]:
+    async def any(
+        self, *others: Callable[[], asyncio.Task | asyncio.Future]
+    ) -> AsyncGenerator[None, None]:
         async for _ in self:
             await asyncio.wait(
                 [other() for other in others],
@@ -96,6 +98,10 @@ class Trace[T]:
             self._polars = new_df
 
         return self._polars
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     @property
     def value(self) -> pl.Expr:
