@@ -165,6 +165,7 @@ class Trace[T]:
     def duration_s(self) -> float:
         return self.duration.total_seconds()
 
+    @inspect.markcoroutinefunction
     def new_data(self) -> asyncio.Future[T]:
         if self._result_future is None:
             self._result_future = asyncio.Future()
