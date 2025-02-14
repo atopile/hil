@@ -209,3 +209,4 @@ cython_debug/
 .aider*
 
 *.code-workspace
+artifacts/

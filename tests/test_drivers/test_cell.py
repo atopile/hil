@@ -1,5 +1,7 @@
 import asyncio
-from hil.framework import record, seconds
+from contextlib import ExitStack
+from hil.framework import Trace, record, seconds
+from hil.utils.exception_table import exception_table
 import pytest
 from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.cell import Cell
@@ -90,59 +92,73 @@ async def test_performance(hil: Hil):
                 await cell.disable()
 
 
-# Generate voltage points from 0.5V to 4.3V in 0.1V steps
-VOLTAGES = [v / 10 for v in range(5, 44)]
+async def test_output_voltage_per_cell(hil: Hil):
+    # Generate voltage points from 0.5V to 4.3V in 0.1V steps
+    VOLTAGES = [v / 10 for v in range(5, 44)]
 
-
-@pytest.mark.parametrize(
-    "cell_idx,voltage",
-    [
-        (cell_idx, voltage)
-        for cell_idx in range(8)  # For all 8 cells
-        for voltage in VOLTAGES
-    ],
-)
-async def test_output_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
-    cell = hil.cellsim.cells[cell_idx]
-    async with cell:
+    async with hil:
         # Set up the cell
-        await cell.enable()
-        await cell.set_voltage(voltage)
-        await cell.turn_on_output_relay()
-        await cell.close_load_switch()
+        for cell in hil.cellsim.cells:
+            await cell.enable()
+            await cell.turn_on_output_relay()
+            await cell.close_load_switch()
 
-        with record(cell.get_voltage) as voltage_trace:
-            assert await voltage_trace.approx_once_settled(
-                voltage, rel_tol=0.2, timeout=seconds(0.1)
-            )
+        table = exception_table(
+            [f"cell: {cell.cell_num}" for cell in hil.cellsim.cells]
+        )
+        with ExitStack() as exit_stack:
+            traces = [
+                exit_stack.enter_context(record(cell.get_voltage))
+                for cell in hil.cellsim.cells
+            ]
+
+            for voltage, gather_row in zip(VOLTAGES, table):
+                await cell.set_voltage(voltage)
+
+                async def _check_voltage(trace: Trace):
+                    assert await trace.approx_once_settled(
+                        voltage, rel_tol=0.2, timeout=seconds(0.1)
+                    )
+
+                await gather_row(
+                    *(_check_voltage(t) for t in traces), name=f"{voltage}V"
+                )
 
 
-BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
+async def test_buck_voltage_per_cell(hil: Hil):
+    BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
 
+    async with hil:
+        for cell in hil.cellsim.cells:
+            # Set up the cell
+            await cell.enable()
+            await cell.turn_on_output_relay()
+            await cell.close_load_switch()
 
-@pytest.mark.parametrize(
-    "cell_idx,voltage",
-    [
-        (cell_idx, voltage)
-        for cell_idx in range(8)  # For all 8 cells
-        for voltage in BUCK_VOLTAGES
-    ],
-)
-async def test_buck_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
-    cell = hil.cellsim.cells[cell_idx]
-    async with cell:
-        # Set up the cell
-        await cell.enable()
-        await cell._set_buck_voltage(voltage)
-        await cell.turn_on_output_relay()
-        await cell.close_load_switch()
+        table = exception_table(
+            [f"cell: {cell.cell_num}" for cell in hil.cellsim.cells]
+        )
+        with ExitStack() as exit_stack:
+            traces = [
+                exit_stack.enter_context(
+                    record(
+                        lambda: cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
+                    )
+                )
+                for cell in hil.cellsim.cells
+            ]
 
-        with record(
-            lambda: cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
-        ) as voltage_trace:
-            assert await voltage_trace.approx_once_settled(
-                voltage, rel_tol=0.2, timeout=seconds(0.1)
-            )
+            for voltage, gather_row in zip(BUCK_VOLTAGES, table):
+                await cell._set_buck_voltage(voltage)
+
+                async def _check_voltage(trace: Trace):
+                    assert await trace.approx_once_settled(
+                        voltage, rel_tol=0.2, timeout=seconds(0.1)
+                    )
+
+                await gather_row(
+                    *(_check_voltage(t) for t in traces), name=f"{voltage}V"
+                )
 
 
 async def test_mux(hil: Hil):

@@ -48,7 +48,6 @@ class Cell:
     MIN_LDO_VOLTAGE = 0.35
     MAX_LDO_VOLTAGE = 4.5
 
-
     def __init__(self):
         # Private constructor; use create() instead.
         pass
@@ -175,13 +174,17 @@ class Cell:
 
         for digital_value in np.linspace(2625, 234, num=data_points, dtype=int):
             await self.buck_dac.set_raw_value(int(digital_value))
-            volts_buck = await self.adc.read_pin(self.AdcChannels.BUCK_VOLTAGE) * (6.144 / 32767.0)
+            volts_buck = await self.adc.read_pin(self.AdcChannels.BUCK_VOLTAGE) * (
+                6.144 / 32767.0
+            )
             self.buck_calibration.append([int(digital_value), volts_buck])
 
         self.buck_dac.set_raw_value(234)
         for digital_value in np.linspace(3760, 42, num=data_points, dtype=int):
             await self.ldo_dac.set_raw_value(int(digital_value))
-            volts_ldo = await self.adc.read_pin(self.AdcChannels.LDO_VOLTAGE) * (6.144 / 32767.0)
+            volts_ldo = await self.adc.read_pin(self.AdcChannels.LDO_VOLTAGE) * (
+                6.144 / 32767.0
+            )
             self.ldo_calibration.append([int(digital_value), volts_ldo])
 
         logger.info(f"[Cell {self.cell_num}] Buck calibration: {self.buck_calibration}")
