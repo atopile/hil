@@ -362,7 +362,7 @@ class Query:
         return self._evaluate()
 
     def _after(self, duration: timedelta) -> pl.Expr:
-        return self._expr.where(
+        return self._expr.filter(
             (pl.col(self._timestamp).max() - pl.col(self._timestamp).min()) >= duration
         )
 
@@ -394,16 +394,19 @@ class Query:
         upper_bound = max(target * (1 + rel_tol), target + abs_tol)
 
         self._expr = (
-            self._expr.rolling_min_by(
-                self._timestamp, window_size=duration, min_samples=min_samples
+            (
+                self._expr.rolling_min_by(
+                    self._timestamp, window_size=duration, min_samples=min_samples
+                )
+                > lower_bound
             )
-            > lower_bound
-        ) & (
-            self._expr.rolling_max_by(
-                self._timestamp, window_size=duration, min_samples=min_samples
+            & (
+                self._expr.rolling_max_by(
+                    self._timestamp, window_size=duration, min_samples=min_samples
+                )
+                < upper_bound
             )
-            < upper_bound
-        ).where(self.trace.elapsed_time >= duration)
+        ).filter(self.trace.elapsed_time >= duration)
 
         return self
 
