@@ -1,4 +1,5 @@
 import asyncio
+from hil.framework import record, seconds
 import pytest
 from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.cell import Cell
@@ -138,12 +139,12 @@ async def test_buck_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
         await cell.turn_on_output_relay()
         await cell.close_load_switch()
 
-        # Allow voltage to settle
-        await asyncio.sleep(0.1)
-
-        # Measure and check accuracy
-        measured_voltage = await cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
-        assert measured_voltage == pytest.approx(voltage, rel=0.2)
+        with record(
+            lambda: cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
+        ) as voltage_trace:
+            assert await voltage_trace.approx_once_settled(
+                voltage, rel_tol=0.2, timeout=seconds(0.1)
+            )
 
 
 async def test_mux(hil: Hil):
