@@ -219,14 +219,14 @@ class Cell:
         """
         Set the buck converter voltage.
         """
-        setpoint = self._calculate_setpoint(voltage, self.BUCK_CALIBRATION)
+        setpoint = self._calculate_setpoint(voltage, self.buck_calibration)
         await self.buck_dac.set_raw_value(setpoint)
 
     async def _set_ldo_voltage(self, voltage):
         """
         Set the LDO voltage.
         """
-        setpoint = self._calculate_setpoint(voltage, self.LDO_CALIBRATION)
+        setpoint = self._calculate_setpoint(voltage, self.ldo_calibration)
         await self.ldo_dac.set_raw_value(setpoint)
 
     async def turn_on_output_relay(self):
