@@ -1,6 +1,5 @@
 import asyncio
 from datetime import datetime, timedelta
-import inspect
 from typing import Any, AsyncGenerator, Awaitable, Self, cast
 from collections.abc import Callable
 import polars as pl
@@ -155,7 +154,6 @@ class Trace[T]:
     def duration_s(self) -> float:
         return self.duration.total_seconds()
 
-    @inspect.markcoroutinefunction
     def new_data(self) -> asyncio.Future[T]:
         if self._result_future is None:
             self._result_future = asyncio.Future()
