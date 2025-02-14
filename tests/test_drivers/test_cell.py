@@ -111,7 +111,6 @@ async def test_output_voltage_per_cell(hil: Hil):
                 exit_stack.enter_context(record(cell.get_voltage))
                 for cell in hil.cellsim.cells
             ]
-
             for voltage, gather_row in zip(VOLTAGES, table):
                 await cell.set_voltage(voltage)
 
@@ -123,7 +122,6 @@ async def test_output_voltage_per_cell(hil: Hil):
                 await gather_row(
                     *(_check_voltage(t) for t in traces), name=f"{voltage}V"
                 )
-
 
 async def test_buck_voltage_per_cell(hil: Hil):
     BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
@@ -159,7 +157,6 @@ async def test_buck_voltage_per_cell(hil: Hil):
                 await gather_row(
                     *(_check_voltage(t) for t in traces), name=f"{voltage}V"
                 )
-
 
 async def test_mux(hil: Hil):
     async with hil:
