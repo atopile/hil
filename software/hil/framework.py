@@ -231,7 +231,7 @@ class record[T]:
     ):
         self._task: asyncio.Task | None = None
         self._source = source
-        self._trace = Trace[T](name or source.__name__)
+        self._trace = Trace[T](name or source.__qualname__)
         self._minimum_interval = (
             timedelta(seconds=minimum_interval)
             if minimum_interval is not None
