@@ -19,7 +19,7 @@ def seconds(n: float) -> timedelta:
 
 
 class during:
-    def __init__(self, duration: float):
+    def __init__(self, duration: timedelta):
         self.duration = duration
         self.start_time = None
 
@@ -42,17 +42,17 @@ class during:
 
     @property
     def finished(self) -> bool:
-        return self.started and self.remaining <= 0
+        return self.started and self.remaining <= timedelta(0)
 
     @property
-    def elapsed(self) -> float:
+    def elapsed(self) -> timedelta:
         if self.start_time is None:
-            return 0
+            return timedelta(0)
 
-        return (datetime.now() - self.start_time).total_seconds()
+        return datetime.now() - self.start_time
 
     @property
-    def remaining(self) -> float:
+    def remaining(self) -> timedelta:
         return self.duration - self.elapsed
 
     async def any(
@@ -71,7 +71,7 @@ class during:
         async for _ in self:
             await asyncio.wait(
                 [_make_awaitable(other) for other in others],  # type: ignore
-                timeout=self.remaining,
+                timeout=self.remaining.total_seconds(),
                 return_when=asyncio.FIRST_COMPLETED,
             )
             yield
@@ -413,7 +413,7 @@ class Query:
         """
         self._expr = self._expr.any()
 
-        async for _ in during(timeout.total_seconds()).any(self.trace.new_data):
+        async for _ in during(timeout).any(self.trace.new_data):
             if self._evaluate():
                 return True
 
@@ -426,7 +426,7 @@ class Query:
         self._expr = self._expr.all()
 
         try:
-            async for _ in during(timeout.total_seconds()).any(self.trace.new_data):
+            async for _ in during(timeout).any(self.trace.new_data):
                 if not self._evaluate():
                     return False
         except TimeoutError:
