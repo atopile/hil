@@ -139,14 +139,13 @@ async def test_buck_voltage_per_cell(hil: Hil):
             [f"cell: {cell.cell_num}" for cell in hil.cellsim.cells]
         )
         with ExitStack() as exit_stack:
-            traces = [
-                exit_stack.enter_context(
-                    record(
-                        lambda: cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
-                    )
-                )
-                for cell in hil.cellsim.cells
-            ]
+            traces = []
+            for cell in hil.cellsim.cells:
+
+                async def _get_voltage():
+                    return await cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
+
+                traces.append(exit_stack.enter_context(record(_get_voltage)))
 
             for voltage, gather_row in zip(BUCK_VOLTAGES, table):
                 await cell._set_buck_voltage(voltage)
