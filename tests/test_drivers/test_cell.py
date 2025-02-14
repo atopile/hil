@@ -147,17 +147,18 @@ async def test_buck_voltage_per_cell(hil: Hil):
 
                 traces.append(exit_stack.enter_context(record(_get_voltage)))
 
-                for voltage, gather_row in zip(BUCK_VOLTAGES, table):
+            for voltage, gather_row in zip(BUCK_VOLTAGES, table):
+                for cell in hil.cellsim.cells:
                     await cell._set_buck_voltage(voltage)
 
-                    async def _check_voltage(trace: Trace):
-                        assert await trace.approx_once_settled(
-                            voltage, rel_tol=0.2, timeout=seconds(0.1)
-                        )
-
-                    await gather_row(
-                        *(_check_voltage(t) for t in traces), name=f"{voltage}V"
+                async def _check_voltage(trace: Trace):
+                    assert await trace.approx_once_settled(
+                        voltage, rel_tol=0.2, timeout=seconds(0.1)
                     )
+
+                await gather_row(
+                    *(_check_voltage(t) for t in traces), name=f"{voltage}V"
+                )
 
 
 async def test_mux(hil: Hil):
