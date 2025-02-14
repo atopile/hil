@@ -181,7 +181,7 @@ class Trace[T]:
     def close(self) -> None:
         self._closed = True
         if self._result_future is not None:
-            self._result_future.set_exception(RuntimeError("Trace closed"))
+            self._result_future.cancel()
 
     async def __anext__(self) -> T:
         if self._closed:
@@ -391,6 +391,9 @@ class record[T]:
             raise StopAsyncIteration
 
         return await self.trace.new_data()
+
+
+Recorder = type[record]
 
 
 class Query:

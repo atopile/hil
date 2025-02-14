@@ -1,8 +1,8 @@
 import asyncio
 from contextlib import ExitStack
 from typing import TYPE_CHECKING
-from hil.framework import Trace, record, seconds
-from hil.utils.exception_table import exception_table
+from hil.framework import Trace, Recorder, seconds
+from hil.utils.exception_table import ExceptionTable
 
 
 if TYPE_CHECKING:
@@ -32,7 +32,7 @@ async def test_performance(hil: "Hil"):
                 await cell.disable()
 
 
-async def test_output_voltage_per_cell(hil: "Hil"):
+async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
     VOLTAGES = [v / 10 for v in range(5, 44)]
 
@@ -43,41 +43,37 @@ async def test_output_voltage_per_cell(hil: "Hil"):
             await cell.turn_on_output_relay()
             await cell.close_load_switch()
 
-        table = exception_table(
-            [f"cell: {cell.cell_num}" for cell in hil.cellsim.cells]
-        )
+        table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
         with ExitStack() as exit_stack:
             traces = [
                 exit_stack.enter_context(record(cell.get_voltage))
                 for cell in hil.cellsim.cells
             ]
 
-            for voltage, gather_row in zip(VOLTAGES, table):
-                await cell.set_voltage(voltage)
+            for voltage in VOLTAGES:
+                for cell in hil.cellsim.cells:
+                    await cell.set_voltage(voltage)
 
                 async def _check_voltage(trace: Trace):
                     assert await trace.approx_once_settled(
                         voltage, rel_tol=0.2, timeout=seconds(0.1)
                     )
 
-                await gather_row(
+                await table.gather_row(
                     *(_check_voltage(t) for t in traces), name=f"{voltage}V"
                 )
 
 
-async def test_buck_voltage_per_cell(hil: "Hil"):
+async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
     BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
 
     async with hil:
         for cell in hil.cellsim.cells:
-            # Set up the cell
             await cell.enable()
             await cell.turn_on_output_relay()
             await cell.close_load_switch()
 
-        table = exception_table(
-            [f"cell: {cell.cell_num}" for cell in hil.cellsim.cells]
-        )
+        table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
         with ExitStack() as exit_stack:
             traces = []
             for cell in hil.cellsim.cells:
@@ -87,7 +83,7 @@ async def test_buck_voltage_per_cell(hil: "Hil"):
 
                 traces.append(exit_stack.enter_context(record(_get_voltage)))
 
-            for voltage, gather_row in zip(BUCK_VOLTAGES, table):
+            for voltage in BUCK_VOLTAGES:
                 for cell in hil.cellsim.cells:
                     await cell._set_buck_voltage(voltage)
 
@@ -96,11 +92,9 @@ async def test_buck_voltage_per_cell(hil: "Hil"):
                         voltage, rel_tol=0.2, timeout=seconds(0.1)
                     )
 
-                await gather_row(
+                await table.gather_row(
                     *(_check_voltage(t) for t in traces), name=f"{voltage}V"
                 )
-
-    await asyncio.sleep(0)
 
 
 async def test_mux(hil: "Hil"):
