@@ -2,7 +2,7 @@ import asyncio
 import math
 import time
 from datetime import datetime
-from hil.framework import record, seconds
+from hil.framework import ZERO_TIMEDELTA, record, seconds
 import pytest
 
 
@@ -146,8 +146,6 @@ async def test_record_approx_once_settled():
     # We'll try using approx_once_settled to see if it reaches near 5 within some tolerance
     with record.from_async_generator(decaying_source()) as rec:
         # Give it a bit of time
-        settled = await rec.approx_once_settled(0.2, rel_tol=0.1, timeout=seconds(3))
-
-    assert settled, (
-        "Expected the source to converge to a value near 5 within the time limit"
-    )
+        assert await rec.approx_once_settled(
+            0.2, rel_tol=0.1, stability_lookback=ZERO_TIMEDELTA, timeout=seconds(3)
+        )

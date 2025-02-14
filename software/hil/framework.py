@@ -223,7 +223,7 @@ class Trace[T]:
         target: float,
         rel_tol: float = 1e-6,
         abs_tol: float = 1e-12,
-        stability_lookback: timedelta = seconds(0.5),
+        stability_lookback: timedelta | None = seconds(0.5),
         stability_min_samples: int = 10,
         timeout: timedelta = milliseconds(1000),
     ):
