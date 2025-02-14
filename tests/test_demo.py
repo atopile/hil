@@ -14,9 +14,9 @@ async def source_2() -> float:
     return 2.0
 
 
-async def test_demo(record):
+async def test_demo(record: type[record]):
     with record(source_1) as t1, record(source_2) as t2:
-        async for _ in during(1).any(t1.new_data, t2.new_data):
+        async for _ in during(seconds(1)).any(t1.new_data, t2.new_data):
             print(f"something's ready! {datetime.now()}")
 
 

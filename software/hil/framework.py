@@ -72,11 +72,16 @@ class during:
 class Trace[T]:
     TIMESTAMP_COLUMN = "timestamp"
 
-    def __init__(self, name: str, data: pl.DataFrame | None = None):
+    def __init__(
+        self,
+        name: str,
+        data: pl.DataFrame | None = None,
+    ):
         self._name = name
         self._data: list[T] = []
         self._timestamps: list[datetime] = []
         self._polars: pl.DataFrame | None = data
+        self._closed = False
         self._result_future: asyncio.Future[T] | None = None
         self._schema = pl.Schema(
             {
@@ -86,6 +91,9 @@ class Trace[T]:
         )
 
     def append(self, timestamp: datetime, data: T) -> None:
+        if self._closed:
+            raise RuntimeError("Trace is closed")
+
         self._timestamps.append(timestamp)
         self._data.append(data)
 
@@ -162,12 +170,31 @@ class Trace[T]:
         return self.duration.total_seconds()
 
     def new_data(self) -> asyncio.Future[T]:
+        if self._closed:
+            raise RuntimeError("Trace is closed")
+
         if self._result_future is None:
             self._result_future = asyncio.Future()
+
         return self._result_future
 
+    def close(self) -> None:
+        self._closed = True
+        if self._result_future is not None:
+            self._result_future.set_exception(RuntimeError("Trace closed"))
+
     async def __anext__(self) -> T:
-        return await self.new_data()
+        if self._closed:
+            raise StopAsyncIteration
+
+        try:
+            return await self.new_data()
+        except asyncio.CancelledError:
+            raise StopAsyncIteration
+
+    async def __aiter__(self) -> AsyncGenerator[T, None]:
+        while not self._closed:
+            yield await anext(self)
 
     def __gt__(self, other: float) -> "Query":
         return Query(self) > other
@@ -232,16 +259,14 @@ class record[T]:
         source: Callable[[], Awaitable[T]],
         *,
         name: str | None = None,
-        minimum_interval: float | None = None,
+        min_interval: timedelta | None = None,
+        max_interval: timedelta | None = None,
     ):
         self._task: asyncio.Task | None = None
         self._source = source
         self._trace = Trace[T](name or source.__qualname__)
-        self._minimum_interval = (
-            timedelta(seconds=minimum_interval)
-            if minimum_interval is not None
-            else None
-        )
+        self._min_interval = min_interval
+        self._max_interval = max_interval
         self._last_timestamp: datetime | None = None
 
     def __enter__(self) -> Trace[T]:
@@ -253,29 +278,34 @@ class record[T]:
 
     def start(self) -> None:
         async def _trace() -> None:
-            while True:
-                if (
-                    self._minimum_interval is not None
-                    and self._last_timestamp is not None
-                    and (
-                        remaining_time_to_next := max(
-                            self._last_timestamp
-                            + self._minimum_interval
-                            - datetime.now(),
-                            ZERO_TIMEDELTA,
+            try:
+                while True:
+                    if (
+                        self._min_interval is not None
+                        and self._last_timestamp is not None
+                        and (
+                            remaining_time_to_next := max(
+                                self._last_timestamp
+                                + self._min_interval
+                                - datetime.now(),
+                                ZERO_TIMEDELTA,
+                            )
                         )
-                    )
-                ):
-                    await asyncio.sleep(remaining_time_to_next.total_seconds())
-                else:
-                    # yield to other tasks
-                    # this is critical to prevent tasks that never yield themselves
-                    # from starving the event loop
-                    await asyncio.sleep(0)
+                    ):
+                        await asyncio.sleep(remaining_time_to_next.total_seconds())
+                    else:
+                        # yield to other tasks
+                        # this is critical to prevent tasks that never yield themselves
+                        # from starving the event loop
+                        await asyncio.sleep(0)
 
-                data = await self._source()
-                data = cast(T, data)
-                self._trace.append(datetime.now(), data)
+                    data = await self._source()
+                    data = cast(T, data)
+                    timestamp = datetime.now()
+                    self._trace.append(timestamp, data)
+                    self._last_timestamp = timestamp
+            finally:
+                self._trace.close()
 
         self._task = asyncio.create_task(_trace())
 
@@ -303,12 +333,55 @@ class record[T]:
         return self.started and not self.finished
 
     @classmethod
-    def from_property(cls, obj: Any, prop: property) -> Self:
+    def from_property(
+        cls,
+        obj: Any,
+        prop: property,
+        *,
+        name: str | None = None,
+        min_interval: timedelta | None = None,
+    ) -> Self:
         async def func() -> T:
             assert prop.fget is not None
             return prop.fget(obj)
 
-        return cls(func)
+        return cls(
+            func,
+            name=name,
+            min_interval=min_interval,
+        )
+
+    @classmethod
+    def from_sync_to_thread(
+        cls,
+        func: Callable[[], T],
+        *,
+        name: str | None = None,
+        min_interval: timedelta | None = None,
+    ) -> Self:
+        async def async_func() -> T:
+            return await asyncio.to_thread(func)
+
+        return cls(
+            async_func,
+            name=name,
+            min_interval=min_interval,
+        )
+
+    @classmethod
+    def from_async_generator(
+        cls,
+        gen: AsyncGenerator[T, None],
+        *,
+        name: str | None = None,
+        min_interval: timedelta | None = None,
+    ) -> Self:
+        iterable = aiter(gen)
+        return cls(
+            lambda: anext(iterable),
+            name=name,
+            min_interval=min_interval,
+        )
 
     async def __anext__(self) -> T:
         if not self.started:
