@@ -1,6 +1,6 @@
 from enum import IntEnum
 import logging
-
+import numpy as np
 from hil.drivers.ads1x15 import ADS1115
 from hil.drivers.aiosmbus2 import AsyncSMBus
 from hil.drivers.mcp4725 import MCP4725
@@ -48,9 +48,6 @@ class Cell:
     MIN_LDO_VOLTAGE = 0.35
     MAX_LDO_VOLTAGE = 4.5
 
-    # Calibration points: each tuple is (setpoint, voltage)
-    BUCK_CALIBRATION = [(234, 4.5971), (2625, 1.5041)]
-    LDO_CALIBRATION = [(42, 4.5176), (3760, 0.3334)]
 
     def __init__(self):
         # Private constructor; use create() instead.
@@ -71,6 +68,8 @@ class Cell:
         self.buck_dac = await MCP4725.create(bus, self.Devices.BUCK)
         self.ldo_dac = await MCP4725.create(bus, self.Devices.LDO)
         self.adc = await ADS1115.create(self.bus, self.Devices.ADC)
+        self.buck_calibration = [[234, 4.5971], [2625, 1.5041]]
+        self.ldo_calibration = [[42, 4.5176], [3760, 0.3334]]
         self._gpio_state = (
             0x00  # 8-bit register representing the current state of GPIO pins.
         )
@@ -165,16 +164,56 @@ class Cell:
         await self._set_buck_voltage(buck_voltage)
         await self._set_ldo_voltage(ldo_voltage)
 
+    async def calibrate(self, data_points: int = 8):
+        """
+        Calibrate the buck and LDO voltages.
+        """
+
+        self.buck_calibration = []
+        self.ldo_calibration = []
+        await self.enable()
+
+        for digital_value in np.linspace(2625, 234, num=data_points, dtype=int):
+            await self.buck_dac.set_raw_value(int(digital_value))
+            volts_buck = await self.adc.read_pin(self.AdcChannels.BUCK_VOLTAGE) * (6.144 / 32767.0)
+            self.buck_calibration.append([int(digital_value), volts_buck])
+
+        self.buck_dac.set_raw_value(234)
+        for digital_value in np.linspace(3760, 42, num=data_points, dtype=int):
+            await self.ldo_dac.set_raw_value(int(digital_value))
+            volts_ldo = await self.adc.read_pin(self.AdcChannels.LDO_VOLTAGE) * (6.144 / 32767.0)
+            self.ldo_calibration.append([int(digital_value), volts_ldo])
+
+        logger.info(f"[Cell {self.cell_num}] Buck calibration: {self.buck_calibration}")
+        logger.info(f"[Cell {self.cell_num}] LDO calibration: {self.ldo_calibration}")
+
     def _calculate_setpoint(self, voltage: float, calibration: list[tuple[int, float]]):
         """
-        Calculate the DAC setpoint with linear calibration.
+        Calculate the DAC setpoint using linear regression over all calibration points.
         """
-        m = (calibration[1][0] - calibration[0][0]) / (
-            calibration[1][1] - calibration[0][1]
-        )
-        b = calibration[0][0] - m * calibration[0][1]
-        setpoint = int(m * voltage + b)
-        return setpoint
+        n = len(calibration)
+        total_voltage = 0.0
+        total_setpoint = 0.0
+        for setp, volt in calibration:
+            total_setpoint += setp
+            total_voltage += volt
+        avg_voltage = total_voltage / n
+        avg_setpoint = total_setpoint / n
+
+        numerator = 0.0
+        denominator = 0.0
+        for setp, volt in calibration:
+            numerator += (volt - avg_voltage) * (setp - avg_setpoint)
+            denominator += (volt - avg_voltage) ** 2
+
+        if denominator == 0:
+            return int(round(avg_setpoint))
+
+        m = numerator / denominator
+        b = avg_setpoint - m * avg_voltage
+
+        predicted_setpoint = m * voltage + b
+        return int(round(predicted_setpoint))
 
     async def _set_buck_voltage(self, voltage):
         """
