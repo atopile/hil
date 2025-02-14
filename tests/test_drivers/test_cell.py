@@ -111,12 +111,10 @@ async def test_output_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
         await cell.turn_on_output_relay()
         await cell.close_load_switch()
 
-        # Allow voltage to settle
-        await asyncio.sleep(0.1)
-
-        # Measure and check accuracy
-        measured_voltage = await cell.get_voltage()
-        assert measured_voltage == pytest.approx(voltage, rel=0.2)
+        with record(cell.get_voltage) as voltage_trace:
+            assert await voltage_trace.approx_once_settled(
+                voltage, rel_tol=0.2, timeout=seconds(0.1)
+            )
 
 
 BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
