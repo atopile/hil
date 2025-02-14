@@ -10,7 +10,7 @@ def exception_table(
     headers: Sequence[str], table: Table | None = None, max_rows: int = 100
 ):
     if table is None:
-        table = Table(*([""] + headers))
+        table = Table(*([""] + list(headers)))
 
     row_names: list[str] = []
     rows: list[Sequence[Any]] = []
@@ -38,7 +38,7 @@ def exception_table(
                 "More than max_rows. You might want to increase it,"
                 " or maybe you're accidentally looping forever."
             )
-    finally:
+    except GeneratorExit:
         for name, row in zip(row_names, rows):
             table.add_row(name, *(_style(cell) for cell in row))
 
