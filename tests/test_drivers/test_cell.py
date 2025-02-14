@@ -1,12 +1,8 @@
 import asyncio
-from contextlib import aclosing
 import pytest
 from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.cell import Cell
 from hil.drivers.tca9548a import TCA9548A
-
-# Mark all async test functions in this module
-# pytestmark = pytest.mark.asyncio
 
 
 class CellSim:
@@ -54,6 +50,12 @@ class Hil:
         for cell in self.cellsim.cells:
             await cell.aclose()
 
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        await self.aclose()
+
 
 @pytest.fixture(scope="session")
 async def hil():
@@ -65,7 +67,7 @@ async def hil():
 
 
 async def test_performance(hil: Hil):
-    async with aclosing(hil):
+    async with hil:
         for cell in hil.cellsim.cells:
             await cell.reset()
             await cell.set_voltage(1)
@@ -101,7 +103,7 @@ VOLTAGES = [v / 10 for v in range(5, 44)]
 )
 async def test_output_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
     cell = hil.cellsim.cells[cell_idx]
-    async with aclosing(cell):
+    async with cell:
         # Set up the cell
         await cell.enable()
         await cell.set_voltage(voltage)
@@ -129,7 +131,7 @@ BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
 )
 async def test_buck_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
     cell = hil.cellsim.cells[cell_idx]
-    async with aclosing(cell):
+    async with cell:
         # Set up the cell
         await cell.enable()
         await cell._set_buck_voltage(voltage)
@@ -145,7 +147,7 @@ async def test_buck_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
 
 
 async def test_mux(hil: Hil):
-    async with aclosing(hil):
+    async with hil:
         # Write binary to the mux for each cell
         for cell in hil.cellsim.cells:
             async with cell.bus() as handle:

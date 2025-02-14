@@ -246,3 +246,9 @@ class Cell:
     async def aclose(self):
         await self.turn_off_output_relay()
         await self.disable()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        await self.aclose()
