@@ -75,7 +75,7 @@ class Cell:
             0x00  # 8-bit register representing the current state of GPIO pins.
         )
         await self.reset()
-    
+
         return self
 
     async def reset(self):
@@ -131,7 +131,7 @@ class Cell:
         self.enabled = False
         logger.debug(f"[Cell {self.cell_num}] Disabled")
 
-    async def get_voltage(self, channel = AdcChannels.OUTPUT_VOLTAGE):
+    async def get_voltage(self, channel=AdcChannels.OUTPUT_VOLTAGE):
         """
         Read the cell output voltage.
         """

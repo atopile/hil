@@ -4,7 +4,6 @@ import pytest
 from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.cell import Cell
 from hil.drivers.tca9548a import TCA9548A
-from itertools import product
 
 # Mark all async test functions in this module
 # pytestmark = pytest.mark.asyncio
@@ -50,7 +49,7 @@ class Hil:
         async with self.physical_bus:
             self.cellsim = await CellSim.create(self.physical_bus)
         return self
-    
+
     async def aclose(self):
         for cell in self.cellsim.cells:
             await cell.aclose()
@@ -87,13 +86,19 @@ async def test_performance(hil: Hil):
                 await cell.turn_off_output_relay()
                 await cell.disable()
 
+
 # Generate voltage points from 0.5V to 4.3V in 0.1V steps
-VOLTAGES = [v/10 for v in range(5, 44)]
-@pytest.mark.parametrize("cell_idx,voltage", [
-    (cell_idx, voltage) 
-    for cell_idx in range(8)  # For all 8 cells
-    for voltage in VOLTAGES
-])
+VOLTAGES = [v / 10 for v in range(5, 44)]
+
+
+@pytest.mark.parametrize(
+    "cell_idx,voltage",
+    [
+        (cell_idx, voltage)
+        for cell_idx in range(8)  # For all 8 cells
+        for voltage in VOLTAGES
+    ],
+)
 async def test_output_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
     cell = hil.cellsim.cells[cell_idx]
     async with aclosing(cell):
@@ -105,18 +110,23 @@ async def test_output_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
 
         # Allow voltage to settle
         await asyncio.sleep(0.1)
-        
+
         # Measure and check accuracy
         measured_voltage = await cell.get_voltage()
         assert measured_voltage == pytest.approx(voltage, rel=0.2)
 
 
-BUCK_VOLTAGES = [v/10 for v in range(15, 45)]
-@pytest.mark.parametrize("cell_idx,voltage", [
-    (cell_idx, voltage) 
-    for cell_idx in range(8)  # For all 8 cells
-    for voltage in BUCK_VOLTAGES
-])
+BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
+
+
+@pytest.mark.parametrize(
+    "cell_idx,voltage",
+    [
+        (cell_idx, voltage)
+        for cell_idx in range(8)  # For all 8 cells
+        for voltage in BUCK_VOLTAGES
+    ],
+)
 async def test_buck_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
     cell = hil.cellsim.cells[cell_idx]
     async with aclosing(cell):
@@ -125,13 +135,14 @@ async def test_buck_voltage_per_cell(hil: Hil, cell_idx: int, voltage: float):
         await cell._set_buck_voltage(voltage)
         await cell.turn_on_output_relay()
         await cell.close_load_switch()
-        
+
         # Allow voltage to settle
         await asyncio.sleep(0.1)
-        
+
         # Measure and check accuracy
         measured_voltage = await cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
         assert measured_voltage == pytest.approx(voltage, rel=0.2)
+
 
 async def test_mux(hil: Hil):
     async with aclosing(hil):
@@ -146,4 +157,3 @@ async def test_mux(hil: Hil):
                 read_value = await handle.read_byte_data(cell.Devices.GPIO, 0x01)
                 error_msg = f"Cell {cell.cell_num} GPIO state mismatch: wrote {cell.cell_num}, read {read_value}"
                 assert read_value == cell.cell_num, error_msg
-    
