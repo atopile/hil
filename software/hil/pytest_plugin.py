@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 REPO_ROOT = Path(__file__).parent.parent.parent
 ARTIFACTS = REPO_ROOT / "artifacts"
+CHART_HEIGHT = 400
 
 
 class _Config(Protocol):
@@ -33,7 +34,7 @@ class _Config(Protocol):
     A container for pytest configuration data.
     """
 
-    _hil_recorded_traces: defaultdict[str, list[hil_record]]
+    _hil_recorded_trace_paths: dict[str, Path]
 
 
 class _Node(Protocol):
@@ -69,6 +70,80 @@ def pytest_configure(config: _Config):
     Each entry will map test node ids to the hil.framework.record object created by that test.
     """
     config._hil_recorded_traces = defaultdict(list)  # {node_id: [hil_record]}
+    config._hil_recorded_trace_paths = {}  # {node_id: Path}
+
+
+def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | None:
+    """
+    Save the traces for the given request.
+    """
+    if not recs or request.node.nodeid not in request.config._hil_recorded_trace_paths:
+        return
+
+    # Convert each trace directly to long format and concatenate
+    combined = pl.concat(
+        [
+            pl.DataFrame(
+                {
+                    "timestamp": rec.trace.timestamps,
+                    "trace": [rec.trace.name] * len(rec.trace.timestamps),
+                    "value": rec.trace.data,
+                }
+            )
+            for rec in recs
+        ]
+    ).sort("timestamp")
+
+    logger.debug(combined)
+
+    # If we have no data or only an empty frame, skip
+    if combined is None or combined.is_empty():
+        logger.debug(f"No data found for {request.node.nodeid}")
+        return
+
+    # Create a layered chart with one line per trace
+    chart = (
+        alt.Chart(combined)
+        .mark_line(interpolate="monotone")
+        .encode(
+            x=alt.X(
+                "timestamp:T",
+                title="Time",
+                axis=alt.Axis(
+                    format="%Y-%m-%d %H:%M:%S.%L",
+                    labelAngle=-45,
+                    tickCount=10,
+                    tickMinStep=0.01,
+                ),
+            ),
+            y="value:Q",
+            color="trace:N",
+        )
+        .properties(width="container", height=CHART_HEIGHT)
+        .interactive()
+    )
+
+    # Add points to the chart
+    points = (
+        alt.Chart(combined)
+        .mark_point()
+        .encode(
+            x="timestamp:T",
+            y="value:Q",
+            color="trace:N",
+            tooltip=[
+                alt.Tooltip("trace:N", title="Trace"),
+                alt.Tooltip("timestamp:T", title="Timestamp"),
+                alt.Tooltip("value:Q", title="Value"),
+            ],
+        )
+    )
+
+    # Combine line and points
+    final_chart = chart + points
+    chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
+    final_chart.save(chart_path)
+    return chart_path
 
 
 @pytest.fixture(scope="function")
@@ -86,6 +161,7 @@ def record(request: _Request):
             # ... do some test steps ...
     ----------------------------------------------------------------
     """
+    recs: list[hil_record] = []
 
     def _record(*args, **kwargs) -> hil_record:
         """
@@ -93,10 +169,22 @@ def record(request: _Request):
         Any arguments or keyword arguments are passed to hil.framework.record.__init__.
         """
         rec = hil_record(*args, **kwargs)
-        request.config._hil_recorded_traces[request.node.nodeid].append(rec)
+        recs.append(rec)
+        if request.node.nodeid not in request.config._hil_recorded_trace_paths:
+            sanitized_nodeid = (
+                pathvalidate.sanitize_filename(request.node.nodeid)
+                .replace(":", "-")
+                .replace("/", "-")
+                .replace(".", "-")
+            )
+            chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
+            request.config._hil_recorded_trace_paths[request.node.nodeid] = chart_path
         return rec
 
-    yield _record
+    try:
+        yield _record
+    finally:
+        _save_request_traces(request, recs)
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -108,90 +196,15 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
     report = outcome.get_result()
     report.extras = getattr(report, "extras", [])
 
-    if call.when == "call":
-        # Retrieve ALL record objects we stored for this test node.
-        print(f"Retrieving records for {item.nodeid}")
-        records = item.config._hil_recorded_traces.get(item.nodeid, [])
-        if not records:
-            print(f"No records found for {item.nodeid}")
-            return
-        print(f"Found {len(records)} records for {item.nodeid}")
-
-        # Convert each trace directly to long format and concatenate
-        combined = pl.concat(
-            [
-                pl.DataFrame(
-                    {
-                        "timestamp": rec.trace.timestamps,
-                        "trace": [rec.trace.name] * len(rec.trace.timestamps),
-                        "value": rec.trace.data,
-                    }
-                )
-                for rec in records
-            ]
-        ).sort("timestamp")
-
-        print(combined)
-
-        # If we have no data or only an empty frame, skip
-        if combined is None or combined.is_empty():
-            print(f"No data found for {item.nodeid}")
-            return
-
-        # Create a layered chart with one line per trace
-        chart_height = 400
-        chart = (
-            alt.Chart(combined)
-            .mark_line(interpolate="monotone")
-            .encode(
-                x=alt.X(
-                    "timestamp:T",
-                    title="Time",
-                    axis=alt.Axis(
-                        format="%Y-%m-%d %H:%M:%S.%L",
-                        labelAngle=-45,
-                        tickCount=10,
-                        tickMinStep=0.01,
-                    ),
-                ),
-                y="value:Q",
-                color="trace:N",
-            )
-            .properties(width="container", height=chart_height)
-            .interactive()
-        )
-
-        # Add points to the chart
-        points = (
-            alt.Chart(combined)
-            .mark_point()
-            .encode(
-                x="timestamp:T",
-                y="value:Q",
-                color="trace:N",
-                tooltip=[
-                    alt.Tooltip("trace:N", title="Trace"),
-                    alt.Tooltip("timestamp:T", title="Timestamp"),
-                    alt.Tooltip("value:Q", title="Value"),
-                ],
-            )
-        )
-
-        # Combine line and points
-        final_chart = chart + points
-        sanitized_nodeid = (
-            pathvalidate.sanitize_filename(item.nodeid)
-            .replace(":", "-")
-            .replace("/", "-")
-            .replace(".", "-")
-        )
-        chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
-        final_chart.save(chart_path)
-
+    if call.when == "call" and (
+        trace_chart_path := item.config._hil_recorded_trace_paths.get(item.nodeid)
+    ):
         # Append the chart HTML to the report extras
-        report.extras.append(html_extras.url(f"./{chart_path.name}", name="Traces"))
+        report.extras.append(
+            html_extras.url(f"./{trace_chart_path.name}", name="Traces")
+        )
         report.extras.append(
             html_extras.html(
-                f"<iframe style='width: 100%; height: {chart_height + 150}px; border: none;' src='./{chart_path.name}'></iframe>"
+                f"<iframe style='width: 100%; height: {CHART_HEIGHT + 150}px; border: none;' src='./{trace_chart_path.name}'></iframe>"
             )
         )
