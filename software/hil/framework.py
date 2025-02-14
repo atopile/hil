@@ -387,7 +387,9 @@ class Query:
                 )
                 < upper_bound
             )
-        ).filter(self.trace.elapsed_time >= duration)
+        ).filter(
+            (pl.col(self._timestamp).max() - pl.col(self._timestamp).min()) >= duration
+        )
 
         return self
 
