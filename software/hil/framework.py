@@ -1,6 +1,5 @@
 import asyncio
 from datetime import datetime, timedelta
-import inspect
 from typing import Any, AsyncGenerator, Awaitable, Self, cast
 from collections.abc import Callable
 import polars as pl
@@ -19,7 +18,7 @@ def seconds(n: float) -> timedelta:
 
 
 class during:
-    def __init__(self, duration: float):
+    def __init__(self, duration: timedelta):
         self.duration = duration
         self.start_time = None
 
@@ -42,17 +41,17 @@ class during:
 
     @property
     def finished(self) -> bool:
-        return self.started and self.remaining <= 0
+        return self.started and self.remaining <= timedelta(0)
 
     @property
-    def elapsed(self) -> float:
+    def elapsed(self) -> timedelta:
         if self.start_time is None:
-            return 0
+            return timedelta(0)
 
-        return (datetime.now() - self.start_time).total_seconds()
+        return datetime.now() - self.start_time
 
     @property
-    def remaining(self) -> float:
+    def remaining(self) -> timedelta:
         return self.duration - self.elapsed
 
     async def any(
@@ -61,7 +60,7 @@ class during:
         async for _ in self:
             await asyncio.wait(
                 [other() for other in others],
-                timeout=self.remaining,
+                timeout=self.remaining.total_seconds(),
                 return_when=asyncio.FIRST_COMPLETED,
             )
             yield
@@ -76,6 +75,12 @@ class Trace[T]:
         self._timestamps: list[datetime] = []
         self._polars: pl.DataFrame | None = data
         self._result_future: asyncio.Future[T] | None = None
+        self._schema = pl.Schema(
+            {
+                self.TIMESTAMP_COLUMN: pl.Datetime(time_unit="ms"),
+                self._name: pl.Float64,
+            }
+        )
 
     def append(self, timestamp: datetime, data: T) -> None:
         self._timestamps.append(timestamp)
@@ -87,13 +92,14 @@ class Trace[T]:
 
     def to_polars(self) -> pl.DataFrame:
         new_df = pl.DataFrame(
-            {self.TIMESTAMP_COLUMN: self._timestamps, self._name: self._data}
+            {self.TIMESTAMP_COLUMN: self._timestamps, self._name: self._data},
+            schema=self._schema,
         )
         self._timestamps.clear()
         self._data.clear()
 
         if self._polars is not None:
-            self._polars.extend(new_df)
+            self._polars = pl.concat([self._polars, new_df])
         else:
             self._polars = new_df
 
@@ -205,7 +211,7 @@ class Trace[T]:
 
         # TODO: early stopping if stable at wrong value
 
-        return ever(
+        return await ever(
             Query(self).rolling_within_tolerance(
                 target=target,
                 rel_tol=rel_tol,
@@ -220,20 +226,13 @@ class Trace[T]:
 class record[T]:
     def __init__(
         self,
-        source: Callable[[], Awaitable[T]] | Callable[[], T],
+        source: Callable[[], Awaitable[T]],
         *,
         name: str | None = None,
         minimum_interval: float | None = None,
     ):
         self._task: asyncio.Task | None = None
-
-        # Check if the source is a synchronous function
-        # or an asynchronous function
-        if inspect.iscoroutinefunction(source):
-            self._source = source
-        else:
-            self._source = lambda: asyncio.to_thread(source)
-
+        self._source = source
         self._trace = Trace[T](name or source.__qualname__)
         self._minimum_interval = (
             timedelta(seconds=minimum_interval)
@@ -293,7 +292,7 @@ class record[T]:
 
     @classmethod
     def from_property(cls, obj: Any, prop: property) -> Self:
-        def func() -> T:
+        async def func() -> T:
             assert prop.fget is not None
             return prop.fget(obj)
 
@@ -348,7 +347,7 @@ class Query:
         return self._evaluate()
 
     def _after(self, duration: timedelta) -> pl.Expr:
-        return self._expr.where(
+        return self._expr.filter(
             (pl.col(self._timestamp).max() - pl.col(self._timestamp).min()) >= duration
         )
 
@@ -380,16 +379,21 @@ class Query:
         upper_bound = max(target * (1 + rel_tol), target + abs_tol)
 
         self._expr = (
-            self._expr.rolling_min_by(
-                self._timestamp, window_size=duration, min_samples=min_samples
+            (
+                self._expr.rolling_min_by(
+                    self._timestamp, window_size=duration, min_samples=min_samples
+                )
+                > lower_bound
             )
-            > lower_bound
-        ) & (
-            self._expr.rolling_max_by(
-                self._timestamp, window_size=duration, min_samples=min_samples
+            & (
+                self._expr.rolling_max_by(
+                    self._timestamp, window_size=duration, min_samples=min_samples
+                )
+                < upper_bound
             )
-            < upper_bound
-        ).where(self.trace.elapsed_time >= duration)
+        ).filter(
+            (pl.col(self._timestamp).max() - pl.col(self._timestamp).min()) >= duration
+        )
 
         return self
 
@@ -406,11 +410,13 @@ class Query:
         Returns True if the query succeeds at any point
         """
         self._expr = self._expr.any()
-
-        async for _ in during(timeout.total_seconds()).any(self.trace.new_data):
-            if self._evaluate():
-                return True
-
+        agen = during(timeout).any(self.trace.new_data)
+        try:
+            async for _ in agen:
+                if self._evaluate():
+                    return True
+        finally:
+            await agen.aclose()
         return False
 
     async def always(self, timeout: timedelta = seconds(10)) -> bool:
@@ -418,14 +424,15 @@ class Query:
         Returns False if the query fails at any point
         """
         self._expr = self._expr.all()
-
+        agen = during(timeout).any(self.trace.new_data)
         try:
-            async for _ in during(timeout.total_seconds()).any(self.trace.new_data):
+            async for _ in agen:
                 if not self._evaluate():
                     return False
         except TimeoutError:
             pass
-
+        finally:
+            await agen.aclose()
         return True
 
 
