@@ -258,6 +258,12 @@ class AsyncSMBusBranch:
 
         return _enter()
 
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        pass
+
     @classmethod
     def from_channels(
         cls, upstream: "AsyncSMBus", mux: Mux, channels: list[int]

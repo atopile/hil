@@ -1,75 +1,15 @@
 import asyncio
 from contextlib import ExitStack
+from typing import TYPE_CHECKING
 from hil.framework import Trace, record, seconds
 from hil.utils.exception_table import exception_table
-import pytest
-from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
-from hil.drivers.cell import Cell
-from hil.drivers.tca9548a import TCA9548A
 
 
-class CellSim:
-    """
-    Simulates a cell for testing purposes.
-    """
-
-    bus: AsyncSMBus
-    cells: list[Cell]
-    _mux: TCA9548A
-    _branch_buses: AsyncSMBusBranch
-
-    @classmethod
-    async def create(cls, bus: AsyncSMBus):
-        self = cls()
-        # Open the bus before creating devices
-        async with bus:
-            self._mux = TCA9548A(bus)
-            self._branch_buses = AsyncSMBusBranch.from_channels(
-                bus, self._mux, list(range(0, 8))
-            )
-            self.cells = [
-                await Cell.create(i, bus) for i, bus in enumerate(self._branch_buses)
-            ]
-        return self
+if TYPE_CHECKING:
+    from ..conftest import Hil
 
 
-class Hil:
-    """
-    Simulates a HIL for testing purposes.
-    """
-
-    cellsim: CellSim
-
-    @classmethod
-    async def create(cls):
-        self = cls()
-        self.physical_bus = AsyncSMBusPeripheral(1)
-        # Open the bus before creating CellSim
-        async with self.physical_bus:
-            self.cellsim = await CellSim.create(self.physical_bus)
-        return self
-
-    async def aclose(self):
-        for cell in self.cellsim.cells:
-            await cell.aclose()
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, exc_type, exc_value, traceback):
-        await self.aclose()
-
-
-@pytest.fixture(scope="session")
-async def hil():
-    # Create HIL instance
-    hil = await Hil.create()
-    # Open bus for the duration of the test session
-    async with hil.physical_bus:
-        yield hil
-
-
-async def test_performance(hil: Hil):
+async def test_performance(hil: "Hil"):
     async with hil:
         for cell in hil.cellsim.cells:
             await cell.reset()
@@ -92,7 +32,7 @@ async def test_performance(hil: Hil):
                 await cell.disable()
 
 
-async def test_output_voltage_per_cell(hil: Hil):
+async def test_output_voltage_per_cell(hil: "Hil"):
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
     VOLTAGES = [v / 10 for v in range(5, 44)]
 
@@ -125,7 +65,7 @@ async def test_output_voltage_per_cell(hil: Hil):
                 )
 
 
-async def test_buck_voltage_per_cell(hil: Hil):
+async def test_buck_voltage_per_cell(hil: "Hil"):
     BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
 
     async with hil:
@@ -161,7 +101,7 @@ async def test_buck_voltage_per_cell(hil: Hil):
                 )
 
 
-async def test_mux(hil: Hil):
+async def test_mux(hil: "Hil"):
     async with hil:
         # Write binary to the mux for each cell
         for cell in hil.cellsim.cells:
