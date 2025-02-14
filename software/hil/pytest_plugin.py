@@ -1,6 +1,12 @@
 """
-Pytest plugin providing a 'record' fixture and hooking into pytest-html to display
-Altair plots for recorded traces.
+Pytest plugin providing a 'record' fixture for capturing data traces in tests, then
+generating interactive Altair plots. The plots are automatically attached to the pytest-html
+report for easy inspection of test-generated data.
+
+This plugin leverages:
+    - pytest-html for HTML report customization
+    - Altair for interactive chart generation
+    - Polars for efficient DataFrame handling
 
 References:
     - https://pytest-html.readthedocs.io/en/latest/api_reference.html
@@ -9,7 +15,6 @@ References:
 """
 
 import logging
-from collections import defaultdict
 from pathlib import Path
 from typing import Protocol
 
@@ -69,13 +74,14 @@ def pytest_configure(config: _Config):
     files been loaded. We use this time to initialize a container for storing test records.
     Each entry will map test node ids to the hil.framework.record object created by that test.
     """
-    config._hil_recorded_traces = defaultdict(list)  # {node_id: [hil_record]}
     config._hil_recorded_trace_paths = {}  # {node_id: Path}
 
 
 def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | None:
     """
-    Save the traces for the given request.
+    Save the traces for the given request by merging them into a single Polars DataFrame
+    and generating an Altair chart. If no data is found, returns None; otherwise, returns
+    the Path to the generated HTML chart.
     """
     if not recs or request.node.nodeid not in request.config._hil_recorded_trace_paths:
         return
@@ -149,16 +155,16 @@ def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | No
 @pytest.fixture(scope="function")
 def record(request: _Request):
     """
-    A pytest fixture that provides a callable named '_record' which creates and returns
-    a new hil.framework.record object (wrapped in an instance of hil_record). This record
-    is stored in config._hil_recorded_traces, so that after the test we can extract the
-    trace data and produce an Altair chart in the pytest-html report.
+    A pytest fixture that provides a callable, '_record', for creating and returning
+    new hil.framework.record objects to capture time-series data in tests. The resulting
+    traces are later turned into Altair charts for inclusion in the pytest-html report.
 
-    Usage example:
+    Example:
     ----------------------------------------------------------------
-    def test_something(record):
-        with record(source=lambda: 42, name="test_trace") as r:
-            # ... do some test steps ...
+    def test_example(record):
+        with record(source=lambda: 42, name="demo_trace") as r:
+            # do some test steps, collect data...
+            pass
     ----------------------------------------------------------------
     """
     recs: list[hil_record] = []
