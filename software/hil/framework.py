@@ -5,6 +5,9 @@ from collections.abc import Callable
 import polars as pl
 
 
+ZERO_TIMEDELTA = timedelta(0)
+
+
 def milliseconds(n: float) -> timedelta:
     return timedelta(milliseconds=n)
 
@@ -41,12 +44,12 @@ class during:
 
     @property
     def finished(self) -> bool:
-        return self.started and self.remaining <= timedelta(0)
+        return self.started and self.remaining <= ZERO_TIMEDELTA
 
     @property
     def elapsed(self) -> timedelta:
         if self.start_time is None:
-            return timedelta(0)
+            return ZERO_TIMEDELTA
 
         return datetime.now() - self.start_time
 
@@ -254,12 +257,21 @@ class record[T]:
                 if (
                     self._minimum_interval is not None
                     and self._last_timestamp is not None
-                ):
-                    remaining_time_to_next = (
-                        self._last_timestamp + self._minimum_interval - datetime.now()
+                    and (
+                        remaining_time_to_next := max(
+                            self._last_timestamp
+                            + self._minimum_interval
+                            - datetime.now(),
+                            ZERO_TIMEDELTA,
+                        )
                     )
-                    if remaining_time_to_next > timedelta(0):
-                        await asyncio.sleep(remaining_time_to_next.total_seconds())
+                ):
+                    await asyncio.sleep(remaining_time_to_next.total_seconds())
+                else:
+                    # yield to other tasks
+                    # this is critical to prevent tasks that never yield themselves
+                    # from starving the event loop
+                    await asyncio.sleep(0)
 
                 data = await self._source()
                 data = cast(T, data)
