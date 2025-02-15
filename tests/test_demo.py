@@ -7,6 +7,7 @@ from typing import AsyncGenerator
 from hil.framework import any_ready, ever, Recorder, seconds
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 async def source_1() -> AsyncGenerator[float, None]:

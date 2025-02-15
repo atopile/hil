@@ -15,6 +15,7 @@ References:
 """
 
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Protocol
 
@@ -110,7 +111,7 @@ def _save_request_traces(
         return
 
     # Base trace chart: a layered line chart with points
-    trace_chart = (
+    trace_layer = (
         alt.Chart(combined)
         .mark_line(point=True, interpolate="monotone")
         .encode(
@@ -132,13 +133,46 @@ def _save_request_traces(
                 alt.Tooltip("value:Q", title="Value"),
             ],
         )
+    )
+
+    # Convert log records to a list of dicts
+    log_data = pl.DataFrame(
+        {
+            "timestamp": [datetime.fromtimestamp(log.created) for log in logs],
+            "log_level": [log.levelname for log in logs],
+            "message": [log.getMessage() for log in logs],
+        }
+    )
+
+    # Create a subtle log layer using mark_rule.
+    # The rules are drawn as subtle, dashed vertical lines with tooltips.
+    log_layer = (
+        alt.Chart(log_data)
+        .mark_tick(thickness=6)
+        .encode(
+            x=alt.X("timestamp:T", title="Time"),
+            y=alt.value(0),
+            color=alt.Color("log_level:N", title="Level"),
+            tooltip=[
+                alt.Tooltip("log_level:N", title="Level"),
+                alt.Tooltip("message:N", title="Message"),
+                alt.Tooltip(
+                    "timestamp:T", format="%Y-%m-%d %H:%M:%S.%L", title="Log Time"
+                ),
+            ],
+        )
+    )
+
+    # Combine the two layers
+    final_chart = (
+        alt.layer(trace_layer, log_layer)
         .properties(width="container", height=CHART_HEIGHT)
         .interactive()
     )
 
     # Save the chart to the designated path
     chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
-    trace_chart.save(chart_path)
+    final_chart.save(chart_path)
     return chart_path
 
 
@@ -179,7 +213,7 @@ def record(request: _Request, caplog: pytest.LogCaptureFixture):
     try:
         yield _record
     finally:
-        _save_request_traces(request, recs, caplog.records)
+        _save_request_traces(request, recs, caplog.get_records(when="call"))
 
 
 @pytest.hookimpl(hookwrapper=True)
