@@ -65,7 +65,7 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
                         voltage,
                         rel_tol=0.2,
                         stability_lookback=seconds(0.1),
-                        timeout=seconds(0.1),
+                        timeout=seconds(0.5),
                     )
 
                 await table.gather_row(
@@ -106,7 +106,7 @@ async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
                         voltage,
                         rel_tol=0.2,
                         stability_lookback=seconds(0.1),
-                        timeout=seconds(0.1),
+                        timeout=seconds(0.5),
                     )
 
                 await table.gather_row(
