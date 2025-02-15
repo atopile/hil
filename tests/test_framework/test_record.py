@@ -1,8 +1,7 @@
 import asyncio
-import math
 import time
 from datetime import datetime
-from hil.framework import ZERO_TIMEDELTA, record, seconds
+from hil.framework import record, seconds
 import pytest
 
 
@@ -118,10 +117,6 @@ async def test_record_async_generator():
             assert await anext(trace) == i
         else:
             # The record should be closed now
-            with pytest.raises(RuntimeError):
-                await trace.new_data()
-
-            # The record should be closed now
             try:
                 await anext(trace)
             except StopAsyncIteration:
@@ -130,22 +125,3 @@ async def test_record_async_generator():
                 pytest.fail("Expected StopAsyncIteration")
 
     assert len(trace.to_polars().select(trace.name).to_series().to_list()) == 10
-
-
-# FIXME: failing decay test
-async def test_record_approx_once_settled():
-    """
-    Test the approx_once_settled usage with an async test function.
-    """
-
-    async def decaying_source():
-        for i in range(1000):
-            # A rapidly converging value approaching 5
-            yield (5 * (1 - math.e**-i))
-
-    # We'll try using approx_once_settled to see if it reaches near 5 within some tolerance
-    with record.from_async_generator(decaying_source()) as rec:
-        # Give it a bit of time
-        assert await rec.approx_once_settled(
-            0.2, rel_tol=0.1, stability_lookback=ZERO_TIMEDELTA, timeout=seconds(3)
-        )

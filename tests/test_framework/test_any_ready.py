@@ -1,47 +1,8 @@
-"""
-`any` must take a series of async iterators, and yield when ANY of them yield.
-It should keep yielding from them until ALL of them have been exhausted, unless
-one raises an exception (other than StopAsyncIteration).
-"""
-
 import asyncio
-from typing import AsyncGenerator, AsyncIterator
 import collections.abc
 import pytest
 
-
-async def any_ready(*iterators: AsyncIterator) -> AsyncGenerator[None, None]:
-    # Create an initial task for each async iterator's __anext__ call.
-    tasks = {asyncio.create_task(it.__anext__()): it for it in iterators}
-    try:
-        # Continue until all iterators are exhausted.
-        while tasks:
-            # Wait until any of the scheduled tasks completes.
-            done, _ = await asyncio.wait(
-                tasks.keys(), return_when=asyncio.FIRST_COMPLETED
-            )
-            for task in done:
-                it = tasks.pop(task)
-                try:
-                    # Get the result (or handle StopAsyncIteration/other exceptions)
-                    task.result()
-                except StopAsyncIteration:
-                    # This iterator is exhausted, no rescheduling.
-                    continue
-                except Exception:
-                    # If an exception occurs, cancel all pending tasks and re-raise.
-                    for pending in tasks:
-                        pending.cancel()
-                    raise
-                else:
-                    # Yield as soon as any iterator yields a value.
-                    yield None
-                    # Re-schedule the iterator for its next value.
-                    tasks[asyncio.create_task(it.__anext__())] = it
-
-    finally:
-        for task in tasks:
-            task.cancel()
+from hil.framework import any_ready
 
 
 class async_iter(collections.abc.AsyncIterator):
