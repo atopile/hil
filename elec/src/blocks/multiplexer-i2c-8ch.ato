@@ -26,12 +26,12 @@ module MultiplexerI2C8Ch:
 
     # Decoupling
     cap_1 = new Capacitor
-    cap_1.value = 100nF +/- 20%
+    cap_1.capacitance = 100nF +/- 20%
     cap_1.package = "C0402"
     power_3v3 ~ cap_1.power
 
     cap_2 = new Capacitor
-    cap_2.value = 1uF +/- 20%
+    cap_2.capacitance = 1uF +/- 20%
     cap_2.package = "C0402"
     power_3v3 ~ cap_2.power
 

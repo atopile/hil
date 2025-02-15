@@ -5,7 +5,7 @@ component Texas_Instruments_CD74HC4051PWR:
     lcsc_id = "C352826"
     manufacturer = "Texas Instruments"
     mpn = "CD74HC4051PWR"
-    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Texas-Instruments-CD74HC4051PWR_C352826.pdf"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Texas-Instruments-CD74HC4051PWR_C352826.pdf"
     designator_prefix = "U"
 
     power_3v3 = new ElectricPower

@@ -173,7 +173,7 @@ module Cell:
     # # load_resistor_current = 20mA to 30mA
 
     # # assert max(ldo.power_out.voltage) / load_resistor.value  within load_resistor_current
-    load_resistor.value = 100ohm +/- 10%
+    load_resistor.resistance = 100ohm +/- 10%
 
     # # External load
     power_out ~ external_load.power_in
@@ -184,7 +184,7 @@ module Cell:
     external_load.gate_resistor.package = "R0402"
     # external_load_resistor.package = "R1206"
     external_load_resistor.lcsc_id = "C17901"
-    # external_load_resistor.value = 100ohm +/- 10%
+    # external_load_resistor.resistance = 100ohm +/- 10%
 
     # dmm relay
     dmm_i_lim_resistors = new SeriesPowerResistors

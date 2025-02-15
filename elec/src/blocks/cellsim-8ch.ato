@@ -3,6 +3,7 @@ from "components/tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
 from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
 from "blocks/relay.ato" import PowerRelay
 from "components/cell.ato" import Cell
+from "resistors.ato" import I2CPullup
 
 module CellSim8Ch:
 
@@ -85,3 +86,7 @@ module CellSim8Ch:
     gpio_mux.output_5 ~ cell5.dmm_relay_enable
     gpio_mux.output_6 ~ cell6.dmm_relay_enable
     gpio_mux.output_7 ~ cell7.dmm_relay_enable
+
+
+module Test:
+    pullup = new I2CPullup

@@ -14,9 +14,9 @@ module CurrentSensor:
 
     # Shunt config
     # This ensures we're using a reasonable range of the amplifier's output
-    # assert shunt.value * max_current * sensor.gain within 2.5V to 3V
+    # assert shunt.resistance * max_current * sensor.gain within 2.5V to 3V
     # 1.5x -> 50% margin on the the power rating is expected
-    # assert max_current ** 2 * shunt.value * 1.5 <= shunt.max_power
+    # assert max_current ** 2 * shunt.resistance * 1.5 <= shunt.max_power
     shunt.package = "R0805"
 
     # Shunt connections

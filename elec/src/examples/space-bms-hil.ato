@@ -32,8 +32,8 @@ module SpaceBMSHIL:
     # Blocks
     controller = new ControllerCM4
     power = new PowerUSBPD
-    # cell_1 = new Cell
-    # cell_2 = new Cell
+    cell_block_1_8 = new CellSim8Ch
+    cell_block_9_16 = new CellSim8Ch
     # relay = new I2CRelay
     thermistors = new AnalogOut4ch
     can_controller = new ComsCANISO

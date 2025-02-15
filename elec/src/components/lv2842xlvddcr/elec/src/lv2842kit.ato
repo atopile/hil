@@ -39,8 +39,8 @@ module LV2842Kit from Buck:
 
     # values from calcs.ipynb
     # boot capacitor
-    boot_cap.value = 100nF to 1uF
-    boot_cap.voltage = 16V to 100V
+    boot_cap.capacitance = 100nF to 1uF
+    boot_cap.max_voltage = 16V to 100V
     boot_cap.package = "0402"
     boot_cap.1 ~ ic.CB
     boot_cap.2 ~ ic.SW
@@ -51,13 +51,13 @@ module LV2842Kit from Buck:
 
     # Input Capacitor
     power_in ~ input_cap.power
-    input_cap.value = 1uF to 10uF
-    input_cap.voltage = 30V to 69V
+    input_cap.capacitance = 1uF to 10uF
+    input_cap.max_voltage = 30V to 69V
 
     # Output Capacitors
     power_out ~ output_cap.power
-    output_cap.value = 10uF +/- 20%
-    output_cap.voltage = 16V to 100V
+    output_cap.capacitance = 10uF +/- 20%
+    output_cap.max_voltage = 16V to 100V
     output_cap.esr = 0.1ohm to 0.2ohm
     output_cap.package = "0805"
 
