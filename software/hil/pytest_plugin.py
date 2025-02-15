@@ -77,7 +77,9 @@ def pytest_configure(config: _Config):
     config._hil_recorded_trace_paths = {}  # {node_id: Path}
 
 
-def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | None:
+def _save_request_traces(
+    request: _Request, recs: list[hil_record], logs: list[logging.LogRecord]
+) -> Path | None:
     """
     Save the traces for the given request by merging them into a single Polars DataFrame
     and generating an Altair chart. If no data is found, returns None; otherwise, returns
@@ -107,10 +109,10 @@ def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | No
         logger.debug(f"No data found for {request.node.nodeid}")
         return
 
-    # Create a layered chart with one line per trace
-    chart = (
+    # Base trace chart: a layered line chart with points
+    trace_chart = (
         alt.Chart(combined)
-        .mark_line(interpolate="monotone")
+        .mark_line(point=True, interpolate="monotone")
         .encode(
             x=alt.X(
                 "timestamp:T",
@@ -124,36 +126,24 @@ def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | No
             ),
             y="value:Q",
             color="trace:N",
+            tooltip=[
+                alt.Tooltip("timestamp:T", title="Time"),
+                alt.Tooltip("trace:N", title="Trace"),
+                alt.Tooltip("value:Q", title="Value"),
+            ],
         )
         .properties(width="container", height=CHART_HEIGHT)
         .interactive()
     )
 
-    # Add points to the chart
-    points = (
-        alt.Chart(combined)
-        .mark_point()
-        .encode(
-            x="timestamp:T",
-            y="value:Q",
-            color="trace:N",
-            tooltip=[
-                alt.Tooltip("trace:N", title="Trace"),
-                alt.Tooltip("timestamp:T", title="Timestamp"),
-                alt.Tooltip("value:Q", title="Value"),
-            ],
-        )
-    )
-
-    # Combine line and points
-    final_chart = chart + points
+    # Save the chart to the designated path
     chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
-    final_chart.save(chart_path)
+    trace_chart.save(chart_path)
     return chart_path
 
 
 @pytest.fixture(scope="function")
-def record(request: _Request):
+def record(request: _Request, caplog: pytest.LogCaptureFixture):
     """
     A pytest fixture that provides a callable, '_record', for creating and returning
     new hil.framework.record objects to capture time-series data in tests. The resulting
@@ -169,28 +159,27 @@ def record(request: _Request):
     """
     recs: list[hil_record] = []
 
-    def _record(*args, **kwargs) -> hil_record:
-        """
-        Create and return a new hil_record instance, storing it for the current test.
-        Any arguments or keyword arguments are passed to hil.framework.record.__init__.
-        """
-        rec = hil_record(*args, **kwargs)
-        recs.append(rec)
-        if request.node.nodeid not in request.config._hil_recorded_trace_paths:
-            sanitized_nodeid = (
-                pathvalidate.sanitize_filename(request.node.nodeid)
-                .replace(":", "-")
-                .replace("/", "-")
-                .replace(".", "-")
-            )
-            chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
-            request.config._hil_recorded_trace_paths[request.node.nodeid] = chart_path
-        return rec
+    class _record(hil_record):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            recs.append(self)
+            if request.node.nodeid not in request.config._hil_recorded_trace_paths:
+                sanitized_nodeid = (
+                    pathvalidate.sanitize_filename(request.node.nodeid)
+                    .replace(":", "-")
+                    .replace("/", "-")
+                    .replace(".", "-")
+                )
+                chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
+                request.config._hil_recorded_trace_paths[request.node.nodeid] = (
+                    chart_path
+                )
 
     try:
         yield _record
     finally:
-        _save_request_traces(request, recs)
+        _save_request_traces(request, recs, caplog.records)
 
 
 @pytest.hookimpl(hookwrapper=True)

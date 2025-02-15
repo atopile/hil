@@ -1,8 +1,12 @@
 import asyncio
+import collections.abc
 from datetime import datetime, timedelta
-from typing import Any, AsyncGenerator, Awaitable, Self, cast
+from typing import Any, AsyncGenerator, AsyncIterator, Awaitable, Self, cast
 from collections.abc import Callable
 import polars as pl
+
+
+ZERO_TIMEDELTA = timedelta(0)
 
 
 def milliseconds(n: float) -> timedelta:
@@ -17,56 +21,59 @@ def seconds(n: float) -> timedelta:
     return timedelta(seconds=n)
 
 
-class during:
-    def __init__(self, duration: timedelta):
-        self.duration = duration
-        self.start_time = None
+async def any_ready(
+    *iterators: AsyncIterator, timeout: timedelta | None = None
+) -> AsyncGenerator[None, None]:
+    """
+    `any_ready` must take a series of async iterators, and yield when ANY of them yield.
+    It should keep yielding from them until ALL of them have been exhausted, unless
+    one raises an exception (other than StopAsyncIteration).
+    """
+    end_time = datetime.now() + timeout if timeout is not None else None
+    # Create an initial task for each async iterator's __anext__ call.
+    tasks = {asyncio.create_task(it.__anext__()): it for it in iterators}  # type: ignore
+    try:
+        # Continue until all iterators are exhausted.
+        while tasks:
+            # Wait until any of the scheduled tasks completes.
+            if end_time is None:
+                _timeout = None
+            else:
+                remaining_time = end_time - datetime.now()
+                if remaining_time <= ZERO_TIMEDELTA:
+                    return
+                _timeout = remaining_time.total_seconds()
 
-    def start(self) -> Self:
-        self.start_time = datetime.now()
-        return self
-
-    async def __aiter__(self):
-        if not self.started:
-            self.start()
-
-        while not self.finished:
-            yield
-            # yield to other tasks
-            await asyncio.sleep(0)
-
-    @property
-    def started(self) -> bool:
-        return self.start_time is not None
-
-    @property
-    def finished(self) -> bool:
-        return self.started and self.remaining <= timedelta(0)
-
-    @property
-    def elapsed(self) -> timedelta:
-        if self.start_time is None:
-            return timedelta(0)
-
-        return datetime.now() - self.start_time
-
-    @property
-    def remaining(self) -> timedelta:
-        return self.duration - self.elapsed
-
-    async def any(
-        self, *others: Callable[[], asyncio.Task | asyncio.Future]
-    ) -> AsyncGenerator[None, None]:
-        async for _ in self:
-            await asyncio.wait(
-                [other() for other in others],
-                timeout=self.remaining.total_seconds(),
+            done, _ = await asyncio.wait(
+                tasks.keys(),
                 return_when=asyncio.FIRST_COMPLETED,
+                timeout=_timeout,
             )
-            yield
+            for task in done:
+                it = tasks.pop(task)
+                try:
+                    # Get the result (or handle StopAsyncIteration/other exceptions)
+                    task.result()
+                except StopAsyncIteration:
+                    # This iterator is exhausted, no rescheduling.
+                    continue
+                except Exception:
+                    # If an exception occurs, cancel all pending tasks and re-raise.
+                    for pending in tasks:
+                        pending.cancel()
+                    raise
+                else:
+                    # Yield as soon as any iterator yields a value.
+                    yield None
+                    # Re-schedule the iterator for its next value.
+                    tasks[asyncio.create_task(it.__anext__())] = it  # type: ignore
+
+    finally:
+        for task in tasks:
+            task.cancel()
 
 
-class Trace[T]:
+class Trace[T](collections.abc.AsyncIterator):
     TIMESTAMP_COLUMN = "timestamp"
 
     def __init__(self, name: str, data: pl.DataFrame | None = None):
@@ -74,6 +81,7 @@ class Trace[T]:
         self._data: list[T] = []
         self._timestamps: list[datetime] = []
         self._polars: pl.DataFrame | None = data
+        self._closed = False
         self._result_future: asyncio.Future[T] | None = None
         self._schema = pl.Schema(
             {
@@ -83,6 +91,9 @@ class Trace[T]:
         )
 
     def append(self, timestamp: datetime, data: T) -> None:
+        if self._closed:
+            raise RuntimeError("Trace is closed")
+
         self._timestamps.append(timestamp)
         self._data.append(data)
 
@@ -158,13 +169,25 @@ class Trace[T]:
     def duration_s(self) -> float:
         return self.duration.total_seconds()
 
-    def new_data(self) -> asyncio.Future[T]:
+    async def __anext__(self) -> T:
+        if self._closed:
+            raise StopAsyncIteration
+
         if self._result_future is None:
             self._result_future = asyncio.Future()
-        return self._result_future
 
-    async def __anext__(self) -> T:
-        return await self.new_data()
+        try:
+            return await self._result_future
+        except asyncio.CancelledError:
+            if self._closed and self._result_future.cancelled():
+                raise StopAsyncIteration
+            else:
+                raise
+
+    def close(self) -> None:
+        self._closed = True
+        if self._result_future is not None:
+            self._result_future.cancel()
 
     def __gt__(self, other: float) -> "Query":
         return Query(self) > other
@@ -178,15 +201,11 @@ class Trace[T]:
     def rolling_maximum(self, duration: timedelta) -> "Query":
         return Query(self).rolling_maximum(duration)
 
-    async def ever(
-        self, expr: pl.Expr, timeout: timedelta = seconds(10)
-    ) -> Awaitable[bool]:
-        return ever(Query(self, expr), timeout)
+    async def ever(self, expr: pl.Expr, timeout: timedelta = seconds(10)) -> bool:
+        return await ever(Query(self, expr), timeout)
 
-    async def always(
-        self, expr: pl.Expr, timeout: timedelta = seconds(10)
-    ) -> Awaitable[bool]:
-        return always(Query(self, expr), timeout)
+    async def always(self, expr: pl.Expr, timeout: timedelta = seconds(10)) -> bool:
+        return await always(Query(self, expr), timeout)
 
     async def approx_once_settled(
         self,
@@ -194,7 +213,7 @@ class Trace[T]:
         rel_tol: float = 1e-6,
         abs_tol: float = 1e-12,
         stability_lookback: timedelta = seconds(0.5),
-        stability_min_samples: int = 10,
+        stability_min_samples: int = 3,
         timeout: timedelta = milliseconds(1000),
     ):
         """
@@ -229,16 +248,12 @@ class record[T]:
         source: Callable[[], Awaitable[T]],
         *,
         name: str | None = None,
-        minimum_interval: float | None = None,
+        min_interval: timedelta | None = None,
     ):
         self._task: asyncio.Task | None = None
         self._source = source
         self._trace = Trace[T](name or source.__qualname__)
-        self._minimum_interval = (
-            timedelta(seconds=minimum_interval)
-            if minimum_interval is not None
-            else None
-        )
+        self._min_interval = min_interval
         self._last_timestamp: datetime | None = None
 
     def __enter__(self) -> Trace[T]:
@@ -250,20 +265,35 @@ class record[T]:
 
     def start(self) -> None:
         async def _trace() -> None:
-            while True:
-                if (
-                    self._minimum_interval is not None
-                    and self._last_timestamp is not None
-                ):
-                    remaining_time_to_next = (
-                        self._last_timestamp + self._minimum_interval - datetime.now()
-                    )
-                    if remaining_time_to_next > timedelta(0):
+            try:
+                while True:
+                    if (
+                        self._min_interval is not None
+                        and self._last_timestamp is not None
+                        and (
+                            remaining_time_to_next := max(
+                                self._last_timestamp
+                                + self._min_interval
+                                - datetime.now(),
+                                ZERO_TIMEDELTA,
+                            )
+                        )
+                    ):
                         await asyncio.sleep(remaining_time_to_next.total_seconds())
+                    elif self._last_timestamp is not None:
+                        # after out first sample, yield to other tasks
+                        # this is critical to prevent tasks that never yield themselves
+                        # from starving the event loop
+                        await asyncio.sleep(0)
 
-                data = await self._source()
-                data = cast(T, data)
-                self._trace.append(datetime.now(), data)
+                    data = await self._source()
+                    data = cast(T, data)
+                    timestamp = datetime.now()
+                    self._trace.append(timestamp, data)
+                    self._last_timestamp = timestamp
+
+            finally:
+                self._trace.close()
 
         self._task = asyncio.create_task(_trace())
 
@@ -291,21 +321,58 @@ class record[T]:
         return self.started and not self.finished
 
     @classmethod
-    def from_property(cls, obj: Any, prop: property) -> Self:
+    def from_property(
+        cls,
+        obj: Any,
+        prop: property,
+        *,
+        name: str | None = None,
+        min_interval: timedelta | None = None,
+    ) -> Self:
         async def func() -> T:
             assert prop.fget is not None
             return prop.fget(obj)
 
-        return cls(func)
+        return cls(
+            func,
+            name=name or prop.__qualname__,
+            min_interval=min_interval,
+        )
 
-    async def __anext__(self) -> T:
-        if not self.started:
-            raise RuntimeError("Recording not started")
+    @classmethod
+    def from_sync_to_thread(
+        cls,
+        func: Callable[[], T],
+        *,
+        name: str | None = None,
+        min_interval: timedelta | None = None,
+    ) -> Self:
+        async def async_func() -> T:
+            return await asyncio.to_thread(func)
 
-        if self.finished:
-            raise StopAsyncIteration
+        return cls(
+            async_func,
+            name=name or func.__qualname__,
+            min_interval=min_interval,
+        )
 
-        return await self.trace.new_data()
+    @classmethod
+    def from_async_generator(
+        cls,
+        gen: AsyncGenerator[T, None],
+        *,
+        name: str | None = None,
+        min_interval: timedelta | None = None,
+    ) -> Self:
+        iterable = aiter(gen)
+        return cls(
+            lambda: anext(iterable),
+            name=name or gen.__qualname__,
+            min_interval=min_interval,
+        )
+
+
+Recorder = type[record]
 
 
 class Query:
@@ -410,13 +477,9 @@ class Query:
         Returns True if the query succeeds at any point
         """
         self._expr = self._expr.any()
-        agen = during(timeout).any(self.trace.new_data)
-        try:
-            async for _ in agen:
-                if self._evaluate():
-                    return True
-        finally:
-            await agen.aclose()
+        async for _ in any_ready(self.trace, timeout=timeout):
+            if self._evaluate():
+                return True
         return False
 
     async def always(self, timeout: timedelta = seconds(10)) -> bool:
@@ -424,15 +487,9 @@ class Query:
         Returns False if the query fails at any point
         """
         self._expr = self._expr.all()
-        agen = during(timeout).any(self.trace.new_data)
-        try:
-            async for _ in agen:
-                if not self._evaluate():
-                    return False
-        except TimeoutError:
-            pass
-        finally:
-            await agen.aclose()
+        async for _ in any_ready(self.trace, timeout=timeout):
+            if not self._evaluate():
+                return False
         return True
 
 

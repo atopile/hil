@@ -18,6 +18,20 @@
             "justMyCode": true,
             "preLaunchTask": "deploy-code",
             "postDebugTask": "terminate-remote-debugger"
+        },
+        {
+            "name": "Python: Debug Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "purpose": [
+                "debug-test"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONASYNCIODEBUG": "1"
+            }
         }
     ]
 }
