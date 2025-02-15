@@ -49,7 +49,9 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
         with ExitStack() as exit_stack, table:
             traces = [
-                exit_stack.enter_context(record(cell.get_voltage))
+                exit_stack.enter_context(
+                    record(cell.get_voltage, name=f"cell {cell.cell_num}")
+                )
                 for cell in hil.cellsim.cells
             ]
 
@@ -58,9 +60,12 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
                     await cell.set_voltage(voltage)
 
                 async def _check_voltage(trace: Trace):
-                    logger.debug(f"Checking voltage: {voltage}V")
+                    await asyncio.sleep(0.5)
                     assert await trace.approx_once_settled(
-                        voltage, rel_tol=0.2, timeout=seconds(1)
+                        voltage,
+                        rel_tol=0.2,
+                        stability_lookback=seconds(0.1),
+                        timeout=seconds(0.1),
                     )
 
                 await table.gather_row(
@@ -85,15 +90,23 @@ async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
                 async def _get_voltage():
                     return await cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
 
-                traces.append(exit_stack.enter_context(record(_get_voltage)))
+                traces.append(
+                    exit_stack.enter_context(
+                        record(_get_voltage, name=f"cell {cell.cell_num}")
+                    )
+                )
 
             for voltage in BUCK_VOLTAGES:
                 for cell in hil.cellsim.cells:
                     await cell._set_buck_voltage(voltage)
 
                 async def _check_voltage(trace: Trace):
+                    await asyncio.sleep(0.5)
                     assert await trace.approx_once_settled(
-                        voltage, rel_tol=0.2, timeout=seconds(1)
+                        voltage,
+                        rel_tol=0.2,
+                        stability_lookback=seconds(0.1),
+                        timeout=seconds(0.1),
                     )
 
                 await table.gather_row(
