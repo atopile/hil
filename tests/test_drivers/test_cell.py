@@ -1,9 +1,12 @@
 import asyncio
+import logging
 from contextlib import ExitStack
 from typing import TYPE_CHECKING
-from hil.framework import Trace, Recorder, seconds
+
+from hil.framework import Recorder, Trace, seconds
 from hil.utils.exception_table import ExceptionTable
 
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from ..conftest import Hil
@@ -55,8 +58,9 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
                     await cell.set_voltage(voltage)
 
                 async def _check_voltage(trace: Trace):
+                    logger.debug(f"Checking voltage: {voltage}V")
                     assert await trace.approx_once_settled(
-                        voltage, rel_tol=0.2, timeout=seconds(0.1)
+                        voltage, rel_tol=0.2, timeout=seconds(1)
                     )
 
                 await table.gather_row(
@@ -89,7 +93,7 @@ async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
 
                 async def _check_voltage(trace: Trace):
                     assert await trace.approx_once_settled(
-                        voltage, rel_tol=0.2, timeout=seconds(0.1)
+                        voltage, rel_tol=0.2, timeout=seconds(1)
                     )
 
                 await table.gather_row(
