@@ -15,7 +15,6 @@ References:
 """
 
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import Protocol
 
@@ -127,44 +126,19 @@ def _save_request_traces(
             ),
             y="value:Q",
             color="trace:N",
-        )
-    )
-
-    # Convert log records to a list of dicts
-    log_data = [
-        {
-            "timestamp": datetime.fromtimestamp(log.created),
-            "log_level": log.levelname,
-            "message": log.getMessage(),
-        }
-        for log in logs
-    ]
-
-    # Create a subtle log layer using mark_rule.
-    # The rules are drawn as subtle, dashed vertical lines with tooltips.
-    log_layer = (
-        alt.Chart(pl.DataFrame(log_data))
-        .mark_rule(color="gray", strokeDash=[4, 4], opacity=0.2)
-        .encode(
-            x=alt.X("timestamp:T", title="Time"),
             tooltip=[
-                alt.Tooltip("timestamp:T", title="Log Time"),
-                alt.Tooltip("log_level:N", title="Level"),
-                alt.Tooltip("message:N", title="Message"),
+                alt.Tooltip("timestamp:T", title="Time"),
+                alt.Tooltip("trace:N", title="Trace"),
+                alt.Tooltip("value:Q", title="Value"),
             ],
         )
-    )
-
-    # Combine the two layers
-    final_chart = (
-        alt.layer(trace_chart, log_layer)
         .properties(width="container", height=CHART_HEIGHT)
         .interactive()
     )
 
     # Save the chart to the designated path
     chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
-    final_chart.save(chart_path)
+    trace_chart.save(chart_path)
     return chart_path
 
 
@@ -185,23 +159,22 @@ def record(request: _Request, caplog: pytest.LogCaptureFixture):
     """
     recs: list[hil_record] = []
 
-    def _record(*args, **kwargs) -> hil_record:
-        """
-        Create and return a new hil_record instance, storing it for the current test.
-        Any arguments or keyword arguments are passed to hil.framework.record.__init__.
-        """
-        rec = hil_record(*args, **kwargs)
-        recs.append(rec)
-        if request.node.nodeid not in request.config._hil_recorded_trace_paths:
-            sanitized_nodeid = (
-                pathvalidate.sanitize_filename(request.node.nodeid)
-                .replace(":", "-")
-                .replace("/", "-")
-                .replace(".", "-")
-            )
-            chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
-            request.config._hil_recorded_trace_paths[request.node.nodeid] = chart_path
-        return rec
+    class _record(hil_record):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            recs.append(self)
+            if request.node.nodeid not in request.config._hil_recorded_trace_paths:
+                sanitized_nodeid = (
+                    pathvalidate.sanitize_filename(request.node.nodeid)
+                    .replace(":", "-")
+                    .replace("/", "-")
+                    .replace(".", "-")
+                )
+                chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
+                request.config._hil_recorded_trace_paths[request.node.nodeid] = (
+                    chart_path
+                )
 
     try:
         yield _record
