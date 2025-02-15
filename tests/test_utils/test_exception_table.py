@@ -1,4 +1,4 @@
-from hil.utils.exception_table import exception_table
+from hil.utils.exception_table import ExceptionTable
 import pytest
 
 
@@ -13,12 +13,11 @@ async def test_exception_table():
         return "totally fine"
 
     with pytest.raises(ExceptionGroup):
-        for i, gather_row in zip(
-            range(10), exception_table(["thing a", "thing b", "totally fine"])
-        ):
-            await gather_row(
-                raise_exception1(),
-                raise_exception2(),
-                totally_fine(),
-                name=f"{i}",
-            )
+        with ExceptionTable(["thing a", "thing b", "totally fine"]) as table:
+            for i in range(10):
+                await table.gather_row(
+                    raise_exception1(),
+                    raise_exception2(),
+                    totally_fine(),
+                    name=f"{i}",
+                )
