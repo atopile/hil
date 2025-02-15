@@ -179,7 +179,10 @@ class Trace[T](collections.abc.AsyncIterator):
         try:
             return await self._result_future
         except asyncio.CancelledError:
-            raise StopAsyncIteration
+            if self._closed and self._result_future.cancelled():
+                raise StopAsyncIteration
+            else:
+                raise
 
     def close(self) -> None:
         self._closed = True
