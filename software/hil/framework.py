@@ -332,7 +332,7 @@ class record[T]:
 
         return cls(
             func,
-            name=name,
+            name=name or prop.__qualname__,
             min_interval=min_interval,
         )
 
@@ -349,7 +349,7 @@ class record[T]:
 
         return cls(
             async_func,
-            name=name,
+            name=name or func.__qualname__,
             min_interval=min_interval,
         )
 
@@ -364,7 +364,7 @@ class record[T]:
         iterable = aiter(gen)
         return cls(
             lambda: anext(iterable),
-            name=name,
+            name=name or gen.__qualname__,
             min_interval=min_interval,
         )
 
