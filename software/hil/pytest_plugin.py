@@ -15,6 +15,7 @@ References:
 """
 
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Protocol
 
@@ -77,7 +78,9 @@ def pytest_configure(config: _Config):
     config._hil_recorded_trace_paths = {}  # {node_id: Path}
 
 
-def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | None:
+def _save_request_traces(
+    request: _Request, recs: list[hil_record], logs: list[logging.LogRecord]
+) -> Path | None:
     """
     Save the traces for the given request by merging them into a single Polars DataFrame
     and generating an Altair chart. If no data is found, returns None; otherwise, returns
@@ -107,11 +110,10 @@ def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | No
         logger.debug(f"No data found for {request.node.nodeid}")
         return
 
-    # Create a layered chart with one line per trace
-    chart = (
+    # Base trace chart: a layered line chart with points
+    trace_chart = (
         alt.Chart(combined)
-        .mark_line(point=True)
-        .mark_line(interpolate="monotone")
+        .mark_line(point=True, interpolate="monotone")
         .encode(
             x=alt.X(
                 "timestamp:T",
@@ -126,18 +128,48 @@ def _save_request_traces(request: _Request, recs: list[hil_record]) -> Path | No
             y="value:Q",
             color="trace:N",
         )
+    )
+
+    # Convert log records to a list of dicts
+    log_data = [
+        {
+            "timestamp": datetime.fromtimestamp(log.created),
+            "log_level": log.levelname,
+            "message": log.getMessage(),
+        }
+        for log in logs
+    ]
+
+    # Create a subtle log layer using mark_rule.
+    # The rules are drawn as subtle, dashed vertical lines with tooltips.
+    log_layer = (
+        alt.Chart(pl.DataFrame(log_data))
+        .mark_rule(color="gray", strokeDash=[4, 4], opacity=0.2)
+        .encode(
+            x=alt.X("timestamp:T", title="Time"),
+            tooltip=[
+                alt.Tooltip("timestamp:T", title="Log Time"),
+                alt.Tooltip("log_level:N", title="Level"),
+                alt.Tooltip("message:N", title="Message"),
+            ],
+        )
+    )
+
+    # Combine the two layers
+    final_chart = (
+        alt.layer(trace_chart, log_layer)
         .properties(width="container", height=CHART_HEIGHT)
         .interactive()
     )
 
-    # Combine line and points
+    # Save the chart to the designated path
     chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
-    chart.save(chart_path)
+    final_chart.save(chart_path)
     return chart_path
 
 
 @pytest.fixture(scope="function")
-def record(request: _Request):
+def record(request: _Request, caplog: pytest.LogCaptureFixture):
     """
     A pytest fixture that provides a callable, '_record', for creating and returning
     new hil.framework.record objects to capture time-series data in tests. The resulting
@@ -174,7 +206,7 @@ def record(request: _Request):
     try:
         yield _record
     finally:
-        _save_request_traces(request, recs)
+        _save_request_traces(request, recs, caplog.records)
 
 
 @pytest.hookimpl(hookwrapper=True)

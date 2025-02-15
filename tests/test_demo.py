@@ -1,7 +1,10 @@
 import asyncio
+import logging
 from datetime import datetime
 
-from hil.framework import ever, record, during, seconds
+from hil.framework import during, ever, record, seconds
+
+logger = logging.getLogger(__name__)
 
 
 async def source_1() -> float:
@@ -17,7 +20,7 @@ async def source_2() -> float:
 async def test_demo(record: type[record]):
     with record(source_1) as t1, record(source_2) as t2:
         async for _ in during(seconds(1)).any(t1.new_data, t2.new_data):
-            print(f"something's ready! {datetime.now()}")
+            logger.info(f"something's ready! {datetime.now()}")
 
 
 async def test_demo_assert_ever():
