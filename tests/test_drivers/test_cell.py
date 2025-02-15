@@ -44,7 +44,7 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
             await cell.close_load_switch()
 
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
-        with ExitStack() as exit_stack:
+        with ExitStack() as exit_stack, table:
             traces = [
                 exit_stack.enter_context(record(cell.get_voltage))
                 for cell in hil.cellsim.cells
@@ -74,7 +74,7 @@ async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
             await cell.close_load_switch()
 
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
-        with ExitStack() as exit_stack:
+        with ExitStack() as exit_stack, table:
             traces = []
             for cell in hil.cellsim.cells:
 
