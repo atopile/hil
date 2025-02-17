@@ -61,11 +61,9 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
 
                 async def _check_voltage(trace: Trace):
                     await asyncio.sleep(0.5)
-                    assert await trace.approx_once_settled(
-                        voltage,
-                        rel_tol=0.2,
-                        stability_lookback=seconds(0.1),
-                        timeout=seconds(0.5),
+                    measured = await trace.get_value()
+                    assert abs(measured - voltage) <= voltage * 0.2, (
+                        f"Expected {voltage}V (±20%), got {measured}V"
                     )
 
                 await table.gather_row(
