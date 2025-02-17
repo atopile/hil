@@ -2,6 +2,7 @@ import asyncio
 from contextlib import asynccontextmanager
 import os
 from typing import AsyncContextManager, Protocol, Self
+from abc import ABC, abstractmethod
 from hil.utils.composable_future import Future, composable
 from smbus2 import SMBus
 
@@ -141,7 +142,33 @@ class SMBusHandle[T](Future[T]):
         self._smbus.i2c_rdwr(*i2c_msgs)
 
 
-class AsyncSMBusPeripheral:
+class AsyncSMBus(ABC):
+    """
+    Abstract base class for SMBus implementations.
+    Defines the common interface that all SMBus implementations must provide.
+    """
+
+    @abstractmethod
+    def __call__(self) -> AsyncContextManager[SMBusHandle]:
+        """
+        Get a context manager for accessing the SMBus.
+        This is the primary method for interacting with the bus.
+
+        Returns:
+            AsyncContextManager[SMBusHandle]: Context manager that yields an SMBusHandle
+        """
+        pass
+
+    async def __aenter__(self) -> Self:
+        """Enter the async context manager."""
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Exit the async context manager."""
+        pass
+
+
+class AsyncSMBusPeripheral(AsyncSMBus):
     class BusAlreadyOpen(Exception):
         """
         Exception raised when the bus is already open.
@@ -152,6 +179,7 @@ class AsyncSMBusPeripheral:
         Synchronous initializer.
         Use the async class method `create(bus, force)` to get an instance with a bus open.
         """
+        super().__init__()
         self._lock = asyncio.Lock()
         self._handle: SMBusHandle | None = None
         self._smbus = None
@@ -165,16 +193,6 @@ class AsyncSMBusPeripheral:
         instance = cls(bus, force)
         await instance.open()
         return instance
-
-    async def __aenter__(self) -> Self:
-        try:
-            await self.open()
-        except self.BusAlreadyOpen:
-            pass
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.close()
 
     async def open(
         self, bus: int | os.PathLike | None = None, force: bool | None = None
@@ -200,6 +218,7 @@ class AsyncSMBusPeripheral:
 
             self._smbus = await asyncio.to_thread(SMBus, self._bus, self._force)
             self._handle = SMBusHandle(self._smbus)
+            return self
 
     async def close(self):
         """
@@ -229,6 +248,16 @@ class AsyncSMBusPeripheral:
     def release(self):
         self._lock.release()
 
+    async def __aenter__(self) -> Self:
+        try:
+            await self.open()
+        except self.BusAlreadyOpen:
+            pass
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()
+
 
 class Mux(Protocol):
     async def set_mux(self, channel: int, handle: SMBusHandle):
@@ -237,7 +266,7 @@ class Mux(Protocol):
         """
 
 
-class AsyncSMBusBranch:
+class AsyncSMBusBranch(AsyncSMBus):
     class _AsyncSMBusMux:
         def __init__(self, upstream: "AsyncSMBus", mux: Mux):
             self.upstream = upstream
@@ -245,6 +274,7 @@ class AsyncSMBusBranch:
             self.lock = asyncio.Lock()
 
     def __init__(self, mux: _AsyncSMBusMux, channel: int):
+        super().__init__()
         self._mux = mux
         self._channel = channel
 
@@ -269,6 +299,3 @@ class AsyncSMBusBranch:
     ) -> list[Self]:
         _mux = cls._AsyncSMBusMux(upstream, mux)
         return [cls(_mux, channel) for channel in channels]
-
-
-AsyncSMBus = AsyncSMBusPeripheral | AsyncSMBusBranch
