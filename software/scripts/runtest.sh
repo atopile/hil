@@ -2,9 +2,14 @@
 
 set -euo pipefail
 
-# TODO: via CLI args
+if [[ -z "${HIL_CONTROLLER_HOST:-}" ]]; then
+    echo "ERROR: HIL_CONTROLLER_HOST environment variable must be set"
+    echo "Example: HIL_CONTROLLER_HOST=chunky-otter $0"
+    exit 1
+fi
+
+CONTROLLER_HOST="${HIL_CONTROLLER_HOST}"
 CONTROLLER_USERNAME='atopile'
-CONTROLLER_HOST="chunky-otter"
 
 LOCK_FILE="/home/atopile/.hil-lock"
 CONTROLLER_PATH_PREFIX="/home/atopile/hil/"
