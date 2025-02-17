@@ -14,6 +14,7 @@ References:
     - The 'record' class is from hil.framework in this same package.
 """
 
+from dataclasses import dataclass
 import logging
 import socket
 from datetime import datetime
@@ -293,3 +294,25 @@ def machine_config(request: _Request) -> Generator[ConfigDict, None, None]:
         yield config_obj
     finally:
         save_config(config_obj, Path(request.config.rootdir) / configs_path, pet_name)
+
+
+@dataclass
+class RunsOn:
+    hostname: str | None
+
+    def __init__(self, *args, hostname: str | None = None):
+        self.hostname = hostname
+
+
+runs_on_key = pytest.StashKey[dict[str, list[RunsOn]]]()
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_collection_finish(session: pytest.Session):
+    session.config.stash[runs_on_key] = {
+        item.nodeid: [
+            RunsOn(*m.args, **m.kwargs) for m in item.own_markers if m.name == "runs_on"
+        ]
+        for item in session.items
+    }
+    yield
