@@ -163,32 +163,32 @@ class Cell:
         await self._set_buck_voltage(buck_voltage)
         await self._set_ldo_voltage(ldo_voltage)
 
-    async def calibrate(self, data_points: int = 8):
+    async def calibrate(self, data_points: int = 20):
         """
         Calibrate the buck and LDO voltages.
         """
+        logger.info(f"[Cell {self.cell_num}] Calibrating")
 
         self.buck_calibration = []
         self.ldo_calibration = []
         await self.enable()
 
-        for digital_value in np.linspace(2625, 234, num=data_points, dtype=int):
+        for digital_value in np.linspace(234, 2625, num=data_points, dtype=int):
             await self.buck_dac.set_raw_value(int(digital_value))
             volts_buck = await self.adc.read_pin(self.AdcChannels.BUCK_VOLTAGE) * (
                 6.144 / 32767.0
             )
             self.buck_calibration.append([int(digital_value), volts_buck])
 
-        self.buck_dac.set_raw_value(234)
-        for digital_value in np.linspace(3760, 42, num=data_points, dtype=int):
+        await self.buck_dac.set_raw_value(234)  # lower limit of the LDO's drop-out voltage
+
+        for digital_value in np.linspace(42, 3760, num=data_points, dtype=int):
             await self.ldo_dac.set_raw_value(int(digital_value))
             volts_ldo = await self.adc.read_pin(self.AdcChannels.LDO_VOLTAGE) * (
                 6.144 / 32767.0
             )
             self.ldo_calibration.append([int(digital_value), volts_ldo])
-
-        logger.info(f"[Cell {self.cell_num}] Buck calibration: {self.buck_calibration}")
-        logger.info(f"[Cell {self.cell_num}] LDO calibration: {self.ldo_calibration}")
+        logger.info(f"[Cell {self.cell_num}] Calibrating compelete")
 
     def _calculate_setpoint(self, voltage: float, calibration: list[tuple[int, float]]):
         """

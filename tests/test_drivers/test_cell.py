@@ -38,32 +38,34 @@ async def test_performance(hil: "Hil"):
 async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
     VOLTAGES = [v / 10 for v in range(5, 44)]
-
+    cells = hil.cellsim.cells  # Use all cells
     async with hil:
         # Set up the cell
-        for cell in hil.cellsim.cells:
+        for cell in cells:
+            await cell.calibrate()
             await cell.enable()
             await cell.turn_on_output_relay()
             await cell.close_load_switch()
-
-        table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
+        logger.info("Calibration complete for all cells")
+        
+        table = ExceptionTable([f"cell: {cell.cell_num}" for cell in cells])
         with ExitStack() as exit_stack, table:
             traces = [
                 exit_stack.enter_context(
                     record(cell.get_voltage, name=f"cell {cell.cell_num}")
                 )
-                for cell in hil.cellsim.cells
+                for cell in cells
             ]
 
             for voltage in VOLTAGES:
-                for cell in hil.cellsim.cells:
+                for cell in cells:
                     await cell.set_voltage(voltage)
 
                 async def _check_voltage(trace: Trace):
                     await asyncio.sleep(0.5)
-                    measured = await trace.get_value()
-                    assert abs(measured - voltage) <= voltage * 0.2, (
-                        f"Expected {voltage}V (±20%), got {measured}V"
+                    measured = trace.data[-1]
+                    assert abs(measured - voltage) <= voltage * 0.05, (
+                        f"Expected {voltage}V (±5%), got {measured}V"
                     )
 
                 await table.gather_row(
@@ -79,6 +81,7 @@ async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
             await cell.enable()
             await cell.turn_on_output_relay()
             await cell.close_load_switch()
+            await cell.calibrate()
 
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
         with ExitStack() as exit_stack, table:

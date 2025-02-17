@@ -7,7 +7,7 @@ from hil.drivers.cell import Cell
 from hil.drivers.tca9548a import TCA9548A
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 class CellSim:
