@@ -1,5 +1,5 @@
 import logging
-from hil.drivers.aiosmbus2 import AsyncSMBus
+from hil.drivers.aiosmbus2 import AsyncSMBus, SMBusHandle
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ class TCA9548A:
         self.address = address
         self._current_channel: int | None = None
 
-    async def set_mux(self, channel: int):
+    async def set_mux(self, channel: int, handle: SMBusHandle):
         """
         Select the correct MUX channel.
         Writes 1 << mux_channel to the mux address.
@@ -21,7 +21,5 @@ class TCA9548A:
             return
 
         value = 1 << channel
-        async with self.bus() as handle:
-            await handle.write_byte(self.address, value)
-
+        await handle.write_byte(self.address, value)
         self._current_channel = channel
