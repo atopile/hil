@@ -197,6 +197,7 @@ def _save_request_traces(
 
     # Save the chart to the designated path
     chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
+    chart_path.parent.mkdir(parents=True, exist_ok=True)
     final_chart.save(chart_path)
     return chart_path
 
