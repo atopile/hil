@@ -6,7 +6,7 @@ from hil.utils.composable_future import Future, composable
 from smbus2 import SMBus
 
 
-class _BusHandle[T](Future[T]):
+class SMBusHandle[T](Future[T]):
     def __init__(self, smbus: SMBus):
         super().__init__()
         self._smbus = smbus
@@ -153,7 +153,7 @@ class AsyncSMBusPeripheral:
         Use the async class method `create(bus, force)` to get an instance with a bus open.
         """
         self._lock = asyncio.Lock()
-        self._handle: _BusHandle | None = None
+        self._handle: SMBusHandle | None = None
         self._smbus = None
         self._bus = bus
         self._force = force
@@ -199,7 +199,7 @@ class AsyncSMBusPeripheral:
                 raise self.BusAlreadyOpen()
 
             self._smbus = await asyncio.to_thread(SMBus, self._bus, self._force)
-            self._handle = _BusHandle(self._smbus)
+            self._handle = SMBusHandle(self._smbus)
 
     async def close(self):
         """
@@ -210,7 +210,7 @@ class AsyncSMBusPeripheral:
                 await asyncio.to_thread(self._smbus.close)
                 self._smbus = None
 
-    def __call__(self) -> AsyncContextManager[_BusHandle]:
+    def __call__(self) -> AsyncContextManager[SMBusHandle]:
         @asynccontextmanager
         async def _enter():
             try:
@@ -231,7 +231,7 @@ class AsyncSMBusPeripheral:
 
 
 class Mux(Protocol):
-    async def set_mux(self, channel: int):
+    async def set_mux(self, channel: int, handle: SMBusHandle):
         """
         Set the MUX to the given channel.
         """
@@ -248,13 +248,12 @@ class AsyncSMBusBranch:
         self._mux = mux
         self._channel = channel
 
-    def __call__(self) -> AsyncContextManager[_BusHandle]:
+    def __call__(self) -> AsyncContextManager[SMBusHandle]:
         @asynccontextmanager
         async def _enter():
-            async with self._mux.lock:
-                await self._mux.mux.set_mux(self._channel)
-                async with self._mux.upstream() as handle:
-                    yield handle
+            async with self._mux.lock, self._mux.upstream() as handle:
+                await self._mux.mux.set_mux(self._channel, handle)
+                yield handle
 
         return _enter()
 
