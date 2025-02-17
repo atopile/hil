@@ -72,13 +72,10 @@ function run_test() {
     local controller_path=$(get_controller_path)
     SSH_COMMAND="cd '${controller_path}' && (
         flock --exclusive --timeout ${LOCK_TIMEOUT} 9 || { echo 'ERROR: Failed to acquire lock in time'; exit 1; }
-        uv run pytest $*
+        uv run pytest $* && sleep 1
     ) 9>'${LOCK_FILE}'"
     ssh "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}" "${SSH_COMMAND}"
     status=$?
-
-    # enforce interval between test executions
-    sleep 1
 
     return $status
 }
