@@ -53,7 +53,12 @@ function copy_to_controller() {
         return 1
     fi
 
-    if ! rsync -aPh --exclude=.git/ --exclude-from=./.gitignore --delete "${PWD}/" "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/"; then
+    local rsync_exclude="--exclude=.git/ --exclude-from=./.gitignore"
+    if [ -f ".hilignore" ]; then
+        rsync_exclude+=" --exclude-from=./.hilignore"
+    fi
+
+    if ! rsync -aPh ${rsync_exclude} --delete "${PWD}/" "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/"; then
         echo "ERROR: Failed to copy files to controller"
         return 1
     fi
