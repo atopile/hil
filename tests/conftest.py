@@ -1,6 +1,7 @@
 import logging
 from typing import Sequence
 
+from hil.utils.config import ConfigDict
 import pytest
 from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
 from hil.drivers.cell import Cell
@@ -21,7 +22,7 @@ class CellSim:
     _branch_buses: Sequence[AsyncSMBus]
 
     @classmethod
-    async def create(cls, bus: AsyncSMBus):
+    async def create(cls, bus: AsyncSMBus, config: ConfigDict):
         self = cls()
         # Open the bus before creating devices
         async with bus:
@@ -30,7 +31,8 @@ class CellSim:
                 bus, self._mux, list(range(0, 8))
             )
             self.cells = [
-                await Cell.create(i, bus) for i, bus in enumerate(self._branch_buses)
+                await Cell.create(i, bus, config[i])
+                for i, bus in enumerate(self._branch_buses)
             ]
         return self
 
@@ -42,14 +44,18 @@ class Hil:
 
     cellsim: CellSim
     physical_bus: AsyncSMBus
+    config: ConfigDict
 
     @classmethod
-    async def create(cls):
+    async def create(cls, config: ConfigDict):
         self = cls()
+        self.config = config
         self.physical_bus = AsyncSMBusPeripheral(1)
         # Open the bus before creating CellSim
         async with self.physical_bus:
-            self.cellsim = await CellSim.create(self.physical_bus)
+            self.cellsim = await CellSim.create(
+                self.physical_bus, self.config["cellsim"]
+            )
         return self
 
     async def aclose(self):
@@ -64,9 +70,9 @@ class Hil:
 
 
 @pytest.fixture(scope="session")
-async def hil():
+async def hil(machine_config: ConfigDict):
     # Create HIL instance
-    hil = await Hil.create()
+    hil = await Hil.create(machine_config)
     # Open bus for the duration of the test session
     async with hil.physical_bus:
         yield hil

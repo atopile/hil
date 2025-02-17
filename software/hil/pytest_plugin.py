@@ -18,9 +18,11 @@ import logging
 import socket
 from datetime import datetime
 from pathlib import Path
-from typing import Protocol
+from typing import Generator, Protocol
 
 import altair as alt
+from hil.utils.config import ConfigDict, load_config, save_config
+from hil.utils.pet_name import get_pet_name
 import pathvalidate
 import polars as pl
 import pytest
@@ -42,6 +44,7 @@ class _Config(Protocol):
     """
 
     _hil_recorded_trace_paths: dict[str, Path]
+    rootdir: Path | str
 
     def addinivalue_line(self, name: str, line: str) -> None: ...
 
@@ -88,7 +91,7 @@ def pytest_configure(config: _Config):
 
 
 def _should_runs_on(*, hostname: str | None = None) -> bool:
-    if hostname is not None and socket.gethostname():
+    if hostname is not None and socket.gethostname() != hostname:
         return False
 
     return True
@@ -263,3 +266,13 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
                 f"<iframe style='width: 100%; height: {CHART_HEIGHT + 150}px; border: none;' src='./{trace_chart_path.name}'></iframe>"
             )
         )
+
+
+@pytest.fixture(scope="session")
+def machine_config(request: _Request) -> Generator[ConfigDict, None, None]:
+    pet_name = get_pet_name()
+    config_obj = load_config(Path(request.config.rootdir) / "configs", pet_name)
+    try:
+        yield config_obj
+    finally:
+        save_config(config_obj, Path(request.config.rootdir) / "configs", pet_name)
