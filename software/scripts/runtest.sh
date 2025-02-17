@@ -84,17 +84,10 @@ function run_test() {
 }
 
 function serve_test_report() {
-    local test_report_path="${TMP_DIR}/test-report.html"
     local controller_path=$(get_controller_path)
-    scp "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/artifacts/*" "${test_report_path}"
-
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        open "http://localhost:${TEST_REPORT_PORT}/test-report.html" &
-    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        xdg-open "http://localhost:${TEST_REPORT_PORT}/test-report.html" &
-    fi
-
-    python3 -m http.server "${TEST_REPORT_PORT}" --directory "${TMP_DIR}"
+    scp -r -q "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/artifacts/*" "${TMP_DIR}"
+    echo "Serving test report at http://127.0.0.1:8080/test-report.html"
+    python3 -m http.server --directory "${TMP_DIR}" --bind 127.0.0.1 "${TEST_REPORT_PORT}" >/dev/null 2>&1
 }
 
 check_ssh_connection || exit 1
@@ -106,6 +99,6 @@ run_test "$@"
 status=$?
 set -e
 
-serve_test_report
+serve_test_report || true
 
-exit $status
+exit "$status"
