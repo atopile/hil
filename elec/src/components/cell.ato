@@ -275,5 +275,5 @@ module PiFilter:
 
     power_in.gnd ~ power_out.gnd
 
-    # FIXME: L1.inductance * C1.value term requires square root
-    # assert 1 / (2 * 3.14 * L1.inductance * C1.value) is cutoff_frequency
+    # FIXME: L1.inductance * C1.capacitance term requires square root
+    # assert 1 / (2 * 3.14 * L1.inductance * C1.capacitance) is cutoff_frequency
