@@ -15,6 +15,7 @@ References:
 """
 
 import logging
+import socket
 from datetime import datetime
 from pathlib import Path
 from typing import Protocol
@@ -41,6 +42,8 @@ class _Config(Protocol):
     """
 
     _hil_recorded_trace_paths: dict[str, Path]
+
+    def addinivalue_line(self, name: str, line: str) -> None: ...
 
 
 class _Node(Protocol):
@@ -76,6 +79,28 @@ def pytest_configure(config: _Config):
     Each entry will map test node ids to the hil.framework.record object created by that test.
     """
     config._hil_recorded_trace_paths = {}  # {node_id: Path}
+
+    # Based on https://docs.pytest.org/en/stable/example/markers.html#custom-marker-and-command-line-option-to-control-test-runs
+    config.addinivalue_line(
+        "markers",
+        "runs_on(hostname: str | None = None) - mark test to run only on specific hostname",
+    )
+
+
+def _should_runs_on(*, hostname: str | None = None) -> bool:
+    if hostname is not None and socket.gethostname():
+        return False
+
+    return True
+
+
+def pytest_runtest_setup(item):
+    # Check the runs_on marker
+    runs_on_markers = list(item.iter_markers(name="runs_on"))
+    if runs_on_markers and not any(
+        _should_runs_on(*m.args, **m.kwargs) for m in runs_on_markers
+    ):
+        pytest.skip("Skipping test because it is not tagged to run on this environment")
 
 
 def _save_request_traces(
@@ -172,6 +197,7 @@ def _save_request_traces(
 
     # Save the chart to the designated path
     chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
+    chart_path.parent.mkdir(parents=True, exist_ok=True)
     final_chart.save(chart_path)
     return chart_path
 

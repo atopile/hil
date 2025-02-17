@@ -1,0 +1,52 @@
+name: pytest
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: 0.6.1
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+
+    - name: "Set up Python"
+      uses: actions/setup-python@v5
+      with:
+        python-version-file: "pyproject.toml"
+
+    - name: Run pytest
+      id: pytest
+      continue-on-error: true
+      run: >
+        uv run --dev --no-editable --frozen
+        --with pytest-github-actions-annotate-failures
+        pytest
+        --timeout=900
+      env:
+        GH_TOKEN: ${{ github.token }}
+        # TODO: setup pytest-history
+        # PYTEST_HISTORY_EMAIL: ${{ vars.PYTEST_HISTORY_EMAIL }}
+        # PYTEST_HISTORY_PASSWORD: ${{ secrets.PYTEST_HISTORY_PASSWORD }}
+
+    - name: Upload all test artifacts
+      if: steps.pytest.outcome == 'failure'
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-artifacts
+        path: artifacts/
+
+    - name: Check pytest status
+      if: steps.pytest.outcome == 'failure'
+      run: exit 1
