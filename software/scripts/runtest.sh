@@ -14,13 +14,14 @@ CONTROLLER_USERNAME='atopile'
 LOCK_FILE="/home/atopile/.hil-lock"
 CONTROLLER_PATH_PREFIX="/home/atopile/hil/"
 LOCK_TIMEOUT=120
+TEST_REPORT_PORT=8080
+TMP_DIR=$(mktemp -d)
 
 trap 'cleanup' EXIT
 
 function cleanup() {
-    if [ "${lock_obtained:-false}" = true ]; then
-        echo "Cleaning up..."
-        release_lock || true
+    if [ -n "${TMP_DIR}" ] && [ -d "${TMP_DIR}" ]; then
+        rm -rf "${TMP_DIR}"
     fi
 }
 
@@ -82,11 +83,19 @@ function run_test() {
     return $status
 }
 
+function serve_test_report() {
+    local test_report_path="${TMP_DIR}/test-report.html"
+    scp "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/artifacts/test-report.html" "${test_report_path}"
+    python3 -m http.server "${TEST_REPORT_PORT}" --directory "${TMP_DIR}"
+}
+
 check_ssh_connection || exit 1
 verify_in_git_repo || exit 1
 copy_to_controller || exit 1
 
 run_test "$@"
 status=$?
+
+serve_test_report
 
 exit $status
