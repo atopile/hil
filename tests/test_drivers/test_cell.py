@@ -37,15 +37,14 @@ async def test_performance(hil: "Hil"):
 
 async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
-    VOLTAGES = [v / 10 for v in range(5, 44)][::3]
-    cells = hil.cellsim.cells
+    VOLTAGES = [v / 10 for v in range(5, 44)]
+
     async with hil:
         # Set up the cell
-        for cell in cells:
+        for cell in hil.cellsim.cells:
             await cell.enable()
             await cell.turn_on_output_relay()
             await cell.close_load_switch()
-            # await cell.calibrate()
 
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
         with ExitStack() as exit_stack, table:
@@ -53,15 +52,14 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
                 exit_stack.enter_context(
                     record(cell.get_voltage, name=f"cell {cell.cell_num}")
                 )
-                for cell in cells
+                for cell in hil.cellsim.cells
             ]
 
             for voltage in VOLTAGES:
-                for cell in cells:
+                for cell in hil.cellsim.cells:
                     await cell.set_voltage(voltage)
 
                 async def _check_voltage(trace: Trace):
-                    # logger.info(f"Checking voltage for cell: {cell.cell_num}V")
                     await asyncio.sleep(0.5)
                     measured = await trace.get_value()
                     assert abs(measured - voltage) <= voltage * 0.2, (
