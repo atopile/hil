@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ..conftest import Hil
 
 
-@pytest.mark.run_on(hostname="chunky-otter")
+@pytest.mark.runs_on(hostname="chunky-otter")
 async def test_performance(hil: "Hil"):
     async with hil:
         for cell in hil.cellsim.cells:
@@ -37,7 +37,7 @@ async def test_performance(hil: "Hil"):
                 await cell.disable()
 
 
-@pytest.mark.run_on(hostname="chunky-otter")
+@pytest.mark.runs_on(hostname="chunky-otter")
 async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
     VOLTAGES = [v / 10 for v in range(5, 44)]
@@ -76,7 +76,7 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
                 )
 
 
-@pytest.mark.run_on(hostname="chunky-otter")
+@pytest.mark.runs_on(hostname="chunky-otter")
 async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
     BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
 
@@ -118,7 +118,7 @@ async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
                 )
 
 
-@pytest.mark.run_on(hostname="chunky-otter")
+@pytest.mark.runs_on(hostname="chunky-otter")
 async def test_mux(hil: "Hil"):
     async with hil:
         # Write binary to the mux for each cell
