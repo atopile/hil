@@ -27,20 +27,20 @@ module CellSim8Ch:
     # cell8 = new Cell
 
     # Mux
-    i2c_mux = new TCA9548APWR
-    gpio_mux = new MultiplexerI2C8Ch
+    # i2c_mux = new TCA9548APWR
+    # gpio_mux = new MultiplexerI2C8Ch
 
-    power_3v3 ~ i2c_mux.power
-    power_3v3 ~ gpio_mux.power_3v3
+    # power_3v3 ~ i2c_mux.power
+    # power_3v3 ~ gpio_mux.power_3v3
 
-    i2c ~ i2c_mux.i2c #0x70
-    i2c ~ gpio_mux.i2c #0x21
+    # i2c ~ i2c_mux.i2c #0x70
+    # i2c ~ gpio_mux.i2c #0x21
 
     # DMM
-    dmm_relay = new PowerRelay
-    power_5v ~ dmm_relay.power_relay
-    dmm_relay.power_out ~ dmm_out
-    dmm_relay.input ~ dmm_relay_enable
+    # dmm_relay = new PowerRelay
+    # power_5v ~ dmm_relay.power_relay
+    # dmm_relay.power_out ~ dmm_out
+    # dmm_relay.input ~ dmm_relay_enable
 
     # Cell Power
     power_24v ~ cell1.power_in
@@ -69,8 +69,8 @@ module CellSim8Ch:
     # cell7.cell_up ~ cell8.cell_down
 
     # Cell to i2c mux connections
-    i2c_mux.i2c0 ~ cell1.i2c
-    i2c_mux.i2c1 ~ cell2.i2c
+    # i2c_mux.i2c0 ~ cell1.i2c
+    # i2c_mux.i2c1 ~ cell2.i2c
     # i2c_mux.i2c2 ~ cell3.i2c
     # i2c_mux.i2c3 ~ cell4.i2c
     # i2c_mux.i2c4 ~ cell5.i2c
@@ -79,8 +79,8 @@ module CellSim8Ch:
     # i2c_mux.i2c7 ~ cell8.i2c
 
     # Cell to dmm mux connections
-    gpio_mux.output_1 ~ cell1.dmm_relay_enable
-    gpio_mux.output_2 ~ cell2.dmm_relay_enable
+    # gpio_mux.output_1 ~ cell1.dmm_relay_enable
+    # gpio_mux.output_2 ~ cell2.dmm_relay_enable
     # gpio_mux.output_3 ~ cell3.dmm_relay_enable
     # gpio_mux.output_4 ~ cell4.dmm_relay_enable
     # gpio_mux.output_5 ~ cell5.dmm_relay_enable
