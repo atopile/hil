@@ -31,8 +31,12 @@ function get_controller_path() {
     echo "${CONTROLLER_PATH_PREFIX}/${username}@${hostname}"
 }
 
+function get_git_root() {
+    git rev-parse --show-toplevel
+}
+
 function verify_in_git_repo() {
-    if ! git rev-parse --show-toplevel >/dev/null 2>&1; then
+    if ! get_git_root >/dev/null 2>&1; then
         echo "ERROR: Not in a git repository"
         return 1
     fi
@@ -47,18 +51,21 @@ function check_ssh_connection() {
 
 function copy_to_controller() {
     local controller_path=$(get_controller_path)
+    local git_root=$(get_git_root)
 
     if ! ssh "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}" "mkdir -p '${controller_path}'"; then
         echo "ERROR: Failed to create target directory on controller"
         return 1
     fi
 
+    cd "${git_root}"
+
     local rsync_exclude="--exclude=.git/ --exclude-from=./.gitignore"
     if [ -f ".hilignore" ]; then
         rsync_exclude+=" --exclude-from=./.hilignore"
     fi
 
-    if ! rsync -aPh ${rsync_exclude} --delete "${PWD}/" "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/"; then
+    if ! rsync -aPh ${rsync_exclude} --delete "./" "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/"; then
         echo "ERROR: Failed to copy files to controller"
         return 1
     fi
