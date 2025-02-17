@@ -86,7 +86,14 @@ function run_test() {
 function serve_test_report() {
     local test_report_path="${TMP_DIR}/test-report.html"
     local controller_path=$(get_controller_path)
-    scp "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/artifacts/test-report.html" "${test_report_path}"
+    scp "${CONTROLLER_USERNAME}@${CONTROLLER_HOST}:${controller_path}/artifacts/*" "${test_report_path}"
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        open "http://localhost:${TEST_REPORT_PORT}/test-report.html" &
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        xdg-open "http://localhost:${TEST_REPORT_PORT}/test-report.html" &
+    fi
+
     python3 -m http.server "${TEST_REPORT_PORT}" --directory "${TMP_DIR}"
 }
 
