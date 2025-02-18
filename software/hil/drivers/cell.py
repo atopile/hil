@@ -1,3 +1,4 @@
+import asyncio
 from enum import IntEnum
 import logging
 from hil.utils.config import ConfigDict
@@ -7,8 +8,6 @@ from hil.drivers.aiosmbus2 import AsyncSMBus
 from hil.drivers.mcp4725 import MCP4725
 
 logger = logging.getLogger(__name__)
-
-# I2C Addresses
 
 
 class Cell:
@@ -20,6 +19,8 @@ class Cell:
     buck_dac: MCP4725
     ldo_dac: MCP4725
     _gpio_state: int
+    _buck_calibration: dict[str, list[float]]
+    _ldo_calibration: dict[str, list[float]]
 
     class Devices(IntEnum):
         LDO = 0x60
@@ -43,11 +44,9 @@ class Cell:
     SHUNT_RESISTOR_OHMS = 0.11128
     SHUNT_GAIN = 50
 
-    # Voltage limits
     MIN_BUCK_VOLTAGE = 1.5
     MAX_BUCK_VOLTAGE = 4.55
     MIN_LDO_VOLTAGE = 0.35
-    MAX_LDO_VOLTAGE = 4.5
 
     def __init__(self):
         # Private constructor; use create() instead.
@@ -67,11 +66,9 @@ class Cell:
         self.buck_dac = await MCP4725.create(bus, self.Devices.BUCK)
         self.ldo_dac = await MCP4725.create(bus, self.Devices.LDO)
         self.adc = await ADS1115.create(self.bus, self.Devices.ADC)
-        self.buck_calibration = config.setdefault(
-            "buck_calibration", [[234, 4.5971], [2625, 1.5041]]
-        )
-        self.ldo_calibration = config.setdefault(
-            "ldo_calibration", [[42, 4.5176], [3760, 0.3334]]
+        self._buck_calibration = {"x": [1.5041, 4.5971], "y": [2625, 234]}
+        self._ldo_calibration = config.setdefault(
+            "ldo_calibration", {"x": [0.3334, 4.5176], "y": [3760, 42]}
         )
         self._gpio_state = (
             0x00  # 8-bit register representing the current state of GPIO pins.
@@ -144,96 +141,123 @@ class Cell:
         logger.debug(f"[Cell {self.cell_num}] Voltage read: {volts:.3f} V (raw: {raw})")
         return volts
 
-    async def set_voltage(self, voltage):
+    @staticmethod
+    def _dropout_voltage(vout: float):
+        """
+        .                     | typ   | max
+        0.65 V ≤ Vout < 0.8 V | 896mV | 1050mV
+        0.8 V ≤ Vout < 0.9 V  | 765mV | 920mV
+        0.9 V ≤ Vout < 1.0 V  | 700mV | 850mV
+        1.0 V ≤ Vout < 1.2 V  | 600mV | 750mV
+        1.2 V ≤ Vout < 1.5 V  | 464mV | 585mV
+        1.5 V ≤ Vout < 1.8 V  | 332mV | 440mV
+        1.8 V ≤ Vout < 2.5 V  | 264mV | 360mV
+        2.5 V ≤ Vout < 3.3 V  | 193mV | 270mV
+        3.3 V ≤ Vout ≤ 5.5 V  | 161mV | 225mV
+        """
+        if vout < 0.65:
+            return 1.05
+        elif vout < 0.8:
+            return 0.92
+        elif vout < 0.9:
+            return 0.85
+        elif vout < 1.0:
+            return 0.75
+        elif vout < 1.2:
+            return 0.7
+        elif vout < 1.5:
+            return 0.585
+        elif vout < 1.8:
+            return 0.332
+        elif vout < 2.5:
+            return 0.360
+        elif vout < 3.3:
+            return 0.270
+        else:
+            return 0.225
+
+    async def set_voltage(self, voltage: float):
         """
         Set the target voltage.
         Computes buck and LDO voltages, clamps them, and sets each output.
         """
-        buck_voltage = voltage * 1.05
-        ldo_voltage = voltage
+        if voltage < self.MIN_LDO_VOLTAGE:
+            raise ValueError(
+                f"Voltage {voltage} is below the minimum LDO voltage of {self.MIN_LDO_VOLTAGE}"
+            )
 
-        if buck_voltage < self.MIN_BUCK_VOLTAGE:
-            buck_voltage = self.MIN_BUCK_VOLTAGE
+        buck_voltage = max(
+            voltage + self._dropout_voltage(voltage), self.MIN_BUCK_VOLTAGE
+        )
         if buck_voltage > self.MAX_BUCK_VOLTAGE:
-            buck_voltage = self.MAX_BUCK_VOLTAGE
-        if ldo_voltage < self.MIN_LDO_VOLTAGE:
-            ldo_voltage = self.MIN_LDO_VOLTAGE
-        if ldo_voltage > self.MAX_LDO_VOLTAGE:
-            ldo_voltage = self.MAX_LDO_VOLTAGE
+            raise ValueError(
+                f"The required buck voltage for {voltage}V is {buck_voltage}V, which is above the maximum buck voltage of {self.MAX_BUCK_VOLTAGE}"
+            )
 
         logger.debug(
-            f"[Cell {self.cell_num}] Setting voltages: buck={buck_voltage:.2f}V, ldo={ldo_voltage:.2f}V"
+            f"[Cell {self.cell_num}] Setting voltages: buck={buck_voltage:.2f}V, ldo={voltage:.2f}V"
         )
         await self._set_buck_voltage(buck_voltage)
-        await self._set_ldo_voltage(ldo_voltage)
+        await self._set_ldo_voltage(voltage)
 
-    async def calibrate(self, data_points: int = 8):
+    async def calibrate(self, data_points: int = 16):
         """
         Calibrate the buck and LDO voltages.
         """
 
-        self.buck_calibration = []
-        self.ldo_calibration = []
+        self._buck_calibration["x"].clear()
+        self._buck_calibration["y"].clear()
+        self._ldo_calibration["x"].clear()
+        self._ldo_calibration["y"].clear()
+
         await self.enable()
 
-        for digital_value in np.linspace(2625, 234, num=data_points, dtype=int):
-            await self.buck_dac.set_raw_value(int(digital_value))
-            volts_buck = await self.adc.read_pin(self.AdcChannels.BUCK_VOLTAGE) * (
-                6.144 / 32767.0
-            )
-            self.buck_calibration.append([int(digital_value), volts_buck])
+        buck_max_v_raw = 234
 
-        self.buck_dac.set_raw_value(234)
+        for digital_value in np.linspace(
+            2625, buck_max_v_raw, num=data_points, dtype=int
+        ):
+            await self.buck_dac.set_raw_value(int(digital_value))
+            await asyncio.sleep(0.02)  # Allow the buck voltage to stabilize
+            volts_buck = await self.get_voltage(self.AdcChannels.BUCK_VOLTAGE)
+            self._buck_calibration["x"].append(float(volts_buck))
+            self._buck_calibration["y"].append(float(digital_value))
+
+        await self.buck_dac.set_raw_value(buck_max_v_raw)
+
         for digital_value in np.linspace(3760, 42, num=data_points, dtype=int):
             await self.ldo_dac.set_raw_value(int(digital_value))
-            volts_ldo = await self.adc.read_pin(self.AdcChannels.LDO_VOLTAGE) * (
-                6.144 / 32767.0
-            )
-            self.ldo_calibration.append([int(digital_value), volts_ldo])
+            await asyncio.sleep(0.02)  # Allow the buck voltage to stabilize
+            volts_ldo = await self.get_voltage(self.AdcChannels.LDO_VOLTAGE)
+            self._ldo_calibration["x"].append(float(volts_ldo))
+            self._ldo_calibration["y"].append(float(digital_value))
 
-        logger.info(f"[Cell {self.cell_num}] Buck calibration: {self.buck_calibration}")
-        logger.info(f"[Cell {self.cell_num}] LDO calibration: {self.ldo_calibration}")
-
-    def _calculate_setpoint(self, voltage: float, calibration: list[tuple[int, float]]):
+    def _calculate_setpoint(
+        self, voltage: float, calibration: dict[str, list[float]]
+    ) -> int:
         """
         Calculate the DAC setpoint using linear regression over all calibration points.
         """
-        n = len(calibration)
-        total_voltage = 0.0
-        total_setpoint = 0.0
-        for setp, volt in calibration:
-            total_setpoint += setp
-            total_voltage += volt
-        avg_voltage = total_voltage / n
-        avg_setpoint = total_setpoint / n
-
-        numerator = 0.0
-        denominator = 0.0
-        for setp, volt in calibration:
-            numerator += (volt - avg_voltage) * (setp - avg_setpoint)
-            denominator += (volt - avg_voltage) ** 2
-
-        if denominator == 0:
-            return int(round(avg_setpoint))
-
-        m = numerator / denominator
-        b = avg_setpoint - m * avg_voltage
-
-        predicted_setpoint = m * voltage + b
-        return int(round(predicted_setpoint))
+        return round(
+            np.interp(
+                voltage,
+                np.array(calibration["x"]),
+                np.array(calibration["y"]),
+            )
+        )
 
     async def _set_buck_voltage(self, voltage):
         """
         Set the buck converter voltage.
         """
-        setpoint = self._calculate_setpoint(voltage, self.buck_calibration)
+        setpoint = self._calculate_setpoint(voltage, self._buck_calibration)
         await self.buck_dac.set_raw_value(setpoint)
 
     async def _set_ldo_voltage(self, voltage):
         """
         Set the LDO voltage.
         """
-        setpoint = self._calculate_setpoint(voltage, self.ldo_calibration)
+        setpoint = self._calculate_setpoint(voltage, self._ldo_calibration)
         await self.ldo_dac.set_raw_value(setpoint)
 
     async def turn_on_output_relay(self):
@@ -285,9 +309,6 @@ class Cell:
         shunt_voltage = await self.adc.read_pin(self.AdcChannels.OUTPUT_CURRENT)
         current = shunt_voltage / self.SHUNT_RESISTOR_OHMS / self.SHUNT_GAIN
         return current
-
-    async def __str__(self):
-        return f"Cell {self.cell_num} | Bus: {self.bus} | Enabled: {self.enabled}"
 
     async def aclose(self):
         await self.turn_off_output_relay()
