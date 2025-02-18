@@ -22,7 +22,6 @@ from typing import Generator, Protocol
 
 import altair as alt
 from hil.utils.config import ConfigDict, load_config, save_config
-from hil.utils.pet_name import get_pet_name
 import pathvalidate
 import polars as pl
 import pytest
@@ -289,7 +288,7 @@ def machine_config(request: _Request) -> Generator[ConfigDict, None, None]:
     configs_dir = request.config.getini("hil_configs_dir")
     configs_path = Path(str(configs_dir) if configs_dir else default_configs_dir)
 
-    pet_name = get_pet_name()
+    pet_name = socket.gethostname()
     config_obj = load_config(Path(request.config.rootdir) / configs_path, pet_name)
     try:
         yield config_obj
