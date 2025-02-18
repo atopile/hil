@@ -40,6 +40,12 @@ async def test_performance(hil: "Hil"):
 
 @pytest.mark.runs_on(hostname="chunky-otter")
 async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
+    """
+    Set output voltage (0.5- 4.3V, 0.1V steps)
+        - Set output voltage
+        - Measure output voltage
+        - Check voltage within 0.02V
+    """
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
     VOLTAGES = [v / 10 for v in range(5, 44)]
 
@@ -51,38 +57,52 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
             await cell.close_load_switch()
 
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
-        with ExitStack() as exit_stack, table:
+        with ExitStack() as exit_stack:
             traces = [
                 exit_stack.enter_context(
                     record(cell.get_voltage, name=f"cell {cell.cell_num}")
                 )
                 for cell in hil.cellsim.cells
             ]
+            target_trace = Trace("Target")
+            record.add_trace(target_trace)
 
             for voltage in VOLTAGES:
                 for cell in hil.cellsim.cells:
                     await cell.set_voltage(voltage)
 
-                async def _check_voltage(trace: Trace):
-                    await asyncio.sleep(0.5)
-                    measured = await trace.get_value()
-                    assert abs(measured - voltage) <= voltage * 0.2, (
-                        f"Expected {voltage}V (±20%), got {measured}V"
-                    )
+                # Bracket the voltage with two samples to make it stepped
+                target_trace.append(voltage)
+                await asyncio.sleep(0.3)  # Collect data for this time
+                target_trace.append(voltage)
 
-                await table.gather_row(
-                    *(_check_voltage(t) for t in traces), name=f"{voltage}V"
-                )
+                ALLOWED_TOLERANCE = 0.02
+                now = datetime.now()
+                for ctx, t in table.iter_row(f"{voltage}V", traces):
+                    with ctx:
+                        assert (
+                            t.to_polars()
+                            .select(
+                                (
+                                    (voltage - ALLOWED_TOLERANCE < t.value)
+                                    & (t.value < voltage + ALLOWED_TOLERANCE)
+                                )
+                                .filter((t.timestamp > now - seconds(0.2)))
+                                .all()
+                            )
+                            .item(0, t._name)
+                        )
+
+        table.finalize()
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
 async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
     """
-    Test the buck voltage per cell.
-        - Set Buck voltage (1.5- 4.4V, 0.1V steps)
-            - Set Buck voltage
-            - Measure buck voltage
-            - Check voltage within 0.02V
+    Set Buck voltage (1.5- 4.4V, 0.1V steps)
+        - Set Buck voltage
+        - Measure buck voltage
+        - Check voltage within 0.02V
     """
     BUCK_VOLTAGES = [v / 10 for v in range(15, 45)][::5]
     cells = hil.cellsim.cells

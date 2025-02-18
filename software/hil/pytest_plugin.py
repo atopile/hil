@@ -229,10 +229,6 @@ def record(request: _Request, caplog: pytest.LogCaptureFixture):
     traces: list[Trace] = []
 
     class _record(hil_record):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.add_trace(self.trace)
-
         @classmethod
         def add_trace(cls, trace: Trace):
             traces.append(trace)
