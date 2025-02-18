@@ -1,4 +1,5 @@
 import uuid
+import hashlib
 
 
 ADJECTIVES = [
@@ -101,10 +102,13 @@ def get_pet_name(identifier: int | None = None) -> str:
     if identifier is None:
         identifier = uuid.getnode()
 
+    # MACs aren't evenly distributed, so we hash them to get a more even distribution
+    hashed = hashlib.sha256(identifier.to_bytes(6)).digest()
+
     # Extract first 3 bytes for adjective (24 bits)
-    adj_hash = (identifier >> 24) & 0xFFFFFF
+    adj_hash = int.from_bytes(hashed[:3])
     # Extract last 3 bytes for animal (24 bits)
-    animal_hash = identifier & 0xFFFFFF
+    animal_hash = int.from_bytes(hashed[-3:])
 
     # Select deterministic names using modulo
     adjective = ADJECTIVES[adj_hash % len(ADJECTIVES)]
