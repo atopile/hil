@@ -47,6 +47,7 @@ class _Config(Protocol):
     rootdir: Path | str
 
     def addinivalue_line(self, name: str, line: str) -> None: ...
+    def getini(self, name: str) -> list[str] | str | None: ...
 
 
 class _Node(Protocol):
@@ -73,6 +74,13 @@ class _Item(Protocol):
 
     config: _Config
     nodeid: str
+
+
+def pytest_addoption(parser: pytest.Parser):
+    parser.addini(
+        "hil_configs_dir",
+        help="directory path relative to rootdir where machine configs are stored (default: <first testpath>/configs)",
+    )
 
 
 def pytest_configure(config: _Config):
@@ -270,9 +278,20 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
 
 @pytest.fixture(scope="session")
 def machine_config(request: _Request) -> Generator[ConfigDict, None, None]:
+    # Get the configs_dir from pytest ini options, defaulting to first testpath + /configs
+    testpaths = request.config.getini("testpaths")
+    if isinstance(testpaths, (list, set, tuple)):
+        default_testpath = testpaths[0] if testpaths else "tests"
+    else:
+        default_testpath = testpaths if testpaths else "tests"
+    default_configs_dir = str(Path(default_testpath) / "configs")
+
+    configs_dir = request.config.getini("hil_configs_dir")
+    configs_path = Path(str(configs_dir) if configs_dir else default_configs_dir)
+
     pet_name = get_pet_name()
-    config_obj = load_config(Path(request.config.rootdir) / "configs", pet_name)
+    config_obj = load_config(Path(request.config.rootdir) / configs_path, pet_name)
     try:
         yield config_obj
     finally:
-        save_config(config_obj, Path(request.config.rootdir) / "configs", pet_name)
+        save_config(config_obj, Path(request.config.rootdir) / configs_path, pet_name)
