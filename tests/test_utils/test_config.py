@@ -1,4 +1,6 @@
-from hil.utils.config import ConfigDict
+from pathlib import Path
+
+from hil.utils.config import ConfigDict, load_config, save_config
 
 
 def test_configdict():
@@ -51,3 +53,90 @@ def test_configdict_from_dict():
     assert config["nested"]["value"] == 2
     assert config["list"] == [1, 2, 3]
     assert isinstance(config["nested"], ConfigDict)
+
+
+def test_configdict_clean():
+    # Test cleaning of unused paths
+    config = ConfigDict.from_dict(
+        {
+            "used": 1,
+            "unused": 2,
+            "nested": {"used": 3, "unused": 4},
+            "deep": {"nested": {"used": 5, "unused": 6}},
+            1: "integer key",  # Test integer key
+        }
+    )
+
+    # Access some paths to mark them as used
+    assert config["used"] == 1
+    assert config["nested"]["used"] == 3
+    assert config["deep"]["nested"]["used"] == 5
+    assert config[1] == "integer key"  # Access integer key
+
+    # Clean the config
+    config.clean()
+
+    # Check that used paths are retained
+    assert config["used"] == 1
+    assert config["nested"]["used"] == 3
+    assert config["deep"]["nested"]["used"] == 5
+    assert config[1] == "integer key"
+
+    # Check that unused paths are removed
+    assert "unused" not in config
+    assert "unused" not in config["nested"]
+    assert "unused" not in config["deep"]["nested"]
+
+
+def test_load_save_config(tmp_path: Path):
+    # Create a test config
+    config_dir = tmp_path / "configs"
+    config_dir.mkdir()
+
+    original_config = {
+        "string_key": "value",
+        1: "integer key",
+        "nested": {"key": "value"},
+        "list": [1, 2, 3],
+    }
+
+    # Test saving
+    config = ConfigDict.from_dict(original_config)
+    save_config(config, config_dir, "test_pet")
+
+    # Verify the file exists
+    config_path = config_dir / "test_pet.json"
+    assert config_path.exists()
+
+    # Test loading
+    loaded_config = load_config(config_dir, "test_pet")
+    assert loaded_config["string_key"] == "value"
+    assert loaded_config["1"] == "integer key"  # Integer keys are converted to strings
+    assert loaded_config["nested"]["key"] == "value"
+    assert loaded_config["list"] == [1, 2, 3]
+
+    # Test loading with non-existent pet name
+    empty_config = load_config(config_dir, "non_existent_pet")
+    assert isinstance(empty_config, ConfigDict)
+    assert empty_config == ConfigDict.DEFAULTS
+
+    # Test loading from empty directory
+    empty_dir = tmp_path / "empty"
+    empty_dir.mkdir()
+    empty_config = load_config(empty_dir, "test_pet")
+    assert isinstance(empty_config, ConfigDict)
+    assert empty_config == ConfigDict.DEFAULTS
+
+
+def test_load_config_invalid_json(tmp_path):
+    config_dir = tmp_path / "configs"
+    config_dir.mkdir()
+
+    # Create an invalid JSON file
+    invalid_config_path = config_dir / "invalid.json"
+    invalid_config_path.write_text("{invalid json")
+
+    # Should return default ConfigDict for invalid JSON
+    config = load_config(config_dir, "test_pet")
+    assert isinstance(config, ConfigDict)
+    assert config == ConfigDict.DEFAULTS
