@@ -157,15 +157,14 @@ class AsyncSMBus(ABC):
         Returns:
             AsyncContextManager[SMBusHandle]: Context manager that yields an SMBusHandle
         """
-        pass
 
+    @abstractmethod
     async def __aenter__(self) -> Self:
         """Enter the async context manager."""
-        return self
 
+    @abstractmethod
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Exit the async context manager."""
-        pass
 
 
 class AsyncSMBusPeripheral(AsyncSMBus):
