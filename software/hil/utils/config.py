@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 class ConfigDict(defaultdict):
     def __init__(self, *args, **kwargs):
         super().__init__(ConfigDict, *args, **kwargs)
+        self._touched = set()
 
     @classmethod
     def from_dict(cls, d: dict):
@@ -18,6 +19,22 @@ class ConfigDict(defaultdict):
             if isinstance(v, dict):
                 self[k] = cls.from_dict(v)
         return self
+
+    def __getitem__(self, key):
+        # The JSON module will stringify keys regardless
+        key = str(key)
+        self._touched.add(key)
+        return super().__getitem__(key)
+
+    def clean(self):
+        """Recursively clean the dict and any sub-dicts of un-read items"""
+        for key in self:
+            if key in self._touched:
+                value = self[key]
+                if isinstance(value, ConfigDict):
+                    value.clean()
+            else:
+                del self[key]
 
 
 def load_config(configs_dir: Path, pet_name: str | None = None) -> ConfigDict:
