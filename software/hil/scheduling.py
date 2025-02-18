@@ -89,25 +89,54 @@ class HeterogenousLoadScheduling(LoadScheduling):
                     f"Test {test_name} has no compatible worker: requires one of {runs_on_list}"
                 )
 
+    def check_schedule(self, node: WorkerController, duration: float = 0) -> None:
+        """Ref: `LoadScheduling.check_schedule`"""
+        if node.shutting_down:
+            return
+
+        if self.pending:
+            compatible_indices = set(self.test_indices_by_worker[node])
+            compatible_pending = [i for i in self.pending if i in compatible_indices]
+
+            if not compatible_pending:
+                node.shutdown()
+                return
+
+            num_nodes = sum(1 for n in self.nodes if self.test_indices_by_worker[n])
+            items_per_node_min = max(2, len(compatible_pending) // num_nodes // 4)
+            items_per_node_max = max(2, len(compatible_pending) // num_nodes // 2)
+
+            node_pending = self.node2pending[node]
+            if len(node_pending) < items_per_node_min:
+                if duration >= 0.1 and len(node_pending) >= 2:
+                    # Node is busy
+                    return
+
+                num_send = items_per_node_max - len(node_pending)
+                # Keep at least 2 tests pending even if maxschedchunk=1
+                maxschedchunk = max(2 - len(node_pending), self.maxschedchunk)
+                self._send_tests(node, min(num_send, maxschedchunk))
+        else:
+            node.shutdown()
+
+        self.log("num items waiting for node:", len(self.pending))
+
     def schedule(self) -> None:
-        # FIXME: close review
+        """Ref: `LoadScheduling.schedule`"""
 
         assert self.collection_is_completed
 
-        # If already scheduled, just check schedules
         if self.collection is not None:
             for node in self.nodes:
                 self.check_schedule(node)
             return
 
-        # Verify collections are identical
         if not self._check_nodes_have_same_collection():
             self.log("**Different tests collected, aborting run**")
             return
 
         self._check_collection()
 
-        # Initialize collection and pending tests
         self.collection = next(iter(self.node2collection.values()))
         self.pending[:] = range(len(self.collection))
         if not self.collection:
@@ -116,20 +145,15 @@ class HeterogenousLoadScheduling(LoadScheduling):
         if self.maxschedchunk is None:
             self.maxschedchunk = len(self.collection)
 
-        # For each node, calculate how many tests it should initially receive
         for node in self.nodes:
-            compatible_tests = len(self.test_indices_by_worker[node])
-            if compatible_tests == 0:
+            if (compatible_tests := len(self.test_indices_by_worker[node])) == 0:
                 continue
 
-            # Calculate initial chunk size for this node
             items_per_node = compatible_tests // len(self.nodes)
             node_chunksize = min(max(items_per_node // 4, 2), self.maxschedchunk)
 
-            # Send initial batch of tests
             self._send_tests(node, node_chunksize)
 
-        # If no more pending tests, start shutting down nodes
         if not self.pending:
             for node in self.nodes:
                 node.shutdown()
