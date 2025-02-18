@@ -208,9 +208,9 @@ module Cell:
 
     gpio.ADDR ~ _power_3v3.gnd # 0x20
 
-    _power_3v3.vcc.override_net_name = "3V3"
-    _power_3v3.gnd.override_net_name = "3V3_GND"
-    _power_5v.vcc.override_net_name = "5V"
+    # _power_3v3.vcc.override_net_name = "3V3"
+    # _power_3v3.gnd.override_net_name = "3V3_GND"
+    # _power_5v.vcc.override_net_name = "5V"
 
 
 # Custom interface for connecting the cells together

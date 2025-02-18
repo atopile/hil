@@ -104,11 +104,11 @@ module SpaceBMSHIL:
     # power_3v3 ~ cell_2.power_isolator
 
     # Name power rails
-    power_vusb.vcc.override_net_name = "VUSB"
-    power_24v.vcc.override_net_name = "24V"
-    power_5v.vcc.override_net_name = "5V"
-    power_3v3.vcc.override_net_name = "3.3V"
-    gnd.override_net_name = "GND"
+    # power_vusb.vcc.override_net_name = "VUSB"
+    # power_24v.vcc.override_net_name = "24V"
+    # power_5v.vcc.override_net_name = "5V"
+    # power_3v3.vcc.override_net_name = "3.3V"
+    # gnd.override_net_name = "GND"
 
     # I2C
     i2c_pullup = new I2CPullup
@@ -122,26 +122,26 @@ module SpaceBMSHIL:
     # mux_1.i2c4 ~ relay.i2c
 
     # Name data lines
-    controller.i2c1.sda.override_net_name = "CONTROLLER_I2C_SDA"
-    controller.i2c1.scl.override_net_name = "CONTROLLER_I2C_SCL"
+    # controller.i2c1.sda.override_net_name = "CONTROLLER_I2C_SDA"
+    # controller.i2c1.scl.override_net_name = "CONTROLLER_I2C_SCL"
     # cell_1.i2c.sda.override_net_name = "CELL_1_I2C_SDA"
     # cell_1.i2c.scl.override_net_name = "CELL_1_I2C_SCL"
     # cell_2.i2c.sda.override_net_name = "CELL_2_I2C_SDA"
     # cell_2.i2c.scl.override_net_name = "CELL_2_I2C_SCL"
-    thermistors.i2c.sda.override_net_name = "THERMISTORS_I2C_SDA"
-    thermistors.i2c.scl.override_net_name = "THERMISTORS_I2C_SCL"
-    buck_boost.i2c.sda.override_net_name = "BOOST_I2C_SDA"
-    buck_boost.i2c.scl.override_net_name = "BOOST_I2C_SCL"
+    # thermistors.i2c.sda.override_net_name = "THERMISTORS_I2C_SDA"
+    # thermistors.i2c.scl.override_net_name = "THERMISTORS_I2C_SCL"
+    # buck_boost.i2c.sda.override_net_name = "BOOST_I2C_SDA"
+    # buck_boost.i2c.scl.override_net_name = "BOOST_I2C_SCL"
     # relay.i2c.sda.override_net_name = "RELAY_I2C_SDA"
     # relay.i2c.scl.override_net_name = "RELAY_I2C_SCL"
 
     # SPI
     controller.spi4 ~ can_controller.spi
     controller.spi4_cs_1 ~ can_controller.spi_cs
-    can_controller.spi.mosi.override_net_name = "CAN_SPI_MOSI"
-    can_controller.spi.miso.override_net_name = "CAN_SPI_MISO"
-    can_controller.spi.sclk.override_net_name = "CAN_SPI_SCLK"
-    can_controller.spi_cs.override_net_name = "CAN_SPI_CS"
+    # can_controller.spi.mosi.override_net_name = "CAN_SPI_MOSI"
+    # can_controller.spi.miso.override_net_name = "CAN_SPI_MISO"
+    # can_controller.spi.sclk.override_net_name = "CAN_SPI_SCLK"
+    # can_controller.spi_cs.override_net_name = "CAN_SPI_CS"
 
     # Cell connections
     # cell_1.cell_up ~ cell_2.cell_down
@@ -202,12 +202,12 @@ module SpaceBMSHIL:
     # cell_1.power_out.gnd.override_net_name = "CELL_1_GND"
     # cell_1.power_out.vcc.override_net_name = "CELL_1_VCC"
     # cell_2.power_out.vcc.override_net_name = "CELL_2_VCC"
-    thermistors.output_1.override_net_name = "THERMISTOR_1"
-    thermistors.output_2.override_net_name = "THERMISTOR_2"
-    thermistors.output_3.override_net_name = "THERMISTOR_3"
-    thermistors.output_4.override_net_name = "THERMISTOR_4"
-    buck_boost.power_out.vcc.override_net_name = "BOOST_VCC"
-    buck_boost.power_out.gnd.override_net_name = "BOOST_GND"
+    # thermistors.output_1.override_net_name = "THERMISTOR_1"
+    # thermistors.output_2.override_net_name = "THERMISTOR_2"
+    # thermistors.output_3.override_net_name = "THERMISTOR_3"
+    # thermistors.output_4.override_net_name = "THERMISTOR_4"
+    # buck_boost.power_out.vcc.override_net_name = "BOOST_VCC"
+    # buck_boost.power_out.gnd.override_net_name = "BOOST_GND"
 
     # Debug
     saleae_header_1 = new DebugSaleae
