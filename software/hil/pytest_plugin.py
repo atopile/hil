@@ -334,10 +334,9 @@ def pytest_configure_node(node: WorkerController):
     channel = node.gateway.remote_exec(
         """
         import subprocess
-        result = subprocess.run(['uv', 'sync', '--frozen'], capture_output=True, text=True)
-        channel.send((result.returncode, result.stdout, result.stderr))
+        result = subprocess.run(['uv', 'sync', '--frozen'], capture_output=True)
+        channel.send(result.returncode)
         """
     )
-    return_code, _, stderr = channel.receive()
+    return_code = channel.receive()
     assert return_code == 0
-    print(stderr)

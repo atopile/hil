@@ -107,9 +107,6 @@ class HeterogenousLoadScheduling(LoadScheduling):
 
         self._check_collection()
 
-        print(self.test_names_by_worker)
-        print(self.test_indices_by_worker)
-
         # Initialize collection and pending tests
         self.collection = next(iter(self.node2collection.values()))
         self.pending[:] = range(len(self.collection))
@@ -141,7 +138,6 @@ class HeterogenousLoadScheduling(LoadScheduling):
         compatible_indices = set(self.test_indices_by_worker[node])
         compatible_pending = [i for i in self.pending if i in compatible_indices]
         tests_for_node = compatible_pending[:num]
-        print(f"sending {tests_for_node} to {node}")
         if tests_for_node:
             self.pending = [i for i in self.pending if i not in tests_for_node]
             self.node2pending[node].extend(tests_for_node)
