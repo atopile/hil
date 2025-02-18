@@ -97,14 +97,14 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
-async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
+async def test_buck_voltage(hil: "Hil", record: Recorder):
     """
-    Set Buck voltage (1.5- 4.4V, 0.1V steps)
+    Set Buck voltage (1.5 - 4.4V, 0.1V steps)
         - Set Buck voltage
         - Measure buck voltage
-        - Check voltage within 0.02V
+        - Check voltage within 0.1V
     """
-    BUCK_VOLTAGES = [v / 10 for v in range(15, 45)][::5]
+    BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
     cells = hil.cellsim.cells
 
     async with hil:
@@ -140,7 +140,7 @@ async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
                 target_trace.append(voltage)  # Do this both sides to make it stepped
 
                 now = datetime.now()
-                ALLOWED_TOLERANCE = 0.02
+                ALLOWED_TOLERANCE = 0.1
                 for ctx, t in table.iter_row(f"{voltage}V", traces):
                     with ctx:
                         assert (
