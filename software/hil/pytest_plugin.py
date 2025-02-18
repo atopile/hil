@@ -317,7 +317,6 @@ def pytest_collection(session: pytest.Session):
     session._collection_cache = {}
     session.items = []
     session.testscollected = 0
-    return True
 
 
 @pytest.hookimpl
