@@ -103,7 +103,7 @@ def get_pet_name(identifier: int | None = None) -> str:
         identifier = uuid.getnode()
 
     # MACs aren't evenly distributed, so we hash them to get a more even distribution
-    hashed = hashlib.sha256(identifier.to_bytes(6)).digest()
+    hashed = hashlib.md5(identifier.to_bytes(6)).digest()
 
     # Extract first 3 bytes for adjective (24 bits)
     adj_hash = int.from_bytes(hashed[:3])
