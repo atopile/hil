@@ -30,6 +30,7 @@ from pytest_html import extras as html_extras
 
 from .framework import Trace, record as hil_record
 from xdist.remote import Producer
+from xdist.workermanage import WorkerController
 from xdist.scheduler.protocol import Scheduling
 
 from .framework import record as hil_record
@@ -327,3 +328,17 @@ def pytest_xdist_make_scheduler(config: pytest.Config, log: Producer) -> Schedul
         raise RuntimeError("runs_on_key not found in stash")
 
     return HeterogenousLoadScheduling(config, log, runs_on_by_nodeid)
+
+
+@pytest.hookimpl
+def pytest_configure_node(node: WorkerController):
+    channel = node.gateway.remote_exec(
+        """
+        import subprocess
+        result = subprocess.run(['uv', 'sync', '--frozen'], capture_output=True, text=True)
+        channel.send((result.returncode, result.stdout, result.stderr))
+        """
+    )
+    return_code, _, stderr = channel.receive()
+    assert return_code == 0
+    print(stderr)
