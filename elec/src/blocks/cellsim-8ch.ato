@@ -65,6 +65,15 @@ module CellSim8Ch:
     power_5v ~ cell7.power_5v
     power_5v ~ cell8.power_5v
 
+    power_3v3 ~ cell1.power_isolator
+    power_3v3 ~ cell2.power_isolator
+    power_3v3 ~ cell3.power_isolator
+    power_3v3 ~ cell4.power_isolator
+    power_3v3 ~ cell5.power_isolator
+    power_3v3 ~ cell6.power_isolator
+    power_3v3 ~ cell7.power_isolator
+    power_3v3 ~ cell8.power_isolator
+
     # Cell to cell connections
     cell1.cell_up ~ cell2.cell_down
     cell2.cell_up ~ cell3.cell_down
@@ -73,6 +82,7 @@ module CellSim8Ch:
     cell5.cell_up ~ cell6.cell_down
     cell6.cell_up ~ cell7.cell_down
     cell7.cell_up ~ cell8.cell_down
+
 
     # Cell to i2c mux connections
     i2c_mux.i2c0 ~ cell1.i2c
