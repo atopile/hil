@@ -259,6 +259,7 @@ class record[T]:
         self._task: asyncio.Task | None = None
         self._source = source
         self._trace = Trace[T](name or source.__qualname__)
+        self.add_trace(self._trace)
         self._min_interval = min_interval
         self._last_timestamp: datetime | None = None
 
@@ -376,6 +377,11 @@ class record[T]:
             name=name or gen.__qualname__,
             min_interval=min_interval,
         )
+
+    @classmethod
+    def add_trace(cls, trace: Trace) -> None:
+        """Hook which is called when a trace is created"""
+        pass
 
 
 Recorder = type[record]
