@@ -15,6 +15,12 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
+async def test_calibration(hil: "Hil"):
+    async with hil:
+        await asyncio.gather(*[cell.calibrate() for cell in hil.cellsim.cells])
+
+
+@pytest.mark.runs_on(hostname="chunky-otter")
 async def test_performance(hil: "Hil"):
     async with hil:
         for cell in hil.cellsim.cells:
@@ -39,7 +45,7 @@ async def test_performance(hil: "Hil"):
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
-async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
+async def test_output_voltage(hil: "Hil", record: Recorder):
     """
     Set output voltage (0.5- 4.3V, 0.1V steps)
         - Set output voltage
