@@ -1,5 +1,6 @@
 from enum import IntEnum
 import logging
+from hil.utils.config import ConfigDict
 import numpy as np
 from hil.drivers.ads1x15 import ADS1115
 from hil.drivers.aiosmbus2 import AsyncSMBus
@@ -53,7 +54,7 @@ class Cell:
         pass
 
     @classmethod
-    async def create(cls, cell_num, bus: AsyncSMBus):
+    async def create(cls, cell_num, bus: AsyncSMBus, config: ConfigDict):
         """
         Initialize the cell.
         If mux_channel is not specified, it will use cell_num % 8.
@@ -63,12 +64,15 @@ class Cell:
         self.cell_num = cell_num
         self.bus = bus
         self.enabled = False
-        self.adc = None  # will be created asynchronously in init()
         self.buck_dac = await MCP4725.create(bus, self.Devices.BUCK)
         self.ldo_dac = await MCP4725.create(bus, self.Devices.LDO)
         self.adc = await ADS1115.create(self.bus, self.Devices.ADC)
-        self.buck_calibration = [[234, 4.5971], [2625, 1.5041]]
-        self.ldo_calibration = [[42, 4.5176], [3760, 0.3334]]
+        self.buck_calibration = config.setdefault(
+            "buck_calibration", [[234, 4.5971], [2625, 1.5041]]
+        )
+        self.ldo_calibration = config.setdefault(
+            "ldo_calibration", [[42, 4.5176], [3760, 0.3334]]
+        )
         self._gpio_state = (
             0x00  # 8-bit register representing the current state of GPIO pins.
         )

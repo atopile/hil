@@ -18,9 +18,10 @@ import logging
 import socket
 from datetime import datetime
 from pathlib import Path
-from typing import Protocol
+from typing import Generator, Protocol
 
 import altair as alt
+from hil.utils.config import ConfigDict, load_config, save_config
 import pathvalidate
 import polars as pl
 import pytest
@@ -42,8 +43,10 @@ class _Config(Protocol):
     """
 
     _hil_recorded_trace_paths: dict[str, Path]
+    rootdir: Path | str
 
     def addinivalue_line(self, name: str, line: str) -> None: ...
+    def getini(self, name: str) -> list[str] | str | None: ...
 
 
 class _Node(Protocol):
@@ -72,6 +75,13 @@ class _Item(Protocol):
     nodeid: str
 
 
+def pytest_addoption(parser: pytest.Parser):
+    parser.addini(
+        "hil_configs_dir",
+        help="directory path relative to rootdir where machine configs are stored (default: <first testpath>/configs)",
+    )
+
+
 def pytest_configure(config: _Config):
     """
     Called after command line options have been parsed and all plugins/initialconftest
@@ -88,7 +98,7 @@ def pytest_configure(config: _Config):
 
 
 def _should_runs_on(*, hostname: str | None = None) -> bool:
-    if hostname is not None and socket.gethostname():
+    if hostname is not None and socket.gethostname() != hostname:
         return False
 
     return True
@@ -263,3 +273,24 @@ def pytest_runtest_makereport(item: _Item, call: pytest.CallInfo):
                 f"<iframe style='width: 100%; height: {CHART_HEIGHT + 150}px; border: none;' src='./{trace_chart_path.name}'></iframe>"
             )
         )
+
+
+@pytest.fixture(scope="session")
+def machine_config(request: _Request) -> Generator[ConfigDict, None, None]:
+    # Get the configs_dir from pytest ini options, defaulting to first testpath + /configs
+    testpaths = request.config.getini("testpaths")
+    if isinstance(testpaths, (list, set, tuple)):
+        default_testpath = testpaths[0] if testpaths else "tests"
+    else:
+        default_testpath = testpaths if testpaths else "tests"
+    default_configs_dir = str(Path(default_testpath) / "configs")
+
+    configs_dir = request.config.getini("hil_configs_dir")
+    configs_path = Path(str(configs_dir) if configs_dir else default_configs_dir)
+
+    pet_name = socket.gethostname()
+    config_obj = load_config(Path(request.config.rootdir) / configs_path, pet_name)
+    try:
+        yield config_obj
+    finally:
+        save_config(config_obj, Path(request.config.rootdir) / configs_path, pet_name)

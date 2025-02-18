@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Invoke like: HIL_CONTROLLER_HOST=chunky-otter ./software/scripts/runtest.sh tests/test_demo.py
 
 set -euo pipefail
 
