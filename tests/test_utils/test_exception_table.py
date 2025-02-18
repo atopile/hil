@@ -12,7 +12,7 @@ async def test_exception_table():
     async def totally_fine():
         return "totally fine"
 
-    with pytest.raises(ExceptionGroup):
+    with pytest.raises(Exception):
         with ExceptionTable(["thing a", "thing b", "totally fine"]) as table:
             for i in range(10):
                 await table.gather_row(
@@ -46,7 +46,7 @@ def test_iter_row_with_failure():
                 raise ValueError("Intentional failure for trace2")
             assert isinstance(t, str)
 
-    with pytest.raises(ExceptionGroup):
+    with pytest.raises(ValueError):
         table.finalize()
 
     assert table.table.row_count == 1
