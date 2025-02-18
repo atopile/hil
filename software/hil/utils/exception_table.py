@@ -1,6 +1,7 @@
 import asyncio
+from contextlib import contextmanager
 import logging
-from typing import Any, Sequence
+from typing import Any, ContextManager, Generator, Iterable, Sequence
 
 from rich.console import Console
 from rich.table import Table
@@ -21,12 +22,10 @@ class ExceptionTable:
         else:
             if headers is not None:
                 logger.warning("headers are ignored if table is provided")
-        self.table = table
-        self.headers = headers
 
-        self.row_names: list[str] = []
-        self.rows: list[Sequence[Any]] = []
+        self.table = table
         self._finalized = False
+        self._exceptions: list[Exception] = []
 
     @property
     def finalized(self) -> bool:
@@ -41,6 +40,10 @@ class ExceptionTable:
             return Text(str_val, style="red")
         return Text(str_val, style="green")
 
+    def add_row(self, name: str, *row: Any):
+        self.table.add_row(name, *[self._style(cell) for cell in row])
+        self._exceptions.extend([cell for cell in row if isinstance(cell, Exception)])
+
     async def gather_row(self, *coro_or_future, name: str):
         """
         Awaits the provided coroutines or futures using asyncio.gather.
@@ -50,10 +53,48 @@ class ExceptionTable:
             raise RuntimeError("Cannot call 'gather' on a finalized ExceptionTable.")
 
         results = await asyncio.gather(*coro_or_future, return_exceptions=True)
-        self.rows.append(results)
-        self.row_names.append(name)
+        self.add_row(name, *results)
 
         return results
+
+    def iter_row[T](
+        self, name: str, columns: Iterable[T]
+    ) -> Generator[tuple[ContextManager, T], None, None]:
+        row = []
+
+        @contextmanager
+        def _collect():
+            try:
+                yield
+            except Exception as e:
+                row.append(e)
+            else:
+                row.append("Pass")
+
+        try:
+            for column in columns:
+                yield _collect(), column
+        finally:
+            missing = len(row) < len(self.table.columns) - 1
+            if missing:
+                logger.warning("Missing %d column/s for row %s", missing, name)
+            self.add_row(name, *row)
+
+    def print_table(self):
+        # FIXME: better color formatting
+        Console(color_system="256").print("\n", self.table)
+
+    @property
+    def exceptions(self) -> list[Exception]:
+        return self._exceptions
+
+    def exception_group(self) -> ExceptionGroup | None:
+        if self.exceptions:
+            return ExceptionGroup("Various test exceptions", self.exceptions)
+
+    def raise_exceptions(self):
+        if exg := self.exception_group():
+            raise exg
 
     def finalize(self):
         """
@@ -65,14 +106,12 @@ class ExceptionTable:
             raise RuntimeError("Cannot call 'finalize' on a finalized ExceptionTable.")
         self._finalized = True
 
-        for name, row in zip(self.row_names, self.rows):
-            self.table.add_row(name, *[self._style(cell) for cell in row])
+        self.print_table()
 
-        # FIXME: better color formatting
-        Console(color_system="truecolor").print("\n", self.table)
-        exs = [ex for row in self.rows for ex in row if isinstance(ex, Exception)]
-        if exs:
-            raise ExceptionGroup("Various test exceptions", exs)
+        logger.warning("Raising only the first exception in the table")
+        logger.exception(self.exception_group())
+        if exs := self.exceptions:
+            raise exs[0]
 
     def __enter__(self):
         return self

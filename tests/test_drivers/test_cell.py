@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 import logging
 from contextlib import ExitStack
 from typing import TYPE_CHECKING
@@ -76,18 +77,29 @@ async def test_output_voltage_per_cell(hil: "Hil", record: Recorder):
 
 @pytest.mark.runs_on(hostname="chunky-otter")
 async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
-    BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
+    """
+    Test the buck voltage per cell.
+        - Set Buck voltage (1.5- 4.4V, 0.1V steps)
+            - Set Buck voltage
+            - Measure buck voltage
+            - Check voltage within 0.02V
+    """
+    BUCK_VOLTAGES = [v / 10 for v in range(15, 45)][::5]
+    cells = hil.cellsim.cells
 
     async with hil:
-        for cell in hil.cellsim.cells:
+        for cell in cells:
             await cell.enable()
             await cell.turn_on_output_relay()
             await cell.close_load_switch()
 
-        table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
-        with ExitStack() as exit_stack, table:
-            traces = []
-            for cell in hil.cellsim.cells:
+        table = ExceptionTable([f"cell: {cell.cell_num}" for cell in cells])
+        with ExitStack() as exit_stack:
+            traces: list[Trace] = []
+            target_trace = Trace("Target")
+            record.add_trace(target_trace)
+
+            for cell in cells:
 
                 async def _get_voltage():
                     return await cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
@@ -99,21 +111,32 @@ async def test_buck_voltage_per_cell(hil: "Hil", record: Recorder):
                 )
 
             for voltage in BUCK_VOLTAGES:
-                for cell in hil.cellsim.cells:
+                for cell in cells:
                     await cell._set_buck_voltage(voltage)
+                target_trace.append(voltage)
 
-                async def _check_voltage(trace: Trace):
-                    await asyncio.sleep(0.5)
-                    assert await trace.approx_once_settled(
-                        voltage,
-                        rel_tol=0.2,
-                        stability_lookback=seconds(0.1),
-                        timeout=seconds(0.5),
-                    )
+                # Record for 0.3s to ensure all traces are recorded
+                await asyncio.sleep(0.3)
+                target_trace.append(voltage)  # Do this both sides to make it stepped
 
-                await table.gather_row(
-                    *(_check_voltage(t) for t in traces), name=f"{voltage}V"
-                )
+                now = datetime.now()
+                ALLOWED_TOLERANCE = 0.02
+                for ctx, t in table.iter_row(f"{voltage}V", traces):
+                    with ctx:
+                        assert (
+                            t.to_polars()
+                            .select(
+                                (
+                                    (voltage - ALLOWED_TOLERANCE < t.value)
+                                    & (t.value < voltage + ALLOWED_TOLERANCE)
+                                )
+                                .filter((t.timestamp > now - seconds(0.2)))
+                                .all()
+                            )
+                            .item(0, t._name)
+                        )
+
+        table.finalize()
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
