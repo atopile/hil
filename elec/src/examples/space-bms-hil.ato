@@ -29,16 +29,32 @@ from "blocks/debug-saleae.ato" import DebugSaleae
 # TODO: DI2C Transceiver
 
 module SpaceBMSHIL:
-    # Blocks
+
+    # Controller
     controller = new ControllerCM4
-    power = new PowerUSBPD
+
+    # Cells
     cell_block_1_8 = new CellSim8Ch
     cell_block_9_16 = new CellSim8Ch
-    # relay = new I2CRelay
     thermistors = new AnalogOut4ch
+
+    # Comms
     can_controller = new ComsCANISO
-    variable_resistor = new VariableResistor
-    buck_boost = new Texas_Instruments_BQ25756RRVR
+    # di2c_transceiver = new Texas_Instruments_BQ25756RRVR
+
+    # Heaters
+    heater_1 = new VariableResistor
+    heater_2 = new VariableResistor
+    heater_3 = new VariableResistor
+
+    # Bi-directional supplies
+    batt_supply = new Texas_Instruments_BQ25756RRVR
+    sat_supply = new Texas_Instruments_BQ25756RRVR
+    vshare_supply = new Texas_Instruments_BQ25756RRVR
+
+    #DEP/SEP Relays
+    dep_relay = new I2CRelay
+    sep_relay = new I2CRelay
 
     # Multiplexer
     mux_1 = new TCA9548APWR
@@ -85,8 +101,7 @@ module SpaceBMSHIL:
     gnd ~ power_3v3.gnd
 
     # Power devices
-    # power_24v ~ cell_1.power_in
-    # power_24v ~ cell_2.power_in
+
     power_24v ~ buck_boost.power_in
     # power_5v ~ relay.power_5v
     # power_5v ~ cell_1.power_5v
