@@ -4,6 +4,9 @@ from datetime import datetime, timedelta
 from typing import Any, AsyncGenerator, AsyncIterator, Awaitable, Self, cast
 from collections.abc import Callable
 import polars as pl
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 ZERO_TIMEDELTA = timedelta(0)
@@ -90,9 +93,12 @@ class Trace[T](collections.abc.AsyncIterator):
             }
         )
 
-    def append(self, timestamp: datetime, data: T) -> None:
+    def append(self, data: T, timestamp: datetime | None = None) -> None:
         if self._closed:
             raise RuntimeError("Trace is closed")
+
+        if timestamp is None:
+            timestamp = datetime.now()
 
         self._timestamps.append(timestamp)
         self._data.append(data)
@@ -289,7 +295,7 @@ class record[T]:
                     data = await self._source()
                     data = cast(T, data)
                     timestamp = datetime.now()
-                    self._trace.append(timestamp, data)
+                    self._trace.append(data, timestamp)
                     self._last_timestamp = timestamp
 
             finally:

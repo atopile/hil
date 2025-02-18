@@ -27,7 +27,7 @@ import polars as pl
 import pytest
 from pytest_html import extras as html_extras
 
-from .framework import record as hil_record
+from .framework import Trace, record as hil_record
 
 logger = logging.getLogger(__name__)
 
@@ -114,14 +114,14 @@ def pytest_runtest_setup(item):
 
 
 def _save_request_traces(
-    request: _Request, recs: list[hil_record], logs: list[logging.LogRecord]
-) -> Path | None:
+    request: _Request, traces: list[Trace], logs: list[logging.LogRecord]
+) -> None:
     """
     Save the traces for the given request by merging them into a single Polars DataFrame
     and generating an Altair chart. If no data is found, returns None; otherwise, returns
     the Path to the generated HTML chart.
     """
-    if not recs or request.node.nodeid not in request.config._hil_recorded_trace_paths:
+    if not traces:
         return
 
     # Convert each trace directly to long format and concatenate
@@ -129,12 +129,12 @@ def _save_request_traces(
         [
             pl.DataFrame(
                 {
-                    "timestamp": rec.trace.timestamps,
-                    "trace": [rec.trace.name] * len(rec.trace.timestamps),
-                    "value": rec.trace.data,
+                    "timestamp": trace.timestamps,
+                    "trace": [trace.name] * len(trace.timestamps),
+                    "value": trace.data,
                 }
             )
-            for rec in recs
+            for trace in traces
         ]
     ).sort("timestamp")
 
@@ -209,7 +209,6 @@ def _save_request_traces(
     chart_path = request.config._hil_recorded_trace_paths[request.node.nodeid]
     chart_path.parent.mkdir(parents=True, exist_ok=True)
     final_chart.save(chart_path)
-    return chart_path
 
 
 @pytest.fixture(scope="function")
@@ -227,29 +226,33 @@ def record(request: _Request, caplog: pytest.LogCaptureFixture):
             pass
     ----------------------------------------------------------------
     """
-    recs: list[hil_record] = []
+    traces: list[Trace] = []
 
     class _record(hil_record):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
+            self.add_trace(self.trace)
 
-            recs.append(self)
-            if request.node.nodeid not in request.config._hil_recorded_trace_paths:
-                sanitized_nodeid = (
-                    pathvalidate.sanitize_filename(request.node.nodeid)
-                    .replace(":", "-")
-                    .replace("/", "-")
-                    .replace(".", "-")
-                )
-                chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
-                request.config._hil_recorded_trace_paths[request.node.nodeid] = (
-                    chart_path
-                )
+        @classmethod
+        def add_trace(cls, trace: Trace):
+            traces.append(trace)
+
+            # This is in a bit of a weird spot because it needs to be called before the
+            # report is generated, but this fixture's cleanup is called afterwards
+            sanitized_nodeid = (
+                pathvalidate.sanitize_filename(request.node.nodeid)
+                .replace(":", "-")
+                .replace("/", "-")
+                .replace(".", "-")
+            )
+            chart_path = ARTIFACTS / f"{sanitized_nodeid}.html"
+            request.config._hil_recorded_trace_paths[request.node.nodeid] = chart_path
 
     try:
         yield _record
     finally:
-        _save_request_traces(request, recs, caplog.get_records(when="call"))
+        logger.debug(f"Saving {traces} traces for {request.node.nodeid}")
+        _save_request_traces(request, traces, caplog.get_records(when="call"))
 
 
 @pytest.hookimpl(hookwrapper=True)
