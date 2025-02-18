@@ -13,7 +13,9 @@ class RunsOn:
     def __init__(self, *args, hostname: str | None = None):
         self.hostname = hostname
 
-    def check(self, node: WorkerController) -> bool: ...
+    def check(self, node: WorkerController) -> bool:
+        # FIXME
+        return self.hostname == node.gateway.remoteaddress
 
 
 NodeId = str
@@ -25,6 +27,10 @@ class HeterogenousLoadScheduling(LoadScheduling):
 
     Similar to `LoadScheduling`, except tests are only allocated to compatible worker nodes.
     Affinity is determined by the `runs_on` marker.
+
+    Attributes:
+        runs_on_by_nodeid: Mapping of test node ids to RunsOn records.
+        nodeids_by_worker: Mapping of workers to the node ids that they are compatible with.
     """
 
     def __init__(
@@ -34,42 +40,19 @@ class HeterogenousLoadScheduling(LoadScheduling):
         runs_on_by_nodeid: dict[NodeId, list[RunsOn]],
     ):
         self.runs_on_by_nodeid = runs_on_by_nodeid
+        self.nodeids_by_worker: dict[WorkerController, list[NodeId]] = {}
+        super().__init__(config, log)
 
-    @property
-    def nodes(self) -> list[WorkerController]: ...
-
-    @property
-    def collection_is_completed(self) -> bool: ...
-
-    @property
-    def tests_finished(self) -> bool: ...
-
-    @property
-    def has_pending(self) -> bool: ...
-
-    def add_node(self, node: WorkerController) -> None: ...
+    def add_node(self, node: WorkerController) -> None:
+        super().add_node(node)
+        self.nodeids_by_worker[node] = []
 
     def add_node_collection(
-        self,
-        node: WorkerController,
-        collection: Sequence[str],
-    ) -> None: ...
-
-    def mark_test_complete(
-        self,
-        node: WorkerController,
-        item_index: int,
-        duration: float = 0,
-    ) -> None: ...
-
-    def mark_test_pending(self, item: str) -> None: ...
-
-    def remove_pending_tests_from_node(
-        self,
-        node: WorkerController,
-        indices: Sequence[int],
-    ) -> None: ...
-
-    def remove_node(self, node: WorkerController) -> str | None: ...
-
-    def schedule(self) -> None: ...
+        self, node: WorkerController, collection: Sequence[str]
+    ) -> None:
+        super().add_node_collection(node, collection)
+        self.nodeids_by_worker[node] = [
+            nodeid
+            for nodeid in collection
+            if any(run_on.check(node) for run_on in self.runs_on_by_nodeid[nodeid])
+        ]
