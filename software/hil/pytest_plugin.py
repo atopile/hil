@@ -22,7 +22,7 @@ from typing import Generator, Protocol
 
 import altair as alt
 from hil.utils.config import ConfigDict, load_config, save_config
-from hil.test_scheduler import HeterogenousLoadScheduling, RunsOn
+from hil.scheduling import HeterogenousLoadScheduling, RunsOn
 import pathvalidate
 import polars as pl
 import pytest
@@ -33,7 +33,6 @@ from xdist.remote import Producer
 from xdist.workermanage import WorkerController
 from xdist.scheduler.protocol import Scheduling
 
-from .framework import record as hil_record
 
 logger = logging.getLogger(__name__)
 
