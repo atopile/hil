@@ -86,9 +86,6 @@ builds:
     entry: elec/src/blocks/multiplexer-i2c-8ch.ato:MultiplexerI2C8Ch
     exclude_targets: [mfg-data]
 
-  test:
-    entry: elec/src/blocks/cellsim-8ch.ato:Test
-    exclude_targets: [mfg-data]
 
 dependencies:
 - name: generics
