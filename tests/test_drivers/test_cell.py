@@ -30,7 +30,7 @@ async def test_performance(hil: "Hil"):
         for _ in range(10):
             for cell in hil.cellsim.cells:
                 await cell.enable()
-                await cell.turn_on_output_relay()
+                await cell.turn_off_output_relay()
                 await cell.close_load_switch()
 
             await asyncio.gather(
@@ -40,7 +40,6 @@ async def test_performance(hil: "Hil"):
 
             for cell in hil.cellsim.cells:
                 await cell.open_load_switch()
-                await cell.turn_off_output_relay()
                 await cell.disable()
 
 
@@ -58,8 +57,11 @@ async def test_output_voltage(hil: "Hil", record: Recorder):
     async with hil:
         # Set up the cell
         for cell in hil.cellsim.cells:
+            await asyncio.gather(*[cell.calibrate() for cell in hil.cellsim.cells])
+
+        for cell in hil.cellsim.cells:
             await cell.enable()
-            await cell.turn_on_output_relay()
+            await cell.turn_off_output_relay()
             await cell.close_load_switch()
 
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in hil.cellsim.cells])
@@ -116,7 +118,7 @@ async def test_buck_voltage(hil: "Hil", record: Recorder):
     async with hil:
         for cell in cells:
             await cell.enable()
-            await cell.turn_on_output_relay()
+            await cell.turn_off_output_relay()
             await cell.close_load_switch()
 
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in cells])

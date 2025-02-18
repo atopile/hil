@@ -202,34 +202,25 @@ class Cell:
 
     async def calibrate(self, data_points: int = 16):
         """
-        Calibrate the buck and LDO voltages.
+        Calibrate the LDO voltages.
         """
 
-        self._buck_calibration["x"].clear()
-        self._buck_calibration["y"].clear()
         self._ldo_calibration["x"].clear()
         self._ldo_calibration["y"].clear()
 
         await self.enable()
+        await self.turn_off_output_relay()
+        await self.close_load_switch()
 
-        buck_max_v_raw = 234
+        await self._set_buck_voltage(self.MAX_BUCK_VOLTAGE)
 
         for digital_value in np.linspace(
-            2625, buck_max_v_raw, num=data_points, dtype=int
+            3760, 42, num=data_points, dtype=int, endpoint=True
         ):
-            await self.buck_dac.set_raw_value(int(digital_value))
-            await asyncio.sleep(0.02)  # Allow the buck voltage to stabilize
-            volts_buck = await self.get_voltage(self.AdcChannels.BUCK_VOLTAGE)
-            self._buck_calibration["x"].append(float(volts_buck))
-            self._buck_calibration["y"].append(float(digital_value))
-
-        await self.buck_dac.set_raw_value(buck_max_v_raw)
-
-        for digital_value in np.linspace(3760, 42, num=data_points, dtype=int):
             await self.ldo_dac.set_raw_value(int(digital_value))
-            await asyncio.sleep(0.02)  # Allow the buck voltage to stabilize
-            volts_ldo = await self.get_voltage(self.AdcChannels.LDO_VOLTAGE)
-            self._ldo_calibration["x"].append(float(volts_ldo))
+            await asyncio.sleep(0.05)  # Allow the buck voltage to stabilize
+            v_out_mean = sum([await self.get_voltage() for _ in range(5)]) / 5
+            self._ldo_calibration["x"].append(float(v_out_mean))
             self._ldo_calibration["y"].append(float(digital_value))
 
     def _calculate_setpoint(
