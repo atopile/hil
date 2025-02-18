@@ -23,7 +23,8 @@ class HeterogenousLoadScheduling(LoadScheduling):
     """
     Implement load scheduling across heterogeneous nodes.
 
-    Similar to `LoadScheduling`, except tests are only allocated to compatible worker nodes, as determined by the `runs_on` marker.
+    Similar to `LoadScheduling`, except tests are only allocated to compatible worker nodes.
+    Affinity is determined by the `runs_on` marker.
     """
 
     def __init__(

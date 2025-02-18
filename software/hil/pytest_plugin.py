@@ -303,17 +303,27 @@ def machine_config(request: _Request) -> Generator[ConfigDict, None, None]:
 runs_on_key = pytest.StashKey[dict[str, list[RunsOn]]]()
 
 
-@pytest.hookimpl(hookwrapper=True)
-def pytest_collection_finish(session: pytest.Session):
+@pytest.hookimpl(tryfirst=True)
+def pytest_collection(session: pytest.Session):
     session.config.stash[runs_on_key] = {
         item.nodeid: [
             RunsOn(*m.args, **m.kwargs) for m in item.own_markers if m.name == "runs_on"
         ]
-        for item in session.items
+        for item in session.perform_collect()
     }
-    yield
+    session._notfound = []
+    session._initial_parts = []
+    session._collection_cache = {}
+    session.items = []
+    session.testscollected = 0
+    return True
 
 
-@pytest.hookimpl()
+@pytest.hookimpl
 def pytest_xdist_make_scheduler(config: pytest.Config, log: Producer) -> Scheduling:
-    return HeterogenousLoadScheduling(config, log, config.stash[runs_on_key])
+    try:
+        runs_on_by_nodeid = config.stash[runs_on_key]
+    except KeyError:
+        raise RuntimeError("runs_on_key not found in stash")
+
+    return HeterogenousLoadScheduling(config, log, runs_on_by_nodeid)
