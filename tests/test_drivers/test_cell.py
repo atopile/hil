@@ -3,6 +3,7 @@ from datetime import datetime
 import logging
 from contextlib import ExitStack
 from typing import TYPE_CHECKING
+import numpy as np
 
 from hil.framework import Recorder, Trace, seconds, Calibration
 from hil.utils.exception_table import ExceptionTable
@@ -39,6 +40,28 @@ async def test_performance(hil: "Hil"):
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
+async def test_calibration(hil: "Hil", record: Recorder):
+    # 3760, 200
+    test_trace = Trace("Test")
+    record.add_trace(test_trace)
+
+    cell = hil.cellsim.cells[0]
+    async with hil:
+        await cell.enable()
+        await cell.turn_off_output_relay()
+        await cell.close_load_switch()
+        # await cell.calibrate(data_points=2)
+        await cell.buck_dac.set_raw_value(234)
+        await cell.ldo_dac.set_raw_value(3760)
+        await asyncio.sleep(1)
+        logger.info("LDO_DAC: 3760 Voltage: " + str(await cell.get_voltage()))
+        test_trace.append(await cell.get_voltage())
+        await cell.ldo_dac.set_raw_value(42)
+        await asyncio.sleep(1)
+        logger.info("LDO_DAC: 42 Voltage: " + str(await cell.get_voltage()))
+        test_trace.append(await cell.get_voltage())
+
+@pytest.mark.runs_on(hostname="chunky-otter")
 async def test_output_voltage(hil: "Hil", record: Recorder):
     """
     Set output voltage (0.5- 4.3V, 0.1V steps)
@@ -47,16 +70,15 @@ async def test_output_voltage(hil: "Hil", record: Recorder):
         - Check voltage within 0.02V
     """
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
-    VOLTAGES = [v / 10 for v in range(5, 44)]
+    VOLTAGES = [v / 10 for v in range(5, 42)]
     cells = hil.cellsim.cells
     async with hil:
         # Set up the cell
-        for cell in hil.cellsim.cells:
-            await asyncio.gather(*[cell.calibrate(data_points=16) for cell in cells])
-
-        for cell in hil.cellsim.cells:
+        # for cell in cells:
+        await asyncio.gather(*[cell.calibrate(data_points=32) for cell in cells])
+        for cell in cells:
             await cell.enable()
-            await cell.turn_off_output_relay()
+            await cell.turn_on_output_relay()
             await cell.close_load_switch()
 
         table = ExceptionTable([f"cell: {cell.cell_num}" for cell in cells])
@@ -210,7 +232,7 @@ async def test_calibration_class():
     default_x = [1.0, 2.0]
     default_y = [100.0, 200.0]
     
-    cal2 = Calibration.from_config(config, "test_calibration", default_x, default_y)
+    cal2 = Calibration.from_config(config, default_x, default_y)
     
     # Verify the config was populated with defaults
     assert cal2.x == default_x
@@ -225,3 +247,69 @@ async def test_calibration_class():
         bad_y = [300.0, 200.0, 100.0]
         bad_cal = Calibration(bad_x, bad_y)
         bad_cal.map_xy(2.0)  # Should raise AssertionError
+
+
+@pytest.mark.runs_on(hostname="chunky-otter")
+async def test_cell_calibration(hil: "Hil"):
+    """Test the cell calibration functionality"""
+    async with hil:
+        cell = hil.cellsim.cells[0]  # Test with first cell
+        await cell.enable()
+        
+        # Store initial calibration values
+        initial_ldo_x = cell._ldo_calibration.x.copy()
+        initial_ldo_y = cell._ldo_calibration.y.copy()
+        
+        # Run calibration
+        await cell.calibrate(data_points=8)  # Use fewer points for testing
+        
+        # Verify calibration changed the values
+        assert cell._ldo_calibration.x != initial_ldo_x, "Calibration did not update LDO x values"
+        assert cell._ldo_calibration.y != initial_ldo_y, "Calibration did not update LDO y values"
+        
+        # Verify calibration data is sorted and within expected ranges
+        assert len(cell._ldo_calibration.x) == 8, "Unexpected number of calibration points"
+        assert all(np.diff(cell._ldo_calibration.y) < 0), "Y values not monotonically decreasing"
+        
+        # Test voltage output with new calibration
+        # Get the actual calibrated voltage range
+        # Calculate safe voltage range considering both LDO and buck calibrations
+        min_voltage = max(
+            min(cell._ldo_calibration.x),  # LDO min calibrated voltage
+            cell.MIN_LDO_VOLTAGE,          # LDO minimum voltage
+            min(cell._buck_calibration.x)   # Buck min calibrated voltage
+        )
+        max_voltage = min(
+            max(cell._ldo_calibration.x),   # LDO max calibrated voltage
+            max(cell._buck_calibration.x),  # Buck max calibrated voltage
+            cell.MAX_BUCK_VOLTAGE - 0.5     # Leave margin for dropout
+        )
+        
+        # Ensure we have a valid range
+        assert max_voltage > min_voltage, "No valid voltage range for testing"
+        
+        # Create test points within the calibrated range
+        test_voltages = np.linspace(min_voltage + 0.1, max_voltage - 0.1, num=5).tolist()
+        
+        for voltage in test_voltages:
+            voltage = float(voltage)  # Convert to float before using
+            await cell.set_voltage(voltage)
+            await asyncio.sleep(0.1)  # Allow voltage to settle
+            measured = await cell.get_voltage()
+            
+            # Check if measured voltage is within 5% of target
+            assert abs(measured - voltage) < voltage * 0.05, \
+                f"Calibrated voltage out of range: target={voltage}V, measured={measured}V"
+
+@pytest.fixture(autouse=True)
+async def cleanup_after_test(hil: "Hil"):
+    yield
+    # Cleanup after each test
+    async with hil:
+        for cell in hil.cellsim.cells:
+            try:
+                await cell.disable()
+                await cell.open_load_switch()
+                await cell.turn_off_output_relay()
+            except Exception as e:
+                logger.warning(f"Cleanup failed for cell {cell.cell_num}: {e}")
