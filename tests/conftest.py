@@ -69,7 +69,7 @@ class Hil:
         await self.aclose()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 async def hil(machine_config: ConfigDict):
     # Create HIL instance
     hil = await Hil.create(machine_config)
