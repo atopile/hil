@@ -308,7 +308,7 @@ def pytest_collection(session: pytest.Session):
     session.perform_collect()
     session.config.stash[runs_on_key] = {
         item.nodeid: [
-            RunsOn(*m.args, **m.kwargs) for m in item.own_markers if m.name == "runs_on"
+            RunsOn(*m.args, **m.kwargs) for m in item.iter_markers(name="runs_on")
         ]
         for item in session.items
     }
