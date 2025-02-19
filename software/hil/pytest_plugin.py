@@ -303,14 +303,18 @@ def machine_config(request: _Request) -> Generator[ConfigDict, None, None]:
 runs_on_key = pytest.StashKey[dict[str, list[RunsOn]]]()
 
 
-@pytest.hookimpl(trylast=True)
+@pytest.hookimpl(tryfirst=True)
 def pytest_collection(session: pytest.Session):
+    session.perform_collect()
     session.config.stash[runs_on_key] = {
         item.nodeid: [
             RunsOn(*m.args, **m.kwargs) for m in item.own_markers if m.name == "runs_on"
         ]
         for item in session.items
     }
+
+    # block second collection
+    return True
 
 
 @pytest.hookimpl
