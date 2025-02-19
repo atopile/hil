@@ -41,6 +41,9 @@ async def test_performance(hil: "Hil"):
 
 @pytest.mark.runs_on(hostname="chunky-otter")
 async def test_calibration(hil: "Hil", record: Recorder):
+    """
+    plots limits on recorder and tests calibration
+    """
     # 3760, 200
     test_trace = Trace("Test")
     record.add_trace(test_trace)

@@ -188,17 +188,13 @@ class Cell:
                 f"Voltage {voltage} is below the minimum LDO voltage of {self.MIN_LDO_VOLTAGE}"
             )
 
-        # buck_voltage = max(
-        #     voltage + self._dropout_voltage(voltage), self.MIN_BUCK_VOLTAGE
-        # )
-        # if buck_voltage > self.MAX_BUCK_VOLTAGE:
-        #     raise ValueError(
-        #         f"The required buck voltage for {voltage}V is {buck_voltage}V, which is above the maximum buck voltage of {self.MAX_BUCK_VOLTAGE}"
-        #     )
-
-        # logger.debug(
-        #     f"[Cell {self.cell_num}] Setting voltages: buck={buck_voltage:.2f}V, ldo={voltage:.2f}V"
-        # )
+        buck_voltage = max(
+            voltage + self._dropout_voltage(voltage), self.MIN_BUCK_VOLTAGE
+        )
+        if buck_voltage > self.MAX_BUCK_VOLTAGE:
+            raise ValueError(
+                f"The required buck voltage for {voltage}V is {buck_voltage}V, which is above the maximum buck voltage of {self.MAX_BUCK_VOLTAGE}"
+            )
         await self._set_buck_voltage(self.MAX_BUCK_VOLTAGE)
         await self._set_ldo_voltage(voltage)
 
