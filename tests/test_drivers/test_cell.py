@@ -4,7 +4,7 @@ import logging
 from contextlib import ExitStack
 from typing import TYPE_CHECKING
 
-from hil.framework import Recorder, Trace, seconds
+from hil.framework import Recorder, Trace, dist, seconds
 from hil.utils.exception_table import ExceptionTable
 import pytest
 
@@ -20,7 +20,8 @@ async def test_calibration(hil: "Hil"):
         await asyncio.gather(*[cell.calibrate() for cell in hil.cellsim.cells])
 
 
-@pytest.mark.runs_on(hostname="chunky-otter")
+# @pytest.mark.runs_on(hostname="chunky-otter")
+@dist
 async def test_performance(hil: "Hil"):
     async with hil:
         for cell in hil.cellsim.cells:

@@ -1,7 +1,9 @@
 import asyncio
 import collections.abc
 from datetime import datetime, timedelta
-from typing import Any, AsyncGenerator, AsyncIterator, Awaitable, Self, cast
+import functools
+import inspect
+from typing import Any, AsyncGenerator, AsyncIterator, Awaitable, Coroutine, Self, cast
 from collections.abc import Callable
 import polars as pl
 import logging
@@ -511,3 +513,40 @@ async def ever(query: Query, timeout: timedelta = seconds(10)) -> bool:
 
 async def always(query: Query, timeout: timedelta = seconds(10)) -> bool:
     return await query.always(timeout=timeout)
+
+
+import ray
+
+if not ray.is_initialized():
+    ray.init()
+
+
+def dist(func: Callable | Coroutine | None = None):
+    # TODO: add support for worker requirements
+
+    def wrapperer(func: Callable | Coroutine):
+        if inspect.iscoroutinefunction(func):
+
+            @functools.wraps(func)
+            async def wrapper(*args, **kwargs):
+                @ray.remote
+                def _sync(*args, **kwargs):
+                    return asyncio.run(func(*args, **kwargs))
+
+                return await _sync.remote(*args, **kwargs)
+
+            return wrapper
+        elif callable(func):
+
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                return ray.get(ray.remote(func).remote(*args, **kwargs))
+
+            return wrapper
+        else:
+            raise TypeError(f"Invalid function: {func}")
+
+    if func is None:
+        return wrapperer
+    else:
+        return wrapperer(func)

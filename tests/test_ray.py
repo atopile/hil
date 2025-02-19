@@ -1,47 +1,5 @@
-import asyncio
-import functools
-import inspect
-import logging
-from typing import Callable, Coroutine
-
 import pytest
-import ray
-
-logging.basicConfig(level=logging.DEBUG)
-
-if not ray.is_initialized():
-    ray.init()
-
-
-def dist(func: Callable | Coroutine | None = None):
-    # TODO: add support for worker requirements
-
-    def wrapperer(func: Callable | Coroutine):
-        if inspect.iscoroutinefunction(func):
-
-            @functools.wraps(func)
-            async def wrapper(*args, **kwargs):
-                @ray.remote
-                def _sync(*args, **kwargs):
-                    return asyncio.run(func(*args, **kwargs))
-
-                return await _sync.remote(*args, **kwargs)
-
-            return wrapper
-        elif callable(func):
-
-            @functools.wraps(func)
-            def wrapper(*args, **kwargs):
-                return ray.get(ray.remote(func).remote(*args, **kwargs))
-
-            return wrapper
-        else:
-            raise TypeError(f"Invalid function: {func}")
-
-    if func is None:
-        return wrapperer
-    else:
-        return wrapperer(func)
+from hil.framework import dist
 
 
 class Fix:
