@@ -1,10 +1,13 @@
 import asyncio
 import collections.abc
+import numpy as np
+import polars as pl
+import logging
+from hil.utils.config import ConfigDict
 from datetime import datetime, timedelta
 from typing import Any, AsyncGenerator, AsyncIterator, Awaitable, Self, cast
 from collections.abc import Callable
-import polars as pl
-import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -245,6 +248,34 @@ class Trace[T](collections.abc.AsyncIterator):
                 min_samples=stability_min_samples,
             ),
             timeout,
+        )
+
+
+class Calibration:
+    def __init__(self, x: list[float], y: list[float]):
+        self.x = x
+        self.y = y
+        self.np_x = np.array(x)
+        self.np_y = np.array(y)
+
+    def map_xy(self, x: float) -> int:
+        assert x >= self.np_x[0] and x <= self.np_x[-1], "x value must be within the range of the calibration"
+        assert np.all(np.diff(self.np_x) > 0), "x values must be strictly increasing"
+        return round(np.interp(x, self.np_x, self.np_y))
+
+    def update(self, new_x: list[float], new_y: list[float]): # Updates, the mapping, and recalculates the numpy arrays and implicitly updates the config variables
+        self.x.clear()
+        self.x.extend(new_x)
+        self.y.clear()
+        self.y.extend(new_y)
+        self.np_x = np.array(new_x)
+        self.np_y = np.array(new_y)
+
+    @classmethod
+    def from_config(cls, config: ConfigDict, default_x: list[float], default_y: list[float]) -> Self:
+        return cls(
+            x=config.setdefault("x", default_x),
+            y=config.setdefault("y", default_y)
         )
 
 

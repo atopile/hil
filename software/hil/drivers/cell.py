@@ -1,4 +1,6 @@
 import asyncio
+import polars as pl
+from datetime import datetime
 from enum import IntEnum
 import logging
 from hil.utils.config import ConfigDict
@@ -6,6 +8,8 @@ import numpy as np
 from hil.drivers.ads1x15 import ADS1115
 from hil.drivers.aiosmbus2 import AsyncSMBus
 from hil.drivers.mcp4725 import MCP4725
+
+from hil.framework import record, Recorder, Trace, Calibration
 
 logger = logging.getLogger(__name__)
 
@@ -19,8 +23,8 @@ class Cell:
     buck_dac: MCP4725
     ldo_dac: MCP4725
     _gpio_state: int
-    _buck_calibration: dict[str, list[float]]
-    _ldo_calibration: dict[str, list[float]]
+    _buck_calibration: Calibration
+    _ldo_calibration: Calibration
 
     class Devices(IntEnum):
         LDO = 0x60
@@ -66,10 +70,8 @@ class Cell:
         self.buck_dac = await MCP4725.create(bus, self.Devices.BUCK)
         self.ldo_dac = await MCP4725.create(bus, self.Devices.LDO)
         self.adc = await ADS1115.create(self.bus, self.Devices.ADC)
-        self._buck_calibration = {"x": [1.5041, 4.5971], "y": [2625, 234]}
-        self._ldo_calibration = config.setdefault(
-            "ldo_calibration", {"x": [0.3334, 4.5176], "y": [3760, 42]}
-        )
+        self._buck_calibration = Calibration.from_config(config["buck_calibration"], [1.5041, 4.5971], [2625, 234])
+        self._ldo_calibration = Calibration.from_config(config["ldo_calibration"], [0.3334, 4.5176], [3760, 42])
         self._gpio_state = (
             0x00  # 8-bit register representing the current state of GPIO pins.
         )
@@ -200,42 +202,74 @@ class Cell:
         await self._set_buck_voltage(buck_voltage)
         await self._set_ldo_voltage(voltage)
 
-    async def calibrate(self, data_points: int = 16):
+    async def calibrate(self, data_points: int = 16, recorder: record | None = None):
         """
         Calibrate the LDO voltages.
         """
+        ldo_calibration_list = []
+        await asyncio.gather(
+            self.enable(),
+            self.turn_off_output_relay(),
+            self.close_load_switch(),
+            self._set_buck_voltage(self.MAX_BUCK_VOLTAGE),
+            self._set_ldo_voltage(self.MIN_LDO_VOLTAGE)
+        )
+        await asyncio.sleep(1)
 
-        self._ldo_calibration["x"].clear()
-        self._ldo_calibration["y"].clear()
-
-        await self.enable()
-        await self.turn_off_output_relay()
-        await self.close_load_switch()
-
-        await self._set_buck_voltage(self.MAX_BUCK_VOLTAGE)
-
+        await self.turn_on_output_relay()
         for digital_value in np.linspace(
-            3760, 42, num=data_points, dtype=int, endpoint=True
-        ):
+                 3760, 42, num=data_points, dtype=int, endpoint=True
+             ):
             await self.ldo_dac.set_raw_value(int(digital_value))
-            await asyncio.sleep(0.05)  # Allow the buck voltage to stabilize
-            v_out_mean = sum([await self.get_voltage() for _ in range(5)]) / 5
-            self._ldo_calibration["x"].append(float(v_out_mean))
-            self._ldo_calibration["y"].append(float(digital_value))
+            await asyncio.sleep(0.1)
+            voltage = await self.get_voltage()
+            logger.debug(f"[Cell {self.cell_num}] Voltage read: {voltage:.3f} V (raw: {digital_value})")
+            ldo_calibration_list.append([digital_value, voltage])
+        sorted_indices = np.argsort(ldo_calibration_list[:][0])
+        x_sorted = ldo_calibration_list[:][0][sorted_indices]
+        y_sorted = ldo_calibration_list[:][1][sorted_indices]
+        self._ldo_calibration.update(x_sorted, y_sorted)
+
+        # if recorder is None:
+        #     recorder = record(self.get_voltage, name=f"cell{self.cell_num}_output_voltage")
+
+
+        # await self.enable()
+        # await self.turn_off_output_relay()
+        # await self.close_load_switch()
+
+        # await self._set_buck_voltage(self.MAX_BUCK_VOLTAGE)
+
+        # digital_value_trace = Trace(f"cell{self.cell_num}_ldo_target")
+        # recorder.add_trace(digital_value_trace)
+
+        # with recorder as trace:
+        #     for digital_value in np.linspace(
+        #         3760, 42, num=data_points, dtype=int, endpoint=True
+        #     ):
+        #         target_voltage = digital_value
+        #         digital_value_trace.append(target_voltage)
+        #         await self.ldo_dac.set_raw_value(int(digital_value))
+        #         # Allow the buck voltage to stabilize and collect data
+        #         start_time = datetime.now()
+        #         await asyncio.sleep(0.1)
+        #         digital_value_trace.append(target_voltage)
+        #         self._ldo_calibration["x"].append(
+        #             float(
+        #                 trace.to_polars()
+        #                 .filter(trace.timestamp > start_time)
+        #                 .mean()
+        #                 .item(0, column=trace.name)
+        #             )
+        #         )
+        #         self._ldo_calibration["y"].append(float(digital_value))
+
 
     def _calculate_setpoint(
-        self, voltage: float, calibration: dict[str, list[float]]
+        self, voltage: float, calibration: Calibration
     ) -> int:
-        """
-        Calculate the DAC setpoint using linear regression over all calibration points.
-        """
-        return round(
-            np.interp(
-                voltage,
-                np.array(calibration["x"]),
-                np.array(calibration["y"]),
-            )
-        )
+
+        return calibration.map_xy(voltage)
 
     async def _set_buck_voltage(self, voltage):
         """
