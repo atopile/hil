@@ -140,3 +140,25 @@ def test_load_config_invalid_json(tmp_path):
     config = load_config(config_dir, "test_pet")
     assert isinstance(config, ConfigDict)
     assert config == ConfigDict.DEFAULTS
+
+
+def test_configdict_setdefault():
+    # Test basic setdefault behavior
+    config = ConfigDict()
+    assert config.setdefault("a", 1) == 1
+    assert config["a"] == 1
+
+    # Test that setdefault doesn't override existing values
+    assert config.setdefault("a", 2) == 1
+    assert config["a"] == 1
+
+    # Test setdefault with nested paths
+    config = ConfigDict()
+    assert isinstance(config["x"], ConfigDict)
+
+    # Test setdefault with different types
+    config = ConfigDict()
+    assert config.setdefault("list", [1, 2, 3]) == [1, 2, 3]
+    assert config.setdefault("dict", {"a": 1}) == {"a": 1}
+    assert config.setdefault("string", "test") == "test"
+    assert config.setdefault("number", 42) == 42
