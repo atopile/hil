@@ -208,8 +208,9 @@ class Cell:
         await self.close_load_switch()
         await self._set_buck_voltage(self.MAX_BUCK_VOLTAGE)  # Start with max buck voltage
         await self.ldo_dac.set_raw_value(3760)
-
+        await self.turn_on_output_relay()
         await asyncio.sleep(0.2)
+        
         for dac_value in np.linspace(3760, 200, num=data_points, dtype=int, endpoint=True):
             await self.ldo_dac.set_raw_value(int(dac_value))
             await asyncio.sleep(0.3)  # Increased settling time
@@ -221,12 +222,6 @@ class Cell:
         x_sorted = calibration_array[sorted_indices, 0].tolist()
         y_sorted = calibration_array[sorted_indices, 1].tolist()
         self._ldo_calibration.update(x_sorted, y_sorted)
-
-    def _calculate_setpoint(
-        self, voltage: float, calibration: Calibration
-    ) -> int:
-
-        return calibration.map_xy(voltage)
 
     async def _set_buck_voltage(self, voltage):
         """
