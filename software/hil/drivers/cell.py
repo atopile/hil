@@ -203,16 +203,13 @@ class Cell:
         Calibrate the LDO voltages.
         """
         ldo_calibration_list = []
-        await asyncio.gather(
-            self.enable(),
-            self.turn_off_output_relay(),
-            self.close_load_switch(),
-            self._set_buck_voltage(self.MAX_BUCK_VOLTAGE),  # Start with max buck voltage
-            self.ldo_dac.set_raw_value(3760)
-        )
-        await asyncio.sleep(1)
+        await self.enable()
+        await self.turn_off_output_relay()
+        await self.close_load_switch()
+        await self._set_buck_voltage(self.MAX_BUCK_VOLTAGE)  # Start with max buck voltage
+        await self.ldo_dac.set_raw_value(3760)
 
-        await self.turn_on_output_relay() # 3760, 42
+        await asyncio.sleep(0.2)
         for dac_value in np.linspace(3760, 200, num=data_points, dtype=int, endpoint=True):
             await self.ldo_dac.set_raw_value(int(dac_value))
             await asyncio.sleep(0.3)  # Increased settling time
@@ -235,14 +232,14 @@ class Cell:
         """
         Set the buck converter voltage.
         """
-        setpoint = self._calculate_setpoint(voltage, self._buck_calibration)
+        setpoint = self._buck_calibration.map_xy(voltage)
         await self.buck_dac.set_raw_value(setpoint)
 
     async def _set_ldo_voltage(self, voltage):
         """
         Set the LDO voltage.
         """
-        setpoint = self._calculate_setpoint(voltage, self._ldo_calibration)
+        setpoint = self._ldo_calibration.map_xy(voltage)
         await self.ldo_dac.set_raw_value(setpoint)
 
     async def turn_on_output_relay(self):
