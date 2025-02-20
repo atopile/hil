@@ -38,8 +38,6 @@ async def test_performance(hil: "Hil"):
                 await cell.disable()
 
 
-
-
 @pytest.mark.runs_on(hostname="chunky-otter")
 async def test_output_voltage(hil: "Hil", record: Recorder):
     """
@@ -179,9 +177,8 @@ async def test_mux(hil: "Hil"):
                 assert read_value == cell.cell_num, error_msg
 
 
-
 @pytest.mark.runs_on(hostname="chunky-otter")
-async def skip_test_cell_calibration(hil: "Hil"):
+async def test_cell_calibration(hil: "Hil"):
     """Test the cell calibration functionality"""
     async with hil:
         cell = hil.cellsim.cells[0]  # Test with first cell
@@ -195,32 +192,42 @@ async def skip_test_cell_calibration(hil: "Hil"):
         await cell.calibrate(data_points=8)  # Use fewer points for testing
 
         # Verify calibration changed the values
-        assert cell._ldo_calibration.x != initial_ldo_x, "Calibration did not update LDO x values"
-        assert cell._ldo_calibration.y != initial_ldo_y, "Calibration did not update LDO y values"
+        assert cell._ldo_calibration.x != initial_ldo_x, (
+            "Calibration did not update LDO x values"
+        )
+        assert cell._ldo_calibration.y != initial_ldo_y, (
+            "Calibration did not update LDO y values"
+        )
 
         # Verify calibration data is sorted and within expected ranges
-        assert len(cell._ldo_calibration.x) == 8, "Unexpected number of calibration points"
-        assert all(np.diff(cell._ldo_calibration.y) < 0), "Y values not monotonically decreasing"
+        assert len(cell._ldo_calibration.x) == 8, (
+            "Unexpected number of calibration points"
+        )
+        assert all(np.diff(cell._ldo_calibration.y) < 0), (
+            "Y values not monotonically decreasing"
+        )
 
         # Test voltage output with new calibration
         # Get the actual calibrated voltage range
         # Calculate safe voltage range considering both LDO and buck calibrations
         min_voltage = max(
             min(cell._ldo_calibration.x),  # LDO min calibrated voltage
-            cell.MIN_LDO_VOLTAGE,          # LDO minimum voltage
-            min(cell._buck_calibration.x)   # Buck min calibrated voltage
+            cell.MIN_LDO_VOLTAGE,  # LDO minimum voltage
+            min(cell._buck_calibration.x),  # Buck min calibrated voltage
         )
         max_voltage = min(
-            max(cell._ldo_calibration.x),   # LDO max calibrated voltage
+            max(cell._ldo_calibration.x),  # LDO max calibrated voltage
             max(cell._buck_calibration.x),  # Buck max calibrated voltage
-            cell.MAX_BUCK_VOLTAGE - 0.5     # Leave margin for dropout
+            cell.MAX_BUCK_VOLTAGE - 0.5,  # Leave margin for dropout
         )
 
         # Ensure we have a valid range
         assert max_voltage > min_voltage, "No valid voltage range for testing"
 
         # Create test points within the calibrated range
-        test_voltages = np.linspace(min_voltage + 0.1, max_voltage - 0.1, num=5).tolist()
+        test_voltages = np.linspace(
+            min_voltage + 0.1, max_voltage - 0.1, num=5
+        ).tolist()
 
         for voltage in test_voltages:
             voltage = float(voltage)  # Convert to float before using
@@ -229,6 +236,6 @@ async def skip_test_cell_calibration(hil: "Hil"):
             measured = await cell.get_voltage()
 
             # Check if measured voltage is within 5% of target
-            assert abs(measured - voltage) < voltage * 0.05, \
+            assert abs(measured - voltage) < voltage * 0.05, (
                 f"Calibrated voltage out of range: target={voltage}V, measured={measured}V"
-
+            )
