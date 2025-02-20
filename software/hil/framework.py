@@ -252,17 +252,43 @@ class Trace[T](collections.abc.AsyncIterator):
 
 
 class Calibration:
-    def __init__(self, x: list[float], y: list[float]):
+    """
+    A class for calibrating a value to a range of values.
+    The calibration is defined by a list of x and y values, which are used to interpolate a value.
+    The lower and upper bounds are optional and can be used to limit the range of the calibration.
+    If the lower and upper bounds are not provided, they will be set to the minimum and maximum of the x values.
+    If values are outside the bounds of the calibration, the output will be clipped and be y to nearest x value.
+    """
+
+    def __init__(
+        self,
+        x: list[float],
+        y: list[float],
+        lower_bound: float | None = None,
+        upper_bound: float | None = None,
+    ):
         self.x = x
         self.y = y
+
+        if lower_bound is None:
+            self.lower_bound = min(self.x)
+        else:
+            self.lower_bound = lower_bound
+
+        if upper_bound is None:
+            self.upper_bound = max(self.x)
+        else:
+            self.upper_bound = upper_bound
+
         self.np_x = np.array(x)
         self.np_y = np.array(y)
 
-    def map_xy(self, x: float) -> int:
-        if x < self.np_x[0] or x > self.np_x[-1]:
-            raise ValueError(f"x value {x} is out of range of the calibration")
         if not np.all(np.diff(self.np_x) > 0):
             raise ValueError("x values must be strictly increasing")
+
+    def map_xy(self, x: float) -> int:
+        if x < self.lower_bound or x > self.upper_bound:
+            raise ValueError(f"x value {x} is out of range of the calibration")
         return round(np.interp(x, self.np_x, self.np_y))
 
     def update(self, new_x: list[float], new_y: list[float]):

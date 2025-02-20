@@ -1,6 +1,4 @@
 import asyncio
-import polars as pl
-from datetime import datetime
 from enum import IntEnum
 import logging
 from hil.utils.config import ConfigDict
@@ -9,7 +7,7 @@ from hil.drivers.ads1x15 import ADS1115
 from hil.drivers.aiosmbus2 import AsyncSMBus
 from hil.drivers.mcp4725 import MCP4725
 
-from hil.framework import record, Recorder, Trace, Calibration
+from hil.framework import record, Calibration
 
 logger = logging.getLogger(__name__)
 
@@ -70,8 +68,12 @@ class Cell:
         self.buck_dac = await MCP4725.create(bus, self.Devices.BUCK)
         self.ldo_dac = await MCP4725.create(bus, self.Devices.LDO)
         self.adc = await ADS1115.create(self.bus, self.Devices.ADC)
-        self._buck_calibration = Calibration.from_config(config["buck_calibration"], [1.5041, 4.5971], [2625, 234])
-        self._ldo_calibration = Calibration.from_config(config["ldo_calibration"], [0.228, 4.4], [3760, 42])
+        self._buck_calibration = Calibration(
+            [1.5041, 4.5971], [2625, 234], lower_bound=1.45, upper_bound=4.65
+        )
+        self._ldo_calibration = Calibration.from_config(
+            config["ldo_calibration"], [0.228, 4.4], [3760, 42]
+        )
         self._gpio_state = (
             0x00  # 8-bit register representing the current state of GPIO pins.
         )
@@ -206,16 +208,22 @@ class Cell:
         await self.enable()
         await self.turn_off_output_relay()
         await self.close_load_switch()
-        await self._set_buck_voltage(self.MAX_BUCK_VOLTAGE)  # Start with max buck voltage
+        await self._set_buck_voltage(
+            self.MAX_BUCK_VOLTAGE
+        )  # Start with max buck voltage
         await self.ldo_dac.set_raw_value(3760)
         await self.turn_on_output_relay()
         await asyncio.sleep(0.2)
-        
-        for dac_value in np.linspace(3760, 200, num=data_points, dtype=int, endpoint=True):
+
+        for dac_value in np.linspace(
+            3760, 200, num=data_points, dtype=int, endpoint=True
+        ):
             await self.ldo_dac.set_raw_value(int(dac_value))
             await asyncio.sleep(0.3)  # Increased settling time
             voltage = await self.get_voltage()
-            logger.debug(f"[Cell {self.cell_num}] Voltage read: {voltage:.3f} V (raw: {dac_value})")
+            logger.debug(
+                f"[Cell {self.cell_num}] Voltage read: {voltage:.3f} V (raw: {dac_value})"
+            )
             ldo_calibration_list.append([voltage, dac_value])
         calibration_array = np.array(ldo_calibration_list)
         sorted_indices = np.argsort(calibration_array[:, 0])
