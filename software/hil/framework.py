@@ -259,11 +259,16 @@ class Calibration:
         self.np_y = np.array(y)
 
     def map_xy(self, x: float) -> int:
-        assert x >= self.np_x[0] and x <= self.np_x[-1], "x value must be within the range of the calibration"
-        assert np.all(np.diff(self.np_x) > 0), "x values must be strictly increasing"
+        if x < self.np_x[0] or x > self.np_x[-1]:
+            raise ValueError(f"x value {x} is out of range of the calibration")
+        if not np.all(np.diff(self.np_x) > 0):
+            raise ValueError("x values must be strictly increasing")
         return round(np.interp(x, self.np_x, self.np_y))
 
-    def update(self, new_x: list[float], new_y: list[float]): # Updates, the mapping, and recalculates the numpy arrays and implicitly updates the config variables
+    def update(self, new_x: list[float], new_y: list[float]):
+        """
+        Updates, the mapping, and recalculates the numpy arrays and implicitly updates the config variables
+        """
         self.x.clear()
         self.x.extend(new_x)
         self.y.clear()
@@ -272,10 +277,11 @@ class Calibration:
         self.np_y = np.array(new_y)
 
     @classmethod
-    def from_config(cls, config: ConfigDict, default_x: list[float], default_y: list[float]) -> Self:
+    def from_config(
+        cls, config: ConfigDict, default_x: list[float], default_y: list[float]
+    ) -> Self:
         return cls(
-            x=config.setdefault("x", default_x),
-            y=config.setdefault("y", default_y)
+            x=config.setdefault("x", default_x), y=config.setdefault("y", default_y)
         )
 
 
