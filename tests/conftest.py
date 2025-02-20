@@ -76,16 +76,3 @@ async def hil(machine_config: ConfigDict):
     # Open bus for the duration of the test session
     async with hil.physical_bus:
         yield hil
-
-@pytest.fixture(autouse=True)
-async def cleanup_after_test(hil: "Hil"):
-    yield
-    # Cleanup after each test
-    async with hil:
-        for cell in hil.cellsim.cells:
-            try:
-                await cell.disable()
-                await cell.open_load_switch()
-                await cell.turn_off_output_relay()
-            except Exception as e:
-                logger.warning(f"Cleanup failed for cell {cell.cell_num}: {e}")
