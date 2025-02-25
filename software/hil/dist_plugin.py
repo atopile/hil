@@ -1,11 +1,16 @@
 from dataclasses import dataclass
 from pathlib import Path
+import time
+from typing import TypedDict
 
 import pytest
 
 import ray
 import ray.util.queue
 import socket
+
+
+from _pytest.config import _prepareconfig
 
 
 @dataclass
@@ -18,6 +23,13 @@ class RunsOn:
     def check(self, node) -> bool:
         # FIXME
         return self.hostname is None or self.hostname == node.gateway.id
+
+
+class Event(TypedDict):
+    event: str
+    nodeid: str
+    hostname: str | None
+    item: object | None
 
 
 # TODO: actor pool
@@ -38,51 +50,64 @@ class Remote:
         self.test_queue = test_queue
         self.message_queue = message_queue
         self.hostname = socket.gethostname()
+        self.config = _prepareconfig(args, [self])
 
-        from _pytest.config import get_config
-
-        # TODO: is this too early? do we need to call pytest_cmdline_parse?
-        self.config = get_config(args, None)
-
-        pluginmanager = self.config.pluginmanager
-        print("pluginmanager:", pluginmanager)
-
-        self.config.pluginmanager.hook.pytest_cmdline_parse(
-            pluginmanager=pluginmanager, args=args
-        )
-
+        # TODO: review
+        # self.config.option.loadgroup = self.config.getvalue("dist") == "loadgroup"
+        self.config.option.looponfail = False
         self.config.option.usepdb = False
         self.config.option.dist = "no"
         self.config.option.distload = False
         self.config.option.numprocesses = None
         self.config.option.maxprocesses = None
+        self.config.option.basetemp = Path.cwd() / "dist_tmp"
 
-        print("config:", self.config)
+        # TODO: suppress terminal output
+        self.config.hook.pytest_cmdline_main(config=self.config)
 
-        # self.config.hook.pytest_cmdline_main(config=self.config)
+    def get_item(self, nodeid: str):
+        # TODO: build index
 
-        print("finished pytest configuration")
+        for item in self.session.items:
+            if item.nodeid == nodeid:
+                return item
 
-        # ls
-        print(list(Path.cwd().glob("*")))
+        raise ValueError(f"Item with nodeid {nodeid} not found")
 
-    async def process_tests(self):
+    def process_test(self, nodeid: str):
+        item = self.get_item(nodeid)
+
+        # TODO: nextitem
+        self.config.hook.pytest_runtest_protocol(item=item, nextitem=None)
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_runtestloop(self, session: pytest.Session):
+        self.session = session
+
         # TODO: shutdown signal
 
         try:
             while True:
-                test = await self.test_queue.get_async(block=True)
+                test = self.test_queue.get(block=True)
                 print("running test:", test)
 
-                self.message_queue.put(f"{self.hostname}: processing test: {test}")
+                self.process_test(test)
         except ray.util.queue.Empty:
             pass
 
-    def process_test(self): ...
+        return True
 
     @pytest.hookimpl
-    def pytest_runtestloop(self, session: pytest.Session):
-        print("pytest_runtestloop on remote")
+    def pytest_runtest_logreport(self, report: pytest.TestReport) -> None:
+        # TODO: typed message
+        self.message_queue.put(
+            {
+                "event": "report",
+                "nodeid": report.nodeid,
+                "hostname": self.hostname,
+                "report": report,
+            }
+        )
 
 
 class DSession:
@@ -92,14 +117,11 @@ class DSession:
         if not ray.is_initialized():
             # TODO: from config
             ray.init(
+                log_to_driver=False,  # hide worker output
                 address="ray://192.168.1.199:10001",
                 # namespace="hil",
                 runtime_env={
-                    # TODO: smarter working dir (relative to __file__, git root, etc)
-                    "working_dir": str(Path.cwd()),
-                    # TODO: doesn't work — use this instead:
-                    # `RAY_RUNTIME_ENV_HOOK=ray._private.runtime_env.uv_runtime_env_hook.hook`
-                    # "py_executable": "uv run --isolated",
+                    # `export RAY_RUNTIME_ENV_HOOK=ray._private.runtime_env.uv_runtime_env_hook.hook`
                     # TODO: exclusions from file?
                     "excludes": [
                         "**/*.step",
@@ -116,9 +138,14 @@ class DSession:
         self.test_queue = ray.util.queue.Queue()
         self.message_queue = ray.util.queue.Queue()
 
+        args = [str(x) for x in config.invocation_params.args or ()]
+
         # TODO: remote per worker for each queue
-        self.remote1 = Remote.remote(self.test_queue, self.message_queue, config.args)
-        self.remote1.process_tests.remote()  # type: ignore
+        self.remote1 = Remote.remote(self.test_queue, self.message_queue, args)
+        # self.remote1.process_tests.remote()  # type: ignore
+
+        # TODO: better
+        time.sleep(10)
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_collection(self, session: pytest.Session):
@@ -137,12 +164,13 @@ class DSession:
         # TODO: shutdown handling
 
         for item in session.items:
-            print("enqueuing:", item.nodeid)
             self.test_queue.put(item.nodeid)
 
         while True:
             try:
-                print("received message:", self.message_queue.get(timeout=1))
+                message = self.message_queue.get(timeout=1, block=True)
+                report = message["report"]
+                session.config.hook.pytest_runtest_logreport(report=report)
             except ray.util.queue.Empty:
                 break
 
