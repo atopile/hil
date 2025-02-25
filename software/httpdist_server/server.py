@@ -1,14 +1,21 @@
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Literal
-import uuid
-from attrs import field
+
 import fastapi
-import pytest
 import uvicorn
-from pydantic import BaseModel
+from attrs import field
 from fastapi import UploadFile
-import cloudpickle
+from pydantic import BaseModel
+
+from httpdist_server.models import (
+    GetSessionTestsResponse,
+    GetWorkerSessionTestsResponse,
+    PostSessionsTestsRequest,
+    PostWorkerSessionTestReportRequest,
+    TestReport,
+)
 
 app = fastapi.FastAPI()
 
@@ -100,14 +107,6 @@ async def upload_session_env(session_id: str, env: UploadFile):
     return {"message": "Environment file uploaded successfully"}
 
 
-class PostSessionsTestsRequest(BaseModel):
-    class Test(BaseModel):
-        worker_requirements: set[str]
-        node_id: str
-
-    tests: list[Test]
-
-
 @app.post("/session/{session_id}/tests")
 async def add_tests(session_id: str, request: PostSessionsTestsRequest):
     """Add a test to a session"""
@@ -134,10 +133,6 @@ async def add_tests(session_id: str, request: PostSessionsTestsRequest):
     return {"message": "Tests added successfully"}
 
 
-class GetSessionTestsResponse(BaseModel):
-    test_status: dict[str, Literal["pending", "running", "finished"]]
-
-
 @app.get("/session/{session_id}/finished-tests")
 async def get_finished_tests(session_id: str) -> GetSessionTestsResponse:
     """Get the tests for a session"""
@@ -153,21 +148,6 @@ async def get_finished_tests(session_id: str) -> GetSessionTestsResponse:
     )
 
 
-class TestReport(bytes):
-    @staticmethod
-    def from_report(report: pytest.TestReport) -> "TestReport":
-        return TestReport(cloudpickle.dumps(report))
-
-    def as_report(self) -> pytest.TestReport:
-        return cloudpickle.loads(self)
-
-
-class PostWorkerRegisterRequest(BaseModel):
-    worker_id: str
-    pet_name: str
-    tags: list[str]
-
-
 @app.post("/worker/{worker_id}/heartbeat")
 async def heartbeat(worker_id: str):
     """Heartbeat for a worker"""
@@ -177,10 +157,6 @@ async def heartbeat(worker_id: str):
             return {"message": "Heartbeat received"}
 
     raise fastapi.HTTPException(status_code=404, detail="Worker not found")
-
-
-class PostWorkerSessionTestReportRequest(BaseModel):
-    report: TestReport
 
 
 @app.post("/worker/session/{session_id}/test/{test_id}/report")
@@ -242,12 +218,6 @@ async def get_session_env(session_id: str):
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
     return sessions[session_id].env
-
-
-class GetWorkerSessionTestsResponse(BaseModel):
-    action: Literal["run", "stop"]
-    test_now: str | None
-    test_next: str | None
 
 
 @app.get("/worker/{worker_id}/session/{session_id}/tests")
