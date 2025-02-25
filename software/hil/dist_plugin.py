@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TypedDict
 
 import pytest
 
@@ -24,11 +23,23 @@ class RunsOn:
         return self.hostname is None or self.hostname == node.gateway.id
 
 
-class Event(TypedDict):
-    event: str
-    nodeid: str
-    hostname: str | None
-    item: object | None
+NodeId = str
+
+
+class Events:
+    @dataclass
+    class Start:
+        hostname: str | None
+
+    @dataclass
+    class Finish:
+        hostname: str | None
+
+    @dataclass
+    class Report:
+        hostname: str | None
+        nodeid: NodeId
+        report: pytest.TestReport
 
 
 # TODO: actor pool
@@ -73,7 +84,6 @@ class Remote:
         raise ValueError(f"Item with nodeid {nodeid} not found")
 
     def process_test(self, nodeid_now: str, nodeid_next: str | None):
-        print("processing: ", [nodeid_now, nodeid_next])
         item_now = self.get_item(nodeid_now)
         item_next = self.get_item(nodeid_next) if nodeid_next else None
 
@@ -83,40 +93,32 @@ class Remote:
     def pytest_runtestloop(self, session: pytest.Session):
         self.session = session
 
-        # TODO: shutdown signal
+        self.message_queue.put(Events.Start(hostname=self.hostname))
 
-        try:
-            test_now = self.test_queue.get(block=True, timeout=1)
+        # should be long enough to populate the queue
+        test_now = self.test_queue.get(block=True, timeout=30)
 
-            while True:
-                try:
-                    test_next = self.test_queue.get(block=True, timeout=1)
-                except ray.util.queue.Empty:
-                    # TODO: 'finished' event
-                    test_next = None
+        while True:
+            try:
+                test_next = self.test_queue.get_nowait()
+                # TODO: shutdown signal
+            except ray.util.queue.Empty:
+                test_next = None
 
-                self.process_test(test_now, test_next)
+            self.process_test(test_now, test_next)
 
-                if test_next is None:
-                    break
+            if test_next is None:
+                break
 
-                test_now = test_next
-        except ray.util.queue.Empty:
-            # TODO: 'finished' event
-            return True
+            test_now = test_next
 
+        self.message_queue.put(Events.Finish(hostname=self.hostname))
         return True
 
     @pytest.hookimpl
     def pytest_runtest_logreport(self, report: pytest.TestReport) -> None:
-        # TODO: typed message
         self.message_queue.put(
-            {
-                "event": "report",
-                "nodeid": report.nodeid,
-                "hostname": self.hostname,
-                "report": report,
-            }
+            Events.Report(hostname=self.hostname, nodeid=report.nodeid, report=report)
         )
 
 
@@ -171,26 +173,40 @@ class DSession:
     def pytest_runtestloop(self, session: pytest.Session):
         # TODO: shutdown handling
 
-        reports_by_nodeid = {item.nodeid: None for item in session.items}
+        reports_by_nodeid: dict[NodeId, pytest.TestReport | None] = {
+            item.nodeid: None for item in session.items
+        }
 
         # TODO: manage queue size
         self.test_queue.put_nowait_batch([item.nodeid for item in session.items])
 
-        # TODO: start/finish events
+        started = False
+        finished = False
+
         while True:
             try:
-                message = self.message_queue.get(block=True, timeout=0.1)
-                reports_by_nodeid[message["nodeid"]] = message["report"]
-                session.config.hook.pytest_runtest_logreport(report=message["report"])
+                message = self.message_queue.get_nowait()
+                match message:
+                    case Events.Report(_, nodeid, report):
+                        reports_by_nodeid[nodeid] = report
+                        session.config.hook.pytest_runtest_logreport(report=report)
+                    case Events.Start(_):
+                        started = True
+                    case Events.Finish(_):
+                        assert started
+                        finished = True
+                    case _:
+                        print(f"unknown message: {message}")
             except ray.util.queue.Empty:
-                # TODO: what if results aren't coming?
-                if all(reports_by_nodeid.values()):
+                message = None
+                if finished:
                     break
 
         # TODO: better error
-        assert all(reports_by_nodeid.values()), "No test report for: " + ", ".join(
-            [nodeid for nodeid, report in reports_by_nodeid.items() if report is None]
-        )
+        missing_reports = [
+            nodeid for nodeid, report in reports_by_nodeid.items() if report is None
+        ]
+        assert not missing_reports, f"No test report for: {', '.join(missing_reports)}"
 
         return True
 
