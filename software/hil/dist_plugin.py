@@ -3,6 +3,7 @@ from enum import StrEnum, auto
 from pathlib import Path
 import time
 
+import httpx
 import pytest
 
 
@@ -52,6 +53,15 @@ class EndOfSession(Exception):
     pass
 
 
+class ApiClient:
+    # FIXME
+    API_URL = "http://localhost:8000"
+
+    def __init__(self, config: pytest.Config):
+        self.config = config
+        self._client = httpx.AsyncClient()
+
+
 class Worker:
     """
     Runs on worker node once test session is started.
@@ -64,6 +74,7 @@ class Worker:
 
     def __init__(self, config: pytest.Config):
         self.config = config
+        self.api_client = ApiClient(config)
 
         # TODO: review
         # self.config.option.loadgroup = self.config.getvalue("dist") == "loadgroup"
@@ -156,6 +167,7 @@ class Client:
 
     def __init__(self, config: pytest.Config):
         self.config = config
+        self.api_client = ApiClient(config)
 
     def submit_env(self): ...
 
