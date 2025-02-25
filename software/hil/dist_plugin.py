@@ -74,24 +74,15 @@ class Remote:
 
         self.config.hook.pytest_cmdline_main(config=self.config)
 
-    def get_item(self, nodeid: str):
-        # TODO: build index
-
-        for item in self.session.items:
-            if item.nodeid == nodeid:
-                return item
-
-        raise ValueError(f"Item with nodeid {nodeid} not found")
-
     def process_test(self, nodeid_now: str, nodeid_next: str | None):
-        item_now = self.get_item(nodeid_now)
-        item_next = self.get_item(nodeid_next) if nodeid_next else None
-
+        item_now = self._items_by_nodeid[nodeid_now]
+        item_next = self._items_by_nodeid[nodeid_next] if nodeid_next else None
         self.config.hook.pytest_runtest_protocol(item=item_now, nextitem=item_next)
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_runtestloop(self, session: pytest.Session):
         self.session = session
+        self._items_by_nodeid = {item.nodeid: item for item in session.items}
 
         self.message_queue.put(Events.Start(hostname=self.hostname))
 
