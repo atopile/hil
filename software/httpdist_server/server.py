@@ -1,3 +1,5 @@
+import base64
+from collections.abc import AsyncGenerator
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -7,6 +9,7 @@ import fastapi
 import uvicorn
 from attrs import field
 from fastapi import UploadFile
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from httpdist_server.models import (
@@ -171,14 +174,14 @@ async def post_test_report(
         raise fastapi.HTTPException(status_code=404, detail="Test not found")
 
     test = sessions[session_id].tests[test_id]
-    test.report = request.report
+    test.report = base64.b64decode(request.report)
     test.status = "finished"
 
     return {"message": "Test result uploaded successfully"}
 
 
 @app.get("/session/{session_id}/test/{test_id}/report")
-async def get_test_report(session_id: str, test_id: str) -> TestReport:
+async def get_test_report(session_id: str, test_id: str) -> StreamingResponse:
     """Get the report for a test"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -190,7 +193,13 @@ async def get_test_report(session_id: str, test_id: str) -> TestReport:
     if test.report is None:
         raise fastapi.HTTPException(status_code=404, detail="Test report not found")
 
-    return TestReport(test.report)
+    async def report_generator(report: bytes) -> AsyncGenerator[bytes, None]:
+        report_data = TestReport(report)
+        yield report_data
+
+    return StreamingResponse(
+        report_generator(test.report), media_type="application/octet-stream"
+    )
 
 
 @app.get("/worker/{worker_id}/get-session")

@@ -39,7 +39,7 @@ class PostWorkerRegisterRequest(BaseModel):
 
 
 class PostWorkerSessionTestReportRequest(BaseModel):
-    report: TestReport
+    report: bytes
 
 
 class GetWorkerSessionTestsResponse(BaseModel):
