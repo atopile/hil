@@ -1,5 +1,4 @@
 version = 1
-revision = 1
 requires-python = ">=3.13"
 resolution-markers = [
     "sys_platform == 'darwin'",
@@ -181,6 +180,15 @@ wheels = [
 ]
 
 [[package]]
+name = "cloudpickle"
+version = "3.1.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/39/069100b84d7418bc358d81669d5748efb14b9cceacd2f9c75f550424132f/cloudpickle-3.1.1.tar.gz", hash = "sha256:b216fa8ae4019d5482a8ac3c95d8f6346115d8835911fd4aefd1a445e4242c64", size = 22113 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/e8/64c37fadfc2816a7701fa8a6ed8d87327c7d54eacfbfb6edab14a2f2be75/cloudpickle-3.1.1-py3-none-any.whl", hash = "sha256:c8c5a44295039331ee9dad40ba100a9c7297b6f988e50e87ccdf3765a668350e", size = 20992 },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -331,6 +339,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "altair" },
+    { name = "cloudpickle" },
     { name = "fastapi" },
     { name = "numpy" },
     { name = "pathvalidate" },
@@ -341,6 +350,7 @@ dependencies = [
     { name = "pytest-benchmark" },
     { name = "pytest-html" },
     { name = "pytest-timeout" },
+    { name = "python-multipart" },
     { name = "ray", version = "3.0.0.dev0", source = { url = "https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp313-cp313-macosx_11_0_arm64.whl" }, extra = ["client", "default"], marker = "sys_platform == 'darwin'" },
     { name = "ray", version = "3.0.0.dev0", source = { url = "https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp313-cp313-manylinux2014_aarch64.whl" }, extra = ["client", "default"], marker = "sys_platform != 'darwin'" },
     { name = "rich" },
@@ -359,6 +369,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "altair", specifier = ">=5.5.0" },
+    { name = "cloudpickle", specifier = ">=3.1.1" },
     { name = "fastapi", specifier = ">=0.115.8" },
     { name = "numpy", specifier = ">=2.2.2" },
     { name = "pathvalidate", specifier = ">=3.2.3" },
@@ -369,6 +380,7 @@ requires-dist = [
     { name = "pytest-benchmark", specifier = ">=5.1.0" },
     { name = "pytest-html", specifier = ">=4.1.1" },
     { name = "pytest-timeout", specifier = ">=2.3.1" },
+    { name = "python-multipart", specifier = ">=0.0.20" },
     { name = "ray", extras = ["client", "default"], marker = "sys_platform != 'darwin'", url = "https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp313-cp313-manylinux2014_aarch64.whl" },
     { name = "ray", extras = ["client", "default"], marker = "sys_platform == 'darwin'", url = "https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp313-cp313-macosx_11_0_arm64.whl" },
     { name = "rich", specifier = ">=13.9.4" },
@@ -943,6 +955,15 @@ wheels = [
 ]
 
 [[package]]
+name = "python-multipart"
+version = "0.0.20"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/87/f44d7c9f274c7ee665a29b885ec97089ec5dc034c7f3fafa03da9e39a09e/python_multipart-0.0.20.tar.gz", hash = "sha256:8dd0cab45b8e23064ae09147625994d090fa46f5b0d1e13af944c331a7fa9d13", size = 37158 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/45/58/38b5afbc1a800eeea951b9285d3912613f2603bdf897a4ab0f4bd7f405fc/python_multipart-0.0.20-py3-none-any.whl", hash = "sha256:8a62d3a8335e06589fe01f2a3e178cdcc632f3fbe0d492ad9ee0ec35aab1f104", size = 24546 },
+]
+
+[[package]]
 name = "pyyaml"
 version = "6.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -979,7 +1000,7 @@ dependencies = [
     { name = "requests", marker = "sys_platform == 'darwin'" },
 ]
 wheels = [
-    { url = "https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:6db7a884f524d8bddecfed2af1eb3baa9ff9e97e7f01e603a29ab5d7e4b5a1f4" },
+    { url = "https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:4830e139d6855b51de6be677c3a5d8f4bb9bc789069a053b6bba1b4c74117da6" },
 ]
 
 [package.optional-dependencies]
@@ -1187,7 +1208,6 @@ requires-dist = [
     { name = "watchfiles", marker = "extra == 'serve'" },
     { name = "watchfiles", marker = "extra == 'serve-grpc'" },
 ]
-provides-extras = ["adag", "air", "all", "cgraph", "client", "data", "default", "llm", "observability", "rllib", "serve", "serve-grpc", "train", "tune"]
 
 [[package]]
 name = "ray"
@@ -1209,7 +1229,7 @@ dependencies = [
     { name = "requests", marker = "sys_platform != 'darwin'" },
 ]
 wheels = [
-    { url = "https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp313-cp313-manylinux2014_aarch64.whl", hash = "sha256:43f3993ef55e7cac733eb8b318dc18310fed7470748fecaf0e8f979bad3743fa" },
+    { url = "https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-3.0.0.dev0-cp313-cp313-manylinux2014_aarch64.whl", hash = "sha256:344b7d5bcf505799b6c7a40484dc2883b9f6a1b3db44dbc42606be07860db214" },
 ]
 
 [package.optional-dependencies]
@@ -1417,7 +1437,6 @@ requires-dist = [
     { name = "watchfiles", marker = "extra == 'serve'" },
     { name = "watchfiles", marker = "extra == 'serve-grpc'" },
 ]
-provides-extras = ["cgraph", "client", "data", "default", "observability", "serve", "tune", "adag", "serve-grpc", "rllib", "train", "air", "all", "llm"]
 
 [[package]]
 name = "referencing"
