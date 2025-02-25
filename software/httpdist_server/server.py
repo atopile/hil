@@ -1,13 +1,12 @@
 import base64
 from collections.abc import AsyncGenerator
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Literal
 
 import fastapi
 import uvicorn
-from attrs import field
 from fastapi import UploadFile
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -56,7 +55,7 @@ class Session:
     session_id: str
 
     state: Literal["setup", "running", "stopped"] = "setup"
-    tests: dict[str, Test] = field(factory=dict)
+    tests: dict[str, Test] = field(default_factory=dict)
     env: UploadFile | None = None
 
     async def stop(self):
