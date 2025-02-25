@@ -61,7 +61,6 @@ class Remote:
         self.config.option.maxprocesses = None
         self.config.option.basetemp = Path.cwd() / "dist_tmp"
 
-        # TODO: suppress terminal output
         self.config.hook.pytest_cmdline_main(config=self.config)
 
     def get_item(self, nodeid: str):
@@ -130,9 +129,11 @@ class DSession:
             ray.init(
                 log_to_driver=False,  # hide worker output
                 address="ray://192.168.1.199:10001",
-                # namespace="hil",
                 runtime_env={
                     # `export RAY_RUNTIME_ENV_HOOK=ray._private.runtime_env.uv_runtime_env_hook.hook`
+                    # TODO: relative to something? project root?
+                    "working_dir": Path.cwd(),
+                    "py_modules": ["software/hil"],  # TODO: auto via uv
                     # TODO: exclusions from file?
                     "excludes": [
                         "**/*.step",
