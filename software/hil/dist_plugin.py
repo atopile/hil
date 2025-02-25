@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from pathlib import Path
-import time
 from typing import TypedDict
 
 import pytest
@@ -74,11 +73,12 @@ class Remote:
 
         raise ValueError(f"Item with nodeid {nodeid} not found")
 
-    def process_test(self, nodeid: str):
-        item = self.get_item(nodeid)
+    def process_test(self, nodeid_now: str, nodeid_next: str | None):
+        print("processing: ", [nodeid_now, nodeid_next])
+        item_now = self.get_item(nodeid_now)
+        item_next = self.get_item(nodeid_next) if nodeid_next else None
 
-        # TODO: nextitem
-        self.config.hook.pytest_runtest_protocol(item=item, nextitem=None)
+        self.config.hook.pytest_runtest_protocol(item=item_now, nextitem=item_next)
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_runtestloop(self, session: pytest.Session):
@@ -87,13 +87,24 @@ class Remote:
         # TODO: shutdown signal
 
         try:
-            while True:
-                test = self.test_queue.get(block=True)
-                print("running test:", test)
+            test_now = self.test_queue.get(block=True, timeout=1)
 
-                self.process_test(test)
+            while True:
+                try:
+                    test_next = self.test_queue.get(block=True, timeout=1)
+                except ray.util.queue.Empty:
+                    # TODO: 'finished' event
+                    test_next = None
+
+                self.process_test(test_now, test_next)
+
+                if test_next is None:
+                    break
+
+                test_now = test_next
         except ray.util.queue.Empty:
-            pass
+            # TODO: 'finished' event
+            return True
 
         return True
 
@@ -142,10 +153,6 @@ class DSession:
 
         # TODO: remote per worker for each queue
         self.remote1 = Remote.remote(self.test_queue, self.message_queue, args)
-        # self.remote1.process_tests.remote()  # type: ignore
-
-        # TODO: better
-        time.sleep(10)
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_collection(self, session: pytest.Session):
@@ -163,16 +170,26 @@ class DSession:
     def pytest_runtestloop(self, session: pytest.Session):
         # TODO: shutdown handling
 
-        for item in session.items:
-            self.test_queue.put(item.nodeid)
+        reports_by_nodeid = {item.nodeid: None for item in session.items}
 
+        # TODO: manage queue size
+        self.test_queue.put_nowait_batch([item.nodeid for item in session.items])
+
+        # TODO: start/finish events
         while True:
             try:
-                message = self.message_queue.get(timeout=1, block=True)
-                report = message["report"]
-                session.config.hook.pytest_runtest_logreport(report=report)
+                message = self.message_queue.get(block=True, timeout=0.1)
+                reports_by_nodeid[message["nodeid"]] = message["report"]
+                session.config.hook.pytest_runtest_logreport(report=message["report"])
             except ray.util.queue.Empty:
-                break
+                # TODO: what if results aren't coming?
+                if all(reports_by_nodeid.values()):
+                    break
+
+        # TODO: better error
+        assert all(reports_by_nodeid.values()), "No test report for: " + ", ".join(
+            [nodeid for nodeid, report in reports_by_nodeid.items() if report is None]
+        )
 
         return True
 
