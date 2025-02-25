@@ -22,12 +22,14 @@ from typing import Generator, Protocol
 
 import altair as alt
 from hil.utils.config import ConfigDict, load_config, save_config
+
 import pathvalidate
 import polars as pl
 import pytest
 from pytest_html import extras as html_extras
 
 from .framework import Trace, record as hil_record
+
 
 logger = logging.getLogger(__name__)
 
