@@ -247,11 +247,11 @@ async def get_session_tests(worker_id: str, session_id: str):
             and test.worker_requirements.issubset(worker.tags)
         ):
             worker_testable.append(test.node_id)
-            test.assigned_worker = worker
-            test.status = "running"
-
-        if len(worker_testable) >= 2:
-            break
+            if len(worker_testable) == 1:
+                test.assigned_worker = worker
+                test.status = "running"
+            elif len(worker_testable) >= 2:
+                break
 
     return GetWorkerSessionTestsResponse(
         action="run" if len(worker_testable) > 0 else "stop",
