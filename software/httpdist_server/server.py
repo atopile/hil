@@ -61,7 +61,7 @@ sessions: dict[str, Session] = {
         tests={
             "tests/test_nothing.py::test_nothing": Session.Test(
                 node_id="tests/test_nothing.py::test_nothing",
-                worker_requirements={"other"},
+                worker_requirements={"cellsim"},
             ),
             "tests/test_nothing.py::test_fail": Session.Test(
                 node_id="tests/test_nothing.py::test_fail",
@@ -250,8 +250,14 @@ async def get_session_tests(worker_id: str, session_id: str):
 
     worker_testable: list[str] = []
     for test in sessions[session_id].tests.values():
-        if test.status == "pending" and test.worker_requirements.issubset(worker.tags):
+        if (
+            test.status == "pending"
+            and test.assigned_worker is None
+            and test.worker_requirements.issubset(worker.tags)
+        ):
             worker_testable.append(test.node_id)
+            test.assigned_worker = worker
+            test.status = "running"
 
         if len(worker_testable) >= 2:
             break

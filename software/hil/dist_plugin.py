@@ -137,6 +137,7 @@ class Worker:
     def __init__(self, config: pytest.Config):
         self.config = config
         self.api_client = ApiClient(config)
+        self._reporting_tasks: list[asyncio.Task] = []
 
         # TODO: review
         # self.config.option.loadgroup = self.config.getvalue("dist") == "loadgroup"
@@ -217,13 +218,19 @@ class Worker:
 
             await self.signal_done()
 
+            await asyncio.gather(*self._reporting_tasks)
+
         asyncio.run(_run_tests())
 
         return True
 
     @pytest.hookimpl
     def pytest_runtest_logreport(self, report: pytest.TestReport) -> None:
-        asyncio.run(self.report_result(report.nodeid, report))
+        # This hook is called from within the runtestloop, so we need to run
+        # it in a task instead of calling it directly
+        self._reporting_tasks.append(
+            asyncio.create_task(self.report_result(report.nodeid, report))
+        )
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
