@@ -9,6 +9,7 @@ from fastapi import UploadFile
 from pydantic import BaseModel
 
 from httpdist_server.models import (
+    GetSessionTestReportRequest,
     GetSessionTestsResponse,
     GetWorkerSessionTestsResponse,
     PostSessionsTestsRequest,
@@ -157,7 +158,7 @@ async def get_finished_tests(session_id: str) -> GetSessionTestsResponse:
 
 
 @app.post("/worker/session/{session_id}/test/report")
-async def post_test_report(
+async def submit_test_report(
     session_id: str, request: PostWorkerSessionTestReportRequest
 ):
     """Upload the result for a test"""
@@ -174,16 +175,16 @@ async def post_test_report(
     return {"message": "Test result uploaded successfully"}
 
 
-@app.get("/session/{session_id}/test/{test_id}/report")
-async def get_test_report(session_id: str, test_id: str) -> str:
+@app.post("/session/{session_id}/test/report")
+async def query_test_report(session_id: str, request: GetSessionTestReportRequest):
     """Get the report for a test"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    if test_id not in sessions[session_id].tests:
+    if request.node_id not in sessions[session_id].tests:
         raise fastapi.HTTPException(status_code=404, detail="Test not found")
 
-    test = sessions[session_id].tests[test_id]
+    test = sessions[session_id].tests[request.node_id]
     if test.report is None:
         raise fastapi.HTTPException(status_code=404, detail="Test report not found")
 

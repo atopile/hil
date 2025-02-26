@@ -26,6 +26,10 @@ class PostWorkerRegisterRequest(BaseModel):
     tags: list[str]
 
 
+class GetSessionTestReportRequest(BaseModel):
+    node_id: str
+
+
 class PostWorkerSessionTestReportRequest(BaseModel):
     node_id: str
     report: str
