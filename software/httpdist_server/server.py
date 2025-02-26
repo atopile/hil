@@ -1,7 +1,6 @@
 import logging
 import uuid
 from dataclasses import dataclass, field
-from typing import Literal
 
 import fastapi
 import uvicorn
@@ -14,6 +13,11 @@ from httpdist_server.models import (
     GetWorkerSessionTestsResponse,
     PostSessionsTestsRequest,
     PostWorkerSessionTestReportRequest,
+    SessionState,
+    TestPhase,
+    TestStatus,
+    NodeId,
+    WorkerAction,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,22 +37,26 @@ class Session:
     @dataclass
     class Test:
         worker_requirements: set[str]
-        node_id: str
+        nodeid: NodeId
 
-        status: Literal["pending", "running", "finished"] = "pending"
+        status: TestStatus = TestStatus.Pending
         assigned_worker: Worker | None = None
-        reports: dict[Literal["setup", "call", "teardown"], str | None] = field(
-            default_factory=lambda: {"setup": None, "call": None, "teardown": None}
+        reports: dict[TestPhase, str | None] = field(
+            default_factory=lambda: {
+                TestPhase.Setup: None,
+                TestPhase.Call: None,
+                TestPhase.Teardown: None,
+            }
         )
 
     session_id: str
 
-    state: Literal["setup", "running", "stopped"] = "setup"
+    state: SessionState = SessionState.Setup
     tests: dict[str, Test] = field(default_factory=dict)
     env: UploadFile | None = None
 
     async def stop(self):
-        self.state = "stopped"
+        self.state = SessionState.Stopped
         if self.env is not None:
             await self.env.close()
 
@@ -59,11 +67,11 @@ sessions: dict[str, Session] = {
         session_id="test-session",
         tests={
             "tests/test_nothing.py::test_nothing": Session.Test(
-                node_id="tests/test_nothing.py::test_nothing",
+                nodeid="tests/test_nothing.py::test_nothing",
                 worker_requirements={"cellsim"},
             ),
             "tests/test_nothing.py::test_fail": Session.Test(
-                node_id="tests/test_nothing.py::test_fail",
+                nodeid="tests/test_nothing.py::test_fail",
                 worker_requirements={"cellsim"},
             ),
         },
@@ -150,8 +158,8 @@ async def get_finished_tests(session_id: str) -> GetSessionTestsResponse:
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    completed_phases: dict[str, list[Literal["setup", "call", "teardown"]]] = {
-        test.node_id: [
+    completed_phases: dict[str, list[TestPhase]] = {
+        test.nodeid: [
             phase for phase in test.reports.keys() if test.reports[phase] is not None
         ]
         for test in sessions[session_id].tests.values()  # type: ignore
@@ -172,17 +180,15 @@ async def submit_test_report(
 
     test = sessions[session_id].tests[request.node_id]
     test.reports[request.phase] = request.report
-    if request.phase == "teardown":  # TODO
-        test.status = "finished"
+    if request.phase == TestPhase.Teardown:  # TODO
+        test.status = TestStatus.Finished
 
     return {"message": "Test result uploaded successfully"}
 
 
 @app.post("/session/{session_id}/test/report/{phase}")
 async def query_test_report(
-    session_id: str,
-    phase: Literal["setup", "call", "teardown"],
-    request: GetSessionTestReportRequest,
+    session_id: str, phase: TestPhase, request: GetSessionTestReportRequest
 ):
     """Get the report for a test"""
     if session_id not in sessions:
@@ -204,7 +210,7 @@ async def get_session(worker_id: str) -> str | None:
     for worker in workers:
         if worker.worker_id == worker_id:
             for session in sessions.values():
-                if session.state == "running":
+                if session.state == SessionState.Running:
                     if any(
                         test.worker_requirements.issubset(worker.tags)
                         for test in session.tests.values()
@@ -231,13 +237,11 @@ async def get_session_tests(worker_id: str, session_id: str):
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    if sessions[session_id].state == "setup":
-        sessions[session_id].state = "running"
-    elif sessions[session_id].state == "stopped":
+    if sessions[session_id].state == SessionState.Setup:
+        sessions[session_id].state = SessionState.Running
+    elif sessions[session_id].state == SessionState.Stopped:
         return GetWorkerSessionTestsResponse(
-            action="stop",
-            test_now=None,
-            test_next=None,
+            action=WorkerAction.Stop, test_now=None, test_next=None
         )
 
     for worker in workers:
@@ -249,19 +253,19 @@ async def get_session_tests(worker_id: str, session_id: str):
     worker_testable: list[str] = []
     for test in sessions[session_id].tests.values():
         if (
-            test.status == "pending"
+            test.status == TestStatus.Pending
             and test.assigned_worker is None
             and test.worker_requirements.issubset(worker.tags)
         ):
-            worker_testable.append(test.node_id)
+            worker_testable.append(test.nodeid)
             if len(worker_testable) == 1:
                 test.assigned_worker = worker
-                test.status = "running"
+                test.status = TestStatus.Running
             elif len(worker_testable) >= 2:
                 break
 
     return GetWorkerSessionTestsResponse(
-        action="run" if len(worker_testable) > 0 else "stop",
+        action=WorkerAction.Run if len(worker_testable) > 0 else WorkerAction.Stop,
         test_now=worker_testable[0] if len(worker_testable) > 0 else None,
         test_next=worker_testable[1] if len(worker_testable) > 1 else None,
     )

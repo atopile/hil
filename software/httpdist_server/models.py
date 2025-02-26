@@ -1,5 +1,30 @@
+from enum import StrEnum, auto
 from pydantic import BaseModel
-from typing import Literal
+
+NodeId = str
+
+
+class TestStatus(StrEnum):
+    Pending = auto()
+    Running = auto()
+    Finished = auto()
+
+
+class TestPhase(StrEnum):
+    Setup = auto()
+    Call = auto()
+    Teardown = auto()
+
+
+class SessionState(StrEnum):
+    Setup = auto()
+    Running = auto()
+    Stopped = auto()
+
+
+class WorkerAction(StrEnum):
+    Run = auto()
+    Stop = auto()
 
 
 class GetSessionResponse(BaseModel):
@@ -17,7 +42,7 @@ class PostSessionsTestsRequest(BaseModel):
 
 
 class GetSessionTestsResponse(BaseModel):
-    test_status: dict[str, list[Literal["setup", "call", "teardown"]]]
+    test_status: dict[NodeId, list[TestPhase]]
 
 
 class PostWorkerRegisterRequest(BaseModel):
@@ -32,11 +57,11 @@ class GetSessionTestReportRequest(BaseModel):
 
 class PostWorkerSessionTestReportRequest(BaseModel):
     node_id: str
-    phase: Literal["setup", "call", "teardown"]
+    phase: TestPhase
     report: str
 
 
 class GetWorkerSessionTestsResponse(BaseModel):
-    action: Literal["run", "stop"]
+    action: WorkerAction
     test_now: str | None
     test_next: str | None
