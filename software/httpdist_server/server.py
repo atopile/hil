@@ -37,7 +37,9 @@ class Session:
 
         status: Literal["pending", "running", "finished"] = "pending"
         assigned_worker: Worker | None = None
-        report: str | None = None
+        reports: dict[Literal["setup", "call", "teardown"], str | None] = field(
+            default_factory=lambda: {"setup": None, "call": None, "teardown": None}
+        )
 
     session_id: str
 
@@ -148,13 +150,13 @@ async def get_finished_tests(session_id: str) -> GetSessionTestsResponse:
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    return GetSessionTestsResponse(
-        test_status={
-            test.node_id: test.status
-            for test in sessions[session_id].tests.values()
-            if test.status == "finished"
-        }
-    )
+    completed_phases: dict[str, list[Literal["setup", "call", "teardown"]]] = {
+        test.node_id: [
+            phase for phase in test.reports.keys() if test.reports[phase] is not None
+        ]
+        for test in sessions[session_id].tests.values()  # type: ignore
+    }
+    return GetSessionTestsResponse(test_status=completed_phases)
 
 
 @app.post("/worker/session/{session_id}/test/report")
@@ -169,14 +171,19 @@ async def submit_test_report(
         raise fastapi.HTTPException(status_code=404, detail="Test not found")
 
     test = sessions[session_id].tests[request.node_id]
-    test.report = request.report
-    test.status = "finished"
+    test.reports[request.phase] = request.report
+    if request.phase == "teardown":  # TODO
+        test.status = "finished"
 
     return {"message": "Test result uploaded successfully"}
 
 
-@app.post("/session/{session_id}/test/report")
-async def query_test_report(session_id: str, request: GetSessionTestReportRequest):
+@app.post("/session/{session_id}/test/report/{phase}")
+async def query_test_report(
+    session_id: str,
+    phase: Literal["setup", "call", "teardown"],
+    request: GetSessionTestReportRequest,
+):
     """Get the report for a test"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -185,10 +192,10 @@ async def query_test_report(session_id: str, request: GetSessionTestReportReques
         raise fastapi.HTTPException(status_code=404, detail="Test not found")
 
     test = sessions[session_id].tests[request.node_id]
-    if test.report is None:
+    if test.reports[phase] is None:
         raise fastapi.HTTPException(status_code=404, detail="Test report not found")
 
-    return test.report
+    return test.reports[phase]
 
 
 @app.get("/worker/{worker_id}/get-session")

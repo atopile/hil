@@ -17,7 +17,7 @@ class PostSessionsTestsRequest(BaseModel):
 
 
 class GetSessionTestsResponse(BaseModel):
-    test_status: dict[str, Literal["pending", "running", "finished"]]
+    test_status: dict[str, list[Literal["setup", "call", "teardown"]]]
 
 
 class PostWorkerRegisterRequest(BaseModel):
@@ -32,6 +32,7 @@ class GetSessionTestReportRequest(BaseModel):
 
 class PostWorkerSessionTestReportRequest(BaseModel):
     node_id: str
+    phase: Literal["setup", "call", "teardown"]
     report: str
 
 

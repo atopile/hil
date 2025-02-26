@@ -3,7 +3,7 @@ import base64
 from dataclasses import dataclass
 from enum import StrEnum, auto
 from pathlib import Path
-from typing import TypedDict
+from typing import Literal, TypedDict, cast
 
 import cloudpickle
 import httpx
@@ -111,18 +111,22 @@ class ClientApi(ApiBase):
                 raise ApiUsageError(e.response.text)
             raise
 
-    async def fetch_statuses(self) -> dict[NodeId, TestStatus]:
+    async def fetch_statuses(
+        self,
+    ) -> dict[NodeId, list[Literal["setup", "call", "teardown"]]]:
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
         response = await self._get(f"session/{self.session_id}/finished-tests")
         return response["test_status"]
 
-    async def fetch_report(self, nodeid: NodeId) -> pytest.TestReport:
+    async def fetch_report(
+        self, nodeid: NodeId, phase: Literal["setup", "call", "teardown"]
+    ) -> pytest.TestReport:
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
 
         report = await self._post(
-            f"session/{self.session_id}/test/report", {"node_id": nodeid}
+            f"session/{self.session_id}/test/report/{phase}", {"node_id": nodeid}
         )
         return cloudpickle.loads(base64.b64decode(report))
 
@@ -148,15 +152,18 @@ class WorkerApi(ApiBase):
 
         return data["test_now"], data["test_next"]
 
-    async def report_result(self, nodeid: NodeId, report: pytest.TestReport):
-        response = {
+    async def report_result(
+        self,
+        nodeid: NodeId,
+        report: pytest.TestReport,
+        phase: Literal["setup", "call", "teardown"],
+    ):
+        data = {
             "node_id": nodeid,
             "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
+            "phase": phase,
         }
-        await self._post(
-            f"worker/session/{self.session_id}/test/report",
-            response,
-        )
+        await self._post(f"worker/session/{self.session_id}/test/report", data)
 
     async def upload_artifacts(self): ...
 
@@ -229,7 +236,9 @@ class Worker:
         # This hook is called from within the runtestloop, so we need to run
         # it in a task instead of calling it directly
         self._reporting_tasks.append(
-            asyncio.create_task(self.api_client.report_result(report.nodeid, report))
+            asyncio.create_task(
+                self.api_client.report_result(report.nodeid, report, phase=report.when)
+            )
         )
 
     @pytest.hookimpl
@@ -239,7 +248,7 @@ class Worker:
 
 class TestResults:
     nodeids: set[NodeId]
-    reports: dict[NodeId, pytest.TestReport]
+    reports: dict[NodeId, dict[Literal["setup", "call", "teardown"], pytest.TestReport]]
 
     def __init__(self, nodeids: set[NodeId]):
         self.nodeids = nodeids
@@ -247,16 +256,24 @@ class TestResults:
 
     @property
     def all_done(self) -> bool:
-        return len(self.reports) == len(self.nodeids)
+        return len(self.reports) == len(self.nodeids) and all(
+            "teardown" in phases for phases in self.reports.values()
+        )
 
     def add(self, nodeid: NodeId, report: pytest.TestReport):
         if nodeid not in self.nodeids:
             raise ValueError(f"Unknown nodeid: {nodeid}")
 
-        if self.reports.get(nodeid) is not None:
-            raise ValueError(f"Test result already set for {nodeid}")
+        if report.when not in ["setup", "call", "teardown"]:
+            raise ValueError(f"Unknown phase: {report.when}")
 
-        self.reports[nodeid] = report
+        phase = cast(Literal["setup", "call", "teardown"], report.when)
+
+        if (reports := self.reports.get(nodeid)) is not None:
+            if phase in reports:
+                raise ValueError(f"Test result already set for {nodeid}, phase {phase}")
+
+        self.reports[nodeid] = self.reports.get(nodeid, {}) | {phase: report}  # type: ignore # TODO
 
 
 class Client:
@@ -272,7 +289,7 @@ class Client:
 
     runs_on_key = pytest.StashKey[dict[str, list[RunsOn]]]()
     results: TestResults
-    statuses: dict[NodeId, TestStatus]
+    statuses: dict[NodeId, list[Literal["setup", "call", "teardown"]]]
 
     def __init__(self, config: pytest.Config):
         self.config = config
@@ -292,13 +309,17 @@ class Client:
         )
 
     async def fetch_results(self) -> list[pytest.TestReport]:
-        new_statuses: dict[NodeId, TestStatus] = await self.api_client.fetch_statuses()
+        new_statuses: dict[
+            NodeId, list[Literal["setup", "call", "teardown"]]
+        ] = await self.api_client.fetch_statuses()
 
         new_reports: list[pytest.TestReport] = []
-        for nodeid in new_statuses.keys() - self.statuses.keys():
-            new_report = await self.api_client.fetch_report(nodeid)
-            self.results.add(nodeid, new_report)
-            new_reports.append(new_report)
+        for nodeid in new_statuses.keys():
+            for phase in new_statuses[nodeid]:
+                if phase not in self.statuses[nodeid]:
+                    new_report = await self.api_client.fetch_report(nodeid, phase)
+                    self.results.add(nodeid, new_report)
+                    new_reports.append(new_report)
 
         self.statuses = new_statuses
 
