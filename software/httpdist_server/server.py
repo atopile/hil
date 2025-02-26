@@ -107,13 +107,13 @@ sessions: dict[str, Session] = {
 
 async def _get_worker(worker_id: str) -> ConfiguredWorker:
     workers_response = (
-        supabase.table("workers").select("*").eq("id", worker_id).execute()
+        supabase.table("workers").select("*").eq("worker_id", worker_id).execute()
     )
     if len(workers_response.data) == 0:
         raise fastapi.HTTPException(status_code=404, detail="Worker not found")
 
     return ConfiguredWorker(
-        worker_id=workers_response.data[0]["id"],
+        worker_id=workers_response.data[0]["worker_id"],
         pet_name=workers_response.data[0]["pet_name"],
         tags=workers_response.data[0]["tags"],
         last_seen=datetime.fromisoformat(workers_response.data[0]["last_seen"]),
@@ -132,7 +132,7 @@ async def _get_active_workers() -> list[ConfiguredWorker]:
     for worker in workers_response.data:
         workers.append(
             ConfiguredWorker(
-                worker_id=worker["id"],
+                worker_id=worker["worker_id"],
                 pet_name=worker["pet_name"],
                 tags=worker["tags"],
                 last_seen=datetime.fromisoformat(worker["last_seen"]),
@@ -143,7 +143,7 @@ async def _get_active_workers() -> list[ConfiguredWorker]:
 
 async def _worker_seen(worker_id: str):
     supabase.table("workers").update({"last_seen": datetime.now()}).eq(
-        "id", worker_id
+        "worker_id", worker_id
     ).execute()
 
 
@@ -399,26 +399,38 @@ async def download_artifact(session_id: str, artifact_id: str) -> Response:
 async def register_worker(request: WorkerRegisterRequest) -> SuccessResponse:
     """Register a worker with the server"""
     # If the worker is already registered, update the last seen time and return
-    if supabase.table("workers").select("*").eq("id", request.worker_id).execute().data:
+    if (
+        supabase.table("workers")
+        .select("*")
+        .eq("worker_id", request.worker_id)
+        .execute()
+        .data
+    ):
         await _worker_seen(request.worker_id)
         return SuccessResponse(message="Worker registered successfully")
 
     # Otherwise, insert the worker into the database
     pet_name = get_pet_name(request.worker_id)
     supabase.table("workers").insert(
-        {"id": request.worker_id, "pet_name": pet_name, "last_seen": datetime.now()}
+        {
+            "worker_id": request.worker_id,
+            "pet_name": pet_name,
+            "last_seen": datetime.now(),
+        }
     ).execute()
 
     return SuccessResponse(message="Worker registered successfully")
 
 
-@app.post("/worker/update")
-async def update_worker(request: WorkerUpdateRequest) -> SuccessResponse:
+@app.post("/worker/{worker_id}/update")
+async def update_worker(
+    worker_id: str, request: WorkerUpdateRequest
+) -> SuccessResponse:
     """Update a worker's information"""
     if (
         not supabase.table("workers")
         .select("*")
-        .eq("id", request.worker_id)
+        .eq("worker_id", worker_id)
         .execute()
         .data
     ):
@@ -426,8 +438,15 @@ async def update_worker(request: WorkerUpdateRequest) -> SuccessResponse:
 
     supabase.table("workers").update(
         {"pet_name": request.pet_name, "tags": request.tags}
-    ).eq("id", request.worker_id).execute()
+    ).eq("worker_id", worker_id).execute()
     return SuccessResponse(message="Worker updated successfully")
+
+
+@app.post("/worker/{worker_id}/heartbeat")
+async def worker_heartbeat(worker_id: str) -> SuccessResponse:
+    """Update a worker's information"""
+    await _worker_seen(worker_id)
+    return SuccessResponse(message="Heartbeat received")
 
 
 @app.get("/worker/{worker_id}/info")

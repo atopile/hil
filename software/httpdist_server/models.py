@@ -85,7 +85,6 @@ class WorkerRegisterRequest(BaseModel):
 
 
 class WorkerUpdateRequest(BaseModel):
-    worker_id: str
     pet_name: str
     tags: list[str]
 
