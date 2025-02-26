@@ -1,12 +1,16 @@
 import logging
-import uuid
+import base64
 from dataclasses import dataclass, field
+import uuid
 
 import fastapi
 import uvicorn
 from fastapi import UploadFile
+from fastapi.responses import StreamingResponse
 
 from httpdist_server.models import (
+    ArtifactListResponse,
+    ArtifactUploadRequest,
     NoSessionResponse,
     SessionResponse,
     SessionState,
@@ -57,6 +61,7 @@ class Session:
     state: SessionState = SessionState.Setup
     tests: dict[str, Test] = field(default_factory=dict)
     env: UploadFile | None = None
+    artifacts: dict[str, bytes] = field(default_factory=dict)
 
     async def stop(self):
         self.state = SessionState.Stopped
@@ -270,6 +275,53 @@ async def fetch_session_tests(worker_id: str, session_id: str) -> WorkerActionRe
         action=WorkerAction.Run if len(worker_testable) > 0 else WorkerAction.Stop,
         test_now=worker_testable[0] if len(worker_testable) > 0 else None,
         test_next=worker_testable[1] if len(worker_testable) > 1 else None,
+    )
+
+
+@app.post("/worker/session/{session_id}/artifacts")
+async def upload_artifact(
+    session_id: str, request: ArtifactUploadRequest
+) -> SuccessResponse:
+    """Upload an artifact file from a worker"""
+    if session_id not in sessions:
+        raise fastapi.HTTPException(status_code=404, detail="Session not found")
+
+    try:
+        file_content = base64.b64decode(request.content)
+    except Exception as e:
+        raise fastapi.HTTPException(
+            status_code=400, detail=f"Invalid base64 content: {str(e)}"
+        )
+
+    sessions[session_id].artifacts[request.worker_id] = file_content
+
+    return SuccessResponse(message="Artifact uploaded successfully")
+
+
+@app.get("/session/{session_id}/artifacts")
+async def list_artifacts(session_id: str) -> ArtifactListResponse:
+    """List all artifacts for a session"""
+    if session_id not in sessions:
+        raise fastapi.HTTPException(status_code=404, detail="Session not found")
+
+    return ArtifactListResponse(
+        artifact_ids=list(sessions[session_id].artifacts.keys())
+    )
+
+
+@app.get("/session/{session_id}/artifacts/{artifact_id}")
+async def download_artifact(session_id: str, artifact_id: str) -> StreamingResponse:
+    """Download an artifact file"""
+    if session_id not in sessions:
+        raise fastapi.HTTPException(status_code=404, detail="Session not found")
+
+    if artifact_id not in sessions[session_id].artifacts:
+        raise fastapi.HTTPException(status_code=404, detail="Artifact not found")
+
+    artifact_content = sessions[session_id].artifacts[artifact_id]
+
+    return StreamingResponse(
+        content=artifact_content.decode(), media_type="application/octet-stream"
     )
 
 

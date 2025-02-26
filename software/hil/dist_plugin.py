@@ -9,6 +9,8 @@ import cloudpickle
 import httpx
 import pytest
 import logging
+import tempfile
+import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +18,7 @@ httpx_logger = logging.getLogger("httpx")
 httpx_logger.setLevel(logging.WARNING)
 
 PLUGIN_NAME = "httpdist"
+ARTIFACTS_DIR = Path("./artifacts")
 
 
 @dataclass
@@ -130,6 +133,35 @@ class ClientApi(ApiBase):
         report = response["report"]
         return cloudpickle.loads(base64.b64decode(report))
 
+    async def list_artifacts(self) -> dict:
+        """List all artifacts available on the server for this session"""
+        if self.session_id is None:
+            raise SessionNotStartedError("Must have an active session")
+
+        response = await self._get(f"session/{self.session_id}/artifacts")
+        return response["artifact_ids"]
+
+    async def download_artifact(
+        self, artifact_id: str, artifacts_dir: Path = ARTIFACTS_DIR
+    ):
+        """Download a specific artifact and save it to the given path"""
+        if self.session_id is None:
+            raise SessionNotStartedError("Must have an active session")
+
+        artifacts_dir.parent.mkdir(parents=True, exist_ok=True)
+
+        response = await self._get(f"session/{self.session_id}/artifacts/{artifact_id}")
+        response.raise_for_status()
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir) / artifact_id
+            with temp_path.open("wb") as f:
+                f.write(response.content)
+            shutil.unpack_archive(temp_path, artifacts_dir)
+            temp_path.unlink()
+
+        return artifacts_dir
+
 
 class WorkerApi(ApiBase):
     def __init__(self, config: pytest.Config):
@@ -160,7 +192,32 @@ class WorkerApi(ApiBase):
         }
         await self._post(f"worker/session/{self.session_id}/test", data)
 
-    async def upload_artifacts(self): ...
+    async def upload_artifacts(self, worker_id: str):
+        """Upload all artifact files"""
+        if not ARTIFACTS_DIR.exists():
+            return
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            zip_path = Path(temp_dir) / f"{worker_id}.zip"
+            try:
+                shutil.make_archive(
+                    str(zip_path.with_suffix("")),
+                    "zip",
+                    root_dir=ARTIFACTS_DIR,
+                    base_dir=".",
+                )
+
+                with open(zip_path, "rb") as zip_file:
+                    await self._post(
+                        f"worker/session/{self.session_id}/artifacts",
+                        {
+                            "worker_id": worker_id,
+                            "content": base64.b64encode(zip_file.read()).decode(),
+                        },
+                    )
+
+            finally:
+                zip_path.unlink()
 
 
 class Worker:
@@ -238,7 +295,8 @@ class Worker:
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
-        asyncio.run(self.api_client.upload_artifacts())
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.api_client.upload_artifacts(self.worker_id))
 
 
 class TestResults:
@@ -320,7 +378,22 @@ class Client:
 
         return new_reports
 
-    def download_artifacts(self): ...
+    def download_artifacts(self):
+        """Download artifact files produced by workers"""
+
+        loop = asyncio.get_event_loop()
+        artifact_ids = loop.run_until_complete(self.api_client.list_artifacts())
+        if not artifact_ids:
+            return
+
+        ARTIFACTS_DIR.mkdir(exist_ok=True)
+
+        tasks = [
+            self.api_client.download_artifact(artifact_id)
+            for artifact_id in artifact_ids
+        ]
+
+        loop.run_until_complete(asyncio.gather(*tasks))
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):

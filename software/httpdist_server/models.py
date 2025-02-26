@@ -58,6 +58,10 @@ class WorkerActionResponse(BaseModel):
     test_next: str | None
 
 
+class ArtifactListResponse(BaseModel):
+    artifact_ids: list[str]
+
+
 class SubmitTestsRequest(BaseModel):
     class Test(BaseModel):
         worker_requirements: set[str]
@@ -80,3 +84,8 @@ class WorkerRegisterRequest(BaseModel):
     worker_id: str
     pet_name: str
     tags: list[str]
+
+
+class ArtifactUploadRequest(BaseModel):
+    worker_id: str
+    content: str
