@@ -5,9 +5,9 @@ from dataclasses import dataclass, field
 import fastapi
 import uvicorn
 from fastapi import UploadFile
-from pydantic import BaseModel
 
 from httpdist_server.models import (
+    GetSessionResponse,
     GetSessionTestReportRequest,
     GetSessionTestsResponse,
     GetWorkerSessionTestsResponse,
@@ -89,12 +89,6 @@ workers: list[Worker] = [
 @app.get("/")
 async def root():
     return {"message": "Hello World!"}
-
-
-class GetSessionResponse(BaseModel):
-    """Response to a request to start a new session"""
-
-    session_id: str
 
 
 @app.get("/get-session")
