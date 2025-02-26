@@ -82,6 +82,16 @@ class SubmitTestReportRequest(BaseModel):
 
 class WorkerRegisterRequest(BaseModel):
     worker_id: str
+
+
+class WorkerUpdateRequest(BaseModel):
+    worker_id: str
+    pet_name: str
+    tags: list[str]
+
+
+class WorkerInfoResponse(BaseModel):
+    worker_id: str
     pet_name: str
     tags: list[str]
 

@@ -84,6 +84,10 @@ class SessionNotStartedError(ApiUsageError):
     pass
 
 
+class NoWorkersAvailableError(ApiUsageError):
+    pass
+
+
 class ApiBase:
     # FIXME
     API_URL = "http://localhost:8000"
@@ -142,8 +146,8 @@ class ClientApi(ApiBase):
         try:
             await self._post(f"session/{self.session_id}/tests", {"tests": tests})
         except httpx.HTTPStatusError as e:
-            if e.response.status_code == 422:
-                raise ApiUsageError(e.response.text)
+            if e.response.status_code == 503:
+                raise NoWorkersAvailableError(e.response.text)
             raise
 
     async def fetch_statuses(

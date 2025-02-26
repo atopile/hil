@@ -1,12 +1,16 @@
+from datetime import datetime, timedelta
 import logging
 import base64
 from dataclasses import dataclass, field
+import os
 from pathlib import Path
 import uuid
 
 import fastapi
+from hil.utils.pet_name import get_pet_name
 import uvicorn
-from fastapi import Response, UploadFile
+from fastapi import BackgroundTasks, Response, UploadFile
+from supabase import create_client
 
 from httpdist_server.models import (
     ArtifactListResponse,
@@ -25,6 +29,9 @@ from httpdist_server.models import (
     TestsResponse,
     WorkerAction,
     WorkerActionResponse,
+    WorkerInfoResponse,
+    WorkerRegisterRequest,
+    WorkerUpdateRequest,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,12 +40,22 @@ app = fastapi.FastAPI()
 
 ENV_DIR = Path(".envs")
 
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://ynesgbuoxmszjrkzazxz.supabase.co")
+SUPABASE_KEY = os.getenv(
+    "SUPABASE_KEY",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InluZXNnYnVveG1zempya3phenh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQzNzg5NDYsImV4cCI6MjA0OTk1NDk0Nn0.6KxEoSHTgyV4jKnnLAG5-Y9tWfHOzpl0qnA_NPzGUBo",
+)
+WORKER_TIMEOUT = timedelta(minutes=2)
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 
 @dataclass
-class Worker:
+class ConfiguredWorker:
     worker_id: str  # Typically the worker's mac address
     pet_name: str
     tags: set[str]
+    last_seen: datetime
 
 
 @dataclass
@@ -49,7 +66,6 @@ class Session:
         nodeid: NodeId
 
         status: TestStatus = TestStatus.Pending
-        assigned_worker: Worker | None = None
         reports: dict[TestPhase, str | None] = field(
             default_factory=lambda: {
                 TestPhase.Setup: None,
@@ -87,21 +103,53 @@ sessions: dict[str, Session] = {
         },
     ),
 }
-workers: list[Worker] = [
-    Worker(
-        worker_id="2ccf6728745b",
-        pet_name="chunky-otter",
-        tags={"cellsim"},
+
+
+async def _get_worker(worker_id: str) -> ConfiguredWorker:
+    workers_response = (
+        supabase.table("workers").select("*").eq("id", worker_id).execute()
     )
-]
+    if len(workers_response.data) == 0:
+        raise fastapi.HTTPException(status_code=404, detail="Worker not found")
+
+    return ConfiguredWorker(
+        worker_id=workers_response.data[0]["id"],
+        pet_name=workers_response.data[0]["pet_name"],
+        tags=workers_response.data[0]["tags"],
+        last_seen=datetime.fromisoformat(workers_response.data[0]["last_seen"]),
+    )
+
+
+async def _get_active_workers() -> list[ConfiguredWorker]:
+    workers = []
+    workers_response = (
+        supabase.table("workers")
+        .select("*")
+        .gte("last_seen", datetime.now() - WORKER_TIMEOUT)
+        .neq("tags", None)
+        .execute()
+    )
+    for worker in workers_response.data:
+        workers.append(
+            ConfiguredWorker(
+                worker_id=worker["id"],
+                pet_name=worker["pet_name"],
+                tags=worker["tags"],
+                last_seen=datetime.fromisoformat(worker["last_seen"]),
+            )
+        )
+    return workers
+
+
+async def _worker_seen(worker_id: str):
+    supabase.table("workers").update({"last_seen": datetime.now()}).eq(
+        "id", worker_id
+    ).execute()
 
 
 @app.get("/")
-async def root() -> dict[str, list[str]]:
-    return {
-        "sessions": list(sessions.keys()),
-        "workers": [worker.worker_id for worker in workers],
-    }
+async def root():
+    return {"message": "Hello, World!"}
 
 
 @app.get("/session")
@@ -145,6 +193,11 @@ async def submit_tests(session_id: str, request: SubmitTestsRequest) -> SuccessR
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
+    workers = await _get_active_workers()
+
+    if not workers:
+        raise fastapi.HTTPException(status_code=503, detail="No workers available")
+
     unprocessable_tags = set()
     worker_tags = {tag for worker in workers for tag in worker.tags}
     for test in request.tests:
@@ -159,7 +212,7 @@ async def submit_tests(session_id: str, request: SubmitTestsRequest) -> SuccessR
     if unprocessable_tags:
         # TODO: implement as a validator on the model
         raise fastapi.HTTPException(
-            status_code=422,
+            status_code=503,
             detail=f"Tests with unprocessable tags: {unprocessable_tags}",
         )
 
@@ -223,21 +276,21 @@ async def query_test_report(
 
 
 @app.get(path="/worker/{worker_id}/session")
-async def get_worker_session(worker_id: str) -> SessionResponse | NoSessionResponse:
+async def get_worker_session(
+    worker_id: str, background_tasks: BackgroundTasks
+) -> SessionResponse | NoSessionResponse:
     """Get the session for a worker"""
-    for worker in workers:
-        if worker.worker_id == worker_id:
-            for session in sessions.values():
-                if session.state == SessionState.Running:
-                    if any(
-                        test.worker_requirements.issubset(worker.tags)
-                        for test in session.tests.values()
-                    ):
-                        return SessionResponse(session_id=session.session_id)
+    worker = await _get_worker(worker_id)
+    background_tasks.add_task(_worker_seen, worker_id)
+    for session in sessions.values():
+        if session.state == SessionState.Running:
+            if any(
+                test.worker_requirements.issubset(worker.tags)
+                for test in session.tests.values()
+            ):
+                return SessionResponse(session_id=session.session_id)
 
-            return NoSessionResponse()
-
-    raise fastapi.HTTPException(status_code=404, detail="Worker not found")
+    return NoSessionResponse()
 
 
 @app.get("/worker/session/{session_id}/env")
@@ -263,7 +316,9 @@ async def fetch_worker_session_env(session_id: str) -> Response:
 
 
 @app.get("/worker/{worker_id}/session/{session_id}/tests")
-async def fetch_session_tests(worker_id: str, session_id: str) -> WorkerActionResponse:
+async def fetch_session_tests(
+    worker_id: str, session_id: str, background_tasks: BackgroundTasks
+) -> WorkerActionResponse:
     """Get the tests for a session"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -275,22 +330,15 @@ async def fetch_session_tests(worker_id: str, session_id: str) -> WorkerActionRe
             action=WorkerAction.Stop, test_now=None, test_next=None
         )
 
-    for worker in workers:
-        if worker.worker_id == worker_id:
-            break
-    else:
-        raise fastapi.HTTPException(status_code=404, detail="Worker not found")
-
+    background_tasks.add_task(_worker_seen, worker_id)
+    worker = await _get_worker(worker_id)
     worker_testable: list[str] = []
     for test in sessions[session_id].tests.values():
-        if (
-            test.status == TestStatus.Pending
-            and test.assigned_worker is None
-            and test.worker_requirements.issubset(worker.tags)
+        if test.status == TestStatus.Pending and test.worker_requirements.issubset(
+            worker.tags
         ):
             worker_testable.append(test.nodeid)
             if len(worker_testable) == 1:
-                test.assigned_worker = worker
                 test.status = TestStatus.Running
             elif len(worker_testable) >= 2:
                 break
@@ -345,6 +393,66 @@ async def download_artifact(session_id: str, artifact_id: str) -> Response:
     artifact_content = sessions[session_id].artifacts[artifact_id]
 
     return Response(content=artifact_content, media_type="application/octet-stream")
+
+
+@app.post("/worker/register")
+async def register_worker(request: WorkerRegisterRequest) -> SuccessResponse:
+    """Register a worker with the server"""
+    # If the worker is already registered, update the last seen time and return
+    if supabase.table("workers").select("*").eq("id", request.worker_id).execute().data:
+        await _worker_seen(request.worker_id)
+        return SuccessResponse(message="Worker registered successfully")
+
+    # Otherwise, insert the worker into the database
+    pet_name = get_pet_name(request.worker_id)
+    supabase.table("workers").insert(
+        {"id": request.worker_id, "pet_name": pet_name, "last_seen": datetime.now()}
+    ).execute()
+
+    return SuccessResponse(message="Worker registered successfully")
+
+
+@app.post("/worker/update")
+async def update_worker(request: WorkerUpdateRequest) -> SuccessResponse:
+    """Update a worker's information"""
+    if (
+        not supabase.table("workers")
+        .select("*")
+        .eq("id", request.worker_id)
+        .execute()
+        .data
+    ):
+        raise fastapi.HTTPException(status_code=404, detail="Worker not found")
+
+    supabase.table("workers").update(
+        {"pet_name": request.pet_name, "tags": request.tags}
+    ).eq("id", request.worker_id).execute()
+    return SuccessResponse(message="Worker updated successfully")
+
+
+@app.get("/worker/{worker_id}/info")
+async def get_worker_info(worker_id: str) -> WorkerInfoResponse:
+    """Get information about a worker"""
+    worker = await _get_worker(worker_id)
+    return WorkerInfoResponse(
+        worker_id=worker.worker_id,
+        pet_name=worker.pet_name,
+        tags=list(worker.tags),
+    )
+
+
+@app.get("/worker/list")
+async def list_workers() -> list[WorkerInfoResponse]:
+    """List all workers"""
+    workers = await _get_active_workers()
+    return [
+        WorkerInfoResponse(
+            worker_id=worker.worker_id,
+            pet_name=worker.pet_name,
+            tags=list(worker.tags),
+        )
+        for worker in workers
+    ]
 
 
 if __name__ == "__main__":
