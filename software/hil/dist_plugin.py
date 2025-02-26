@@ -84,17 +84,24 @@ class ApiBase:
 
     def __init__(self, config: pytest.Config):
         self.config = config
-        self._client = httpx.AsyncClient()
 
     async def _post(self, path: str, data: dict):
-        response = await self._client.post(f"{self.API_URL}/{path}", json=data)
-        response.raise_for_status()
-        return response.json()
+        async with httpx.AsyncClient() as client:
+            response = await client.post(f"{self.API_URL}/{path}", json=data)
+            response.raise_for_status()
+            return response.json()
 
     async def _get(self, path: str, params: dict | None = None):
-        response = await self._client.get(f"{self.API_URL}/{path}", params=params)
-        response.raise_for_status()
-        return response.json()
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{self.API_URL}/{path}", params=params)
+            response.raise_for_status()
+            return response.json()
+
+    async def _get_raw(self, path: str, params: dict | None = None):
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{self.API_URL}/{path}", params=params)
+            response.raise_for_status()
+            return response
 
 
 class ClientApi(ApiBase):
@@ -150,11 +157,12 @@ class ClientApi(ApiBase):
 
         artifacts_dir.parent.mkdir(parents=True, exist_ok=True)
 
-        response = await self._get(f"session/{self.session_id}/artifacts/{artifact_id}")
-        response.raise_for_status()
+        response = await self._get_raw(
+            f"session/{self.session_id}/artifacts/{artifact_id}"
+        )
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir) / artifact_id
+            temp_path = (Path(temp_dir) / artifact_id).with_suffix(".zip")
             with temp_path.open("wb") as f:
                 f.write(response.content)
             shutil.unpack_archive(temp_path, artifacts_dir)
@@ -295,8 +303,7 @@ class Worker:
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.api_client.upload_artifacts(self.worker_id))
+        asyncio.run(self.api_client.upload_artifacts(self.worker_id))
 
 
 class TestResults:
@@ -378,11 +385,10 @@ class Client:
 
         return new_reports
 
-    def download_artifacts(self):
+    async def download_artifacts(self):
         """Download artifact files produced by workers"""
 
-        loop = asyncio.get_event_loop()
-        artifact_ids = loop.run_until_complete(self.api_client.list_artifacts())
+        artifact_ids = await self.api_client.list_artifacts()
         if not artifact_ids:
             return
 
@@ -393,11 +399,11 @@ class Client:
             for artifact_id in artifact_ids
         ]
 
-        loop.run_until_complete(asyncio.gather(*tasks))
+        await asyncio.gather(*tasks)
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
-        self.download_artifacts()
+        asyncio.run(self.download_artifacts())
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_collection(self, session: pytest.Session):

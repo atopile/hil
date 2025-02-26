@@ -5,8 +5,7 @@ import uuid
 
 import fastapi
 import uvicorn
-from fastapi import UploadFile
-from fastapi.responses import StreamingResponse
+from fastapi import Response, UploadFile
 
 from httpdist_server.models import (
     ArtifactListResponse,
@@ -310,7 +309,7 @@ async def list_artifacts(session_id: str) -> ArtifactListResponse:
 
 
 @app.get("/session/{session_id}/artifacts/{artifact_id}")
-async def download_artifact(session_id: str, artifact_id: str) -> StreamingResponse:
+async def download_artifact(session_id: str, artifact_id: str) -> Response:
     """Download an artifact file"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -320,9 +319,7 @@ async def download_artifact(session_id: str, artifact_id: str) -> StreamingRespo
 
     artifact_content = sessions[session_id].artifacts[artifact_id]
 
-    return StreamingResponse(
-        content=artifact_content.decode(), media_type="application/octet-stream"
-    )
+    return Response(content=artifact_content, media_type="application/octet-stream")
 
 
 if __name__ == "__main__":
