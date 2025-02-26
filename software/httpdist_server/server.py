@@ -30,7 +30,6 @@ from httpdist_server.models import (
     WorkerAction,
     WorkerActionResponse,
     WorkerInfoResponse,
-    WorkerRegisterRequest,
     WorkerUpdateRequest,
 )
 
@@ -105,17 +104,35 @@ sessions: dict[str, Session] = {
 }
 
 
+class WorkerNotFound(fastapi.HTTPException):
+    def __init__(self, worker_id: str):
+        super().__init__(status_code=404, detail=f"Worker {worker_id} not found")
+
+
+class WorkerUnconfigured(fastapi.HTTPException):
+    def __init__(self, worker_id: str):
+        super().__init__(status_code=422, detail=f"Worker {worker_id} is unconfigured")
+
+
 async def _get_worker(worker_id: str) -> ConfiguredWorker:
     workers_response = (
         supabase.table("workers").select("*").eq("worker_id", worker_id).execute()
     )
     if len(workers_response.data) == 0:
-        raise fastapi.HTTPException(status_code=404, detail="Worker not found")
+        raise WorkerNotFound(worker_id)
+
+    tags = workers_response.data[0]["tags"]
+    if tags is None:
+        raise WorkerUnconfigured(worker_id)
+
+    pet_name = workers_response.data[0]["pet_name"]
+    if pet_name is None:
+        pet_name = get_pet_name(worker_id)
 
     return ConfiguredWorker(
         worker_id=workers_response.data[0]["worker_id"],
-        pet_name=workers_response.data[0]["pet_name"],
-        tags=workers_response.data[0]["tags"],
+        pet_name=pet_name,
+        tags=tags,
         last_seen=datetime.fromisoformat(workers_response.data[0]["last_seen"]),
     )
 
@@ -142,7 +159,7 @@ async def _get_active_workers() -> list[ConfiguredWorker]:
 
 
 async def _worker_seen(worker_id: str):
-    supabase.table("workers").update({"last_seen": datetime.now()}).eq(
+    supabase.table("workers").update({"last_seen": datetime.now().isoformat()}).eq(
         "worker_id", worker_id
     ).execute()
 
@@ -279,9 +296,26 @@ async def query_test_report(
 async def get_worker_session(
     worker_id: str, background_tasks: BackgroundTasks
 ) -> SessionResponse | NoSessionResponse:
-    """Get the session for a worker"""
+    """Get the session for a worker, or if the worker isn't registered, register it."""
+    worker_exists = bool(
+        supabase.table("workers").select("*").eq("worker_id", worker_id).execute().data
+    )
+
+    if worker_exists:
+        await _worker_seen(worker_id)
+
+    else:
+        pet_name = get_pet_name(worker_id)
+        supabase.table("workers").insert(
+            {
+                "worker_id": worker_id,
+                "pet_name": pet_name,
+                "last_seen": datetime.now().isoformat(),
+            }
+        ).execute()
+
     worker = await _get_worker(worker_id)
-    background_tasks.add_task(_worker_seen, worker_id)
+
     for session in sessions.values():
         if session.state == SessionState.Running:
             if any(
@@ -393,33 +427,6 @@ async def download_artifact(session_id: str, artifact_id: str) -> Response:
     artifact_content = sessions[session_id].artifacts[artifact_id]
 
     return Response(content=artifact_content, media_type="application/octet-stream")
-
-
-@app.post("/worker/register")
-async def register_worker(request: WorkerRegisterRequest) -> SuccessResponse:
-    """Register a worker with the server"""
-    # If the worker is already registered, update the last seen time and return
-    if (
-        supabase.table("workers")
-        .select("*")
-        .eq("worker_id", request.worker_id)
-        .execute()
-        .data
-    ):
-        await _worker_seen(request.worker_id)
-        return SuccessResponse(message="Worker registered successfully")
-
-    # Otherwise, insert the worker into the database
-    pet_name = get_pet_name(request.worker_id)
-    supabase.table("workers").insert(
-        {
-            "worker_id": request.worker_id,
-            "pet_name": pet_name,
-            "last_seen": datetime.now(),
-        }
-    ).execute()
-
-    return SuccessResponse(message="Worker registered successfully")
 
 
 @app.post("/worker/{worker_id}/update")
