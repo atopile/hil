@@ -88,7 +88,7 @@ class NoWorkersAvailableError(ApiUsageError):
     pass
 
 
-class ApiBase:
+class ClientApi:
     # FIXME
     API_URL = "http://localhost:8000"
     session_id: SessionId | None = None
@@ -122,8 +122,6 @@ class ApiBase:
             response.raise_for_status()
             return response
 
-
-class ClientApi(ApiBase):
     async def get_client_session(self) -> SessionId:
         session = await self._get("session")
         session_id = session["session_id"]
@@ -199,26 +197,37 @@ class ClientApi(ApiBase):
         return artifacts_dir
 
 
-class WorkerApi(ApiBase):
+class WorkerApi:
+    # FIXME
+    API_URL = "http://localhost:8000"
+    session_id: SessionId | None = None
+
     def __init__(self, config: pytest.Config):
-        super().__init__(config)
         session_id = config.getoption("httpdist_session_id")
         assert isinstance(session_id, str)
         self.session_id = session_id
 
-    async def signal_ready(self): ...
+    def _get(self, path: str, params: dict | None = None):
+        with httpx.Client() as client:
+            response = client.get(f"{self.API_URL}/{path}", params=params)
+            response.raise_for_status()
+            return response.json()
 
-    async def signal_done(self): ...
+    def _post(self, path: str, data: dict):
+        with httpx.Client() as client:
+            response = client.post(f"{self.API_URL}/{path}", json=data)
+            response.raise_for_status()
+            return response.json()
 
-    async def fetch_work(self, worker_id: WorkerId) -> tuple[NodeId, NodeId | None]:
-        data = await self._get(f"worker/{worker_id}/session/{self.session_id}/tests")
+    def fetch_work(self, worker_id: WorkerId) -> tuple[NodeId, NodeId | None]:
+        data = self._get(f"worker/{worker_id}/session/{self.session_id}/tests")
 
         if data["action"] == "stop":
             raise EndOfSession()
 
         return data["test_now"], data["test_next"]
 
-    async def report_result(
+    def report_result(
         self, nodeid: NodeId, report: pytest.TestReport, phase: TestPhase
     ):
         data = {
@@ -226,9 +235,9 @@ class WorkerApi(ApiBase):
             "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
             "phase": phase,
         }
-        await self._post(f"worker/session/{self.session_id}/test", data)
+        self._post(f"worker/session/{self.session_id}/test", data)
 
-    async def upload_artifacts(self, worker_id: str):
+    def upload_artifacts(self, worker_id: str):
         """Upload all artifact files"""
         if not ARTIFACTS_DIR.exists():
             return
@@ -244,7 +253,7 @@ class WorkerApi(ApiBase):
                 )
 
                 with open(zip_path, "rb") as zip_file:
-                    await self._post(
+                    self._post(
                         f"worker/session/{self.session_id}/artifacts",
                         {
                             "worker_id": worker_id,
@@ -297,23 +306,12 @@ class Worker:
         self.session = session
         self._items_by_nodeid = {item.nodeid: item for item in session.items}
 
-        async def _run_tests():
-            await self.api_client.signal_ready()
-
-            while True:
-                try:
-                    nodeid_now, nodeid_next = await self.api_client.fetch_work(
-                        self.worker_id
-                    )
-                    self.process_test(nodeid_now, nodeid_next)
-                except EndOfSession:
-                    break
-
-            await self.api_client.signal_done()
-
-            await asyncio.gather(*self._reporting_tasks)
-
-        asyncio.run(_run_tests())
+        while True:
+            try:
+                nodeid_now, nodeid_next = self.api_client.fetch_work(self.worker_id)
+                self.process_test(nodeid_now, nodeid_next)
+            except EndOfSession:
+                break
 
         return True
 
@@ -321,17 +319,13 @@ class Worker:
     def pytest_runtest_logreport(self, report: pytest.TestReport) -> None:
         # This hook is called from within the runtestloop, so we need to run
         # it in a task instead of calling it directly
-        self._reporting_tasks.append(
-            asyncio.create_task(
-                self.api_client.report_result(
-                    report.nodeid, report, phase=TestPhase(report.when)
-                )
-            )
+        self.api_client.report_result(
+            report.nodeid, report, phase=TestPhase(report.when)
         )
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
-        asyncio.run(self.api_client.upload_artifacts(self.worker_id))
+        self.api_client.upload_artifacts(self.worker_id)
 
 
 class TestResults:
