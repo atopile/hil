@@ -1,8 +1,5 @@
-import cloudpickle
 from pydantic import BaseModel
 from typing import Literal
-
-import pytest
 
 
 class GetSessionResponse(BaseModel):
@@ -23,13 +20,8 @@ class GetSessionTestsResponse(BaseModel):
     test_status: dict[str, Literal["pending", "running", "finished"]]
 
 
-class TestReport(bytes):
-    @staticmethod
-    def from_report(report: pytest.TestReport) -> "TestReport":
-        return TestReport(cloudpickle.dumps(report))
-
-    def as_report(self) -> pytest.TestReport:
-        return cloudpickle.loads(self)
+class TestReport(str):
+    """Represents a pytest TestReport as a cloudpickled and base64 encoded object"""
 
 
 class PostWorkerRegisterRequest(BaseModel):
