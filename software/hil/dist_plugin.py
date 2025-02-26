@@ -125,6 +125,12 @@ class ClientApi(ApiBase):
 
 
 class WorkerApi(ApiBase):
+    def __init__(self, config: pytest.Config):
+        super().__init__(config)
+        session_id = config.getoption("httpdist_session_id")
+        assert isinstance(session_id, str)
+        self.session_id = session_id
+
     async def signal_ready(self): ...
 
     async def signal_done(self): ...
@@ -179,12 +185,6 @@ class Worker:
         worker_id = self.config.getoption("httpdist_worker_id")
         assert isinstance(worker_id, str)
         return worker_id
-
-    @property
-    def session_id(self) -> str:
-        session_id = self.config.getoption("httpdist_session_id")
-        assert isinstance(session_id, str)
-        return session_id
 
     def process_test(self, nodeid_now: str, nodeid_next: str | None):
         item_now = self._items_by_nodeid[nodeid_now]
