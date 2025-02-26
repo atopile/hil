@@ -1,7 +1,7 @@
+import asyncio
 from dataclasses import dataclass
 from enum import StrEnum, auto
 from pathlib import Path
-import time
 
 import httpx
 import pytest
@@ -23,6 +23,7 @@ class RunsOn:
 
 
 NodeId = str
+SessionId = str
 
 
 class TestStatus(StrEnum):
@@ -53,13 +54,57 @@ class EndOfSession(Exception):
     pass
 
 
+class ApiUsageError(Exception):
+    pass
+
+
+class SessionNotStartedError(ApiUsageError):
+    pass
+
+
 class ApiClient:
     # FIXME
     API_URL = "http://localhost:8000"
+    session_id: SessionId | None = None
 
     def __init__(self, config: pytest.Config):
         self.config = config
         self._client = httpx.AsyncClient()
+
+    async def _post(self, path: str, data: dict):
+        response = await self._client.post(f"{self.API_URL}/{path}", json=data)
+        response.raise_for_status()
+        return response.json()
+
+    async def _get(self, path: str, params: dict | None = None):
+        response = await self._client.get(f"{self.API_URL}/{path}", params=params)
+        response.raise_for_status()
+        return response.json()
+
+    async def get_session(self) -> SessionId:
+        session = await self._get("get-session")
+        session_id = session["session_id"]
+        print(session_id)
+        self.session_id = session_id
+        return session_id
+
+    async def submit_tests(self, nodeids: set[NodeId]):
+        if self.session_id is None:
+            raise SessionNotStartedError("Must have an active session")
+
+        await self._post(f"session/{self.session_id}/tests", {"tests": list(nodeids)})
+
+    async def fetch_statuses(self) -> dict[NodeId, TestStatus]:
+        if self.session_id is None:
+            raise SessionNotStartedError("Must have an active session")
+
+        return await self._get(f"session/{self.session_id}/finished-tests")
+
+    async def fetch_report(self, nodeid: NodeId) -> pytest.TestReport:
+        if self.session_id is None:
+            raise SessionNotStartedError("Must have an active session")
+
+        return await self._get(f"session/{self.session_id}/test/{nodeid}/report")
 
 
 class Worker:
@@ -171,15 +216,16 @@ class Client:
 
     def submit_env(self): ...
 
-    def submit_tests(self, session: pytest.Session): ...
+    async def submit_tests(self, session: pytest.Session):
+        nodeids = {item.nodeid for item in session.items}
+        await self.api_client.submit_tests(nodeids)
 
-    def fetch_results(self) -> list[pytest.TestReport]:
-        # TOOD: fetch new statuses
-        new_statuses: dict[NodeId, TestStatus] = {}
+    async def fetch_results(self) -> list[pytest.TestReport]:
+        new_statuses: dict[NodeId, TestStatus] = await self.api_client.fetch_statuses()
+
         new_reports: list[pytest.TestReport] = []
-
         for nodeid in new_statuses.keys() - self.statuses.keys():
-            new_report = self.fetch_report(nodeid)
+            new_report = await self.api_client.fetch_report(nodeid)
             self.results.add(nodeid, new_report)
             new_reports.append(new_report)
 
@@ -187,14 +233,7 @@ class Client:
 
         return new_reports
 
-    def fetch_report(self, nodeid: NodeId) -> pytest.TestReport: ...
-
     def download_artifacts(self): ...
-
-    @pytest.hookimpl
-    def pytest_sessionstart(self, session: pytest.Session):
-        # TODO: get session
-        self.submit_env()
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
@@ -216,24 +255,35 @@ class Client:
     def pytest_runtestloop(self, session: pytest.Session):
         # TODO: shutdown handling
 
-        self.submit_tests(session)
+        async def run():
+            # self.submit_env()  # TODO
+            await self.api_client.get_session()
+            await self.submit_tests(session)
+
+        asyncio.run(run())
+
+        return True
 
         self.results = TestResults(set(item.nodeid for item in session.items))
 
-        while True:
-            new_reports = self.fetch_results()
-            for report in new_reports:
-                session.config.hook.pytest_runtest_logreport(report=report)
+        async def run():
+            while True:
+                new_reports = await self.fetch_results()
 
-            if self.results.all_done:
-                break
+                for report in new_reports:
+                    session.config.hook.pytest_runtest_logreport(report=report)
 
-            time.sleep(1)  # FIXME
+                if self.results.all_done:
+                    break
+
+                await asyncio.sleep(1)  # FIXME
+
+        asyncio.run(run())
 
         return True
 
 
-@pytest.hookimpl(trylast=True)
+@pytest.hookimpl(tryfirst=True)
 def pytest_configure(config):
     is_worker = config.getoption("worker")
     session = Worker(config) if is_worker else Client(config)
