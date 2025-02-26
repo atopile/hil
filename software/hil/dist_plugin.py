@@ -114,14 +114,16 @@ class ClientApi(ApiBase):
     async def fetch_statuses(self) -> dict[NodeId, TestStatus]:
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
-
-        return await self._get(f"session/{self.session_id}/finished-tests")
+        response = await self._get(f"session/{self.session_id}/finished-tests")
+        return response["test_status"]
 
     async def fetch_report(self, nodeid: NodeId) -> pytest.TestReport:
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
 
-        return await self._get(f"session/{self.session_id}/test/{nodeid}/report")
+        return await self._post(
+            f"session/{self.session_id}/test/report", {"node_id": nodeid}
+        )
 
 
 class WorkerApi(ApiBase):
