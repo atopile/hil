@@ -141,18 +141,21 @@ class WorkerApi(ApiBase):
     async def fetch_work(self, worker_id: WorkerId) -> tuple[NodeId, NodeId | None]:
         data = await self._get(f"worker/{worker_id}/session/{self.session_id}/tests")
 
+        logger.info(f"Received work: {data}")
+
         if data["action"] == "stop":
             raise EndOfSession()
 
         return data["test_now"], data["test_next"]
 
     async def report_result(self, nodeid: NodeId, report: pytest.TestReport):
+        response = {
+            "node_id": nodeid,
+            "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
+        }
         await self._post(
             f"worker/session/{self.session_id}/test/report",
-            {
-                "node_id": nodeid,
-                "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
-            },
+            response,
         )
 
     async def upload_artifacts(self): ...
@@ -207,8 +210,10 @@ class Worker:
                     nodeid_now, nodeid_next = await self.api_client.fetch_work(
                         self.worker_id
                     )
+                    logger.info(f"Received work: {nodeid_now}, {nodeid_next}")
                     self.process_test(nodeid_now, nodeid_next)
                 except EndOfSession:
+                    logger.info("Received end of session signal")
                     break
 
             await self.api_client.signal_done()
