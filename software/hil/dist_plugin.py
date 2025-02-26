@@ -12,6 +12,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+httpx_logger = logging.getLogger("httpx")
+httpx_logger.setLevel(logging.WARNING)
+
 PLUGIN_NAME = "httpdist"
 
 
@@ -145,8 +148,6 @@ class WorkerApi(ApiBase):
     async def fetch_work(self, worker_id: WorkerId) -> tuple[NodeId, NodeId | None]:
         data = await self._get(f"worker/{worker_id}/session/{self.session_id}/tests")
 
-        logger.info(f"Received work: {data}")
-
         if data["action"] == "stop":
             raise EndOfSession()
 
@@ -217,10 +218,8 @@ class Worker:
                     nodeid_now, nodeid_next = await self.api_client.fetch_work(
                         self.worker_id
                     )
-                    logger.info(f"Received work: {nodeid_now}, {nodeid_next}")
                     self.process_test(nodeid_now, nodeid_next)
                 except EndOfSession:
-                    logger.info("Received end of session signal")
                     break
 
             await self.api_client.signal_done()
