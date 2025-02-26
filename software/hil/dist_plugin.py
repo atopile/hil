@@ -29,6 +29,7 @@ class RunsOn:
 
 NodeId = str
 SessionId = str
+WorkerId = str
 
 
 class TestSpec(TypedDict):
@@ -72,7 +73,7 @@ class SessionNotStartedError(ApiUsageError):
     pass
 
 
-class ApiClient:
+class ApiBase:
     # FIXME
     API_URL = "http://localhost:8000"
     session_id: SessionId | None = None
@@ -91,7 +92,9 @@ class ApiClient:
         response.raise_for_status()
         return response.json()
 
-    async def get_session(self) -> SessionId:
+
+class ClientApi(ApiBase):
+    async def get_client_session(self) -> SessionId:
         session = await self._get("get-session")
         session_id = session["session_id"]
         self.session_id = session_id
@@ -120,9 +123,30 @@ class ApiClient:
 
         return await self._get(f"session/{self.session_id}/test/{nodeid}/report")
 
-    @property
-    def client(self) -> httpx.AsyncClient:
-        return self._client
+
+class WorkerApi(ApiBase):
+    async def signal_ready(self): ...
+
+    async def signal_done(self): ...
+
+    async def fetch_work(self, worker_id: WorkerId) -> tuple[NodeId, NodeId | None]:
+        data = await self._get(f"worker/{worker_id}/session/{self.session_id}/tests")
+
+        if data["action"] == "stop":
+            raise EndOfSession()
+
+        return data["test_now"], data["test_next"]
+
+    async def report_result(self, nodeid: NodeId, report: pytest.TestReport):
+        await self._post(
+            f"worker/session/{self.session_id}/test/report",
+            {
+                "node_id": nodeid,
+                "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
+            },
+        )
+
+    async def upload_artifacts(self): ...
 
 
 class Worker:
@@ -137,7 +161,7 @@ class Worker:
 
     def __init__(self, config: pytest.Config):
         self.config = config
-        self.api_client = ApiClient(config)
+        self.api_client = WorkerApi(config)
         self._reporting_tasks: list[asyncio.Task] = []
 
         # TODO: review
@@ -167,60 +191,24 @@ class Worker:
         item_next = self._items_by_nodeid[nodeid_next] if nodeid_next else None
         self.config.hook.pytest_runtest_protocol(item=item_now, nextitem=item_next)
 
-    async def signal_ready(self): ...
-
-    async def signal_done(self): ...
-
-    async def fetch_work(self) -> tuple[NodeId, NodeId | None]:
-        response = await self.api_client.client.get(
-            f"{self.api_client.API_URL}/worker/{self.worker_id}/session/{self.session_id}/tests"
-        )
-        try:
-            response.raise_for_status()
-        except Exception as e:
-            logger.exception(f"Failed to fetch work: {e}")
-            raise
-
-        data = response.json()
-        if data["action"] == "stop":
-            raise EndOfSession()
-
-        return data["test_now"], data["test_next"]
-
-    async def report_result(self, nodeid: NodeId, report: pytest.TestReport):
-        response = await self.api_client.client.post(
-            f"{self.api_client.API_URL}/worker/session/{self.session_id}/test/report",
-            json={
-                "node_id": nodeid,
-                "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
-            },
-        )
-        try:
-            response.raise_for_status()
-        except Exception as e:
-            logger.exception(f"Failed to report result for {nodeid}: {e}")
-            raise
-        else:
-            logger.info(f"Reported result for {nodeid}")
-
-    async def upload_artifacts(self): ...
-
     @pytest.hookimpl(tryfirst=True)
     def pytest_runtestloop(self, session: pytest.Session):
         self.session = session
         self._items_by_nodeid = {item.nodeid: item for item in session.items}
 
         async def _run_tests():
-            await self.signal_ready()
+            await self.api_client.signal_ready()
 
             while True:
                 try:
-                    nodeid_now, nodeid_next = await self.fetch_work()
+                    nodeid_now, nodeid_next = await self.api_client.fetch_work(
+                        self.worker_id
+                    )
                     self.process_test(nodeid_now, nodeid_next)
                 except EndOfSession:
                     break
 
-            await self.signal_done()
+            await self.api_client.signal_done()
 
             await asyncio.gather(*self._reporting_tasks)
 
@@ -233,12 +221,12 @@ class Worker:
         # This hook is called from within the runtestloop, so we need to run
         # it in a task instead of calling it directly
         self._reporting_tasks.append(
-            asyncio.create_task(self.report_result(report.nodeid, report))
+            asyncio.create_task(self.api_client.report_result(report.nodeid, report))
         )
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
-        asyncio.run(self.upload_artifacts())
+        asyncio.run(self.api_client.upload_artifacts())
 
 
 class TestResults:
@@ -280,7 +268,7 @@ class Client:
 
     def __init__(self, config: pytest.Config):
         self.config = config
-        self.api_client = ApiClient(config)
+        self.api_client = ClientApi(config)
         self.statuses = {}
 
     def submit_env(self): ...
@@ -334,7 +322,7 @@ class Client:
 
         async def run():
             # self.submit_env()  # TODO
-            await self.api_client.get_session()
+            await self.api_client.get_client_session()
             await self.submit_tests(session)
 
             while True:
