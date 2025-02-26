@@ -3,7 +3,7 @@ import base64
 from dataclasses import dataclass
 from enum import StrEnum, auto
 from pathlib import Path
-from typing import Literal, TypedDict, cast
+from typing import TypedDict
 
 import cloudpickle
 import httpx
@@ -35,17 +35,15 @@ SessionId = str
 WorkerId = str
 
 
+class TestPhase(StrEnum):
+    Setup = auto()
+    Call = auto()
+    Teardown = auto()
+
+
 class TestSpec(TypedDict):
     node_id: NodeId
     worker_requirements: list[RunsOn] | None
-
-
-class TestStatus(StrEnum):
-    # FIXME
-    Passed = auto()
-    Failed = auto()
-    Skipped = auto()
-    Error = auto()
 
 
 class Events:
@@ -116,15 +114,13 @@ class ClientApi(ApiBase):
 
     async def fetch_statuses(
         self,
-    ) -> dict[NodeId, list[Literal["setup", "call", "teardown"]]]:
+    ) -> dict[NodeId, list[TestPhase]]:
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
         response = await self._get(f"session/{self.session_id}/finished-tests")
         return response["test_status"]
 
-    async def fetch_report(
-        self, nodeid: NodeId, phase: Literal["setup", "call", "teardown"]
-    ) -> pytest.TestReport:
+    async def fetch_report(self, nodeid: NodeId, phase: TestPhase) -> pytest.TestReport:
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
 
@@ -154,10 +150,7 @@ class WorkerApi(ApiBase):
         return data["test_now"], data["test_next"]
 
     async def report_result(
-        self,
-        nodeid: NodeId,
-        report: pytest.TestReport,
-        phase: Literal["setup", "call", "teardown"],
+        self, nodeid: NodeId, report: pytest.TestReport, phase: TestPhase
     ):
         data = {
             "node_id": nodeid,
@@ -236,7 +229,9 @@ class Worker:
         # it in a task instead of calling it directly
         self._reporting_tasks.append(
             asyncio.create_task(
-                self.api_client.report_result(report.nodeid, report, phase=report.when)
+                self.api_client.report_result(
+                    report.nodeid, report, phase=TestPhase(report.when)
+                )
             )
         )
 
@@ -247,7 +242,7 @@ class Worker:
 
 class TestResults:
     nodeids: set[NodeId]
-    reports: dict[NodeId, dict[Literal["setup", "call", "teardown"], pytest.TestReport]]
+    reports: dict[NodeId, dict[TestPhase, pytest.TestReport]]
 
     def __init__(self, nodeids: set[NodeId]):
         self.nodeids = nodeids
@@ -256,23 +251,23 @@ class TestResults:
     @property
     def all_done(self) -> bool:
         return len(self.reports) == len(self.nodeids) and all(
-            "teardown" in phases for phases in self.reports.values()
+            TestPhase.Teardown in phases for phases in self.reports.values()
         )
 
     def add(self, nodeid: NodeId, report: pytest.TestReport):
         if nodeid not in self.nodeids:
             raise ValueError(f"Unknown nodeid: {nodeid}")
 
-        if report.when not in ["setup", "call", "teardown"]:
+        try:
+            phase = TestPhase(report.when)
+        except ValueError:
             raise ValueError(f"Unknown phase: {report.when}")
-
-        phase = cast(Literal["setup", "call", "teardown"], report.when)
 
         if (reports := self.reports.get(nodeid)) is not None:
             if phase in reports:
                 raise ValueError(f"Test result already set for {nodeid}, phase {phase}")
 
-        self.reports[nodeid] = self.reports.get(nodeid, {}) | {phase: report}  # type: ignore # TODO
+        self.reports[nodeid] = self.reports.get(nodeid, {}) | {phase: report}
 
 
 class Client:
@@ -288,7 +283,7 @@ class Client:
 
     runs_on_key = pytest.StashKey[dict[str, list[RunsOn]]]()
     results: TestResults
-    statuses: dict[NodeId, list[Literal["setup", "call", "teardown"]]]
+    statuses: dict[NodeId, list[TestPhase]]
 
     def __init__(self, config: pytest.Config):
         self.config = config
@@ -309,7 +304,7 @@ class Client:
 
     async def fetch_results(self) -> list[pytest.TestReport]:
         new_statuses: dict[
-            NodeId, list[Literal["setup", "call", "teardown"]]
+            NodeId, list[TestPhase]
         ] = await self.api_client.fetch_statuses()
 
         new_reports: list[pytest.TestReport] = []
