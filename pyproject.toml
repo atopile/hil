@@ -28,6 +28,7 @@ dependencies = [
     "httpx>=0.28.1",
     "fastapi[standard]>=0.115.8",
     "supabase>=2.13.0",
+    "pathspec>=0.12.1",
 ]
 
 [project.entry-points."pytest11"]

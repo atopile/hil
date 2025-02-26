@@ -2,8 +2,11 @@ import asyncio
 import base64
 from dataclasses import dataclass
 from enum import StrEnum, auto
+import itertools
+from os import PathLike
 from pathlib import Path
 from typing import TypedDict
+import zipfile
 
 import cloudpickle
 import httpx
@@ -11,6 +14,10 @@ import pytest
 import logging
 import tempfile
 import shutil
+
+import pathspec
+
+import rich.progress
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +98,14 @@ class ApiBase:
             response.raise_for_status()
             return response.json()
 
+    async def _post_files(self, path: str, file_path: PathLike):
+        file_path = Path(file_path)
+        async with httpx.AsyncClient() as client:
+            with open(file_path, "rb") as f:
+                response = await client.post(f"{self.API_URL}/{path}", files={"env": f})
+            response.raise_for_status()
+            return response.json()
+
     async def _get(self, path: str, params: dict | None = None):
         async with httpx.AsyncClient() as client:
             response = await client.get(f"{self.API_URL}/{path}", params=params)
@@ -110,6 +125,15 @@ class ClientApi(ApiBase):
         session_id = session["session_id"]
         self.session_id = session_id
         return session_id
+
+    async def submit_env(self, env: Path):
+        if self.session_id is None:
+            raise SessionNotStartedError("Must have an active session")
+
+        await self._post_files(
+            f"session/{self.session_id}/env",
+            env,
+        )
 
     async def submit_tests(self, tests: list[TestSpec]):
         if self.session_id is None:
@@ -356,7 +380,37 @@ class Client:
         self.api_client = ClientApi(config)
         self.statuses = {}
 
-    def submit_env(self): ...
+    async def submit_env(self, env: Path):
+        # Create a pathspec to exclude certain files
+        # FIXME: this will ignore all but the top-level `.git/hilignore`
+        # Always ignore .git/ to avoid including the entire repo in the env
+        ignore_pattern_lines = [".git/"]
+        for ignore_file in itertools.chain(
+            env.glob("*.gitignore"), env.glob("*.hilignore")
+        ):
+            if not ignore_file.is_file():
+                continue
+            with open(ignore_file, "r") as f:
+                ignore_pattern_lines.extend(line.strip() for line in f.readlines())
+        ignore_spec = pathspec.GitIgnoreSpec.from_lines(ignore_pattern_lines)
+        matched_files = list(ignore_spec.match_tree_files(env, negate=True))
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            zip_path = temp_path / "env.zip"
+            with zipfile.ZipFile(zip_path, "w") as zip_file:
+                for file in rich.progress.track(
+                    matched_files, description="zipping env..."
+                ):
+                    zip_file.write(env / file, file)
+
+            size_mb = zip_path.stat().st_size / 1024 / 1024
+            if size_mb > 5:
+                rich.print(
+                    f"[yellow]WARNING:[/yellow] Large env size: {size_mb:.1f}MB. Consider adding more to [blue].hilignore[/blue]."
+                )
+
+            await self.api_client.submit_env(zip_path)
 
     async def submit_tests(self, session: pytest.Session):
         nodeids = {item.nodeid for item in session.items}
@@ -403,7 +457,8 @@ class Client:
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
-        asyncio.run(self.download_artifacts())
+        if exitstatus == pytest.ExitCode.OK:
+            asyncio.run(self.download_artifacts())
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_collection(self, session: pytest.Session):
@@ -424,8 +479,8 @@ class Client:
         self.results = TestResults(set(item.nodeid for item in session.items))
 
         async def run():
-            # self.submit_env()  # TODO
             await self.api_client.get_client_session()
+            await self.submit_env(session.config.rootpath)
             await self.submit_tests(session)
 
             while True:
@@ -436,7 +491,8 @@ class Client:
                 if self.results.all_done:
                     break
 
-                await asyncio.sleep(1)  # FIXME
+                # Loop delay to avoid overwhelming server
+                await asyncio.sleep(1)
 
         asyncio.run(run())
 

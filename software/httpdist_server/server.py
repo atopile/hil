@@ -1,6 +1,7 @@
 import logging
 import base64
 from dataclasses import dataclass, field
+from pathlib import Path
 import uuid
 
 import fastapi
@@ -29,6 +30,8 @@ from httpdist_server.models import (
 logger = logging.getLogger(__name__)
 
 app = fastapi.FastAPI()
+
+ENV_DIR = Path(".envs")
 
 
 @dataclass
@@ -59,13 +62,13 @@ class Session:
 
     state: SessionState = SessionState.Setup
     tests: dict[str, Test] = field(default_factory=dict)
-    env: UploadFile | None = None
+    env: Path | None = None
     artifacts: dict[str, bytes] = field(default_factory=dict)
 
-    async def stop(self):
+    def stop(self):
         self.state = SessionState.Stopped
         if self.env is not None:
-            await self.env.close()
+            self.env.unlink()
 
 
 # TODO: stick this in a database or something
@@ -94,8 +97,11 @@ workers: list[Worker] = [
 
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World!"}
+async def root() -> dict[str, list[str]]:
+    return {
+        "sessions": list(sessions.keys()),
+        "workers": [worker.worker_id for worker in workers],
+    }
 
 
 @app.get("/session")
@@ -110,7 +116,7 @@ async def stop_session(session_id: str) -> SuccessResponse:
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    await sessions[session_id].stop()
+    sessions[session_id].stop()
 
     return SuccessResponse(message="Stop signal sent")
 
@@ -122,7 +128,13 @@ async def submit_session_env(session_id: str, env: UploadFile) -> SuccessRespons
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
     # TODO: Store this in a proper storage backend
-    sessions[session_id].env = env
+    env_path = ENV_DIR / session_id
+    env_path.parent.mkdir(parents=True, exist_ok=True)
+    with env_path.open("wb") as f:
+        f.write(await env.read())
+
+    sessions[session_id].env = env_path
+    logger.info(f"Uploaded environment file for session {session_id}")
 
     return SuccessResponse(message="Environment file uploaded successfully")
 
@@ -229,12 +241,25 @@ async def get_worker_session(worker_id: str) -> SessionResponse | NoSessionRespo
 
 
 @app.get("/worker/session/{session_id}/env")
-async def fetch_worker_session_env(session_id: str):
+async def fetch_worker_session_env(session_id: str) -> Response:
     """Get the environment for a session"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    return sessions[session_id].env
+    session = sessions[session_id]
+
+    if session.env is None:
+        raise fastapi.HTTPException(
+            status_code=404, detail="Environment file not found"
+        )
+
+    file_content = session.env.read_bytes()
+
+    return Response(
+        content=file_content,
+        media_type="application/zip",
+        headers={"Content-Disposition": 'attachment; filename="env.zip"'},
+    )
 
 
 @app.get("/worker/{worker_id}/session/{session_id}/tests")
