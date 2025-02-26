@@ -2,6 +2,7 @@ import asyncio
 from dataclasses import dataclass
 from enum import StrEnum, auto
 from pathlib import Path
+from typing import TypedDict
 
 import httpx
 import pytest
@@ -24,6 +25,11 @@ class RunsOn:
 
 NodeId = str
 SessionId = str
+
+
+class TestSpec(TypedDict):
+    node_id: NodeId
+    worker_requirements: list[RunsOn] | None
 
 
 class TestStatus(StrEnum):
@@ -84,15 +90,19 @@ class ApiClient:
     async def get_session(self) -> SessionId:
         session = await self._get("get-session")
         session_id = session["session_id"]
-        print(session_id)
         self.session_id = session_id
         return session_id
 
-    async def submit_tests(self, nodeids: set[NodeId]):
+    async def submit_tests(self, tests: list[TestSpec]):
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
 
-        await self._post(f"session/{self.session_id}/tests", {"tests": list(nodeids)})
+        try:
+            await self._post(f"session/{self.session_id}/tests", {"tests": tests})
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 422:
+                raise ApiUsageError(e.response.text)
+            raise
 
     async def fetch_statuses(self) -> dict[NodeId, TestStatus]:
         if self.session_id is None:
@@ -213,12 +223,19 @@ class Client:
     def __init__(self, config: pytest.Config):
         self.config = config
         self.api_client = ApiClient(config)
+        self.statuses = {}
 
     def submit_env(self): ...
 
     async def submit_tests(self, session: pytest.Session):
         nodeids = {item.nodeid for item in session.items}
-        await self.api_client.submit_tests(nodeids)
+        runs_on = session.config.stash[self.runs_on_key]
+        await self.api_client.submit_tests(
+            [
+                TestSpec(node_id=nodeid, worker_requirements=runs_on.get(nodeid))
+                for nodeid in nodeids
+            ]
+        )
 
     async def fetch_results(self) -> list[pytest.TestReport]:
         new_statuses: dict[NodeId, TestStatus] = await self.api_client.fetch_statuses()
@@ -255,21 +272,15 @@ class Client:
     def pytest_runtestloop(self, session: pytest.Session):
         # TODO: shutdown handling
 
+        self.results = TestResults(set(item.nodeid for item in session.items))
+
         async def run():
             # self.submit_env()  # TODO
             await self.api_client.get_session()
             await self.submit_tests(session)
 
-        asyncio.run(run())
-
-        return True
-
-        self.results = TestResults(set(item.nodeid for item in session.items))
-
-        async def run():
             while True:
                 new_reports = await self.fetch_results()
-
                 for report in new_reports:
                     session.config.hook.pytest_runtest_logreport(report=report)
 
