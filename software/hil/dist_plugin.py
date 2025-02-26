@@ -121,9 +121,10 @@ class ClientApi(ApiBase):
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
 
-        return await self._post(
+        report = await self._post(
             f"session/{self.session_id}/test/report", {"node_id": nodeid}
         )
+        return cloudpickle.loads(base64.b64decode(report))
 
 
 class WorkerApi(ApiBase):
