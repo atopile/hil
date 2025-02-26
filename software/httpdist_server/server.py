@@ -1,5 +1,3 @@
-import base64
-from collections.abc import AsyncGenerator
 import logging
 import uuid
 from dataclasses import dataclass, field
@@ -8,7 +6,6 @@ from typing import Literal
 import fastapi
 import uvicorn
 from fastapi import UploadFile
-from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from httpdist_server.models import (
@@ -16,7 +13,6 @@ from httpdist_server.models import (
     GetWorkerSessionTestsResponse,
     PostSessionsTestsRequest,
     PostWorkerSessionTestReportRequest,
-    TestReport,
 )
 
 logger = logging.getLogger(__name__)
@@ -40,7 +36,7 @@ class Session:
 
         status: Literal["pending", "running", "finished"] = "pending"
         assigned_worker: Worker | None = None
-        report: bytes | None = None
+        report: str | None = None
 
     session_id: str
 
@@ -160,26 +156,26 @@ async def get_finished_tests(session_id: str) -> GetSessionTestsResponse:
     )
 
 
-@app.post("/worker/session/{session_id}/test/{test_id}/report")
+@app.post("/worker/session/{session_id}/test/report")
 async def post_test_report(
-    session_id: str, test_id: str, request: PostWorkerSessionTestReportRequest
+    session_id: str, request: PostWorkerSessionTestReportRequest
 ):
     """Upload the result for a test"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    if test_id not in sessions[session_id].tests:
+    if request.node_id not in sessions[session_id].tests:
         raise fastapi.HTTPException(status_code=404, detail="Test not found")
 
-    test = sessions[session_id].tests[test_id]
-    test.report = base64.b64decode(request.report)
+    test = sessions[session_id].tests[request.node_id]
+    test.report = request.report
     test.status = "finished"
 
     return {"message": "Test result uploaded successfully"}
 
 
 @app.get("/session/{session_id}/test/{test_id}/report")
-async def get_test_report(session_id: str, test_id: str) -> StreamingResponse:
+async def get_test_report(session_id: str, test_id: str) -> str:
     """Get the report for a test"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -191,13 +187,7 @@ async def get_test_report(session_id: str, test_id: str) -> StreamingResponse:
     if test.report is None:
         raise fastapi.HTTPException(status_code=404, detail="Test report not found")
 
-    async def report_generator(report: bytes) -> AsyncGenerator[bytes, None]:
-        report_data = TestReport(report)
-        yield report_data
-
-    return StreamingResponse(
-        report_generator(test.report), media_type="application/octet-stream"
-    )
+    return test.report
 
 
 @app.get("/worker/{worker_id}/get-session")

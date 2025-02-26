@@ -189,8 +189,11 @@ class Worker:
 
     async def report_result(self, nodeid: NodeId, report: pytest.TestReport):
         response = await self.api_client.client.post(
-            f"{self.api_client.API_URL}/worker/session/{self.session_id}/test/{nodeid}/report",
-            json={"report": base64.b64encode(cloudpickle.dumps(report)).decode()},
+            f"{self.api_client.API_URL}/worker/session/{self.session_id}/test/report",
+            json={
+                "node_id": nodeid,
+                "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
+            },
         )
         try:
             response.raise_for_status()

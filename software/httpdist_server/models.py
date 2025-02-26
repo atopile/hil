@@ -20,10 +20,6 @@ class GetSessionTestsResponse(BaseModel):
     test_status: dict[str, Literal["pending", "running", "finished"]]
 
 
-class TestReport(str):
-    """Represents a pytest TestReport as a cloudpickled and base64 encoded object"""
-
-
 class PostWorkerRegisterRequest(BaseModel):
     worker_id: str
     pet_name: str
@@ -31,7 +27,8 @@ class PostWorkerRegisterRequest(BaseModel):
 
 
 class PostWorkerSessionTestReportRequest(BaseModel):
-    report: bytes
+    node_id: str
+    report: str
 
 
 class GetWorkerSessionTestsResponse(BaseModel):
