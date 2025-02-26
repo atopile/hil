@@ -384,6 +384,8 @@ class Client:
         # Create a pathspec to exclude certain files
         # FIXME: this will ignore all but the top-level `.git/hilignore`
         # Always ignore .git/ to avoid including the entire repo in the env
+        # FIXME: this would be way faster if it filtered as it iterated, but
+        # pathspec iters all the files, and then filters things that don't match
         ignore_pattern_lines = [".git/"]
         for ignore_file in itertools.chain(
             env.glob("*.gitignore"), env.glob("*.hilignore")
