@@ -7,17 +7,20 @@ import uvicorn
 from fastapi import UploadFile
 
 from httpdist_server.models import (
-    GetSessionResponse,
-    GetSessionTestReportRequest,
-    GetSessionTestsResponse,
-    GetWorkerSessionTestsResponse,
-    PostSessionsTestsRequest,
-    PostWorkerSessionTestReportRequest,
+    NoSessionResponse,
+    SessionResponse,
     SessionState,
+    SubmitTestReportRequest,
+    SubmitTestsRequest,
+    SuccessResponse,
     TestPhase,
+    TestReportRequest,
+    TestReportResponse,
     TestStatus,
     NodeId,
+    TestsResponse,
     WorkerAction,
+    WorkerActionResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -91,25 +94,25 @@ async def root():
     return {"message": "Hello World!"}
 
 
-@app.get("/get-session")
-async def start_session():
+@app.get("/session")
+async def start_session() -> SessionResponse:
     session_id = str(uuid.uuid4())
     sessions[session_id] = Session(session_id=session_id)
-    return GetSessionResponse(session_id=session_id)
+    return SessionResponse(session_id=session_id)
 
 
 @app.post("/session/{session_id}/stop")
-async def stop_session(session_id: str):
+async def stop_session(session_id: str) -> SuccessResponse:
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
     await sessions[session_id].stop()
 
-    return {"message": "Stop signal sent"}
+    return SuccessResponse(message="Stop signal sent")
 
 
 @app.post("/session/{session_id}/env")
-async def upload_session_env(session_id: str, env: UploadFile):
+async def submit_session_env(session_id: str, env: UploadFile) -> SuccessResponse:
     """Upload environment file for a test session"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -117,12 +120,12 @@ async def upload_session_env(session_id: str, env: UploadFile):
     # TODO: Store this in a proper storage backend
     sessions[session_id].env = env
 
-    return {"message": "Environment file uploaded successfully"}
+    return SuccessResponse(message="Environment file uploaded successfully")
 
 
 @app.post("/session/{session_id}/tests")
-async def add_tests(session_id: str, request: PostSessionsTestsRequest):
-    """Add a test to a session"""
+async def submit_tests(session_id: str, request: SubmitTestsRequest) -> SuccessResponse:
+    """Add collected tests to a session"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
@@ -133,73 +136,78 @@ async def add_tests(session_id: str, request: PostSessionsTestsRequest):
             if tag not in worker_tags:
                 unprocessable_tags.add(tag)
 
-        sessions[session_id].tests[test.node_id] = Session.Test(
-            test.worker_requirements, test.node_id
+        sessions[session_id].tests[test.nodeid] = Session.Test(
+            test.worker_requirements, test.nodeid
         )
 
     if unprocessable_tags:
+        # TODO: implement as a validator on the model
         raise fastapi.HTTPException(
             status_code=422,
             detail=f"Tests with unprocessable tags: {unprocessable_tags}",
         )
 
-    return {"message": "Tests added successfully"}
+    return SuccessResponse(message="Tests added successfully")
 
 
-@app.get("/session/{session_id}/finished-tests")
-async def get_finished_tests(session_id: str) -> GetSessionTestsResponse:
-    """Get the tests for a session"""
+@app.get("/session/{session_id}/tests")
+async def fetch_tests(session_id: str) -> TestsResponse:
+    """Get test statuses for a session"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    completed_phases: dict[str, list[TestPhase]] = {
-        test.nodeid: [
-            phase for phase in test.reports.keys() if test.reports[phase] is not None
-        ]
-        for test in sessions[session_id].tests.values()  # type: ignore
-    }
-    return GetSessionTestsResponse(test_status=completed_phases)
+    return TestsResponse(
+        statuses={
+            test.nodeid: [
+                phase
+                for phase in test.reports.keys()
+                if test.reports[phase] is not None
+            ]
+            for test in sessions[session_id].tests.values()
+        }
+    )
 
 
-@app.post("/worker/session/{session_id}/test/report")
+@app.post("/worker/session/{session_id}/test")
 async def submit_test_report(
-    session_id: str, request: PostWorkerSessionTestReportRequest
-):
+    session_id: str, request: SubmitTestReportRequest
+) -> SuccessResponse:
     """Upload the result for a test"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    if request.node_id not in sessions[session_id].tests:
+    if request.nodeid not in sessions[session_id].tests:
         raise fastapi.HTTPException(status_code=404, detail="Test not found")
 
-    test = sessions[session_id].tests[request.node_id]
+    test = sessions[session_id].tests[request.nodeid]
     test.reports[request.phase] = request.report
     if request.phase == TestPhase.Teardown:  # TODO
         test.status = TestStatus.Finished
 
-    return {"message": "Test result uploaded successfully"}
+    return SuccessResponse(message="Test result uploaded successfully")
 
 
-@app.post("/session/{session_id}/test/report/{phase}")
+@app.post("/session/{session_id}/test/{phase}")
 async def query_test_report(
-    session_id: str, phase: TestPhase, request: GetSessionTestReportRequest
-):
-    """Get the report for a test"""
+    session_id: str, phase: TestPhase, request: TestReportRequest
+) -> TestReportResponse:
+    """Get the report for a test at a particular phase"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
 
-    if request.node_id not in sessions[session_id].tests:
+    if request.nodeid not in sessions[session_id].tests:
         raise fastapi.HTTPException(status_code=404, detail="Test not found")
 
-    test = sessions[session_id].tests[request.node_id]
-    if test.reports[phase] is None:
+    test = sessions[session_id].tests[request.nodeid]
+
+    if (report := test.reports[phase]) is None:
         raise fastapi.HTTPException(status_code=404, detail="Test report not found")
 
-    return test.reports[phase]
+    return TestReportResponse(report=report)
 
 
-@app.get("/worker/{worker_id}/get-session")
-async def get_session(worker_id: str) -> str | None:
+@app.get(path="/worker/{worker_id}/session")
+async def get_worker_session(worker_id: str) -> SessionResponse | NoSessionResponse:
     """Get the session for a worker"""
     for worker in workers:
         if worker.worker_id == worker_id:
@@ -209,15 +217,15 @@ async def get_session(worker_id: str) -> str | None:
                         test.worker_requirements.issubset(worker.tags)
                         for test in session.tests.values()
                     ):
-                        return session.session_id
+                        return SessionResponse(session_id=session.session_id)
 
-            return None
+            return NoSessionResponse()
 
     raise fastapi.HTTPException(status_code=404, detail="Worker not found")
 
 
 @app.get("/worker/session/{session_id}/env")
-async def get_session_env(session_id: str):
+async def fetch_worker_session_env(session_id: str):
     """Get the environment for a session"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -226,7 +234,7 @@ async def get_session_env(session_id: str):
 
 
 @app.get("/worker/{worker_id}/session/{session_id}/tests")
-async def get_session_tests(worker_id: str, session_id: str):
+async def fetch_session_tests(worker_id: str, session_id: str) -> WorkerActionResponse:
     """Get the tests for a session"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -234,7 +242,7 @@ async def get_session_tests(worker_id: str, session_id: str):
     if sessions[session_id].state == SessionState.Setup:
         sessions[session_id].state = SessionState.Running
     elif sessions[session_id].state == SessionState.Stopped:
-        return GetWorkerSessionTestsResponse(
+        return WorkerActionResponse(
             action=WorkerAction.Stop, test_now=None, test_next=None
         )
 
@@ -258,7 +266,7 @@ async def get_session_tests(worker_id: str, session_id: str):
             elif len(worker_testable) >= 2:
                 break
 
-    return GetWorkerSessionTestsResponse(
+    return WorkerActionResponse(
         action=WorkerAction.Run if len(worker_testable) > 0 else WorkerAction.Stop,
         test_now=worker_testable[0] if len(worker_testable) > 0 else None,
         test_next=worker_testable[1] if len(worker_testable) > 1 else None,

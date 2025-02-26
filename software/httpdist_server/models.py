@@ -2,6 +2,7 @@ from enum import StrEnum, auto
 from pydantic import BaseModel
 
 NodeId = str
+SessionId = str
 
 
 class TestStatus(StrEnum):
@@ -27,41 +28,55 @@ class WorkerAction(StrEnum):
     Stop = auto()
 
 
-class GetSessionResponse(BaseModel):
+class SuccessResponse(BaseModel):
+    message: str
+
+
+class SessionResponse(BaseModel):
     """Response to a request to start a new session"""
 
-    session_id: str
+    session_id: SessionId
 
 
-class PostSessionsTestsRequest(BaseModel):
+class NoSessionResponse(BaseModel):
+    """Indicates no session available for the worker"""
+
+    pass
+
+
+class TestsResponse(BaseModel):
+    statuses: dict[NodeId, list[TestPhase]]
+
+
+class TestReportResponse(BaseModel):
+    report: str
+
+
+class WorkerActionResponse(BaseModel):
+    action: WorkerAction
+    test_now: str | None
+    test_next: str | None
+
+
+class SubmitTestsRequest(BaseModel):
     class Test(BaseModel):
         worker_requirements: set[str]
-        node_id: str
+        nodeid: NodeId
 
     tests: list[Test]
 
 
-class GetSessionTestsResponse(BaseModel):
-    test_status: dict[NodeId, list[TestPhase]]
+class TestReportRequest(BaseModel):
+    nodeid: NodeId
 
 
-class PostWorkerRegisterRequest(BaseModel):
-    worker_id: str
-    pet_name: str
-    tags: list[str]
-
-
-class GetSessionTestReportRequest(BaseModel):
-    node_id: str
-
-
-class PostWorkerSessionTestReportRequest(BaseModel):
-    node_id: str
+class SubmitTestReportRequest(BaseModel):
+    nodeid: NodeId
     phase: TestPhase
     report: str
 
 
-class GetWorkerSessionTestsResponse(BaseModel):
-    action: WorkerAction
-    test_now: str | None
-    test_next: str | None
+class WorkerRegisterRequest(BaseModel):
+    worker_id: str
+    pet_name: str
+    tags: list[str]

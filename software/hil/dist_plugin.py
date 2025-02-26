@@ -42,7 +42,7 @@ class TestPhase(StrEnum):
 
 
 class TestSpec(TypedDict):
-    node_id: NodeId
+    nodeid: NodeId
     worker_requirements: list[RunsOn] | None
 
 
@@ -96,7 +96,7 @@ class ApiBase:
 
 class ClientApi(ApiBase):
     async def get_client_session(self) -> SessionId:
-        session = await self._get("get-session")
+        session = await self._get("session")
         session_id = session["session_id"]
         self.session_id = session_id
         return session_id
@@ -117,16 +117,17 @@ class ClientApi(ApiBase):
     ) -> dict[NodeId, list[TestPhase]]:
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
-        response = await self._get(f"session/{self.session_id}/finished-tests")
-        return response["test_status"]
+        response = await self._get(f"session/{self.session_id}/tests")
+        return response["statuses"]
 
     async def fetch_report(self, nodeid: NodeId, phase: TestPhase) -> pytest.TestReport:
         if self.session_id is None:
             raise SessionNotStartedError("Must have an active session")
 
-        report = await self._post(
-            f"session/{self.session_id}/test/report/{phase}", {"node_id": nodeid}
+        response = await self._post(
+            f"session/{self.session_id}/test/{phase}", {"nodeid": nodeid}
         )
+        report = response["report"]
         return cloudpickle.loads(base64.b64decode(report))
 
 
@@ -153,11 +154,11 @@ class WorkerApi(ApiBase):
         self, nodeid: NodeId, report: pytest.TestReport, phase: TestPhase
     ):
         data = {
-            "node_id": nodeid,
+            "nodeid": nodeid,
             "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
             "phase": phase,
         }
-        await self._post(f"worker/session/{self.session_id}/test/report", data)
+        await self._post(f"worker/session/{self.session_id}/test", data)
 
     async def upload_artifacts(self): ...
 
@@ -297,7 +298,7 @@ class Client:
         runs_on = session.config.stash[self.runs_on_key]
         await self.api_client.submit_tests(
             [
-                TestSpec(node_id=nodeid, worker_requirements=runs_on.get(nodeid))
+                TestSpec(nodeid=nodeid, worker_requirements=runs_on.get(nodeid))
                 for nodeid in nodeids
             ]
         )
