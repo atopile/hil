@@ -4,11 +4,14 @@ from enum import StrEnum, auto
 from pathlib import Path
 from typing import TypedDict
 
+import cloudpickle
 import httpx
 import pytest
+import logging
 
+logger = logging.getLogger(__name__)
 
-PLUGIN_NAME = "dist"
+PLUGIN_NAME = "httpdist"
 
 
 @dataclass
@@ -116,6 +119,10 @@ class ApiClient:
 
         return await self._get(f"session/{self.session_id}/test/{nodeid}/report")
 
+    @property
+    def client(self) -> httpx.AsyncClient:
+        return self._client
+
 
 class Worker:
     """
@@ -141,46 +148,86 @@ class Worker:
         self.config.option.maxprocesses = None
         self.config.option.basetemp = Path.cwd() / "dist_tmp"
 
+    @property
+    def worker_id(self) -> str:
+        worker_id = self.config.getoption("httpdist_worker_id")
+        assert isinstance(worker_id, str)
+        return worker_id
+
+    @property
+    def session_id(self) -> str:
+        session_id = self.config.getoption("httpdist_session_id")
+        assert isinstance(session_id, str)
+        return session_id
+
     def process_test(self, nodeid_now: str, nodeid_next: str | None):
         item_now = self._items_by_nodeid[nodeid_now]
         item_next = self._items_by_nodeid[nodeid_next] if nodeid_next else None
         self.config.hook.pytest_runtest_protocol(item=item_now, nextitem=item_next)
 
-    def signal_ready(self): ...
+    async def signal_ready(self): ...
 
-    def signal_done(self): ...
+    async def signal_done(self): ...
 
-    def fetch_work(self) -> tuple[NodeId, NodeId | None]: ...
+    async def fetch_work(self) -> tuple[NodeId, NodeId | None]:
+        response = await self.api_client.client.get(
+            f"{self.api_client.API_URL}/worker/{self.worker_id}/session/{self.session_id}/tests"
+        )
+        try:
+            response.raise_for_status()
+        except Exception as e:
+            logger.exception(f"Failed to fetch work: {e}")
+            raise
 
-    def report_result(self, nodeid: NodeId, report: pytest.TestReport): ...
+        data = response.json()
+        if data["action"] == "stop":
+            raise EndOfSession()
 
-    def upload_artifacts(self): ...
+        return data["test_now"], data["test_next"]
+
+    async def report_result(self, nodeid: NodeId, report: pytest.TestReport):
+        response = await self.api_client.client.post(
+            f"{self.api_client.API_URL}/worker/session/{self.session_id}/test/{nodeid}/report",
+            json={"report": cloudpickle.dumps(report)},
+        )
+        try:
+            response.raise_for_status()
+        except Exception as e:
+            logger.exception(f"Failed to report result for {nodeid}: {e}")
+            raise
+        else:
+            logger.info(f"Reported result for {nodeid}")
+
+    async def upload_artifacts(self): ...
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_runtestloop(self, session: pytest.Session):
         self.session = session
         self._items_by_nodeid = {item.nodeid: item for item in session.items}
 
-        self.signal_ready()
+        async def _run_tests():
+            await self.signal_ready()
 
-        while True:
-            try:
-                nodeid_now, nodeid_next = self.fetch_work()
-                self.process_test(nodeid_now, nodeid_next)
-            except EndOfSession:
-                break
+            while True:
+                try:
+                    nodeid_now, nodeid_next = await self.fetch_work()
+                    self.process_test(nodeid_now, nodeid_next)
+                except EndOfSession:
+                    break
 
-        self.signal_done()
+            await self.signal_done()
+
+        asyncio.run(_run_tests())
 
         return True
 
     @pytest.hookimpl
     def pytest_runtest_logreport(self, report: pytest.TestReport) -> None:
-        self.report_result(report.nodeid, report)
+        asyncio.run(self.report_result(report.nodeid, report))
 
     @pytest.hookimpl
     def pytest_sessionfinish(self, session: pytest.Session, exitstatus: int):
-        self.upload_artifacts()
+        asyncio.run(self.upload_artifacts())
 
 
 class TestResults:
@@ -295,12 +342,27 @@ class Client:
 
 
 @pytest.hookimpl(tryfirst=True)
-def pytest_configure(config):
-    is_worker = config.getoption("worker")
+def pytest_configure(config: pytest.Config):
+    httpdist_worker_id = config.getoption("httpdist_worker_id")
+    httpdist_session_id = config.getoption("httpdist_session_id")
+
+    is_worker = httpdist_worker_id or httpdist_session_id
+
+    if is_worker and not httpdist_worker_id:
+        raise pytest.UsageError(
+            "httpdist-worker-id is required when running as a worker"
+        )
+
+    if is_worker and not httpdist_session_id:
+        raise pytest.UsageError(
+            "httpdist-session-id is required when running as a worker"
+        )
+
     session = Worker(config) if is_worker else Client(config)
     config.pluginmanager.register(session, PLUGIN_NAME)
 
 
 @pytest.hookimpl
-def pytest_addoption(parser, pluginmanager):
-    parser.addoption("--worker", help="Run as a worker node", default=False)
+def pytest_addoption(parser: pytest.Parser, pluginmanager):
+    parser.addoption("--httpdist-worker-id", help="Worker ID", default=None)
+    parser.addoption("--httpdist-session-id", help="Session ID", default=None)

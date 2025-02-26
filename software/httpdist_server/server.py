@@ -1,8 +1,8 @@
 import base64
 from collections.abc import AsyncGenerator
+import logging
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
 from typing import Literal
 
 import fastapi
@@ -19,6 +19,8 @@ from httpdist_server.models import (
     TestReport,
 )
 
+logger = logging.getLogger(__name__)
+
 app = fastapi.FastAPI()
 
 
@@ -27,18 +29,6 @@ class Worker:
     worker_id: str  # Typically the worker's mac address
     pet_name: str
     tags: set[str]
-
-    last_heartbeat: datetime | None = None
-
-    @property
-    def is_alive(self) -> bool:
-        return (
-            self.last_heartbeat is not None
-            and self.last_heartbeat > datetime.now() - timedelta(seconds=30)
-        )
-
-    def heartbeat(self):
-        self.last_heartbeat = datetime.now()
 
 
 @dataclass
@@ -65,8 +55,28 @@ class Session:
 
 
 # TODO: stick this in a database or something
-sessions: dict[str, Session] = {}
-workers: list[Worker] = []
+sessions: dict[str, Session] = {
+    "test-session": Session(
+        session_id="test-session",
+        tests={
+            "tests/test_nothing.py::test_nothing": Session.Test(
+                node_id="tests/test_nothing.py::test_nothing",
+                worker_requirements={"other"},
+            ),
+            "tests/test_nothing.py::test_fail": Session.Test(
+                node_id="tests/test_nothing.py::test_fail",
+                worker_requirements={"cellsim"},
+            ),
+        },
+    ),
+}
+workers: list[Worker] = [
+    Worker(
+        worker_id="2ccf6728745b",
+        pet_name="chunky-otter",
+        tags={"cellsim"},
+    )
+]
 
 
 @app.get("/")
@@ -148,17 +158,6 @@ async def get_finished_tests(session_id: str) -> GetSessionTestsResponse:
             if test.status == "finished"
         }
     )
-
-
-@app.post("/worker/{worker_id}/heartbeat")
-async def heartbeat(worker_id: str):
-    """Heartbeat for a worker"""
-    for worker in workers:
-        if worker.worker_id == worker_id:
-            worker.heartbeat()
-            return {"message": "Heartbeat received"}
-
-    raise fastapi.HTTPException(status_code=404, detail="Worker not found")
 
 
 @app.post("/worker/session/{session_id}/test/{test_id}/report")
