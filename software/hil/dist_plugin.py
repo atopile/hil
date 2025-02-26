@@ -247,7 +247,7 @@ class TestResults:
         if nodeid not in self.nodeids:
             raise ValueError(f"Unknown nodeid: {nodeid}")
 
-        if self.reports[nodeid] is not None:
+        if self.reports.get(nodeid) is not None:
             raise ValueError(f"Test result already set for {nodeid}")
 
         self.reports[nodeid] = report
