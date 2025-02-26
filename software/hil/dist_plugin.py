@@ -411,6 +411,14 @@ class Client:
                 rich.print(
                     f"[yellow]WARNING:[/yellow] Large env size: {size_mb:.1f}MB. Consider adding more to [blue].hilignore[/blue]."
                 )
+                largest_files = sorted(
+                    matched_files,
+                    key=lambda x: (env / x).stat().st_size,
+                    reverse=True,
+                )[:10]
+                rich.print(
+                    f"Largest files: {', '.join(str(file) for file in largest_files)}"
+                )
 
             await self.api_client.submit_env(zip_path)
 
