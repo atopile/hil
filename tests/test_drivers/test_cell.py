@@ -14,13 +14,13 @@ if TYPE_CHECKING:
     from ..conftest import Hil
 
 
-@pytest.mark.runs_on(tags=["chunky-otter"])
+@pytest.mark.runs_on(tags=["cellsim"])
 async def test_calibration(hil: "Hil"):
     async with hil:
         await asyncio.gather(*[cell.calibrate() for cell in hil.cellsim.cells])
 
 
-@pytest.mark.runs_on(tags=["chunky-otter"])
+@pytest.mark.runs_on(tags=["cellsim"])
 async def test_performance(hil: "Hil"):
     async with hil:
         for cell in hil.cellsim.cells:
@@ -43,7 +43,7 @@ async def test_performance(hil: "Hil"):
                 await cell.disable()
 
 
-@pytest.mark.runs_on(tags=["chunky-otter"])
+@pytest.mark.runs_on(tags=["cellsim"])
 async def test_output_voltage(hil: "Hil", record: Recorder):
     """
     Set output voltage (0.5- 4.3V, 0.1V steps)
@@ -104,7 +104,7 @@ async def test_output_voltage(hil: "Hil", record: Recorder):
         table.finalize()
 
 
-@pytest.mark.runs_on(tags=["chunky-otter"])
+@pytest.mark.runs_on(tags=["cellsim"])
 async def test_buck_voltage(hil: "Hil", record: Recorder):
     """
     Set Buck voltage (1.5 - 4.4V, 0.1V steps)
@@ -167,7 +167,7 @@ async def test_buck_voltage(hil: "Hil", record: Recorder):
         table.finalize()
 
 
-@pytest.mark.runs_on(tags=["chunky-otter"])
+@pytest.mark.runs_on(tags=["cellsim"])
 async def test_mux(hil: "Hil"):
     async with hil:
         # Write binary to the mux for each cell
