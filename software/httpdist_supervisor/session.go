@@ -69,6 +69,10 @@ func (session *TestSession) spawnWorker() error {
 		session.SessionId,
 	)
 
+	// TODO: to log file
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
 	cmd.Dir = session.EnvDir
 
 	start := time.Now()

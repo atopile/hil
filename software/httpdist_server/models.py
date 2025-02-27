@@ -35,7 +35,7 @@ class SuccessResponse(BaseModel):
 class SessionResponse(BaseModel):
     """Response to a request to start a new session"""
 
-    session_id: SessionId
+    session_id: SessionId | None
 
 
 class NoSessionResponse(BaseModel):
@@ -62,9 +62,13 @@ class ArtifactListResponse(BaseModel):
     artifact_ids: list[str]
 
 
+class WorkerRequirements(BaseModel):
+    tags: set[str]
+
+
 class SubmitTestsRequest(BaseModel):
     class Test(BaseModel):
-        worker_requirements: set[str]
+        worker_requirements: list[WorkerRequirements]
         nodeid: NodeId
 
     tests: list[Test]

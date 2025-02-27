@@ -1,13 +1,5 @@
 package main
 
-// set worker_id
-// register worker with server
-// start a wait loop
-// poll for session
-// when given a session:
-//  - pull env for session
-//  - spawn pytest in session env
-
 import (
 	"fmt"
 	"log"
@@ -18,9 +10,10 @@ import (
 
 const (
 	programName = "httpdist-supervisor"
-	ifaceName   = "en0"
 	apiUrl      = "http://localhost:8000"
 )
+
+var ifaceNames = []string{"eth0", "en0", "wlan0"}
 
 func getWorkerId() (string, error) {
 	// get mac address
@@ -28,20 +21,23 @@ func getWorkerId() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to get interfaces: %w", err)
 	}
+
 	for _, iface := range interfaces {
-		if iface.Name == ifaceName {
-			macAddr := iface.HardwareAddr.String()
-			macAddrNoColons := ""
-			for _, c := range macAddr {
-				if c != ':' {
-					macAddrNoColons += string(c)
+		for _, ifaceName := range ifaceNames {
+			if iface.Name == ifaceName {
+				macAddr := iface.HardwareAddr.String()
+				macAddrNoColons := ""
+				for _, c := range macAddr {
+					if c != ':' {
+						macAddrNoColons += string(c)
+					}
 				}
+				return macAddrNoColons, nil
 			}
-			return macAddrNoColons, nil
 		}
 	}
 
-	return "", fmt.Errorf("interface not found: %s", ifaceName)
+	return "", fmt.Errorf("no matching interface found from: %v", ifaceNames)
 }
 
 func (c *ApiClient) registerWorker(workerId string) {

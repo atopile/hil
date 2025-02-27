@@ -95,24 +95,8 @@ def pytest_configure(config: _Config):
     # Based on https://docs.pytest.org/en/stable/example/markers.html#custom-marker-and-command-line-option-to-control-test-runs
     config.addinivalue_line(
         "markers",
-        "runs_on(hostname: str | None = None) - mark test to run only on specific hostname",
+        "runs_on(tags: list[str]) - mark test to run only on specific tags",
     )
-
-
-def _should_runs_on(*, hostname: str | None = None) -> bool:
-    if hostname is not None and socket.gethostname() != hostname:
-        return False
-
-    return True
-
-
-def pytest_runtest_setup(item):
-    # Check the runs_on marker
-    runs_on_markers = list(item.iter_markers(name="runs_on"))
-    if runs_on_markers and not any(
-        _should_runs_on(*m.args, **m.kwargs) for m in runs_on_markers
-    ):
-        pytest.skip("Skipping test because it is not tagged to run on this environment")
 
 
 def _save_request_traces(

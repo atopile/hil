@@ -28,16 +28,8 @@ PLUGIN_NAME = "httpdist"
 ARTIFACTS_DIR = Path("./artifacts")
 
 
-@dataclass
-class RunsOn:
-    hostname: str | None
-
-    def __init__(self, *args, hostname: str | None = None):
-        self.hostname = hostname
-
-    def check(self, node) -> bool:
-        # FIXME
-        return self.hostname is None or self.hostname == node.gateway.id
+class RunsOn(TypedDict):
+    tags: list[str]
 
 
 NodeId = str
@@ -145,7 +137,7 @@ class ClientApi:
             await self._post(f"session/{self.session_id}/tests", {"tests": tests})
         except httpx.HTTPStatusError as e:
             if e.response.status_code == 503:
-                raise NoWorkersAvailableError(e.response.text)
+                raise NoWorkersAvailableError(e.response.json()["detail"])
             raise
 
     async def fetch_statuses(

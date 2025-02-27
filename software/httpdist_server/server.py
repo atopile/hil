@@ -9,7 +9,7 @@ import uuid
 import fastapi
 from hil.utils.pet_name import get_pet_name
 import uvicorn
-from fastapi import BackgroundTasks, Response, UploadFile
+from fastapi import BackgroundTasks, Response, UploadFile, status
 from supabase import create_client
 
 from httpdist_server.models import (
@@ -30,12 +30,14 @@ from httpdist_server.models import (
     WorkerAction,
     WorkerActionResponse,
     WorkerInfoResponse,
+    WorkerRequirements,
     WorkerUpdateRequest,
 )
 
-logger = logging.getLogger(__name__)
 
 app = fastapi.FastAPI()
+
+logger = logging.getLogger("uvicorn")
 
 ENV_DIR = Path(".envs")
 
@@ -61,7 +63,7 @@ class ConfiguredWorker:
 class Session:
     @dataclass
     class Test:
-        worker_requirements: set[str]
+        worker_requirements: list[WorkerRequirements]
         nodeid: NodeId
 
         status: TestStatus = TestStatus.Pending
@@ -87,20 +89,21 @@ class Session:
 
 
 # TODO: stick this in a database or something
+# https://supabase.com/blog/supabase-queues
 sessions: dict[str, Session] = {
-    "test-session": Session(
-        session_id="test-session",
-        tests={
-            "tests/test_nothing.py::test_nothing": Session.Test(
-                nodeid="tests/test_nothing.py::test_nothing",
-                worker_requirements={"cellsim"},
-            ),
-            "tests/test_nothing.py::test_fail": Session.Test(
-                nodeid="tests/test_nothing.py::test_fail",
-                worker_requirements={"cellsim"},
-            ),
-        },
-    ),
+    # "test-session": Session(
+    #     session_id="test-session",
+    #     tests={
+    #         "tests/test_nothing.py::test_nothing": Session.Test(
+    #             nodeid="tests/test_nothing.py::test_nothing",
+    #             worker_requirements={"dev"},
+    #         ),
+    #         "tests/test_nothing.py::test_fail": Session.Test(
+    #             nodeid="tests/test_nothing.py::test_fail",
+    #             worker_requirements={"dev"},
+    #         ),
+    #     },
+    # ),
 }
 
 
@@ -121,7 +124,7 @@ async def _get_worker(worker_id: str) -> ConfiguredWorker:
     if len(workers_response.data) == 0:
         raise WorkerNotFound(worker_id)
 
-    tags = workers_response.data[0]["tags"]
+    tags = set(workers_response.data[0]["details"]["tags"])
     if tags is None:
         raise WorkerUnconfigured(worker_id)
 
@@ -143,7 +146,7 @@ async def _get_active_workers() -> list[ConfiguredWorker]:
         supabase.table("workers")
         .select("*")
         .gte("last_seen", datetime.now() - WORKER_TIMEOUT)
-        .neq("tags", None)
+        .neq("details->>tags", None)
         .execute()
     )
     for worker in workers_response.data:
@@ -151,7 +154,7 @@ async def _get_active_workers() -> list[ConfiguredWorker]:
             ConfiguredWorker(
                 worker_id=worker["worker_id"],
                 pet_name=worker["pet_name"],
-                tags=worker["tags"],
+                tags=set(worker["details"]["tags"]),
                 last_seen=datetime.fromisoformat(worker["last_seen"]),
             )
         )
@@ -218,9 +221,10 @@ async def submit_tests(session_id: str, request: SubmitTestsRequest) -> SuccessR
     unprocessable_tags = set()
     worker_tags = {tag for worker in workers for tag in worker.tags}
     for test in request.tests:
-        for tag in test.worker_requirements:
-            if tag not in worker_tags:
-                unprocessable_tags.add(tag)
+        for req in test.worker_requirements:
+            for tag in req.tags:
+                if tag not in worker_tags:
+                    unprocessable_tags.add(tag)
 
         sessions[session_id].tests[test.nodeid] = Session.Test(
             test.worker_requirements, test.nodeid
@@ -294,7 +298,7 @@ async def query_test_report(
 
 @app.get(path="/worker/{worker_id}/session")
 async def get_worker_session(
-    worker_id: str, background_tasks: BackgroundTasks
+    worker_id: str, background_tasks: BackgroundTasks, response: Response
 ) -> SessionResponse | NoSessionResponse:
     """Get the session for a worker, or if the worker isn't registered, register it."""
     worker_exists = bool(
@@ -317,18 +321,24 @@ async def get_worker_session(
     worker = await _get_worker(worker_id)
 
     for session in sessions.values():
-        if session.state == SessionState.Running:
+        if session.state == SessionState.Setup:
             if any(
-                test.worker_requirements.issubset(worker.tags)
+                all(
+                    set(req.tags).issubset(worker.tags)
+                    for req in test.worker_requirements
+                )
                 for test in session.tests.values()
             ):
+                # TODO: lock session to worker
+                response.status_code = status.HTTP_200_OK
                 return SessionResponse(session_id=session.session_id)
 
+    response.status_code = status.HTTP_204_NO_CONTENT
     return NoSessionResponse()
 
 
-@app.get("/worker/session/{session_id}/env")
-async def fetch_worker_session_env(session_id: str) -> Response:
+@app.get("/worker/{worker_id}/session/{session_id}/env")
+async def fetch_worker_session_env(worker_id: str, session_id: str) -> Response:
     """Get the environment for a session"""
     if session_id not in sessions:
         raise fastapi.HTTPException(status_code=404, detail="Session not found")
@@ -368,8 +378,8 @@ async def fetch_session_tests(
     worker = await _get_worker(worker_id)
     worker_testable: list[str] = []
     for test in sessions[session_id].tests.values():
-        if test.status == TestStatus.Pending and test.worker_requirements.issubset(
-            worker.tags
+        if test.status == TestStatus.Pending and all(
+            set(req.tags).issubset(worker.tags) for req in test.worker_requirements
         ):
             worker_testable.append(test.nodeid)
             if len(worker_testable) == 1:
