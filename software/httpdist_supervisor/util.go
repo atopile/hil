@@ -18,6 +18,14 @@ func clearSpinner() {
 	fmt.Print("\r                                \r")
 }
 
+func getEnvOrDefault(key, defaultValue string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return defaultValue
+	}
+	return value
+}
+
 func extractZip(zipPath, destPath string) error {
 	reader, err := zip.OpenReader(zipPath)
 	if err != nil {

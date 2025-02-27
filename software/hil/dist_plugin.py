@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from enum import StrEnum, auto
 import itertools
 from os import PathLike
+import os
 from pathlib import Path
 from typing import TypedDict
 import zipfile
@@ -81,8 +82,7 @@ class NoWorkersAvailableError(ApiUsageError):
 
 
 class ClientApi:
-    # FIXME
-    API_URL = "http://localhost:8000"
+    API_URL = os.getenv("HTTPDIST_API_URL", "http://localhost:8000")
     session_id: SessionId | None = None
 
     def __init__(self, config: pytest.Config):
@@ -190,8 +190,7 @@ class ClientApi:
 
 
 class WorkerApi:
-    # FIXME
-    API_URL = "http://localhost:8000"
+    API_URL = os.getenv("HTTPDIST_API_URL", "http://localhost:8000")
     session_id: SessionId | None = None
 
     def __init__(self, config: pytest.Config):

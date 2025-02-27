@@ -9,10 +9,11 @@ import (
 )
 
 const (
-	programName = "httpdist-supervisor"
-	apiUrl      = "http://localhost:8000"
+	programName   = "httpdist-supervisor"
+	defaultApiUrl = "http://localhost:8000"
 )
 
+var apiUrl = getEnvOrDefault("HTTPDIST_API_URL", defaultApiUrl)
 var ifaceNames = []string{"eth0", "en0", "wlan0"}
 
 func getWorkerId() (string, error) {
