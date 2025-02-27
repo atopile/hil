@@ -12,12 +12,14 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"time"
 )
 
 const (
-	ifaceName = "en0"
-	apiUrl    = "http://localhost:8000"
+	programName = "httpdist-supervisor"
+	ifaceName   = "en0"
+	apiUrl      = "http://localhost:8000"
 )
 
 func getWorkerId() (string, error) {
@@ -47,29 +49,84 @@ func (c *ApiClient) registerWorker(workerId string) {
 		"worker_id": workerId,
 	}
 
-	responseBody := c.httpPost("/worker/register", jsonData)
-	fmt.Println(string(responseBody))
+	responseJson, statusCode, err := c.httpPost("/worker/register", jsonData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if statusCode != http.StatusOK {
+		log.Fatalf("failed to register worker: %s", responseJson["detail"])
+	}
+
+	fmt.Printf("Registered worker: %s\n", responseJson["worker_id"])
 }
 
-func pollForSession(c *ApiClient, workerId string) {
+func sendHeartbeat(c *ApiClient, workerId string) {
 	for {
-		responseBody := c.httpGet(fmt.Sprintf("/worker/%s/session", workerId))
-		fmt.Println(string(responseBody))
-		time.Sleep(1 * time.Second)
+		c.httpPost(fmt.Sprintf("/worker/%s/heartbeat", workerId), nil)
+		time.Sleep(10 * time.Second)
+	}
+}
+
+func pollForSession(c *ApiClient, workerId string) (*TestSession, error) {
+	spinnerIdx := 0
+
+	for {
+		spinnerIdx = updateSpinner("Waiting for session", spinnerIdx)
+
+		responseJson, statusCode, err := c.httpGet(fmt.Sprintf("/worker/%s/session", workerId))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		if statusCode == http.StatusNoContent {
+			time.Sleep(1 * time.Second)
+			continue
+		} else if statusCode != http.StatusOK {
+			log.Fatalf("failed to get session: %d (%s)", statusCode, responseJson["detail"])
+		}
+
+		sessionId := responseJson["session_id"].(string)
+
+		clearSpinner()
+		fmt.Printf("Received session: %s\n", sessionId)
+		return &TestSession{WorkerId: workerId, SessionId: sessionId}, nil
+	}
+}
+
+func runSession(apiClient *ApiClient, workerId string) {
+	session, err := pollForSession(apiClient, workerId)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = session.prepareEnv(apiClient)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer session.cleanup()
+
+	err = session.spawnWorker()
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
 func main() {
+	apiClient := &ApiClient{
+		BaseUrl: apiUrl,
+	}
+
 	workerId, err := getWorkerId()
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Starting worker with ID:", workerId)
 
-	apiClient := &ApiClient{
-		BaseUrl: apiUrl,
-	}
+	go sendHeartbeat(apiClient, workerId)
 
-	apiClient.registerWorker(workerId)
-	pollForSession(apiClient, workerId)
+	// apiClient.registerWorker(workerId)
+
+	for {
+		runSession(apiClient, workerId)
+	}
 }
