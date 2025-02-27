@@ -90,7 +90,7 @@ def looks_like_a_pet_name(name: str) -> bool:
     return adjective in ADJECTIVES and animal in ANIMALS
 
 
-def get_pet_name(identifier: int | None = None) -> str:
+def get_pet_name(identifier: int | str | None = None) -> str:
     """
     Generate a deterministic pet name, typically from a MAC address.
     Returns a combination of an adjective and an animal name.
@@ -100,10 +100,14 @@ def get_pet_name(identifier: int | None = None) -> str:
         'chunky-otter'
     """
     if identifier is None:
-        identifier = uuid.getnode()
+        id_bytes = uuid.getnode().to_bytes(6)
+    elif isinstance(identifier, str):
+        id_bytes = identifier.encode("utf-8")
+    else:
+        id_bytes = identifier.to_bytes(6)
 
     # MACs aren't evenly distributed, so we hash them to get a more even distribution
-    hashed = hashlib.md5(identifier.to_bytes(6)).digest()
+    hashed = hashlib.md5(id_bytes).digest()
 
     # Extract first 3 bytes for adjective (24 bits)
     adj_hash = int.from_bytes(hashed[:3])

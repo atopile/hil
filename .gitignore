@@ -210,3 +210,4 @@ cython_debug/
 
 *.code-workspace
 artifacts/
+.envs/

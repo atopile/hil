@@ -10,20 +10,30 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "altair>=5.5.0",
+    "cloudpickle>=3.1.1",
     "numpy>=2.2.2",
     "pathvalidate>=3.2.3",
     "polars>=1.22.0",
+    "pydantic>=2.10.6",
     "pytest>=8.3.4",
     "pytest-asyncio>=0.25.3",
     "pytest-benchmark>=5.1.0",
     "pytest-html>=4.1.1",
     "pytest-timeout>=2.3.1",
+    "python-multipart>=0.0.20",
     "rich>=13.9.4",
     "smbus2>=0.5.0",
+    "typer>=0.15.1",
+    "uvicorn>=0.34.0",
+    "httpx>=0.28.1",
+    "fastapi[standard]>=0.115.8",
+    "supabase>=2.13.0",
+    "pathspec>=0.12.1",
 ]
 
 [project.entry-points."pytest11"]
 hil-plugin = "hil.pytest_plugin"
+dist-plugin = "hil.dist_plugin"
 
 [dependency-groups]
 dev = [
@@ -40,6 +50,7 @@ packages = ["software/hil"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = [
