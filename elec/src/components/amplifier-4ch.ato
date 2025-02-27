@@ -63,18 +63,18 @@ module Amplifier4Ch:
     power.hv ~ quad_opamp.VCC
     power.lv ~ quad_opamp.VEE
 
-    amplified_signal_1.negative_terminal.line.override_net_name = "negative_terminal_1"
-    amplified_signal_2.negative_terminal.line.override_net_name = "negative_terminal_2"
-    amplified_signal_3.negative_terminal.line.override_net_name = "negative_terminal_3"
-    amplified_signal_4.negative_terminal.line.override_net_name = "negative_terminal_4"
-    amplified_signal_1.output_terminal.line.override_net_name = "output_terminal_1"
-    amplified_signal_2.output_terminal.line.override_net_name = "output_terminal_2"
-    amplified_signal_3.output_terminal.line.override_net_name = "output_terminal_3"
-    amplified_signal_4.output_terminal.line.override_net_name = "output_terminal_4"
-    quad_opamp.IN1plus.override_net_name = "input_1"
-    quad_opamp.IN2plus.override_net_name = "input_2"
-    quad_opamp.IN3plus.override_net_name = "input_3"
-    quad_opamp.IN4plus.override_net_name = "input_4"
+    # amplified_signal_1.negative_terminal.line.override_net_name = "negative_terminal_1"
+    # amplified_signal_2.negative_terminal.line.override_net_name = "negative_terminal_2"
+    # amplified_signal_3.negative_terminal.line.override_net_name = "negative_terminal_3"
+    # amplified_signal_4.negative_terminal.line.override_net_name = "negative_terminal_4"
+    # amplified_signal_1.output_terminal.line.override_net_name = "output_terminal_1"
+    # amplified_signal_2.output_terminal.line.override_net_name = "output_terminal_2"
+    # amplified_signal_3.output_terminal.line.override_net_name = "output_terminal_3"
+    # amplified_signal_4.output_terminal.line.override_net_name = "output_terminal_4"
+    # quad_opamp.IN1plus.override_net_name = "input_1"
+    # quad_opamp.IN2plus.override_net_name = "input_2"
+    # quad_opamp.IN3plus.override_net_name = "input_3"
+    # quad_opamp.IN4plus.override_net_name = "input_4"
 
 
 

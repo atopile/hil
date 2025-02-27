@@ -1,0 +1,67 @@
+import ElectricPower, I2C, ElectricLogic, Capacitor
+from "components/tca6408.ato" import TCA6408ARGTR
+from "components/texas_instruments_cd74h_c4051p_wr.ato" import Texas_Instruments_CD74HC4051PWR
+
+module MultiplexerI2C8Ch:
+    """
+    Multiplexer with 8:1 for digital signals
+    Uses I2C GPIO expander to select channels
+    """
+    # External interfaces
+    power_3v3 = new ElectricPower
+    i2c = new I2C
+    input = new ElectricLogic
+    output_1 = new ElectricLogic
+    output_2 = new ElectricLogic
+    output_3 = new ElectricLogic
+    output_4 = new ElectricLogic
+    output_5 = new ElectricLogic
+    output_6 = new ElectricLogic
+    output_7 = new ElectricLogic
+    output_8 = new ElectricLogic
+
+    # Devices
+    gpio_expander = new TCA6408ARGTR
+    mux = new Texas_Instruments_CD74HC4051PWR
+
+    # Decoupling
+    cap_1 = new Capacitor
+    cap_1.capacitance = 100nF +/- 20%
+    cap_1.package = "C0402"
+    power_3v3 ~ cap_1.power
+
+    cap_2 = new Capacitor
+    cap_2.capacitance = 1uF +/- 20%
+    cap_2.package = "C0402"
+    power_3v3 ~ cap_2.power
+
+    # Connections
+    power_3v3 ~ mux.power_3v3
+    power_3v3 ~ gpio_expander.power
+
+    i2c ~ gpio_expander.i2c
+    gpio_expander.ADDR ~ power_3v3.vcc # 0x21
+
+    gpio_expander.P1 ~ mux.S2 # Select 3
+    gpio_expander.P2 ~ mux.S1 # Select 2
+    gpio_expander.P3 ~ mux.S0 # Select 1
+    gpio_expander.P4 ~ mux.A # Shared data line
+    gpio_expander.P5 ~ mux.Eh # Enablex
+
+    output_1.line ~ mux.A0
+    output_2.line ~ mux.A1
+    output_3.line ~ mux.A2
+    output_4.line ~ mux.A3
+    output_5.line ~ mux.A4
+    output_6.line ~ mux.A5
+    output_7.line ~ mux.A6
+    output_8.line ~ mux.A7
+
+    output_1.reference.gnd ~ power_3v3.gnd
+    output_2.reference.gnd ~ power_3v3.gnd
+    output_3.reference.gnd ~ power_3v3.gnd
+    output_4.reference.gnd ~ power_3v3.gnd
+    output_5.reference.gnd ~ power_3v3.gnd
+    output_6.reference.gnd ~ power_3v3.gnd
+    output_7.reference.gnd ~ power_3v3.gnd
+    output_8.reference.gnd ~ power_3v3.gnd

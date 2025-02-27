@@ -1,9 +1,5 @@
 import ElectricPower, I2C
 
-module Test:
-    ic = new TCA6408ARGTR
-
-
 component TCA6408ARGTR:
     """
     8 Channel I2C GPIO Expander
@@ -39,5 +35,4 @@ component TCA6408ARGTR:
     power.gnd ~ PAD
 
     # Default pin configuration
-    ADDR ~ power.gnd
     RESET ~ power.vcc

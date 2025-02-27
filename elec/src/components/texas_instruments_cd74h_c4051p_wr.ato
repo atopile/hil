@@ -1,0 +1,33 @@
+import ElectricPower
+
+component Texas_Instruments_CD74HC4051PWR:
+    """Texas_Instruments_CD74HC4051PWR component"""
+    lcsc_id = "C352826"
+    manufacturer = "Texas Instruments"
+    mpn = "CD74HC4051PWR"
+    # datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Texas-Instruments-CD74HC4051PWR_C352826.pdf"
+    designator_prefix = "U"
+
+    power_3v3 = new ElectricPower
+
+    # pins
+    signal A ~ pin 3
+    signal A0 ~ pin 13
+    signal A1 ~ pin 14
+    signal A2 ~ pin 15
+    signal A3 ~ pin 12
+    signal A4 ~ pin 1
+    signal A5 ~ pin 5
+    signal A6 ~ pin 2
+    signal A7 ~ pin 4
+    signal Eh ~ pin 6
+    signal GND ~ pin 8
+    signal S0 ~ pin 11
+    signal S1 ~ pin 10
+    signal S2 ~ pin 9
+    signal VCC ~ pin 16
+    signal VEE ~ pin 7
+
+    power_3v3.vcc ~ VCC
+    power_3v3.gnd ~ VEE
+    power_3v3.gnd ~ GND
