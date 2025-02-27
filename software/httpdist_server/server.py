@@ -298,7 +298,7 @@ async def query_test_report(
 
 @app.get(path="/worker/{worker_id}/session")
 async def get_worker_session(
-    worker_id: str, background_tasks: BackgroundTasks, response: Response
+    worker_id: str, response: Response
 ) -> SessionResponse | NoSessionResponse:
     """Get the session for a worker, or if the worker isn't registered, register it."""
     worker_exists = bool(
