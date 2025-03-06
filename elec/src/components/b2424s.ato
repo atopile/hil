@@ -20,12 +20,12 @@ module B2405S_2WR2 from IsolatedRegulator:
     led.current = 0.05mA to 0.2mA
 
     input_cap = new Capacitor
-    input_cap.value = 2.2uF +/- 10%
+    input_cap.capacitance = 2.2uF +/- 10%
     input_cap.package = "C0805"
     power_in ~ input_cap.power
 
     output_cap = new Capacitor
-    output_cap.value = 10uF +/- 10%
+    output_cap.capacitance = 10uF +/- 10%
     output_cap.package = "C0805"
     power_out ~ output_cap.power
 

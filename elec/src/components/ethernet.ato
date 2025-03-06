@@ -49,7 +49,7 @@ module W5500Ethernet:
     # link led
     link_led_resistor = new Resistor
     link_led_resistor.package = "0402"
-    link_led_resistor.value = 220ohm +/- 10%
+    link_led_resistor.resistance = 220ohm +/- 10%
     w5500.LINKLED ~ link_led_resistor.p1
     link_led_resistor.p2 ~ rj45.LLED_minus
     power.vcc ~ rj45.LLED_plus
@@ -57,7 +57,7 @@ module W5500Ethernet:
     # activity led
     activity_led_resistor = new Resistor
     activity_led_resistor.package = "0402"
-    activity_led_resistor.value = 220ohm +/- 10%
+    activity_led_resistor.resistance = 220ohm +/- 10%
     w5500.ACTLED ~ activity_led_resistor.p1
     activity_led_resistor.p2 ~ rj45.RLED_minus
     power.vcc ~ rj45.RLED_plus
@@ -65,47 +65,47 @@ module W5500Ethernet:
     # Gnd cap - Should be 1kV isolated (ideally)
     gnd_cap = new Capacitor
     gnd_cap.package = "0805"
-    gnd_cap.value = 1nF +/- 10%
+    gnd_cap.capacitance = 1nF +/- 10%
     rj45.CGND ~ gnd_cap.p1
     gnd_cap.p2 ~ power.gnd
 
     # TX connections
     tx_plus_damping = new Resistor
     tx_plus_damping.package = "0402"
-    tx_plus_damping.value = 33ohm +/- 1%
+    tx_plus_damping.resistance = 33ohm +/- 1%
     w5500.TXP ~ tx_plus_damping.p1
     tx_plus_damping.p2 ~ rj45.TD_plus
 
     tx_minus_damping = new Resistor
     tx_minus_damping.package = "0402"
-    tx_minus_damping.value = 33ohm +/- 1%
+    tx_minus_damping.resistance = 33ohm +/- 1%
     w5500.TXN ~ tx_minus_damping.p1
     tx_minus_damping.p2 ~ rj45.TD_minus
 
     # TX pullups
     tx_plus_pullup = new Resistor
     tx_plus_pullup.package = "0402"
-    tx_plus_pullup.value = 49.9ohm +/- 1%
+    tx_plus_pullup.resistance = 49.9ohm +/- 1%
     power.vcc ~ tx_plus_pullup.p1
     tx_plus_pullup.p2 ~ rj45.TD_plus
 
     tx_minus_pullup = new Resistor
     tx_minus_pullup.package = "0402"
-    tx_minus_pullup.value = 49.9ohm +/- 1%
+    tx_minus_pullup.resistance = 49.9ohm +/- 1%
     power.vcc ~ tx_minus_pullup.p1
     tx_minus_pullup.p2 ~ rj45.TD_minus
 
     # TX center tap pullup
     tx_ct_pullup = new Resistor
     tx_ct_pullup.package = "0402"
-    tx_ct_pullup.value = 10ohm +/- 1%
+    tx_ct_pullup.resistance = 10ohm +/- 1%
     power.vcc ~ tx_ct_pullup.p1
     tx_ct_pullup.p2 ~ rj45.TCT
 
     # TX center tap decoupling
     tx_ct_cap = new Capacitor
     tx_ct_cap.package = "0402"
-    tx_ct_cap.value = 22nF +/- 10%
+    tx_ct_cap.capacitance = 22nF +/- 10%
     rj45.TCT ~ tx_ct_cap.p1
     tx_ct_cap.p2 ~ power.gnd
 
@@ -113,11 +113,11 @@ module W5500Ethernet:
     # RX negative connection with damping and isolation
     rx_minus_damping = new Resistor
     rx_minus_damping.package = "0402"
-    rx_minus_damping.value = 33ohm +/- 1%
+    rx_minus_damping.resistance = 33ohm +/- 1%
 
     rx_minus_cap = new Capacitor
     rx_minus_cap.package = "0402"
-    rx_minus_cap.value = 6.8nF +/- 10%
+    rx_minus_cap.capacitance = 6.8nF +/- 10%
 
     w5500.RXN ~ rx_minus_damping.p1
     rx_minus_damping.p2 ~ rx_minus_cap.p1
@@ -126,11 +126,11 @@ module W5500Ethernet:
     # RX positive connection with damping and isolation
     rx_plus_damping = new Resistor
     rx_plus_damping.package = "0402"
-    rx_plus_damping.value = 33ohm +/- 1%
+    rx_plus_damping.resistance = 33ohm +/- 1%
 
     rx_plus_cap = new Capacitor
     rx_plus_cap.package = "0402"
-    rx_plus_cap.value = 6.8nF +/- 10%
+    rx_plus_cap.capacitance = 6.8nF +/- 10%
 
     w5500.RXP ~ rx_plus_damping.p1
     rx_plus_damping.p2 ~ rx_plus_cap.p1
@@ -140,41 +140,41 @@ module W5500Ethernet:
     # RX pulldown resistors
     rx_minus_pulldown = new Resistor
     rx_minus_pulldown.package = "0402"
-    rx_minus_pulldown.value = 49.9ohm +/- 1%
+    rx_minus_pulldown.resistance = 49.9ohm +/- 1%
     rj45.RD_minus ~ rx_minus_pulldown.p1
     rx_minus_pulldown.p2 ~ rj45.RCT
 
     rx_plus_pulldown = new Resistor
     rx_plus_pulldown.package = "0402"
-    rx_plus_pulldown.value = 49.9ohm +/- 1%
+    rx_plus_pulldown.resistance = 49.9ohm +/- 1%
     rj45.RD_plus ~ rx_plus_pulldown.p1
     rx_plus_pulldown.p2 ~ rj45.RCT
 
     # RX center tap decoupling
     rx_ct_cap = new Capacitor
     rx_ct_cap.package = "0402"
-    rx_ct_cap.value = 10nF +/- 10%
+    rx_ct_cap.capacitance = 10nF +/- 10%
     rj45.RCT ~ rx_ct_cap.p1
     rx_ct_cap.p2 ~ power.gnd
 
     # EXRES1 pulldown resistor
     exres1_pulldown = new Resistor
     exres1_pulldown.package = "0402"
-    exres1_pulldown.value = 12.4kohm +/- 1%
+    exres1_pulldown.resistance = 12.4kohm +/- 1%
     w5500.EXRES1 ~ exres1_pulldown.p1
     exres1_pulldown.p2 ~ power.gnd
 
     # 1.2V decoupling capacitor
     _1v2o_cap = new Capacitor
     _1v2o_cap.package = "0402"
-    _1v2o_cap.value = 10nF +/- 10%
+    _1v2o_cap.capacitance = 10nF +/- 10%
     w5500._1V2O ~ _1v2o_cap.p1
     _1v2o_cap.p2 ~ power.gnd
 
     # TOCAP decoupling capacitor
     tocap_cap = new Capacitor
     tocap_cap.package = "0402"
-    tocap_cap.value = 4.7uF +/- 10%
+    tocap_cap.capacitance = 4.7uF +/- 10%
     w5500.TOCAP ~ tocap_cap.p1
     tocap_cap.p2 ~ power.gnd
 
@@ -188,44 +188,44 @@ module W5500Ethernet:
     # 100nF decoupling caps
     decap1 = new Capacitor
     decap1.package = "0402"
-    decap1.value = 100nF +/- 10%
+    decap1.capacitance = 100nF +/- 10%
     power.vcc ~ decap1.p1
     decap1.p2 ~ power.gnd
 
     decap2 = new Capacitor
     decap2.package = "0402"
-    decap2.value = 100nF +/- 10%
+    decap2.capacitance = 100nF +/- 10%
     power.vcc ~ decap2.p1
     decap2.p2 ~ power.gnd
 
     decap3 = new Capacitor
     decap3.package = "0402"
-    decap3.value = 100nF +/- 10%
+    decap3.capacitance = 100nF +/- 10%
     power.vcc ~ decap3.p1
     decap3.p2 ~ power.gnd
 
     decap4 = new Capacitor
     decap4.package = "0402"
-    decap4.value = 100nF +/- 10%
+    decap4.capacitance = 100nF +/- 10%
     power.vcc ~ decap4.p1
     decap4.p2 ~ power.gnd
 
     decap5 = new Capacitor
     decap5.package = "0402"
-    decap5.value = 100nF +/- 10%
+    decap5.capacitance = 100nF +/- 10%
     power.vcc ~ decap5.p1
     decap5.p2 ~ power.gnd
 
     decap6 = new Capacitor
     decap6.package = "0402"
-    decap6.value = 100nF +/- 10%
+    decap6.capacitance = 100nF +/- 10%
     power.vcc ~ decap6.p1
     decap6.p2 ~ power.gnd
 
     # 10uF bulk decoupling cap
     bulk_decap = new Capacitor
     bulk_decap.package = "0805"
-    bulk_decap.value = 10uF +/- 10%
+    bulk_decap.capacitance = 10uF +/- 10%
     power.vcc ~ bulk_decap.p1
     bulk_decap.p2 ~ power.gnd
 
@@ -233,13 +233,13 @@ module W5500Ethernet:
     # Oscillator
     oscillator = new Oscillator
     oscillator.crystal -> X322525MMB4SI
-    oscillator.load_cap_1.value = 10pF +/- 10%
-    oscillator.load_cap_2.value = 10pF +/- 10%
+    oscillator.load_cap_1.capacitance = 10pF +/- 10%
+    oscillator.load_cap_2.capacitance = 10pF +/- 10%
 
     # 1M resistor across crystal pins for stability
     osc_resistor = new Resistor
     osc_resistor.package = "0402"
-    osc_resistor.value = 1Mohm +/- 10%
+    osc_resistor.resistance = 1Mohm +/- 10%
     oscillator.xin.io ~ osc_resistor.p1
     oscillator.xout.io ~ osc_resistor.p2
     oscillator.gnd ~ power.gnd

@@ -7,6 +7,7 @@ from "blocks/relay.ato" import I2CRelay
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
 from "blocks/coms-can.ato" import ComsCANISO
 from "blocks/variable-resistor.ato" import VariableResistor
+from "blocks/cellsim-8ch.ato" import CellSim8Ch
 
 from "components/cell.ato" import Cell
 from "components/texas_instruments_bq25756r_rvr.ato" import Texas_Instruments_BQ25756RRVR
@@ -29,16 +30,32 @@ from "blocks/debug-saleae.ato" import DebugSaleae
 # TODO: DI2C Transceiver
 
 module SpaceBMSHIL:
-    # Blocks
+
+    # Controller
     controller = new ControllerCM4
-    power = new PowerUSBPD
-    # cell_1 = new Cell
-    # cell_2 = new Cell
-    # relay = new I2CRelay
+
+    # Cells
+    cell_block_1_8 = new CellSim8Ch
+    cell_block_9_16 = new CellSim8Ch
     thermistors = new AnalogOut4ch
+
+    # Comms
     can_controller = new ComsCANISO
-    variable_resistor = new VariableResistor
-    buck_boost = new Texas_Instruments_BQ25756RRVR
+    # di2c_transceiver = new Texas_Instruments_BQ25756RRVR
+
+    # Heaters
+    heater_1 = new VariableResistor
+    heater_2 = new VariableResistor
+    heater_3 = new VariableResistor
+
+    # Bi-directional supplies
+    batt_supply = new Texas_Instruments_BQ25756RRVR
+    sat_supply = new Texas_Instruments_BQ25756RRVR
+    vshare_supply = new Texas_Instruments_BQ25756RRVR
+
+    #DEP/SEP Relays
+    dep_relay = new I2CRelay
+    sep_relay = new I2CRelay
 
     # Multiplexer
     mux_1 = new TCA9548APWR
@@ -63,155 +80,154 @@ module SpaceBMSHIL:
     buck_5v = new LV2842Kit
     ldo_3v3 = new LDK220M_R
 
-    # Configure power supplies
-    buck_5v.feedback_div.r_top.resistance = 55.3kohm +/- 2%
-    buck_5v.feedback_div.r_bottom.resistance = 10kohm +/- 2%
-    ldo_3v3.feedback_div.r_top.resistance = 17.84kohm +/- 2%
-    ldo_3v3.feedback_div.r_bottom.resistance = 10kohm +/- 2%
+    # # Configure power supplies
+    # buck_5v.feedback_div.r_top.resistance = 55.3kohm +/- 2%
+    # buck_5v.feedback_div.r_bottom.resistance = 10kohm +/- 2%
+    # ldo_3v3.feedback_div.r_top.resistance = 17.84kohm +/- 2%
+    # ldo_3v3.feedback_div.r_bottom.resistance = 10kohm +/- 2%
 
-    # Power supplies connections
-    usbpd.power_out ~ power_vusb
-    power_vusb ~ boost_24v.power_in
-    boost_24v.power_out ~ power_24v
-    power_24v ~ buck_5v.power_in
-    buck_5v.power_out ~ power_5v
-    # power_5v ~ ldo_3v3.power_in
-    # ldo_3v3.power_out ~ power_3v3
+    # # Power supplies connections
+    # usbpd.power_out ~ power_vusb
+    # power_vusb ~ boost_24v.power_in
+    # boost_24v.power_out ~ power_24v
+    # power_24v ~ buck_5v.power_in
+    # buck_5v.power_out ~ power_5v
+    # # power_5v ~ ldo_3v3.power_in
+    # # ldo_3v3.power_out ~ power_3v3
 
-    # Common ground
-    gnd ~ power_vusb.gnd
-    gnd ~ power_24v.gnd
-    gnd ~ power_5v.gnd
-    gnd ~ power_3v3.gnd
+    # # Common ground
+    # gnd ~ power_vusb.gnd
+    # gnd ~ power_24v.gnd
+    # gnd ~ power_5v.gnd
+    # gnd ~ power_3v3.gnd
 
-    # Power devices
-    # power_24v ~ cell_1.power_in
-    # power_24v ~ cell_2.power_in
-    power_24v ~ buck_boost.power_in
-    # power_5v ~ relay.power_5v
-    # power_5v ~ cell_1.power_5v
-    power_5v ~ controller.power_5v
-    power_5v ~ can_controller.power_5v
-    power_5v ~ variable_resistor.power_5v
-    # power_5v ~ cell_2.power_5v
-    power_3v3 ~ mux_1.power
-    # power_3v3 ~ relay.power_3v3
-    power_3v3 ~ thermistors.power
-    power_3v3 ~ controller.power_3v3
-    # power_3v3 ~ cell_1.power_isolator
-    power_3v3 ~ can_controller.power_3v3
-    power_3v3 ~ variable_resistor.power_3v3
-    # power_3v3 ~ cell_2.power_isolator
+    # # Power devices
 
-    # Name power rails
-    power_vusb.vcc.override_net_name = "VUSB"
-    power_24v.vcc.override_net_name = "24V"
-    power_5v.vcc.override_net_name = "5V"
-    power_3v3.vcc.override_net_name = "3.3V"
-    gnd.override_net_name = "GND"
+    # power_24v ~ buck_boost.power_in
+    # # power_5v ~ relay.power_5v
+    # # power_5v ~ cell_1.power_5v
+    # power_5v ~ controller.power_5v
+    # power_5v ~ can_controller.power_5v
+    # power_5v ~ variable_resistor.power_5v
+    # # power_5v ~ cell_2.power_5v
+    # power_3v3 ~ mux_1.power
+    # # power_3v3 ~ relay.power_3v3
+    # power_3v3 ~ thermistors.power
+    # power_3v3 ~ controller.power_3v3
+    # # power_3v3 ~ cell_1.power_isolator
+    # power_3v3 ~ can_controller.power_3v3
+    # power_3v3 ~ variable_resistor.power_3v3
+    # # power_3v3 ~ cell_2.power_isolator
 
-    # I2C
-    i2c_pullup = new I2CPullup
-    i2c_pullup.power ~ power_3v3
-    i2c_pullup.i2c ~ controller.i2c1
-    controller.i2c1 ~ mux_1.i2c
-    # mux_1.i2c0 ~ cell_1.i2c
-    # mux_1.i2c1 ~ cell_2.i2c
-    mux_1.i2c2 ~ thermistors.i2c
-    mux_1.i2c3 ~ buck_boost.i2c
-    # mux_1.i2c4 ~ relay.i2c
+    # # Name power rails
+    # # power_vusb.vcc.override_net_name = "VUSB"
+    # # power_24v.vcc.override_net_name = "24V"
+    # # power_5v.vcc.override_net_name = "5V"
+    # # power_3v3.vcc.override_net_name = "3.3V"
+    # # gnd.override_net_name = "GND"
 
-    # Name data lines
-    controller.i2c1.sda.override_net_name = "CONTROLLER_I2C_SDA"
-    controller.i2c1.scl.override_net_name = "CONTROLLER_I2C_SCL"
-    # cell_1.i2c.sda.override_net_name = "CELL_1_I2C_SDA"
-    # cell_1.i2c.scl.override_net_name = "CELL_1_I2C_SCL"
-    # cell_2.i2c.sda.override_net_name = "CELL_2_I2C_SDA"
-    # cell_2.i2c.scl.override_net_name = "CELL_2_I2C_SCL"
-    thermistors.i2c.sda.override_net_name = "THERMISTORS_I2C_SDA"
-    thermistors.i2c.scl.override_net_name = "THERMISTORS_I2C_SCL"
-    buck_boost.i2c.sda.override_net_name = "BOOST_I2C_SDA"
-    buck_boost.i2c.scl.override_net_name = "BOOST_I2C_SCL"
-    # relay.i2c.sda.override_net_name = "RELAY_I2C_SDA"
-    # relay.i2c.scl.override_net_name = "RELAY_I2C_SCL"
+    # # I2C
+    # i2c_pullup = new I2CPullup
+    # i2c_pullup.power ~ power_3v3
+    # i2c_pullup.i2c ~ controller.i2c1
+    # controller.i2c1 ~ mux_1.i2c
+    # # mux_1.i2c0 ~ cell_1.i2c
+    # # mux_1.i2c1 ~ cell_2.i2c
+    # mux_1.i2c2 ~ thermistors.i2c
+    # mux_1.i2c3 ~ buck_boost.i2c
+    # # mux_1.i2c4 ~ relay.i2c
 
-    # SPI
-    controller.spi4 ~ can_controller.spi
-    controller.spi4_cs_1 ~ can_controller.spi_cs
-    can_controller.spi.mosi.override_net_name = "CAN_SPI_MOSI"
-    can_controller.spi.miso.override_net_name = "CAN_SPI_MISO"
-    can_controller.spi.sclk.override_net_name = "CAN_SPI_SCLK"
-    can_controller.spi_cs.override_net_name = "CAN_SPI_CS"
+    # # Name data lines
+    # # controller.i2c1.sda.override_net_name = "CONTROLLER_I2C_SDA"
+    # # controller.i2c1.scl.override_net_name = "CONTROLLER_I2C_SCL"
+    # # cell_1.i2c.sda.override_net_name = "CELL_1_I2C_SDA"
+    # # cell_1.i2c.scl.override_net_name = "CELL_1_I2C_SCL"
+    # # cell_2.i2c.sda.override_net_name = "CELL_2_I2C_SDA"
+    # # cell_2.i2c.scl.override_net_name = "CELL_2_I2C_SCL"
+    # # thermistors.i2c.sda.override_net_name = "THERMISTORS_I2C_SDA"
+    # # thermistors.i2c.scl.override_net_name = "THERMISTORS_I2C_SCL"
+    # # buck_boost.i2c.sda.override_net_name = "BOOST_I2C_SDA"
+    # # buck_boost.i2c.scl.override_net_name = "BOOST_I2C_SCL"
+    # # relay.i2c.sda.override_net_name = "RELAY_I2C_SDA"
+    # # relay.i2c.scl.override_net_name = "RELAY_I2C_SCL"
 
-    # Cell connections
-    # cell_1.cell_up ~ cell_2.cell_down
+    # # SPI
+    # controller.spi4 ~ can_controller.spi
+    # controller.spi4_cs_1 ~ can_controller.spi_cs
+    # # can_controller.spi.mosi.override_net_name = "CAN_SPI_MOSI"
+    # # can_controller.spi.miso.override_net_name = "CAN_SPI_MISO"
+    # # can_controller.spi.sclk.override_net_name = "CAN_SPI_SCLK"
+    # # can_controller.spi_cs.override_net_name = "CAN_SPI_CS"
 
-    # Connectors
-    vsh_connector = new Molex5030912221
-    batt_power_connector = new XT30_Female_Right_Angle
+    # # Cell connections
+    # # cell_1.cell_up ~ cell_2.cell_down
+
+    # # Connectors
+    # vsh_connector = new Molex5030912221
+    # batt_power_connector = new XT30_Female_Right_Angle
     # sat_power_connector = new XT30_Female_Right_Angle
     # vshare_power_connector = new XT30_Female_Right_Angle
-    housekeeper_connector = new Molex5051101292
-    # dep_sep_connector = new Molex5051100492
-    variable_resistor_connector = new Molex5026030270
-    # pdcu_connector = new Molex5051101292 # DI2C
-    usb_connector = new XKB_Connectivity_U262_241N_4BV64
+    # housekeeper_connector = new Molex5051101292
+    # # dep_sep_connector = new Molex5051100492
+    # variable_resistor_connector = new Molex5026030270
+    # # pdcu_connector = new Molex5051101292 # DI2C
+    # usb_connector = new XKB_Connectivity_U262_241N_4BV64
 
-    # USB connector
-    power_5v ~ usb_connector.power_vbus
-    controller.usb2 ~ usb_connector.usb2
+    # # USB connector
+    # power_5v ~ usb_connector.power_vbus
+    # controller.usb2 ~ usb_connector.usb2
 
-    # Connector connections
+    # # Connector connections
 
-    # Cells
-    # vsh_connector.p13 ~ cell_1.power_out.gnd
-    # vsh_connector.p12 ~ cell_1.power_out.vcc
-    # vsh_connector.p11 ~ cell_2.power_out.vcc
+    # # Cells
+    # # vsh_connector.p13 ~ cell_1.power_out.gnd
+    # # vsh_connector.p12 ~ cell_1.power_out.vcc
+    # # vsh_connector.p11 ~ cell_2.power_out.vcc
 
-    # Thermistors
-    vsh_connector.p15 ~ thermistors.output_1
-    vsh_connector.p16 ~ thermistors.output_1.reference.gnd
-    vsh_connector.p17 ~ thermistors.output_2
-    vsh_connector.p18 ~ thermistors.output_2.reference.gnd
-    vsh_connector.p19 ~ thermistors.output_3
-    vsh_connector.p20 ~ thermistors.output_3.reference.gnd
-    vsh_connector.p21 ~ thermistors.output_4
-    vsh_connector.p22 ~ thermistors.output_4.reference.gnd
+    # # Thermistors
+    # vsh_connector.p15 ~ thermistors.output_1
+    # vsh_connector.p16 ~ thermistors.output_1.reference.gnd
+    # vsh_connector.p17 ~ thermistors.output_2
+    # vsh_connector.p18 ~ thermistors.output_2.reference.gnd
+    # vsh_connector.p19 ~ thermistors.output_3
+    # vsh_connector.p20 ~ thermistors.output_3.reference.gnd
+    # vsh_connector.p21 ~ thermistors.output_4
+    # vsh_connector.p22 ~ thermistors.output_4.reference.gnd
 
-    # Battery power
-    batt_power_connector.power ~ buck_boost.power_out
+    # # Battery power
+    # batt_power_connector.power ~ buck_boost.power_out
 
-    # CAN
-    housekeeper_connector.p1 ~ gnd
-    housekeeper_connector.p2 ~ gnd
-    housekeeper_connector.p3 ~ gnd
-    housekeeper_connector.p4 ~ can_controller.can.CANL
-    housekeeper_connector.p5 ~ can_controller.can.CANH
-    housekeeper_connector.p6 ~ gnd
-    # housekeeper_connector.p7 ~ usb.dp
-    housekeeper_connector.p7 ~ gnd
-    # housekeeper_connector.p9 ~ usb.dm
-    housekeeper_connector.p8 ~ gnd
-    # housekeeper_connector.p11 ~ programming reset #unused
-    housekeeper_connector.p9 ~ gnd
+    # # CAN
+    # housekeeper_connector.p1 ~ gnd
+    # housekeeper_connector.p2 ~ gnd
+    # housekeeper_connector.p3 ~ gnd
+    # housekeeper_connector.p4 ~ can_controller.can.CANL
+    # housekeeper_connector.p5 ~ can_controller.can.CANH
+    # housekeeper_connector.p6 ~ gnd
+    # # housekeeper_connector.p7 ~ usb.dp
+    # housekeeper_connector.p7 ~ gnd
+    # # housekeeper_connector.p9 ~ usb.dm
+    # housekeeper_connector.p8 ~ gnd
+    # # housekeeper_connector.p11 ~ programming reset #unused
+    # housekeeper_connector.p9 ~ gnd
 
-    # Variable resistor
-    variable_resistor_connector.power ~ variable_resistor.power_in
+    # # Variable resistor
+    # variable_resistor_connector.power ~ variable_resistor.power_in
 
-    # Name connector pins
-    # cell_1.power_out.gnd.override_net_name = "CELL_1_GND"
-    # cell_1.power_out.vcc.override_net_name = "CELL_1_VCC"
-    # cell_2.power_out.vcc.override_net_name = "CELL_2_VCC"
-    thermistors.output_1.override_net_name = "THERMISTOR_1"
-    thermistors.output_2.override_net_name = "THERMISTOR_2"
-    thermistors.output_3.override_net_name = "THERMISTOR_3"
-    thermistors.output_4.override_net_name = "THERMISTOR_4"
-    buck_boost.power_out.vcc.override_net_name = "BOOST_VCC"
-    buck_boost.power_out.gnd.override_net_name = "BOOST_GND"
+    # # Name connector pins
+    # # cell_1.power_out.gnd.override_net_name = "CELL_1_GND"
+    # # cell_1.power_out.vcc.override_net_name = "CELL_1_VCC"
+    # # cell_2.power_out.vcc.override_net_name = "CELL_2_VCC"
+    # # thermistors.output_1.override_net_name = "THERMISTOR_1"
+    # # thermistors.output_2.override_net_name = "THERMISTOR_2"
+    # # thermistors.output_3.override_net_name = "THERMISTOR_3"
+    # # thermistors.output_4.override_net_name = "THERMISTOR_4"
+    # # buck_boost.power_out.vcc.override_net_name = "BOOST_VCC"
+    # # buck_boost.power_out.gnd.override_net_name = "BOOST_GND"
 
-    # Debug
-    saleae_header_1 = new DebugSaleae
-    saleae_header_1.i2c ~ controller.i2c1
-    saleae_header_2 = new DebugSaleae
-    saleae_header_2.spi ~ controller.spi4
-    saleae_header_2.spi_cs ~ controller.spi4_cs_1
+    # # Debug
+    # saleae_header_1 = new DebugSaleae
+    # saleae_header_1.i2c ~ controller.i2c1
+    # saleae_header_2 = new DebugSaleae
+    # saleae_header_2.spi ~ controller.spi4
+    # saleae_header_2.spi_cs ~ controller.spi4_cs_1

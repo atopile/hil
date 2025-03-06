@@ -56,6 +56,7 @@ module Texas_Instruments_BQ25756RRVR:
     power_drv_sup = new ElectricPower
     power_drv_sup.vcc ~ controller.DRV_SUP
     power_drv_sup.gnd ~ controller.PGND
+    power_in.gnd ~ power_drv_sup.gnd
     drv_sup_cap = new Capacitor
     drv_sup_cap.capacitance = 4.7uF +/- 20%
     drv_sup_cap.max_voltage = 25V to 1000V
@@ -65,6 +66,7 @@ module Texas_Instruments_BQ25756RRVR:
     power_regn = new ElectricPower
     power_regn.vcc ~ controller.REGN
     power_regn.gnd ~ controller.PGND
+    power_in.gnd ~ power_regn.gnd
     regn_cap = new Capacitor
     regn_cap.capacitance = 4.7uF +/- 20%
     regn_cap.max_voltage = 25V to 1000V
@@ -296,17 +298,17 @@ module CapBank:
     power_in ~ cap11.power
 
     # Set package
-    # cap1.package = "C1210"
-    # cap2.package = "C1210"
-    # cap3.package = "C1210"
-    # cap4.package = "C1210"
-    # cap5.package = "C1210"
-    # cap6.package = "C1210"
-    # cap7.package = "C1210"
-    # cap8.package = "C1206"
-    # cap9.package = "C0805"
-    # cap10.package = "C0805"
-    # cap11.package = "C1210"
+    cap1.package = "C1210"
+    cap2.package = "C1210"
+    cap3.package = "C1210"
+    cap4.package = "C1210"
+    cap5.package = "C1210"
+    cap6.package = "C1210"
+    cap7.package = "C1210"
+    cap8.package = "C1206"
+    cap9.package = "C0805"
+    cap10.package = "C0805"
+    cap11.package = "C1210"
 
 
 module ShuntInput:
@@ -342,6 +344,8 @@ module ShuntInput:
     filter_n.out ~ output.n
     filter_p.in_.reference ~ power_in
     filter_n.in_.reference ~ power_out
+    power_in.gnd ~ power_out.gnd
+    output.p ~ diff_cap.p1; diff_cap.p2 ~ output.n
 
     diff_cap.package = "C0402"
     filter_n.resistor.package = "R0402"
