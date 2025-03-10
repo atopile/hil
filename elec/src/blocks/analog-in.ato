@@ -1,5 +1,5 @@
 import ElectricSignal, I2C, ElectricPower
-from "vdivs.ato" import VDiv
+import ResistorVoltageDivider
 
 from "blocks/isolator-i2c.ato" import IsolatorI2C
 from "blocks/protection-tvs.ato" import TVSProtection
@@ -25,7 +25,7 @@ module AnalogIn:
     adc = new ADS1115IDGSR
     amplifier = new Amplifier
     tvs = new TVSProtection
-    vdiv = new VDiv
+    vdiv = new ResistorVoltageDivider
 
     tvs.diode.lcsc_id = "C152100"
 
@@ -34,54 +34,17 @@ module AnalogIn:
     power_3v3 ~ amplifier.power_in
 
     # Connections
-    input.line ~ vdiv.top
-    input.reference.lv ~ vdiv.bottom
+    input.line ~ vdiv.power.hv
+    input.reference.lv ~ vdiv.power.lv
     input.reference ~ power_3v3
-    vdiv.out ~ tvs.input.line; tvs.output ~ amplifier.input; amplifier.output.line ~ adc.input_1
+    vdiv.output.line ~ tvs.input.line; tvs.output ~ amplifier.input; amplifier.output.line ~ adc.input_1
 
     adc.i2c ~ i2c
 
     # Protection
-    vdiv.out ~ tvs.input.line
+    vdiv.output.line ~ tvs.input.line
     power_3v3.gnd ~ tvs.input.reference.gnd
 
     # Power
     power_3v3 ~ amplifier.power_in
     power_3v3 ~ adc.power
-
-
-module AnalogInIsolated:
-    """
-    Analog input block with isolated power supply
-    """
-    # External Interfaces
-    i2c = new I2C
-    power_5v = new ElectricPower
-    power_3v3 = new ElectricPower
-    input = new ElectricSignal
-
-    # Components
-    analog_in = new AnalogIn
-    i2c_isolator = new IsolatorI2C
-    regulator_5v_isolated = new YLPTEC_B0505S_2WR3
-    regulator_3v3_isolated = new LDK220M_R
-
-    # Internal power
-    _power_5v_isolated = new ElectricPower
-    _power_3v3_isolated = new ElectricPower
-
-    # I2C
-    i2c ~ i2c_isolator.i2c_non_isolated
-    i2c_isolator.i2c_isolated ~ analog_in.i2c
-
-    # Power
-    power_5v ~ regulator_5v_isolated.power_in
-    regulator_5v_isolated.power_out ~ _power_5v_isolated
-    _power_5v_isolated ~ regulator_3v3_isolated.power_in
-    regulator_3v3_isolated.power_out ~ _power_3v3_isolated
-    _power_3v3_isolated ~ analog_in.power_3v3
-    _power_3v3_isolated ~ i2c_isolator.power_isolated
-    power_3v3 ~ i2c_isolator.power_non_isolated
-
-    # Connections
-    input ~ analog_in.input

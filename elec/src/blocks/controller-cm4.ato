@@ -27,6 +27,7 @@ module ControllerCM4:
     power_3v3 ~ cm4.power_3v3
     power_5v ~ cm4.power_5v
 
+    power_3v3.gnd ~ power_5v.gnd
 
     # Pass through interfaces
     # USB2

@@ -292,7 +292,7 @@ class CM4_MINIMAL(Module):
         F.Net.with_name("VCC_5V").part_of.connect(self.power_5v.hv)
         F.Net.with_name("VCC_3V3").part_of.connect(self.power_3v3.hv)
         F.Net.with_name("VCC_1V8").part_of.connect(self.power_1v8.hv)
-        F.Net.with_name("GND").part_of.connect(self.power_5v.lv)
+        # F.Net.with_name("GND").part_of.connect(self.power_5v.lv)
         F.Net.with_name("SCL").part_of.connect(self.i2c1.scl.line)
         F.Net.with_name("SDA").part_of.connect(self.i2c1.sda.line)
         F.Net.with_name("HDMI0_D0_P").part_of.connect(self.hdmi0.data[0].p.line)
