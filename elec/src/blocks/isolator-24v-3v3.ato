@@ -20,5 +20,5 @@ module Isolator24v3v3:
     isolated_supply.power_out ~ power_out_24v
 
     buck_converter = new LV2842XReferenceDesign
-    buck_converter.power_in ~ power_in_24v
+    buck_converter.power_in ~ power_out_24v
     buck_converter.power_out ~ power_out_3v3

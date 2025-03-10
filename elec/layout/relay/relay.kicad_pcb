@@ -129,10 +129,10 @@
     (net 60 "gnd-1")
     (net 61 "hv-1")
     (net 62 "gnd-2")
-    (net 63 "hv-2")
+    (net 63 "hv")
     (net 64 "cathode")
     (net 65 "gnd")
-    (net 66 "hv")
+    (net 66 "anode")
     (net 67 "gate")
     (net 68 "line")
     (footprint "lib:RELAY-SMD_HFD4-5-SR"
@@ -374,7 +374,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9b720118-4813-47fc-a7e9-98e2a5f5f498")
-            (net 63 "hv-2"))
+            (net 63 "hv"))
         (pad "4" smd rect
             (at 3.84 3.17 0)
             (size 0.8 2.15)
@@ -401,7 +401,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "85473774-5ca4-414c-80e7-fa1e1de1d21c")
-            (net 66 "hv"))
+            (net 66 "anode"))
         (model "/Users/narayanpowderly/projects/hil/build/footprints/footprints.3dshapes/RELAY-SMD_L10.0-W6.5-H5.7-LS7.5-P2.2.step"
             (offset
                 (xyz 0 0 0))
@@ -1197,7 +1197,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "20acf39f-310f-47ba-9253-13a7deea0094")
-            (net 66 "hv"))
+            (net 66 "anode"))
         (pad "1" smd rect
             (at -0.8 0 90)
             (size 0.8 0.8)

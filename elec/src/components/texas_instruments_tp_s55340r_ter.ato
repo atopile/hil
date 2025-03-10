@@ -73,7 +73,7 @@ module Texas_Instruments_TPS55340RTER from AdjustableRegulator:
 
     # Feedback Divider
     power_out ~ feedback_div.power
-    ic.FB ~ feedback_div.out.line
+    ic.FB ~ feedback_div.output.line
 
     power_in.hv ~ ic.VIN
     ic.VIN ~ ic.EN
