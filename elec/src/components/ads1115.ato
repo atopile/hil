@@ -35,6 +35,7 @@ component ADS1115IDGSR:
     address_bit1 = new ElectricSignal
     address_bit1.line ~ pin 1
     address_bit1.reference.gnd ~ power.gnd
+    address_bit1.line ~ power.gnd # default address
 
     alert_ready = new ElectricSignal
     alert_ready.line ~ pin 2
