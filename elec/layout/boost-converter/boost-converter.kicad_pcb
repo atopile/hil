@@ -79,8 +79,8 @@
     (net 1 "ic.footprint.pins[1].net-net")
     (net 2 "FB")
     (net 3 "ic.footprint.pins[5].net-net")
-    (net 4 "hv-1")
-    (net 5 "hv")
+    (net 4 "hv")
+    (net 5 "hv-1")
     (net 6 "net")
     (net 7 "SS")
     (net 8 "FREQ")
@@ -283,7 +283,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "23fa94fd-d4d8-45a6-bf3b-fa3696c2ac88")
-            (net 5 "hv")))
+            (net 5 "hv-1")))
     (footprint "atopile:R0603-ebcab9"
         (layer "F.Cu")
         (uuid "0f2d8ef2-7a78-4475-b1e7-32664642524b")
@@ -704,7 +704,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "03154e18-aabb-4e59-a750-0d6620b313a1")
-            (net 4 "hv-1"))
+            (net 4 "hv"))
         (pad "2" smd rect
             (at 1 0 0)
             (size 1.41 1.35)
@@ -935,7 +935,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "63561d79-8170-4257-aaf7-c00e44ae07bb")
-            (net 4 "hv-1"))
+            (net 4 "hv"))
         (pad "2" smd rect
             (at 1 0 0)
             (size 1.41 1.35)
@@ -1166,7 +1166,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4c4d0550-e3d4-49cd-bb01-143151081ed4")
-            (net 5 "hv"))
+            (net 5 "hv-1"))
         (pad "2" smd rect
             (at 1 0 0)
             (size 1.41 1.35)
@@ -1628,7 +1628,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f63f3756-cb5b-4b1c-a00d-80128aa24661")
-            (net 5 "hv"))
+            (net 5 "hv-1"))
         (pad "2" smd rect
             (at 1 0 0)
             (size 1.41 1.35)
@@ -1925,7 +1925,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C137935"
+        (property "LCSC" "C25798"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1934,7 +1934,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "RC0402FR-0775KL"
+        (property "Partnumber" "0402WGF7502TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1943,7 +1943,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "YAGEO"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2290,14 +2290,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "66403935-4f60-487a-aee4-9824f7f25eaf")
-            (net 4 "hv-1"))
+            (net 4 "hv"))
         (pad "3" smd rect
             (at 0.25 1.5 270)
             (size 0.28 0.8)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "dfa26720-a387-4bad-86a5-4f40fbee6999")
-            (net 4 "hv-1"))
+            (net 4 "hv"))
         (pad "4" smd rect
             (at 0.75 1.5 270)
             (size 0.28 0.8)
@@ -2632,7 +2632,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "6831355a-e811-4002-9177-a148a975f789")
-            (net 5 "hv"))
+            (net 5 "hv-1"))
         (pad "2" smd rect
             (at 1 0 0)
             (size 1.41 1.35)
@@ -2827,7 +2827,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "121ad987-69dd-417b-977b-85387d735c0c")
-            (net 4 "hv-1"))
+            (net 4 "hv"))
         (pad "2" smd rect
             (at 2.91 0 90)
             (size 2.15 3.32)
@@ -3273,7 +3273,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e135cc5d-ac46-470f-a7c1-96c67408d664")
-            (net 5 "hv"))
+            (net 5 "hv-1"))
         (pad "2" smd rect
             (at 3.43 0 0)
             (size 3.03 3.82)
@@ -3547,7 +3547,7 @@
         (layers "F.Cu" "B.Cu"))
     (zone
         (net 5)
-        (net_name "hv")
+        (net_name "hv-1")
         (layers "F.Cu")
         (uuid "2c78907a-43cb-40e4-8dea-e965e3145375")
         (hatch edge 0.5)
@@ -3612,7 +3612,7 @@
                 (xy 95.109962 46.502809))))
     (zone
         (net 5)
-        (net_name "hv")
+        (net_name "hv-1")
         (layers "F.Cu")
         (uuid "5900686a-94ab-4302-bdb8-b2d6060c6b39")
         (hatch edge 0.5)
@@ -3659,7 +3659,7 @@
                 (xy 103.776 44.9))))
     (zone
         (net 4)
-        (net_name "hv-1")
+        (net_name "hv")
         (layers "F.Cu")
         (uuid "83effc1a-e0d8-4d72-bb8f-fc079d413a4a")
         (hatch edge 0.5)

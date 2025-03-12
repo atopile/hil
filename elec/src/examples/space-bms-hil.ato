@@ -30,12 +30,14 @@ from "blocks/debug-saleae.ato" import DebugSaleae
 # TODO: DI2C Transceiver
 
 module SpaceBMSHIL:
-    pass
+    # pass
 
     # Controller
     # controller = new ControllerCM4
 
     # Cells
+    cell = new Cell
+    # cell2 = new Cell
     # cell_block_1_8 = new CellSim8Ch
     # cell_block_9_16 = new CellSim8Ch
     # cell_block_17_24 = new CellSim8Ch
@@ -78,11 +80,11 @@ module SpaceBMSHIL:
     # mux_3 = new TCA9548APWR
 
     # Power rails
-    power_vusb = new ElectricPower
-    power_24v = new ElectricPower
-    power_5v = new ElectricPower
-    power_3v3 = new ElectricPower
-    gnd = new Electrical
+    # power_vusb = new ElectricPower
+    # power_24v = new ElectricPower
+    # power_5v = new ElectricPower
+    # power_3v3 = new ElectricPower
+    # gnd = new Electrical
 
     # power_vusb.voltage = 5V to 21V
     # power_24v.voltage = 24V +/- 5%

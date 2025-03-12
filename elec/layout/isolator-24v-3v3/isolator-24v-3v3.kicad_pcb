@@ -107,12 +107,12 @@
     (net 0 "")
     (net 2 "hv")
     (net 3 "gnd-1")
-    (net 5 "hv-2")
+    (net 5 "hv-1")
     (net 6 "line")
-    (net 7 "cathode")
+    (net 7 "SW")
     (net 8 "CB")
-    (net 9 "hv-1")
-    (net 10 "gnd")
+    (net 9 "hv-2")
+    (net 10 "gnd-2")
     (footprint "atopile:PWRM-TH_BXXXXS-2WR3-d8b2fb"
         (layer "F.Cu")
         (uuid "07f493ac-dbda-4b51-8efa-9e994642524b")
@@ -360,7 +360,7 @@
             (layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu")
             (remove_unused_layers no)
             (uuid "21bff261-e25f-4eb3-ac05-14d0c1b066dd")
-            (net 10 "gnd"))
+            (net 10 "gnd-2"))
         (pad "6" thru_hole circle
             (at 6.35 0 0)
             (size 1.8 1.8)
@@ -368,7 +368,7 @@
             (layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu")
             (remove_unused_layers no)
             (uuid "c5cb6e65-d74f-44db-b8bc-bb7070c0a122")
-            (net 9 "hv-1")))
+            (net 9 "hv-2")))
     (footprint "lib:SOD-323_L1.8-W1.3-LS2.5-RD"
         (layer "F.Cu")
         (uuid "10ca6f23-47f4-4980-96ee-05a24642524b")
@@ -548,7 +548,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0396b515-44f5-43ef-aac3-a05b1500b9bb")
-            (net 7 "cathode"))
+            (net 7 "SW"))
         (pad "2" smd rect
             (at 1.17 0 90)
             (size 1 0.75)
@@ -793,7 +793,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a9e56e05-21b0-4d23-8d09-2524a57ddf73")
-            (net 7 "cathode")))
+            (net 7 "SW")))
     (footprint "lib:SOT-23-6_L2.9-W1.6-P0.95-LS2.8-BR"
         (layer "F.Cu")
         (uuid "5cc67702-63b1-433e-b8b1-884d4642524b")
@@ -974,7 +974,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "d9a92a8e-372c-45c4-abc9-c277d61fbc70")
-            (net 10 "gnd"))
+            (net 10 "gnd-2"))
         (pad "3" smd rect
             (at 1.35 -0.95 90)
             (size 1.1 0.6)
@@ -988,21 +988,21 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "137f1c68-9efb-4eb5-9664-7c22eda0576e")
-            (net 9 "hv-1"))
+            (net 9 "hv-2"))
         (pad "5" smd rect
             (at -1.35 0 90)
             (size 1.1 0.6)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "83bc3b9d-b532-4d51-a5d8-18d1757b5c51")
-            (net 9 "hv-1"))
+            (net 9 "hv-2"))
         (pad "6" smd rect
             (at -1.35 0.95 90)
             (size 1.1 0.6)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e4e773d1-4c33-48ff-b733-6b4f344697c2")
-            (net 7 "cathode"))
+            (net 7 "SW"))
         (model "${KIPRJMOD}/../../../build/footprints/footprints.3dshapes/SOT-23-6_L2.9-W1.6-H1.5-LS2.8-P0.95.step"
             (offset
                 (xyz 0 0 0))
@@ -1233,7 +1233,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4a259603-603a-4b12-9616-258e0c0cadae")
-            (net 5 "hv-2"))
+            (net 5 "hv-1"))
         (pad "2" smd rect
             (at 1 0 270)
             (size 1.41 1.35)
@@ -1464,14 +1464,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "acbf62ae-52a2-4483-923f-db96eb94bcb0")
-            (net 9 "hv-1"))
+            (net 9 "hv-2"))
         (pad "2" smd rect
             (at 1 0 90)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "bae0fc26-c1f6-464f-bc17-52924b0046a3")
-            (net 10 "gnd")))
+            (net 10 "gnd-2")))
     (footprint "atopile:C0805-3b2e55"
         (layer "F.Cu")
         (uuid "d8275113-1b58-43a5-b385-ea124642524b")
@@ -1890,7 +1890,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a689ac68-c4d2-4975-9f7d-1de10476d55c")
-            (net 5 "hv-2"))
+            (net 5 "hv-1"))
         (pad "2" smd rect
             (at 0.43 0 270)
             (size 0.57 0.54)
@@ -2280,14 +2280,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "73e08559-1df6-4c07-a0dd-9221d82233c7")
-            (net 7 "cathode"))
+            (net 7 "SW"))
         (pad "2" smd rect
             (at 1.6 0 180)
             (size 1.6 3.5)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "687119eb-9f34-4d96-b054-8b2931e184e6")
-            (net 5 "hv-2"))
+            (net 5 "hv-1"))
         (model "/Users/narayanpowderly/projects/hil-blocks/build/footprints/footprints.3dshapes/IND-SMD_L4.0-W4.0-H1.9.step"
             (offset
                 (xyz 0 0 0))
@@ -2518,14 +2518,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9232ee31-ad13-4e03-935c-99ba1c953375")
-            (net 9 "hv-1"))
+            (net 9 "hv-2"))
         (pad "2" smd rect
             (at 1 0 180)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4b1c95b6-73c8-45da-a624-01e99faec39d")
-            (net 10 "gnd")))
+            (net 10 "gnd-2")))
     (via
         (at 104.404405 89.819405)
         (size 0.8)
@@ -2570,7 +2570,7 @@
         (layers "F.Cu" "B.Cu"))
     (zone
         (net 5)
-        (net_name "hv-2")
+        (net_name "hv-1")
         (layers "F.Cu")
         (uuid "5dc37921-ecc8-45ef-a868-c62dbe05ce2d")
         (hatch edge 0.5)
@@ -2722,7 +2722,7 @@
                 (xy 100.704405 90.243405))))
     (zone
         (net 7)
-        (net_name "cathode")
+        (net_name "SW")
         (layers "F.Cu")
         (uuid "888f6176-c30d-4e1c-8663-a2afad8bf6bd")
         (hatch edge 0.5)
