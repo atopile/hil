@@ -105,25 +105,25 @@
             (scaleselection 1)
             (outputdirectory "")))
     (net 0 "")
-    (net 1 "gpio_expander-net-5")
-    (net 2 "line-2")
-    (net 3 "gpio_expander-net-4")
-    (net 4 "hv")
-    (net 5 "gpio_expander-net-3")
+    (net 1 "gpio_expander-net-6")
+    (net 2 "line-1")
+    (net 3 "gpio_expander-net-5")
+    (net 4 "hv-2")
+    (net 5 "gpio_expander-net-1")
     (net 6 "gpio_expander-net-2")
     (net 7 "hv-1")
-    (net 8 "line")
-    (net 9 "gnd-3")
+    (net 8 "line-2")
+    (net 9 "gnd-2")
     (net 10 "INT")
-    (net 11 "gpio_expander-net-6")
-    (net 12 "VCCP")
-    (net 13 "hv-2")
-    (net 14 "line-1")
-    (net 15 "gpio_expander-net")
-    (net 16 "gnd-1")
-    (net 17 "gnd-2")
+    (net 11 "gpio_expander-net")
+    (net 12 "VCCI")
+    (net 13 "hv")
+    (net 14 "line")
+    (net 15 "gpio_expander-net-3")
+    (net 16 "gnd-3")
+    (net 17 "gnd-1")
     (net 18 "gate")
-    (net 19 "gpio_expander-net-1")
+    (net 19 "gpio_expander-net-4")
     (net 20 "gnd")
     (net 21 "relay-gnd")
     (net 22 "cathode")
@@ -185,7 +185,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C106235"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -194,7 +194,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "RC0402FR-071KL"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -203,7 +203,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+        (property "Manufacturer" "YAGEO"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -314,14 +314,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e1bc1f25-4551-43d3-9e16-a46d70cf19aa")
-            (net 8 "line"))
+            (net 8 "line-2"))
         (pad "2" smd rect
             (at 0.43 0 0)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "cbb03acd-e41f-48e7-888b-5f6fd1a0b56e")
-            (net 17 "gnd-2")))
+            (net 17 "gnd-1")))
     (footprint "atopile:LED0603-RD-c81ffb"
         (layer "F.Cu")
         (uuid "43b23b39-827d-4bc2-bc9c-b8494642524b")
@@ -845,28 +845,28 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "56b22817-bd82-4765-ac81-31777cd65619")
-            (net 9 "gnd-3"))
+            (net 9 "gnd-2"))
         (pad "4" smd rect
             (at 3.84 3.17 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7d689de6-6796-402a-928d-561423efb596")
-            (net 16 "gnd-1"))
+            (net 16 "gnd-3"))
         (pad "5" smd rect
             (at 3.84 -3.18 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "6a8f7e0c-d6c8-4210-8a49-8338d9906bdd")
-            (net 13 "hv-2"))
+            (net 13 "hv"))
         (pad "6" smd rect
             (at 1.64 -3.18 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8a273077-ccc3-4ea2-832b-c94897b253d9")
-            (net 4 "hv"))
+            (net 4 "hv-2"))
         (pad "7" smd rect
             (at -0.56 -3.18 0)
             (size 0.8 2.15)
@@ -945,7 +945,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C106235"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -954,7 +954,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "RC0402FR-071KL"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -963,7 +963,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+        (property "Manufacturer" "YAGEO"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1277,7 +1277,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9ed601fa-74ae-4907-984c-574c1e188a00")
-            (net 17 "gnd-2"))
+            (net 17 "gnd-1"))
         (pad "3" smd rect
             (at -1 0 180)
             (size 1.25 0.7)
@@ -1514,35 +1514,35 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a9e9daac-c4a9-4a41-8707-04be9eb054bd")
-            (net 12 "VCCP"))
+            (net 12 "VCCI"))
         (pad "2" smd rect
             (at -0.25 1.41 90)
             (size 0.28 0.66)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9a5dd22a-fccd-4e9e-8b8b-e0bb60226ec0")
-            (net 8 "line"))
+            (net 8 "line-2"))
         (pad "3" smd rect
             (at 0.25 1.41 90)
             (size 0.28 0.66)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "32f6d194-199f-4eee-b53d-a201ee298d87")
-            (net 19 "gpio_expander-net-1"))
+            (net 19 "gpio_expander-net-4"))
         (pad "4" smd rect
             (at 0.75 1.41 90)
             (size 0.28 0.66)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8b9a352a-706e-4733-96ed-a9df421b8591")
-            (net 1 "gpio_expander-net-5"))
+            (net 1 "gpio_expander-net-6"))
         (pad "5" smd rect
             (at 1.41 0.75 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e9b9251e-1bb7-4adf-98c5-40c17795720a")
-            (net 15 "gpio_expander-net"))
+            (net 15 "gpio_expander-net-3"))
         (pad "6" smd rect
             (at 1.41 0.25 90)
             (size 0.66 0.28)
@@ -1556,14 +1556,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "6187248d-be6e-4572-9c9b-405ed4885560")
-            (net 5 "gpio_expander-net-3"))
+            (net 5 "gpio_expander-net-1"))
         (pad "8" smd rect
             (at 1.41 -0.75 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e9425ef5-0cd6-4e25-b3b2-a344184f7e3e")
-            (net 11 "gpio_expander-net-6"))
+            (net 11 "gpio_expander-net"))
         (pad "9" smd rect
             (at 0.75 -1.41 90)
             (size 0.28 0.66)
@@ -1577,7 +1577,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8acc8a34-9e92-47b3-8651-8978a5cc43f0")
-            (net 3 "gpio_expander-net-4"))
+            (net 3 "gpio_expander-net-5"))
         (pad "11" smd rect
             (at -0.25 -1.41 90)
             (size 0.28 0.66)
@@ -1591,28 +1591,28 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ebca773f-bc0f-4474-bf7a-87e3279d594f")
-            (net 2 "line-2"))
+            (net 2 "line-1"))
         (pad "13" smd rect
             (at -1.41 -0.75 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "372cecde-614d-4730-9be4-a9808f45d915")
-            (net 14 "line-1"))
+            (net 14 "line"))
         (pad "14" smd rect
             (at -1.41 -0.25 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "90d41cde-6d5a-4257-b3c6-3496e8bfe308")
-            (net 12 "VCCP"))
+            (net 12 "VCCI"))
         (pad "15" smd rect
             (at -1.41 0.25 90)
             (size 0.66 0.28)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "86d83765-d821-4e65-a884-6c9ab87bd0d5")
-            (net 12 "VCCP"))
+            (net 12 "VCCI"))
         (pad "16" smd rect
             (at -1.41 0.75 90)
             (size 0.66 0.28)
@@ -1814,7 +1814,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c911ccb4-fbc1-429c-8298-78c89e03be11")
-            (net 8 "line"))
+            (net 8 "line-2"))
         (pad "2" smd rect
             (at 0.43 0 0)
             (size 0.57 0.54)

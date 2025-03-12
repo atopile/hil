@@ -30,13 +30,28 @@ from "blocks/debug-saleae.ato" import DebugSaleae
 # TODO: DI2C Transceiver
 
 module SpaceBMSHIL:
+    pass
 
     # Controller
-    controller = new ControllerCM4
+    # controller = new ControllerCM4
 
     # Cells
-    cell_block_1_8 = new CellSim8Ch
-    cell_block_9_16 = new CellSim8Ch
+    # cell_block_1_8 = new CellSim8Ch
+    # cell_block_9_16 = new CellSim8Ch
+    # cell_block_17_24 = new CellSim8Ch
+    # cell_block_25_32 = new CellSim8Ch
+    # cell_block_33_40 = new CellSim8Ch
+    # cell_block_41_48 = new CellSim8Ch
+    # cell_block_49_56 = new CellSim8Ch
+    # cell_block_57_64 = new CellSim8Ch
+    # cell_block_65_72 = new CellSim8Ch
+    # cell_block_73_80 = new CellSim8Ch
+    # cell_block_81_88 = new CellSim8Ch
+    # cell_block_89_96 = new CellSim8Ch
+    # cell_block_97_104 = new CellSim8Ch
+    # cell_block_105_112 = new CellSim8Ch
+    # cell_block_113_120 = new CellSim8Ch
+    # cell_block_121_128 = new CellSim8Ch
     # thermistors = new AnalogOut4ch
 
     # Comms

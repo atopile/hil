@@ -116,7 +116,7 @@
     (net 9 "gate")
     (net 10 "VBUS_EN_SNK")
     (net 11 "gnd")
-    (net 12 "line-1")
+    (net 12 "line")
     (net 13 "B10")
     (net 14 "GPIO")
     (net 15 "POWER_OK3")
@@ -124,7 +124,7 @@
     (net 17 "VREG_2V7")
     (net 18 "A_B_SIDE")
     (net 19 "DISCH")
-    (net 20 "line")
+    (net 20 "line-2")
     (net 21 "pd_controller-net")
     (net 22 "A2")
     (net 23 "POWER_OK2")
@@ -135,7 +135,7 @@
     (net 28 "A8")
     (net 29 "A11")
     (net 30 "CC2")
-    (net 31 "line-2")
+    (net 31 "line-1")
     (net 32 "CC1")
     (net 33 "hv")
     (net 34 "line-3")
@@ -400,7 +400,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b90898fe-c427-4d4f-aa44-77125c85a500")
-            (net 31 "line-2"))
+            (net 31 "line-1"))
         (pad "9" smd oval
             (at 2 0.25 0)
             (size 0.28 0.7)
@@ -1240,14 +1240,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "29ab0cd2-195a-4e82-90e9-e9629aef37f9")
-            (net 12 "line-1"))
+            (net 12 "line"))
         (pad "A7" smd rect
             (at 0.37 -2.62 270)
             (size 0.3 1)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "49424624-98e6-4ea2-b2f5-14539423826e")
-            (net 20 "line"))
+            (net 20 "line-2"))
         (pad "A8" smd rect
             (at 0.88 -2.62 270)
             (size 0.3 1)
@@ -1324,14 +1324,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4659b9f1-d5b7-411c-a1df-bb30db80ed25")
-            (net 12 "line-1"))
+            (net 12 "line"))
         (pad "B7" smd rect
             (at -0.38 -1.28 270)
             (size 0.3 1)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "10c764ad-2a74-47fa-a236-2ca74a4cccd5")
-            (net 20 "line"))
+            (net 20 "line-2"))
         (pad "B8" smd rect
             (at -0.88 -1.28 270)
             (size 0.3 1)
@@ -1620,7 +1620,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C106235"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1629,7 +1629,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "RC0402FR-071KL"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1638,7 +1638,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+        (property "Manufacturer" "YAGEO"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2241,7 +2241,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C106235"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2250,7 +2250,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "RC0402FR-071KL"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2259,7 +2259,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+        (property "Manufacturer" "YAGEO"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -3090,7 +3090,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C25076"
+        (property "LCSC" "C106232"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -3099,7 +3099,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1000TCE"
+        (property "Partnumber" "RC0402FR-07100RL"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -3108,7 +3108,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+        (property "Manufacturer" "YAGEO"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -3117,7 +3117,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 100Ω 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -3887,7 +3887,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b01e744a-6aa2-45c6-b528-c0ab671ce339")
-            (net 31 "line-2"))
+            (net 31 "line-1"))
         (pad "2" smd rect
             (at 0.43 0 90)
             (size 0.57 0.54)
