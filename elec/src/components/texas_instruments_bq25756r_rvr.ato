@@ -149,8 +149,8 @@ module Texas_Instruments_BQ25756RRVR:
     # status_2_led.led.color = "GREEN"
     status_1_led.led.lcsc_id = "C2286"
     status_2_led.led.lcsc_id = "C12624"
-    status_1_led.current_limiting_resistor.resistance = 100ohm +/- 1%
-    status_2_led.current_limiting_resistor.resistance = 100ohm +/- 1%
+    status_1_led.current_limiting_resistor.resistance = 2.7kohm +/- 1%
+    status_2_led.current_limiting_resistor.resistance = 2.7kohm +/- 1%
     status_1_led.current_limiting_resistor.package = "R0402"
     status_2_led.current_limiting_resistor.package = "R0402"
     controller.REGN ~ status_1_led.power.vcc
@@ -181,7 +181,7 @@ module Texas_Instruments_BQ25756RRVR:
     pg_status_led = new PoweredLED
     # pg_status_led.led.color = "GREEN"
     pg_status_led.led.lcsc_id = "C12624"
-    pg_status_led.current_limiting_resistor.resistance = 100ohm +/- 1%
+    pg_status_led.current_limiting_resistor.resistance = 2.7kohm +/- 1%
     pg_status_led.current_limiting_resistor.package = "R0402"
     controller.REGN ~ pg_status_led.power.vcc
     controller.PGh ~ pg_status_led.power.gnd
