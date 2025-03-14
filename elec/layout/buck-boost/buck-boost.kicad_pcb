@@ -147,39 +147,39 @@
     (net 0 "")
     (net 1 "FB")
     (net 2 "controller.footprint.pins[7].net-net")
-    (net 3 "gnd-3")
+    (net 3 "gnd-2")
     (net 4 "controller.footprint.pins[24].net-net")
     (net 5 "ACOV")
     (net 6 "ACUV")
-    (net 7 "hv")
-    (net 8 "hv-2")
-    (net 9 "gnd-1")
+    (net 7 "hv-3")
+    (net 8 "hv-1")
+    (net 9 "gnd")
     (net 10 "SDA")
     (net 11 "SCL")
     (net 12 "INTh")
-    (net 13 "line-1")
+    (net 13 "line-3")
     (net 14 "ILIM_HIZ")
     (net 15 "controller.footprint.pins[6].net-net")
-    (net 16 "line-6")
-    (net 17 "hv-3")
-    (net 18 "hv-1")
-    (net 19 "source")
+    (net 16 "line-2")
+    (net 17 "hv")
+    (net 18 "hv-2")
+    (net 19 "drain")
     (net 20 "cathode-1")
-    (net 21 "line-8")
-    (net 22 "line-2")
-    (net 23 "line-3")
-    (net 24 "line")
-    (net 25 "line-5")
-    (net 26 "line-7")
-    (net 27 "line-4")
+    (net 21 "gate")
+    (net 22 "line-4")
+    (net 23 "line-6")
+    (net 24 "gate-1")
+    (net 25 "line")
+    (net 26 "line-1")
+    (net 27 "line-5")
     (net 28 "FSW_SYNC")
     (net 29 "cathode")
-    (net 30 "gnd")
+    (net 30 "gnd-3")
     (net 31 "ICHG")
     (net 32 "TS")
-    (net 33 "gnd-4")
+    (net 33 "gnd-1")
     (net 34 "status_2_led-cathode")
-    (net 35 "gnd-2")
+    (net 35 "gnd-4")
     (net 36 "anode")
     (net 37 "status_1_led-cathode")
     (net 38 "pg_status_led-cathode")
@@ -198,7 +198,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "100Ω ±1% 62.5mW"
+        (property "Value" "2.7kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide yes)
@@ -243,7 +243,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C106232"
+        (property "LCSC" "C138017"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -252,7 +252,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "RC0402FR-07100RL"
+        (property "Partnumber" "RC0402FR-072K7L"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -270,7 +270,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 100Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 2.7kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -379,7 +379,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e9c84178-f34f-4266-b8bb-ed261d273713")
-            (net 30 "gnd")))
+            (net 30 "gnd-3")))
     (footprint "atopile:R0603-ebcab9"
         (layer "F.Cu")
         (uuid "0749db7d-3733-4ad7-81d3-3c164642524b")
@@ -574,7 +574,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "528736f6-e332-4c16-b496-d9193f94e1e8")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:POWERVDFN-8_L5.8-W4.9-P1.27-LS6.2-BL-167b96"
         (layer "F.Cu")
         (uuid "08315248-e59e-4fb8-863c-44da4642524b")
@@ -828,63 +828,63 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a5b4cf45-2522-4d92-90dc-c6361ab07b44")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "2" smd rect
             (at -0.63 2.72 180)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "448c9333-942a-4151-9e1b-9a372cd89a7a")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "3" smd rect
             (at 0.64 2.72 180)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "82b6b234-b568-4072-893d-94c794539547")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "4" smd rect
             (at 1.91 2.72 180)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e14ba451-8dc2-4633-8f50-8d2e69cd13b6")
-            (net 24 "line"))
+            (net 24 "gate-1"))
         (pad "5" smd rect
             (at 1.9 -2.72 180)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c6b31096-81db-429b-a1b8-4e8ef98383cc")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "6" smd rect
             (at 0.63 -2.72 180)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "82eb4587-b28a-41e8-812a-0addbfdcc170")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "7" smd rect
             (at -0.64 -2.72 180)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "52f3e2d4-53a5-4f48-ae5d-b11494fe0600")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "8" smd rect
             (at -1.91 -2.72 180)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "980c8dae-bc87-4b22-906c-a92c6db0da0a")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "8" smd rect
             (at 0.03 -0.6 90)
             (size 3.91 3.81)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9d28f441-a0ca-4c71-adf6-40e96c2b75e7")
-            (net 16 "line-6")))
+            (net 16 "line-2")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "098677ab-dd10-429a-b0c9-9ce04642524b")
@@ -1108,14 +1108,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "eba3057d-3aeb-407a-8ee7-2650c5719724")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a48e6fa2-02a1-4732-9846-3305bde5b72a")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "0c76ae18-e07f-4010-a7f9-cef34642524b")
@@ -1174,7 +1174,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C17168"
+        (property "LCSC" "C106231"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1183,7 +1183,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF0000TCE"
+        (property "Partnumber" "RC0402FR-070RL"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1192,7 +1192,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+        (property "Manufacturer" "YAGEO"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1201,7 +1201,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±800ppm/℃ ±1% 0Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% 0Ω 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1310,7 +1310,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "1c176659-75fb-4169-b0bb-d1e10476eec0")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:DO-219AB_L2.8-W1.8-LS3.7-RD-212ba1"
         (layer "F.Cu")
         (uuid "0f6f4d14-640a-4fed-8e04-cae24642524b")
@@ -1692,14 +1692,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "12796318-1531-4844-9eba-1f3f16a3abd0")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.48 0 90)
             (size 1.21 1.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "793bfc81-dfca-4ee8-afad-b3652aaa7549")
-            (net 8 "hv-2")))
+            (net 8 "hv-1")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "21a8bf4a-dea3-44ce-9c99-ae8a4642524b")
@@ -1923,14 +1923,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "32511f67-7452-4529-a615-bdb6535ebd66")
-            (net 13 "line-1"))
+            (net 13 "line-3"))
         (pad "2" smd rect
             (at 0.55 0 270)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9bec8e77-1369-482c-8545-1bd052773092")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "2fc054bb-ecc5-49af-a704-96914642524b")
@@ -1944,7 +1944,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "100Ω ±1% 62.5mW"
+        (property "Value" "2.7kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide yes)
@@ -1989,7 +1989,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C106232"
+        (property "LCSC" "C138017"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1998,7 +1998,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "RC0402FR-07100RL"
+        (property "Partnumber" "RC0402FR-072K7L"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2016,7 +2016,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 100Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 2.7kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2125,7 +2125,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7b9e8428-f930-4691-ac18-6427f48ac0d5")
-            (net 35 "gnd-2")))
+            (net 35 "gnd-4")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "31099805-3cbe-43c1-b422-4f054642524b")
@@ -2349,14 +2349,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "1951c971-e7c3-4c31-900b-2c7e4a550e28")
-            (net 27 "line-4"))
+            (net 27 "line-5"))
         (pad "2" smd rect
             (at 0.55 0 90)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b75bcddf-9000-424d-8d68-1436e85c4478")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "3223b838-785d-4eb5-9822-8edb4642524b")
@@ -2775,14 +2775,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "81a7893a-8f36-4ebb-a708-d0629f765976")
-            (net 27 "line-4"))
+            (net 27 "line-5"))
         (pad "2" smd rect
             (at 0.55 0 90)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9f7e023e-deb7-449a-a4dc-8b668607afc6")
-            (net 13 "line-1")))
+            (net 13 "line-3")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "3c5a8c39-fc63-403e-99d1-0cf64642524b")
@@ -2796,7 +2796,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "10µF ±10% 100V X7S"
+        (property "Value" "10µF ±10% 100V X7R"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -2841,7 +2841,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C576517"
+        (property "LCSC" "C5156756"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2850,7 +2850,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "GRM32EC72A106KE05L"
+        (property "Partnumber" "FS32X106K101EGG"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2859,7 +2859,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "Murata Electronics"
+        (property "Manufacturer" "PSA(Prosperity Dielectrics)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2868,7 +2868,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "100V 10uF X7S ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "100V 10uF X7R ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -3006,14 +3006,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5c97efca-4933-4d36-984b-8512a38d7ba6")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ab5dbf41-7fac-4185-8660-7474c16a2b86")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0603-ebcab9"
         (layer "F.Cu")
         (uuid "3e348a55-48df-4b97-bd25-e8a94642524b")
@@ -3396,14 +3396,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3fb1fd63-8154-435b-8c84-d1caca47bafc")
-            (net 7 "hv"))
+            (net 7 "hv-3"))
         (pad "2" smd rect
             (at 0.43 0 180)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "cc927d0f-aec5-4922-9d56-38153cd768eb")
-            (net 27 "line-4")))
+            (net 27 "line-5")))
     (footprint "atopile:CAP-SMD_BD10.0-L10.3-W10.3-LS11.6-FD-b102ff"
         (layer "F.Cu")
         (uuid "4484c932-ddbe-41a2-8a27-f0a84642524b")
@@ -3607,14 +3607,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e208206f-ac7c-41bd-b4f1-118be460ff76")
-            (net 7 "hv"))
+            (net 7 "hv-3"))
         (pad "2" smd rect
             (at 4.2 0 0)
             (size 4.5 1.65)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e23cae1e-291f-46d0-ba8d-ff7149fba363")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:CAP-SMD_BD10.0-L10.3-W10.3-LS11.6-FD-b102ff"
         (layer "F.Cu")
         (uuid "4c27c4a9-d866-44ba-bb5e-f0b94642524b")
@@ -3818,14 +3818,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "58796d6f-3842-48ea-a048-7a3fdee81340")
-            (net 8 "hv-2"))
+            (net 8 "hv-1"))
         (pad "2" smd rect
             (at 4.2 0 180)
             (size 4.5 1.65)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f4db65be-852e-48d4-9d59-2063206a29b5")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "4f5d4958-0d44-421b-9136-bb464642524b")
@@ -4049,14 +4049,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b9d9dd0b-7a5b-4ed8-a064-d5f568ed5e16")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9868f137-9669-4853-9219-a31017974efc")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:POWERVDFN-8_L5.8-W4.9-P1.27-LS6.2-BL-167b96"
         (layer "F.Cu")
         (uuid "5156a251-3ec8-42ac-94e1-837c4642524b")
@@ -4310,63 +4310,63 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "72ecb790-32e1-4faa-af54-bd0b0593e5cd")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "2" smd rect
             (at -0.63 2.72 0)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "55676881-0b8d-4551-bfda-c551abb1190f")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "3" smd rect
             (at 0.64 2.72 0)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "eaa5b6db-7073-4821-a85b-74b7e044c506")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "4" smd rect
             (at 1.91 2.72 0)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "296d0d7f-166a-4436-96a1-7893a92e8f27")
-            (net 21 "line-8"))
+            (net 21 "gate"))
         (pad "5" smd rect
             (at 1.9 -2.72 0)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ae20c1ea-1123-46f5-af5f-d6919131e3b2")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "6" smd rect
             (at 0.63 -2.72 0)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "bb60d120-ab57-4923-918f-04900631c6c8")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "7" smd rect
             (at -0.64 -2.72 0)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "895a5455-4cfa-48cb-a522-67f3139414e1")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "8" smd rect
             (at -1.91 -2.72 0)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9f09908e-d763-4941-8c8e-d8d66e050b98")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "8" smd rect
             (at 0.03 -0.6 270)
             (size 3.91 3.81)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c5af8740-b62b-44a5-bdf4-79f511b3e7ef")
-            (net 19 "source")))
+            (net 19 "drain")))
     (footprint "atopile:DO-219AB_L2.8-W1.8-LS3.7-RD-212ba1"
         (layer "F.Cu")
         (uuid "5177ad4c-6a92-4676-9a52-9cd64642524b")
@@ -4814,63 +4814,63 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b37595fc-f2e6-490a-a4ff-250687d0c607")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "2" smd rect
             (at -0.63 2.72 0)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "d029811f-e7f4-40eb-a003-efd366b1556f")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "3" smd rect
             (at 0.64 2.72 0)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "89e71f50-2476-4f88-8258-bbb131bfea34")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "4" smd rect
             (at 1.91 2.72 0)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4b7a0a5e-0052-4afa-93d1-516edcaac474")
-            (net 22 "line-2"))
+            (net 22 "line-4"))
         (pad "5" smd rect
             (at 1.9 -2.72 0)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "74e2be00-b9fc-4a82-9723-702feb99260b")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "6" smd rect
             (at 0.63 -2.72 0)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0320aeee-b8dd-4178-b4da-396217a5ca66")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "7" smd rect
             (at -0.64 -2.72 0)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "79e0b922-00cb-423d-b6e3-e71d12b43db1")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "8" smd rect
             (at -1.91 -2.72 0)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e3070374-8f4b-43c4-91e2-b1a8c7fb0206")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "8" smd rect
             (at 0.03 -0.6 270)
             (size 3.91 3.81)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "6819dde9-58af-4b6f-a5d3-afd081f6ddc8")
-            (net 18 "hv-1")))
+            (net 18 "hv-2")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "53f0ec75-c35f-4a6e-8c54-51624642524b")
@@ -4884,7 +4884,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "10µF ±10% 100V X7S"
+        (property "Value" "10µF ±10% 100V X7R"
             (at 0 4 0)
             (layer "F.Fab")
             (hide yes)
@@ -4929,7 +4929,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C576517"
+        (property "LCSC" "C5156756"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -4938,7 +4938,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "GRM32EC72A106KE05L"
+        (property "Partnumber" "FS32X106K101EGG"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -4947,7 +4947,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "Murata Electronics"
+        (property "Manufacturer" "PSA(Prosperity Dielectrics)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -4956,7 +4956,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "100V 10uF X7S ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "100V 10uF X7R ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -5094,14 +5094,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "12576d2f-9fb2-44ae-a928-abdbb61aa59e")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "daff9055-c1d8-4be2-9d7f-35084a0df8b2")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:POWERVDFN-8_L5.8-W4.9-P1.27-LS6.2-BL-167b96"
         (layer "F.Cu")
         (uuid "546aa23c-ded0-4dc6-80e3-9a3d4642524b")
@@ -5355,63 +5355,63 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "efa1af4d-fec6-417c-91f4-2e5852b93a17")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "2" smd rect
             (at -0.63 2.72 180)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8fdc3bac-cbfe-4953-aeb8-110bb866a8a3")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "3" smd rect
             (at 0.64 2.72 180)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "aa98b66e-ced0-4cd5-ae34-b23e722a1795")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "4" smd rect
             (at 1.91 2.72 180)
             (size 1.27 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "31640203-fd9e-4339-8992-5a49a6bce94a")
-            (net 23 "line-3"))
+            (net 23 "line-6"))
         (pad "5" smd rect
             (at 1.9 -2.72 180)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "6e708e7c-c02c-490b-b3bd-a16f33598de7")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "6" smd rect
             (at 0.63 -2.72 180)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "fe1cf11d-5436-4e75-a852-536588149a67")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "7" smd rect
             (at -0.64 -2.72 180)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2d9f1070-a7bf-4f4d-9f17-9c9352341c31")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "8" smd rect
             (at -1.91 -2.72 180)
             (size 1.02 0.61)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c019eb35-8f10-4db0-97a2-fd7327b09375")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "8" smd rect
             (at 0.03 -0.6 90)
             (size 3.91 3.81)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "579cf38a-77e0-427c-a02e-c8ef9bb22182")
-            (net 17 "hv-3")))
+            (net 17 "hv")))
     (footprint "atopile:C0805-3b2e55"
         (layer "F.Cu")
         (uuid "56608d5a-9a48-47da-976a-2e954642524b")
@@ -5642,7 +5642,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f83b04af-4738-43a0-bc1e-0fa13b854adf")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "5a7e8b38-d0c6-47db-880e-2f4f4642524b")
@@ -5656,7 +5656,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "10µF ±10% 100V X7S"
+        (property "Value" "10µF ±10% 100V X7R"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -5701,7 +5701,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C576517"
+        (property "LCSC" "C5156756"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -5710,7 +5710,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "GRM32EC72A106KE05L"
+        (property "Partnumber" "FS32X106K101EGG"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -5719,7 +5719,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "Murata Electronics"
+        (property "Manufacturer" "PSA(Prosperity Dielectrics)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -5728,7 +5728,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "100V 10uF X7S ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "100V 10uF X7R ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -5866,14 +5866,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0587dc64-a1d7-4d0a-beb8-4a7627ce8731")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8758a392-1fd6-43a7-93ed-e454038a5985")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R1206-bdb864"
         (layer "F.Cu")
         (uuid "63e02508-bbc6-4fcc-b1df-36fb4642524b")
@@ -6061,14 +6061,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9f8f2fb8-7f10-4656-9d40-e5be49882b62")
-            (net 7 "hv"))
+            (net 7 "hv-3"))
         (pad "2" smd rect
             (at 1.48 0 90)
             (size 1.21 1.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "6c265cdb-a252-47e8-85f1-75050f512769")
-            (net 17 "hv-3")))
+            (net 17 "hv")))
     (footprint "atopile:C1812-bfe9b0"
         (layer "F.Cu")
         (uuid "646929c2-7cb3-4c5a-9306-bede4642524b")
@@ -6292,14 +6292,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "013cf5e1-c4e2-4208-9b3c-e2a25b89c7af")
-            (net 7 "hv"))
+            (net 7 "hv-3"))
         (pad "2" smd rect
             (at 2.29 0 270)
             (size 1.49 3.46)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2e6cc042-164b-4f1d-b0b2-227366ef44eb")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "65727255-f141-45a4-be3c-774b4642524b")
@@ -6523,14 +6523,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "57b44933-1efa-4050-ad19-f434cc123a24")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8e5a0856-504f-4f6a-baff-9f690c9d07d9")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "6afb17d1-7fd6-4dc1-9c07-30e24642524b")
@@ -6754,14 +6754,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "20c1448a-18d4-4414-a3a8-e02e4183ff01")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "517263e3-9a28-43cd-8505-b6389ac40914")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "707e58e9-b949-460a-8242-f41b4642524b")
@@ -6775,7 +6775,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "100Ω ±1% 62.5mW"
+        (property "Value" "2.7kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide yes)
@@ -6820,7 +6820,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C106232"
+        (property "LCSC" "C138017"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -6829,7 +6829,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "RC0402FR-07100RL"
+        (property "Partnumber" "RC0402FR-072K7L"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -6847,7 +6847,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 100Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 2.7kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -6956,7 +6956,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "110fbee2-5ee3-4ebc-b0a4-7c7748833e86")
-            (net 33 "gnd-4")))
+            (net 33 "gnd-1")))
     (footprint "atopile:CAP-SMD_BD10.0-L10.3-W10.3-LS11.6-FD-b102ff"
         (layer "F.Cu")
         (uuid "73c177ee-1d6c-4896-95f4-bd9c4642524b")
@@ -7160,14 +7160,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "dadfb507-9327-49b2-82f1-746c379e5bb4")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 4.2 0 0)
             (size 4.5 1.65)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b6287e4b-216b-40fb-b545-a50745f7fb4d")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "7774f529-5a35-4457-8834-72b44642524b")
@@ -7391,14 +7391,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "28fc1667-d042-46d4-8fac-222b91596ac4")
-            (net 26 "line-7"))
+            (net 26 "line-1"))
         (pad "2" smd rect
             (at 0.55 0 270)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ba3de8af-979d-42d9-9a01-fccdafd9e142")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0603-ebcab9"
         (layer "F.Cu")
         (uuid "85652ddc-77d7-4148-ac48-4d404642524b")
@@ -7593,7 +7593,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c124cccd-08e1-47f6-8074-5a4255dcf0ac")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0603-ebcab9"
         (layer "F.Cu")
         (uuid "8d0e5d0f-1f8f-4fa4-98ee-5b9b4642524b")
@@ -7781,7 +7781,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "36a8e03e-f804-4649-9531-c3674fe97360")
-            (net 7 "hv"))
+            (net 7 "hv-3"))
         (pad "2" smd rect
             (at 0.75 0 0)
             (size 0.81 0.86)
@@ -7802,7 +7802,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "10µF ±10% 100V X7S"
+        (property "Value" "10µF ±10% 100V X7R"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -7847,7 +7847,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C576517"
+        (property "LCSC" "C5156756"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -7856,7 +7856,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "GRM32EC72A106KE05L"
+        (property "Partnumber" "FS32X106K101EGG"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -7865,7 +7865,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "Murata Electronics"
+        (property "Manufacturer" "PSA(Prosperity Dielectrics)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -7874,7 +7874,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "100V 10uF X7S ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "100V 10uF X7R ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -8012,14 +8012,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5338b5c2-2f0d-43d4-b1d1-9bfd648ea120")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "13f72f0a-9a6f-4262-97f4-01087fade336")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "972f4984-5391-4def-850e-e4864642524b")
@@ -8207,14 +8207,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e7490ada-9a2c-4a7b-b4ca-89fb4caac7c2")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 0.43 0 180)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "1de7b3c4-05e0-400b-a095-a91cf047a917")
-            (net 13 "line-1")))
+            (net 13 "line-3")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "9b30c7f6-ef1d-4b4f-b45b-4bf24642524b")
@@ -8438,14 +8438,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4898da5c-749f-4bea-b0df-53a758bc717e")
-            (net 25 "line-5"))
+            (net 25 "line"))
         (pad "2" smd rect
             (at 0.55 0 90)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f655f78f-7339-44df-a9c2-0b24fe52a665")
-            (net 26 "line-7")))
+            (net 26 "line-1")))
     (footprint "atopile:LED0603-RD-c81ffb"
         (layer "F.Cu")
         (uuid "9bd23e42-9f53-46e9-9f84-f0354642524b")
@@ -8908,14 +8908,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b08ae24d-e468-45d4-8388-de874688f786")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "2" smd rect
             (at 8.18 0 0)
             (size 3.83 12.32)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e47e3b89-2edc-4869-8ea8-ba0fce9630ba")
-            (net 16 "line-6")))
+            (net 16 "line-2")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "9ea1e88b-f4fd-4449-ad09-d6e64642524b")
@@ -9110,7 +9110,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "efb13c9d-4ddc-44b9-9234-7a6a4b37fe36")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:LED0603-RD-c81ffb"
         (layer "F.Cu")
         (uuid "a12ddf15-337d-4551-8bac-b4294642524b")
@@ -9399,7 +9399,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "10µF ±10% 100V X7S"
+        (property "Value" "10µF ±10% 100V X7R"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -9444,7 +9444,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C576517"
+        (property "LCSC" "C5156756"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -9453,7 +9453,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "GRM32EC72A106KE05L"
+        (property "Partnumber" "FS32X106K101EGG"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -9462,7 +9462,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "Murata Electronics"
+        (property "Manufacturer" "PSA(Prosperity Dielectrics)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -9471,7 +9471,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "100V 10uF X7S ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "100V 10uF X7R ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -9609,14 +9609,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7f1e3e7e-e623-43c2-87ec-2da62d96b7da")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "41c86fde-4d03-4696-969c-75d1c8943f7f")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1206-f0a137"
         (layer "F.Cu")
         (uuid "a4599577-1ce3-4c9f-a5b4-ef814642524b")
@@ -9840,14 +9840,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5f4f1cb8-c374-4826-b76b-6629b24fc2e3")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.59 0 270)
             (size 1.49 1.73)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a8c21f8e-90ba-4f0b-a15d-0660526fdc1e")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "ab8e9438-59d7-45b4-9e2d-50fe4642524b")
@@ -10035,14 +10035,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4048e47d-1d32-4280-8848-6ad05f232d10")
-            (net 8 "hv-2"))
+            (net 8 "hv-1"))
         (pad "2" smd rect
             (at 0.43 0 0)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "edf0d91f-8d68-4f45-8b74-c67fc51ceca5")
-            (net 26 "line-7")))
+            (net 26 "line-1")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "abf570cc-0e15-4a13-8241-51f14642524b")
@@ -10266,14 +10266,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "83c68f81-02bb-4fa6-a505-2c2e44896139")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "178a190a-717f-4c4c-aa07-a80aeb99354c")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C0805-3b2e55"
         (layer "F.Cu")
         (uuid "afdca8ab-ca5d-49ca-affa-83034642524b")
@@ -10497,14 +10497,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c75f653d-d368-4615-b38d-85ee7f569ad7")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1 0 270)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0d087e7b-ff62-4ef9-9053-417ba61ed402")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C0805-3b2e55"
         (layer "F.Cu")
         (uuid "b354847c-e359-4fca-b749-db9d4642524b")
@@ -10728,14 +10728,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "61ce2a3b-7a40-4d99-b1f6-3e0434a73153")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1 0 270)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3ad1cbdc-44ae-4119-a6d2-bfce6bb852e3")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C0603-bd72f6"
         (layer "F.Cu")
         (uuid "b3de2b94-15a5-4405-8e8f-97764642524b")
@@ -10959,7 +10959,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3aa6ba0a-f17d-4b35-9a2a-58dc4f59f46e")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "2" smd rect
             (at 0.7 0 180)
             (size 0.8 0.9)
@@ -11190,14 +11190,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2f7458ef-94f1-4eec-89b6-ec667d0a0c58")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.59 0 270)
             (size 1.49 1.73)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9021f633-5e23-4e57-aa29-ea78ab31a25c")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C0805-3b2e55"
         (layer "F.Cu")
         (uuid "c3a5641e-fb4f-46aa-8993-125e4642524b")
@@ -11421,14 +11421,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "d981ee87-23b2-4d30-a06b-63d6f2ac73a1")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1 0 270)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "629f9a8e-0be9-4662-8f46-76334899505f")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "c430915b-8c78-42dc-8de1-6b284642524b")
@@ -11652,14 +11652,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e8a58f87-873b-4c6b-829e-9b033ba3a07a")
-            (net 25 "line-5"))
+            (net 25 "line"))
         (pad "2" smd rect
             (at 0.55 0 90)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7ca4942c-1814-4577-a726-aae45eada5bc")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "c475d137-4423-4286-adf4-8f844642524b")
@@ -11673,7 +11673,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "10µF ±10% 100V X7S"
+        (property "Value" "10µF ±10% 100V X7R"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -11718,7 +11718,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C576517"
+        (property "LCSC" "C5156756"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -11727,7 +11727,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "GRM32EC72A106KE05L"
+        (property "Partnumber" "FS32X106K101EGG"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -11736,7 +11736,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "Murata Electronics"
+        (property "Manufacturer" "PSA(Prosperity Dielectrics)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -11745,7 +11745,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "100V 10uF X7S ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "100V 10uF X7R ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -11883,14 +11883,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2a7a50dc-9652-45b2-830c-cd5134d44812")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "82ec4a1c-bb72-40b3-9d7c-72f4a37bd361")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "c5b165bb-880f-486e-bd0f-a6534642524b")
@@ -12085,7 +12085,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "578526cc-a045-4ee8-8ae0-cddca49dc0d7")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "cb6f9bdc-72e0-4a01-a28f-fe4c4642524b")
@@ -12099,7 +12099,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "10µF ±10% 100V X7S"
+        (property "Value" "10µF ±10% 100V X7R"
             (at 0 4 0)
             (layer "F.Fab")
             (hide yes)
@@ -12144,7 +12144,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C576517"
+        (property "LCSC" "C5156756"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -12153,7 +12153,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "GRM32EC72A106KE05L"
+        (property "Partnumber" "FS32X106K101EGG"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -12162,7 +12162,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "Murata Electronics"
+        (property "Manufacturer" "PSA(Prosperity Dielectrics)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -12171,7 +12171,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "100V 10uF X7S ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "100V 10uF X7R ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -12309,14 +12309,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b4c113b9-f5b8-467a-ae9e-6dfd26128fef")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "41e1eeff-4121-447c-9ed2-d9ed42fe9bd1")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "cfdcd794-dc6a-49dd-a81e-f0c24642524b")
@@ -12540,14 +12540,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e4070bd7-bad4-49ed-a145-f123e1ec7537")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "bb636e22-9467-4900-ba2f-5e6c0b1f94fb")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0603-ebcab9"
         (layer "F.Cu")
         (uuid "d999933c-c8ca-43e5-9977-f3dd4642524b")
@@ -12735,7 +12735,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7e9d10e3-18bc-44a9-8674-eeb16681e38d")
-            (net 8 "hv-2"))
+            (net 8 "hv-1"))
         (pad "2" smd rect
             (at 0.75 0 0)
             (size 0.81 0.86)
@@ -12985,28 +12985,28 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9d1c0f65-c9d3-429f-8f64-8977d39169c3")
-            (net 33 "gnd-4"))
+            (net 33 "gnd-1"))
         (pad "5" smd rect
             (at -0.25 2.5 270)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "1e6483e7-4c7d-4095-be1a-c10ae964f2f9")
-            (net 30 "gnd"))
+            (net 30 "gnd-3"))
         (pad "6" smd rect
             (at 0.25 2.5 270)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "eb62de72-5cde-4eb4-acb6-a14d2825604e")
-            (net 35 "gnd-2"))
+            (net 35 "gnd-4"))
         (pad "7" smd rect
             (at 0.75 2.5 270)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0bd0c425-81dc-4f0b-a241-4a749c9ae9e2")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "8" smd rect
             (at 1.25 2.5 270)
             (size 0.3 0.7)
@@ -13034,7 +13034,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "bcfa1a1f-366d-4f86-95d3-88f1e6493e23")
-            (net 3 "gnd-3"))
+            (net 3 "gnd-2"))
         (pad "12" smd rect
             (at 3 1.25 0)
             (size 0.3 0.7)
@@ -13048,14 +13048,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "05b74a37-5d45-4bfd-a3f8-190fc62875e3")
-            (net 26 "line-7"))
+            (net 26 "line-1"))
         (pad "14" smd rect
             (at 3 0.25 0)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "caa447e7-11fb-4109-b762-c3e2a1a20786")
-            (net 25 "line-5"))
+            (net 25 "line"))
         (pad "15" smd rect
             (at 3 -0.25 0)
             (size 0.3 0.7)
@@ -13076,21 +13076,21 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "d7bae758-d6b9-48e9-b627-4912dfb558c2")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "18" smd rect
             (at 3 -1.75 0)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ec724e47-1bf9-47be-b793-df45c1b315f3")
-            (net 16 "line-6"))
+            (net 16 "line-2"))
         (pad "19" smd rect
             (at 2.25 -2.5 90)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "721973ed-16d2-4852-8f7f-0aad0de0e2b7")
-            (net 22 "line-2"))
+            (net 22 "line-4"))
         (pad "20" smd rect
             (at 1.75 -2.5 90)
             (size 0.3 0.7)
@@ -13104,14 +13104,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3766df9e-2925-4949-89c3-b85710b29b9e")
-            (net 24 "line"))
+            (net 24 "gate-1"))
         (pad "22" smd rect
             (at 0.75 -2.5 90)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4251d19d-6273-47d4-9d7b-ca2d8aa6c79d")
-            (net 9 "gnd-1"))
+            (net 9 "gnd"))
         (pad "23" smd rect
             (at 0.25 -2.5 90)
             (size 0.3 0.7)
@@ -13132,7 +13132,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5a42543f-4b0b-4b8c-aeb7-ae89e2494865")
-            (net 21 "line-8"))
+            (net 21 "gate"))
         (pad "26" smd rect
             (at -1.25 -2.5 90)
             (size 0.3 0.7)
@@ -13146,28 +13146,28 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "28cea0f4-526c-4433-bfc8-c401cdf7efa2")
-            (net 23 "line-3"))
+            (net 23 "line-6"))
         (pad "28" smd rect
             (at -2.25 -2.5 90)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "80244eec-942f-4c88-ad1d-7fb7d80a5fb2")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "29" smd rect
             (at -3 -1.75 180)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b5411056-fd88-488b-a93c-f8739c5381aa")
-            (net 13 "line-1"))
+            (net 13 "line-3"))
         (pad "30" smd rect
             (at -3 -1.25 180)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f98da1aa-0dc4-48f5-ae4d-c54417a6cb03")
-            (net 27 "line-4"))
+            (net 27 "line-5"))
         (pad "31" smd rect
             (at -3 -0.75 180)
             (size 0.3 0.7)
@@ -13181,14 +13181,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3c6ce1a7-24c8-481d-aae8-0d6fa3824fbc")
-            (net 7 "hv"))
+            (net 7 "hv-3"))
         (pad "33" smd rect
             (at -3 0.25 180)
             (size 0.3 0.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "56026735-1688-413b-92bd-7f92978c82fb")
-            (net 8 "hv-2"))
+            (net 8 "hv-1"))
         (pad "34" smd rect
             (at -3 0.75 180)
             (size 0.3 0.7)
@@ -13216,7 +13216,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2b973c10-18dd-4ba4-9493-fcaf981c4374")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "e0149ba7-ce45-4997-8423-fd0f4642524b")
@@ -13230,7 +13230,7 @@
                 (font
                     (size 1 1)
                     (thickness 0.15))))
-        (property "Value" "10µF ±10% 100V X7S"
+        (property "Value" "10µF ±10% 100V X7R"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -13275,7 +13275,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C576517"
+        (property "LCSC" "C5156756"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -13284,7 +13284,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "GRM32EC72A106KE05L"
+        (property "Partnumber" "FS32X106K101EGG"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -13293,7 +13293,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Manufacturer" "Murata Electronics"
+        (property "Manufacturer" "PSA(Prosperity Dielectrics)"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -13302,7 +13302,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "100V 10uF X7S ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "100V 10uF X7R ±10% 1210  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -13440,14 +13440,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e4f248ef-d7ad-4e58-b613-b186ac99aa6a")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2750fdde-a2a2-46b6-824e-b94598fa6982")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "e0177148-e137-43d5-a590-dc764642524b")
@@ -13671,14 +13671,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c9ba2baf-8064-4c9e-9b6a-087c2da14c83")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2084016c-414e-44b5-813b-b88c327da35f")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C0805-3b2e55"
         (layer "F.Cu")
         (uuid "e2c36568-e6b3-47c9-8a65-59c84642524b")
@@ -13902,14 +13902,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7f04ad50-d85c-4299-9554-e1aec30ceecb")
-            (net 7 "hv"))
+            (net 7 "hv-3"))
         (pad "2" smd rect
             (at 1 0 270)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "16c7174e-d9f1-427b-a8a4-0860c931091a")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C0805-3b2e55"
         (layer "F.Cu")
         (uuid "e62bf889-53f1-4d13-9699-c8584642524b")
@@ -14140,7 +14140,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "2b32a884-cb9d-434b-9aed-745be74cb346")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "e99bf9ff-e2f1-41c4-89f0-c6274642524b")
@@ -14328,14 +14328,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8500ae3e-4a9f-4d76-82c3-49a9ba254b25")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 0.43 0 0)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5d6b7aa8-90d2-4ab2-9c3c-5e5acaf57d49")
-            (net 25 "line-5")))
+            (net 25 "line")))
     (footprint "atopile:R0603-ebcab9"
         (layer "F.Cu")
         (uuid "ed13d617-00f0-4d9b-ac63-d14d4642524b")
@@ -14734,14 +14734,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "81af0bf6-9606-4bc6-9e60-a419b3611a4e")
-            (net 18 "hv-1"))
+            (net 18 "hv-2"))
         (pad "2" smd rect
             (at 4.2 0 180)
             (size 4.5 1.65)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "823c4288-1cc0-4e5d-a9a9-6c890aab2f60")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "ee7dd661-93fd-443f-824b-b7554642524b")
@@ -14936,7 +14936,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "e0e91034-69b3-4567-ae7b-d79dd175668d")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:C1210-c93926"
         (layer "F.Cu")
         (uuid "ee906264-08ce-4e45-bce3-95574642524b")
@@ -15160,14 +15160,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b8759679-faca-4349-acf7-f28f7a0f0db9")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1.52 0 90)
             (size 1.63 2.7)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "252b30e7-5583-4a46-a202-099fcd13fc6d")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (footprint "atopile:LED0603-RD-c81ffb"
         (layer "F.Cu")
         (uuid "f1c5f373-8023-402d-95ec-86ce4642524b")
@@ -15666,7 +15666,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f1faf239-bd1a-48a4-9934-e8a0e952e27e")
-            (net 19 "source"))
+            (net 19 "drain"))
         (pad "2" smd rect
             (at 0.7 0 0)
             (size 0.8 0.9)
@@ -15897,14 +15897,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "6618a90e-d161-4127-9ede-d7f25034287d")
-            (net 17 "hv-3"))
+            (net 17 "hv"))
         (pad "2" smd rect
             (at 1 0 270)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f577c6ba-b1ec-4adb-8b22-1b74616b3b2b")
-            (net 9 "gnd-1")))
+            (net 9 "gnd")))
     (via
         (at 133.479471 58.4)
         (size 0.6)
@@ -17433,7 +17433,7 @@
         (layers "F.Cu" "B.Cu"))
     (zone
         (net 7)
-        (net_name "hv")
+        (net_name "hv-3")
         (layers "F.Cu")
         (uuid "1e06eb41-d954-43a7-a238-2665bcd7e199")
         (hatch edge 0.5)
@@ -17529,7 +17529,7 @@
                 (xy 137.146765 70.4))))
     (zone
         (net 9)
-        (net_name "gnd-1")
+        (net_name "gnd")
         (layers "F.Cu")
         (uuid "8d6c1508-cdb4-42f9-a038-61dc3a02fbc9")
         (hatch edge 0.5)
@@ -17631,7 +17631,7 @@
                 (xy 197.348638 69.8))))
     (zone
         (net 19)
-        (net_name "source")
+        (net_name "drain")
         (layers "F.Cu")
         (uuid "aa2858c9-7e75-4695-ab85-a0cf7f598148")
         (hatch edge 0.5)
@@ -17825,7 +17825,7 @@
                 (xy 166.576 63.2))))
     (zone
         (net 7)
-        (net_name "hv")
+        (net_name "hv-3")
         (layers "F.Cu")
         (uuid "c7d929ea-1be9-4eb6-81f4-399897bb0d04")
         (hatch edge 0.5)
@@ -17900,7 +17900,7 @@
                 (xy 131.815663 65.286289))))
     (zone
         (net 9)
-        (net_name "gnd-1")
+        (net_name "gnd")
         (layers "F.Cu")
         (uuid "ca2dd450-b50d-4604-a3fa-5d9935da80f8")
         (hatch edge 0.5)
@@ -18017,7 +18017,7 @@
                 (xy 157.248638 69.9))))
     (zone
         (net 16)
-        (net_name "line-6")
+        (net_name "line-2")
         (layers "F.Cu")
         (uuid "cef0a004-5a27-473d-ac9d-a70c12032122")
         (hatch edge 0.5)
@@ -18225,7 +18225,7 @@
                 (xy 183.3205 63.2))))
     (zone
         (net 8)
-        (net_name "hv-2")
+        (net_name "hv-1")
         (layers "F.Cu")
         (uuid "dd749d06-5ef4-4130-b508-c68978efa1ff")
         (hatch edge 0.5)
@@ -18307,7 +18307,7 @@
                 (xy 209.448638 63.5))))
     (zone
         (net 17)
-        (net_name "hv-3")
+        (net_name "hv")
         (layers "F.Cu" "In2.Cu")
         (uuid "6927ec8c-7101-49a7-a1e0-e52240d2c920")
         (hatch edge 0.5)
@@ -20430,7 +20430,7 @@
                 (xy 149.731447 58.9))))
     (zone
         (net 18)
-        (net_name "hv-1")
+        (net_name "hv-2")
         (layers "F.Cu" "In2.Cu")
         (uuid "e7ede244-5fe2-4fb6-a6ff-f7cdf53935c4")
         (hatch edge 0.5)
@@ -22299,7 +22299,7 @@
                 (xy 202.833637 59.2))))
     (zone
         (net 9)
-        (net_name "gnd-1")
+        (net_name "gnd")
         (layers "In1.Cu" "B.Cu")
         (uuid "74821d25-4545-428f-8a97-ff8f7ec6058c")
         (hatch edge 0.5)
