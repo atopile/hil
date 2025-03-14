@@ -105,13 +105,13 @@
             (scaleselection 1)
             (outputdirectory "")))
     (net 0 "")
-    (net 1 "line-3")
-    (net 2 "line")
-    (net 3 "hv")
-    (net 4 "line-2")
-    (net 5 "line-1")
+    (net 1 "line")
+    (net 2 "line-1")
+    (net 3 "hv-1")
+    (net 4 "line-3")
+    (net 5 "line-2")
     (net 6 "gnd")
-    (net 7 "hv-1")
+    (net 7 "hv")
     (net 8 "gnd-1")
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
@@ -126,7 +126,7 @@
                 (font
                     (size 0.7 0.7)
                     (thickness 0.2))))
-        (property "Value" "1kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -171,7 +171,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C25744"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -180,7 +180,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -198,7 +198,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -300,14 +300,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "4bcddc45-951d-4019-bbe9-76f8ef883fad")
-            (net 1 "line-3"))
+            (net 1 "line"))
         (pad "2" smd rect
             (at 0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7712384d-09b1-41e9-9775-10764af1a127")
-            (net 3 "hv")))
+            (net 3 "hv-1")))
     (footprint "atopile:SOIC-8_L4.9-W3.9-P1.27-LS6.0-TL-e13595"
         (layer "F.Cu")
         (uuid "5b566fa6-077a-40d6-858d-0f504642524b")
@@ -587,21 +587,21 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a66b2302-17dc-454d-8cc4-8d7d1de9b215")
-            (net 5 "line-1"))
+            (net 5 "line-2"))
         (pad "7" smd oval
             (at 2.74 -0.63 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "383575b8-e69e-483a-b0e6-4b386806964c")
-            (net 1 "line-3"))
+            (net 1 "line"))
         (pad "8" smd oval
             (at 2.74 -1.9 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "42587faa-b9cd-4bbf-a87a-ff6d923c1f98")
-            (net 3 "hv"))
+            (net 3 "hv-1"))
         (pad "4" smd oval
             (at -2.74 1.91 90)
             (size 0.6 1.52)
@@ -615,21 +615,21 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "8ef92ac9-1b08-44e9-bf92-d5db7cdec8d5")
-            (net 2 "line"))
+            (net 2 "line-1"))
         (pad "2" smd oval
             (at -2.74 -0.63 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "48a5489c-6b5f-4b63-810a-8201f67c3955")
-            (net 4 "line-2"))
+            (net 4 "line-3"))
         (pad "1" smd oval
             (at -2.74 -1.9 90)
             (size 0.6 1.52)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "a378a3d1-3f71-46e2-8d94-9615dda9fc43")
-            (net 7 "hv-1")))
+            (net 7 "hv")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "65ab163d-63f8-4349-b685-78f44642524b")
@@ -853,7 +853,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "f8dc401f-849e-4721-ab72-e6990b26caf5")
-            (net 3 "hv"))
+            (net 3 "hv-1"))
         (pad "2" smd rect
             (at 0.55 0 180)
             (size 0.79 0.54)
@@ -1084,7 +1084,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5a48f8e1-e4c4-4b59-bbcc-437679c55174")
-            (net 7 "hv-1"))
+            (net 7 "hv"))
         (pad "2" smd rect
             (at 0.55 0 0)
             (size 0.79 0.54)
@@ -1105,7 +1105,7 @@
                 (font
                     (size 0.7 0.7)
                     (thickness 0.2))))
-        (property "Value" "1kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -1150,7 +1150,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C25744"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1159,7 +1159,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1177,7 +1177,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1279,14 +1279,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "42ef3eac-649b-4329-acc8-9c4901eec718")
-            (net 5 "line-1"))
+            (net 5 "line-2"))
         (pad "2" smd rect
             (at 0.43 0 270)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "55c43210-906c-43e8-9cd4-d1cf51b5b378")
-            (net 3 "hv")))
+            (net 3 "hv-1")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "c5bc12a4-0514-4398-afd2-0d5f4642524b")
@@ -1300,7 +1300,7 @@
                 (font
                     (size 0.7 0.7)
                     (thickness 0.2))))
-        (property "Value" "1kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -1345,7 +1345,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C25744"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1354,7 +1354,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1372,7 +1372,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1474,14 +1474,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "edb28327-21f9-4e37-857d-fb83b73b5aa4")
-            (net 4 "line-2"))
+            (net 4 "line-3"))
         (pad "2" smd rect
             (at 0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c71367c9-9abf-458a-8c3b-78e098f452c4")
-            (net 7 "hv-1")))
+            (net 7 "hv")))
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "d110506c-d452-49c7-b5a0-b3d94642524b")
@@ -1495,7 +1495,7 @@
                 (font
                     (size 0.7 0.7)
                     (thickness 0.2))))
-        (property "Value" "1kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -1540,7 +1540,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "LCSC" "C11702"
+        (property "LCSC" "C25744"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1549,7 +1549,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1567,7 +1567,7 @@
                 (font
                     (size 0.125 0.125)
                     (thickness 0.01875))))
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1669,14 +1669,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "523ffe24-ff5a-4082-867f-659df0ef2e0c")
-            (net 2 "line"))
+            (net 2 "line-1"))
         (pad "2" smd rect
             (at 0.43 0 270)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "818f7911-746b-47df-8689-678346763aee")
-            (net 7 "hv-1")))
+            (net 7 "hv")))
     (segment
         (start 152.24 99.87)
         (end 153.705179 99.87)

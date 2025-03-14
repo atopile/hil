@@ -1,6 +1,5 @@
 import ElectricPower, I2C, ElectricSignal, BJT, Resistor, Capacitor, OpAmp
-from "interfaces.ato" import Power
-from "generics/vdivs.ato" import VDiv
+import ResistorVoltageDivider
 from "components/texas_instruments_vc_a810a_idr.ato" import Texas_Instruments_VCA810AIDR
 from "components/mcp4725.ato" import MCP4725A0T
 from "components/current-sensor.ato" import INA185A2IDRLR
@@ -16,7 +15,7 @@ module VariableResistor:
     i2c = new I2C
 
     # Components
-    feedback_div = new VDiv
+    feedback_div = new ResistorVoltageDivider
     output_resistor = new Resistor
     bjt = new BJT
     variable_amp = new Texas_Instruments_VCA810AIDR
@@ -62,13 +61,12 @@ module VariableResistor:
     power_in.gnd ~ power_5v.gnd;
     power_in.gnd ~ power_3v3.gnd;
     # Input Stage
-    power_in.vcc ~ feedback_div.r_top.p1
+    power_in ~ feedback_div.power
 
     power_in.vcc ~ pre_bjt_resistor_1.p1; pre_bjt_resistor_1.p2 ~ pre_bjt_resistor_2.p1
     pre_bjt_resistor_2.p2 ~ bjt.collector
     output_resistor.p1 ~ bjt.emitter
     bjt.base ~ base_resistor.p1
-    feedback_div.r_bottom.p2 ~ power_in.gnd
 
     # 1st Gain Stage
     current_sensor.power ~ power_5v
@@ -99,7 +97,7 @@ module VariableResistor:
     splitter_smoothing_cap.p1 ~ splitter_opamp.inverting_input; splitter_opamp.non_inverting_input ~ splitter_smoothing_cap.p2
     splitter_opamp.output ~ base_resistor.p2
     splitter_opamp.non_inverting_input ~ voltage_divider_output_resistor.p1
-    voltage_divider_output_resistor.p2 ~ feedback_div.r_bottom.p1
+    voltage_divider_output_resistor.p2 ~ feedback_div.output.line
 
     # Output Stage
     output_resistor.p2 ~ power_in.gnd

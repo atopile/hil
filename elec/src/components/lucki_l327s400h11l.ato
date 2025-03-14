@@ -1,4 +1,4 @@
-from "generics/oscillators.ato" import Crystal
+from "oscillators.ato" import Crystal
 
 component Lucki_L327S400H11L from Crystal:
     """Lucki_L327S400H11L component"""

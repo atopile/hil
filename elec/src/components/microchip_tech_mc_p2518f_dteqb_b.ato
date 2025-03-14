@@ -2,7 +2,7 @@ import ElectricPower, ElectricLogic, SPI
 import Capacitor, Resistor
 from "interfaces.ato" import CAN_TTL
 from "components/lucki_l327s400h11l.ato" import Lucki_L327S400H11L
-from "generics/oscillators.ato" import Oscillator
+from "oscillators.ato" import Oscillator
 
 module Microchip_Tech_MCP2518FDT_E_QBB:
     """Microchip_Tech_MCP2518FDT_E_QBB module"""
@@ -58,8 +58,8 @@ module Microchip_Tech_MCP2518FDT_E_QBB:
     oscillator.crystal -> Lucki_L327S400H11L
     oscillator.load_cap_1.capacitance = 10pF +/- 20%
     oscillator.load_cap_2.capacitance = 10pF +/- 20%
-    oscillator.xin.io ~ controller.OSC1
-    oscillator.xout.io ~ controller.OSC2
+    oscillator.xin ~ controller.OSC1
+    oscillator.xout ~ controller.OSC2
     oscillator.gnd ~ power_3v3.gnd
 
 

@@ -30,44 +30,61 @@ from "blocks/debug-saleae.ato" import DebugSaleae
 # TODO: DI2C Transceiver
 
 module SpaceBMSHIL:
+    # pass
 
     # Controller
-    controller = new ControllerCM4
+    # controller = new ControllerCM4
 
     # Cells
-    cell_block_1_8 = new CellSim8Ch
-    cell_block_9_16 = new CellSim8Ch
-    thermistors = new AnalogOut4ch
+    cell = new Cell
+    # cell2 = new Cell
+    # cell_block_1_8 = new CellSim8Ch
+    # cell_block_9_16 = new CellSim8Ch
+    # cell_block_17_24 = new CellSim8Ch
+    # cell_block_25_32 = new CellSim8Ch
+    # cell_block_33_40 = new CellSim8Ch
+    # cell_block_41_48 = new CellSim8Ch
+    # cell_block_49_56 = new CellSim8Ch
+    # cell_block_57_64 = new CellSim8Ch
+    # cell_block_65_72 = new CellSim8Ch
+    # cell_block_73_80 = new CellSim8Ch
+    # cell_block_81_88 = new CellSim8Ch
+    # cell_block_89_96 = new CellSim8Ch
+    # cell_block_97_104 = new CellSim8Ch
+    # cell_block_105_112 = new CellSim8Ch
+    # cell_block_113_120 = new CellSim8Ch
+    # cell_block_121_128 = new CellSim8Ch
+    # thermistors = new AnalogOut4ch
 
     # Comms
-    can_controller = new ComsCANISO
+    # can_controller = new ComsCANISO
     # di2c_transceiver = new Texas_Instruments_BQ25756RRVR
 
     # Heaters
-    heater_1 = new VariableResistor
-    heater_2 = new VariableResistor
-    heater_3 = new VariableResistor
+    # heater_1 = new VariableResistor
+    # heater_2 = new VariableResistor
+    # heater_3 = new VariableResistor
 
     # Bi-directional supplies
-    batt_supply = new Texas_Instruments_BQ25756RRVR
-    sat_supply = new Texas_Instruments_BQ25756RRVR
-    vshare_supply = new Texas_Instruments_BQ25756RRVR
+    # batt_supply = new Texas_Instruments_BQ25756RRVR
+    # sat_supply = new Texas_Instruments_BQ25756RRVR
+    # vshare_supply = new Texas_Instruments_BQ25756RRVR
 
     #DEP/SEP Relays
-    dep_relay = new I2CRelay
-    sep_relay = new I2CRelay
+    # dep_relay = new I2CRelay
+    # sep_relay = new I2CRelay
 
     # Multiplexer
-    mux_1 = new TCA9548APWR
+    # mux_1 = new TCA9548APWR
     # mux_2 = new TCA9548APWR
     # mux_3 = new TCA9548APWR
 
     # Power rails
-    power_vusb = new ElectricPower
-    power_24v = new ElectricPower
-    power_5v = new ElectricPower
-    power_3v3 = new ElectricPower
-    gnd = new Electrical
+    # power_vusb = new ElectricPower
+    # power_24v = new ElectricPower
+    # power_5v = new ElectricPower
+    # power_3v3 = new ElectricPower
+    # gnd = new Electrical
 
     # power_vusb.voltage = 5V to 21V
     # power_24v.voltage = 24V +/- 5%
@@ -75,10 +92,10 @@ module SpaceBMSHIL:
     # power_3v3.voltage = 3.3V +/- 5%
 
     # Power supplies
-    usbpd = new PowerUSBPD
-    boost_24v = new Texas_Instruments_TPS55340RTER
-    buck_5v = new LV2842Kit
-    ldo_3v3 = new LDK220M_R
+    # usbpd = new PowerUSBPD
+    # boost_24v = new Texas_Instruments_TPS55340RTER
+    # buck_5v = new LV2842Kit
+    # ldo_3v3 = new LDK220M_R
 
     # # Configure power supplies
     # buck_5v.feedback_div.r_top.resistance = 55.3kohm +/- 2%

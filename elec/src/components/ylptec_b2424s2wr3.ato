@@ -1,6 +1,4 @@
-from "generics/interfaces.ato" import Power
-from "generics/capacitors.ato" import Capacitor
-from "generics/leds.ato" import LEDIndicatorGreen
+import ElectricPower, Capacitor, LEDIndicator
 
 module YLPTEC_B2424S_2WR3:
     """
@@ -9,17 +7,18 @@ module YLPTEC_B2424S_2WR3:
         -Output Voltage: 5V
         -Output Current: 400mA
     """
-    power_in = new Power
-    power_out = new Power
+    power_in = new ElectricPower
+    power_out = new ElectricPower
 
     converter = new _YLPTEC_B2424S_2WR3
     converter.power_in ~ power_in
     converter.power_out ~ power_out
 
-    led = new LEDIndicatorGreen
+    # led = new LEDIndicator
     # led.v_in = power_out.voltage
-    led.power ~ power_out
-    led.current = 0.05mA to 0.2mA
+    # power_out ~ led.power_in
+    # led.current = 0.05mA to 0.2mA
+    # led.led.lcsc_id = "C2286"
 
     input_cap = new Capacitor
     input_cap.capacitance = 2.2uF +/- 10%
@@ -42,8 +41,8 @@ component _YLPTEC_B2424S_2WR3:
     designator_prefix = "U"
 
     # Interfaces
-    power_in = new Power
-    power_out = new Power
+    power_in = new ElectricPower
+    power_out = new ElectricPower
 
     power_in.vcc ~ pin 1
     power_in.gnd ~ pin 2

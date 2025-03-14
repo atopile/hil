@@ -1,6 +1,5 @@
 import ElectricPower, I2C, DifferentialPair, ElectricLogic, Electrical, ElectricSignal
-import Diode, Capacitor, MOSFET, Resistor, Inductor, FilterElectricalRC, PoweredLED
-from "vdivs.ato" import VDiv
+import Diode, Capacitor, MOSFET, Resistor, Inductor, FilterElectricalRC, PoweredLED, ResistorVoltageDivider
 
 module Texas_Instruments_BQ25756RRVR:
     """Texas_Instruments_BQ25756RRVR Bi-directional Buck/Boost"""
@@ -123,12 +122,12 @@ module Texas_Instruments_BQ25756RRVR:
     ilim_resistor.p2 ~ controller.PGND
 
     # Output voltage sense
-    output_v_sense = new VDiv
+    output_v_sense = new ResistorVoltageDivider
     output_v_sense.r_top.resistance = 249kohm +/- 1%
     output_v_sense.r_bottom.resistance = 13.7kohm +/- 1%
-    power_out.vcc ~ output_v_sense.top
-    output_v_sense.out ~ controller.FB
-    output_v_sense.bottom ~ controller.FBG
+    power_out.vcc ~ output_v_sense.power.hv
+    output_v_sense.output.line ~ controller.FB
+    output_v_sense.output.reference.lv ~ controller.FBG
 
     # Power
     power_in.vcc ~ controller.VAC_IN
@@ -167,16 +166,16 @@ module Texas_Instruments_BQ25756RRVR:
     ichg_resistor.p2 ~ controller.PGND
 
     # TS
-    ts_vdiv = new VDiv
+    ts_vdiv = new ResistorVoltageDivider
     ts_thermistor = new Resistor
     ts_thermistor.lcsc_id = "C13564"
     ts_vdiv.r_top.resistance = 5.24kohm +/- 2%
     ts_vdiv.r_bottom.resistance = 30.31kohm +/- 2%
-    controller.REGN ~ ts_vdiv.top
-    controller.TS ~ ts_vdiv.out
+    controller.REGN ~ ts_vdiv.power.hv
+    controller.TS ~ ts_vdiv.output
     controller.TS ~ ts_thermistor.p1
     ts_thermistor.p2 ~ controller.PGND
-    ts_vdiv.bottom ~ controller.PGND
+    ts_vdiv.power.lv ~ controller.PGND
 
     # PG
     pg_status_led = new PoweredLED

@@ -79,5 +79,6 @@ class Texas_Instruments_SN74LVC1G07DBVR(Module):
 
     def __preinit__(self):
         self.power.hv.connect(self.ic.VCC)
+        self.power.lv.connect(self.ic.GND)
         self.input.line.connect(self.ic.A)
         self.output.line.connect(self.ic.Y)

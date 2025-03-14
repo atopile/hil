@@ -16,6 +16,8 @@ module AnalogOut:
     amplifier = new Amplifier
     tvs = new TVSProtection
 
+    dac.address_bit1.line ~ power_in.gnd
+
     # Connections
     i2c ~ dac.i2c
     dac.output ~ filter.in_
