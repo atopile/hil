@@ -1,7 +1,7 @@
 (kicad_pcb 
     (version 20240108)
     (generator "atopile")
-    (generator_version "0.3.13-dev0")
+    (generator_version "0.3.10-dev0")
     (general
         (thickness 1.6)
         (legacy_teardrops no))
@@ -75,16 +75,13 @@
             (drillshape 1)
             (scaleselection 1)
             (outputdirectory "")))
-<<<<<<< Updated upstream
-    (net 0 ""))
-=======
     (net 0 "")
     (net 1 "VOUTB")
     (net 2 "SDA")
-    (net 3 "line")
+    (net 3 "VOUTD")
     (net 4 "RDY_BSYh")
     (net 5 "gnd")
-    (net 6 "VOUTC")
+    (net 6 "line")
     (net 7 "VOUTA")
     (net 8 "SCL")
     (net 9 "hv")
@@ -353,14 +350,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "48e51e64-0682-4eaf-9aef-ed8bd007d20a")
-            (net 6 "VOUTC"))
+            (net 6 "line"))
         (pad "9" smd rect
             (at 2.45 -0.5 0)
             (size 1.5 0.3)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "fbfd0038-d4ae-403b-8d75-26760e75cb27")
-            (net 3 "line"))
+            (net 3 "VOUTD"))
         (pad "10" smd rect
             (at 2.45 -1 0)
             (size 1.5 0.3)
@@ -583,4 +580,3 @@
             (remove_unused_layers no)
             (uuid "ff71acd2-e6d6-4b52-9b52-350f0a9e1798")
             (net 9 "hv"))))
->>>>>>> Stashed changes

@@ -1,7 +1,7 @@
 (kicad_pcb 
     (version 20240108)
-    (generator "atopile")
-    (generator_version "0.3.13-dev0")
+    (generator "pcbnew")
+    (generator_version "8.0")
     (general
         (thickness 1.6)
         (legacy_teardrops no))
@@ -75,23 +75,20 @@
             (drillshape 1)
             (scaleselection 1)
             (outputdirectory "")))
-<<<<<<< Updated upstream
-    (net 0 ""))
-=======
     (net 0 "")
     (net 1 "amplifier.opamp.footprint.pins[5].net-net")
-    (net 2 "line-2")
+    (net 2 "line-1")
     (net 3 "amplifier.opamp.footprint.pins[6].net-net")
-    (net 4 "adc-line")
-    (net 5 "adc-line-3")
-    (net 6 "line-3")
+    (net 4 "adc-line-3")
+    (net 5 "adc-line-1")
+    (net 6 "line-2")
     (net 7 "gnd")
     (net 8 "line")
-    (net 9 "adc-line-2")
+    (net 9 "adc-line")
     (net 10 "amplifier.opamp.footprint.pins[4].net-net")
-    (net 11 "line-1")
+    (net 11 "line-3")
     (net 12 "inverting_input")
-    (net 13 "adc-line-1")
+    (net 13 "adc-line-2")
     (net 14 "output")
     (net 15 "hv")
     (footprint "atopile:R0402-56259e"
@@ -477,7 +474,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5862d8e7-d451-46fd-94f3-7e8bb669c703")
-            (net 2 "line-2")))
+            (net 2 "line-1")))
     (footprint "atopile:SOIC-8_L5.0-W4.0-P1.27-LS6.0-BL-294f77"
         (layer "F.Cu")
         (uuid "409e2471-7001-4109-beef-52fa4642524b")
@@ -698,7 +695,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "c114a94a-09ba-4587-aed1-092dd2527250")
-            (net 2 "line-2"))
+            (net 2 "line-1"))
         (pad "4" smd oval
             (at 1.9 2.71 90)
             (size 0.57 1.95)
@@ -1118,14 +1115,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ebb44fe1-8b36-44f0-9615-70be91865e76")
-            (net 2 "line-2"))
+            (net 2 "line-1"))
         (pad "1" smd rect
             (at -0.75 0 90)
             (size 0.81 0.86)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9262125a-72d0-49a5-ab3d-e3e7624eb85a")
-            (net 11 "line-1")))
+            (net 11 "line-3")))
     (footprint "atopile:R0603-ebcab9"
         (layer "F.Cu")
         (uuid "ba3a5ef8-269f-48ba-93b9-a4a84642524b")
@@ -1322,7 +1319,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7fdf9bbf-e1db-498f-b581-ef6abb945d91")
-            (net 2 "line-2")))
+            (net 2 "line-1")))
     (footprint "atopile:MSOP-10_L3.0-W3.0-P0.50-LS5.0-BL-752175"
         (layer "F.Cu")
         (uuid "cdda48cd-d3be-4198-9657-a7434642524b")
@@ -1530,7 +1527,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "7881739d-dbf1-4064-ac5b-5b1da9daf8db")
-            (net 9 "adc-line-2"))
+            (net 9 "adc-line"))
         (pad "3" smd oval
             (at 0 2.11 90)
             (size 0.28 1.62)
@@ -1551,7 +1548,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "3dc55849-3ad8-4b14-aa94-e74b543a174c")
-            (net 5 "adc-line-3"))
+            (net 5 "adc-line-1"))
         (pad "10" smd oval
             (at -1 -2.11 90)
             (size 0.28 1.62)
@@ -1565,7 +1562,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "b269cd99-d060-418d-b5f7-8d3836663d6a")
-            (net 6 "line-3"))
+            (net 6 "line-2"))
         (pad "8" smd oval
             (at 0 -2.11 90)
             (size 0.28 1.62)
@@ -1579,14 +1576,14 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9601087e-0afa-403a-9d3a-66a8da480271")
-            (net 13 "adc-line-1"))
+            (net 13 "adc-line-2"))
         (pad "6" smd oval
             (at 1 -2.11 90)
             (size 0.28 1.62)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "0c6dd90b-fb57-4cc7-8856-c88153c47e2b")
-            (net 4 "adc-line")))
+            (net 4 "adc-line-3")))
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "e6af8252-0e86-42cc-b768-a5234642524b")
@@ -2189,4 +2186,3 @@
         (layer "F.Cu")
         (net 15)
         (uuid "dd951d45-a89c-40f5-9a36-5e79ed43654d")))
->>>>>>> Stashed changes

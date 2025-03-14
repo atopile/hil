@@ -1,13 +1,15 @@
 (kicad_pcb 
     (version 20240108)
-    (generator "atopile")
-    (generator_version "0.3.13-dev0")
+    (generator "pcbnew")
+    (generator_version "8.0")
     (general
         (thickness 1.6)
         (legacy_teardrops no))
     (paper "A4")
     (layers
         (0 "F.Cu" signal)
+        (1 "In1.Cu" signal)
+        (2 "In2.Cu" signal)
         (31 "B.Cu" signal)
         (32 "B.Adhes" user "B.Adhesive")
         (33 "F.Adhes" user "F.Adhesive")
@@ -37,6 +39,53 @@
         (57 "User.8" user)
         (58 "User.9" user))
     (setup
+        (stackup
+            (layer "F.SilkS"
+                (type "Top Silk Screen"))
+            (layer "F.Paste"
+                (type "Top Solder Paste"))
+            (layer "F.Mask"
+                (type "Top Solder Mask")
+                (thickness 0.01))
+            (layer "F.Cu"
+                (type "copper")
+                (thickness 0.035))
+            (layer "dielectric 1"
+                (type "prepreg")
+                (thickness 0.1)
+                (material "FR4")
+                (epsilon_r 4.5)
+                (loss_tangent 0.02))
+            (layer "In1.Cu"
+                (type "copper")
+                (thickness 0.035))
+            (layer "dielectric 2"
+                (type "core")
+                (thickness 1.24)
+                (material "FR4")
+                (epsilon_r 4.5)
+                (loss_tangent 0.02))
+            (layer "In2.Cu"
+                (type "copper")
+                (thickness 0.035))
+            (layer "dielectric 3"
+                (type "prepreg")
+                (thickness 0.1)
+                (material "FR4")
+                (epsilon_r 4.5)
+                (loss_tangent 0.02))
+            (layer "B.Cu"
+                (type "copper")
+                (thickness 0.035))
+            (layer "B.Mask"
+                (type "Bottom Solder Mask")
+                (thickness 0.01))
+            (layer "B.Paste"
+                (type "Bottom Solder Paste"))
+            (layer "B.SilkS"
+                (type "Bottom Silk Screen"))
+            (copper_finish "None")
+            (dielectric_constraints no))
         (pad_to_mask_clearance 0)
         (allow_soldermask_bridges_in_footprints no)
         (pcbplotparams
@@ -75,18 +124,15 @@
             (drillshape 1)
             (scaleselection 1)
             (outputdirectory "")))
-<<<<<<< Updated upstream
-    (net 0 ""))
-=======
     (net 0 "")
-    (net 59 "gnd-3")
-    (net 60 "gnd")
-    (net 61 "hv")
-    (net 62 "gnd-1")
-    (net 63 "hv-1")
+    (net 59 "gnd-1")
+    (net 60 "gnd-3")
+    (net 61 "hv-1")
+    (net 62 "gnd")
+    (net 63 "hv-2")
     (net 64 "cathode")
     (net 65 "gnd-2")
-    (net 66 "hv-2")
+    (net 66 "hv")
     (net 67 "gate")
     (net 68 "line")
     (footprint "lib:RELAY-SMD_HFD4-5-SR"
@@ -321,28 +367,28 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "43dd4a70-8c56-4c6b-871d-c5171c43280b")
-            (net 61 "hv"))
+            (net 61 "hv-1"))
         (pad "5" smd rect
             (at 3.84 -3.18 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "9b720118-4813-47fc-a7e9-98e2a5f5f498")
-            (net 63 "hv-1"))
+            (net 63 "hv-2"))
         (pad "4" smd rect
             (at 3.84 3.17 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "caec51c2-13e5-4561-a44a-54602e0b513f")
-            (net 59 "gnd-3"))
+            (net 59 "gnd-1"))
         (pad "3" smd rect
             (at 1.64 3.17 0)
             (size 0.8 2.15)
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "5eeeed40-1eda-4d29-9249-58a34fca5b39")
-            (net 62 "gnd-1"))
+            (net 62 "gnd"))
         (pad "2" smd rect
             (at -0.56 3.17 0)
             (size 0.8 2.15)
@@ -355,7 +401,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "85473774-5ca4-414c-80e7-fa1e1de1d21c")
-            (net 66 "hv-2"))
+            (net 66 "hv"))
         (model "/Users/narayanpowderly/projects/hil/build/footprints/footprints.3dshapes/RELAY-SMD_L10.0-W6.5-H5.7-LS7.5-P2.2.step"
             (offset
                 (xyz 0 0 0))
@@ -713,7 +759,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "ef024551-eab9-4847-b0dd-f5603b56befd")
-            (net 60 "gnd"))
+            (net 60 "gnd-3"))
         (pad "1" smd rect
             (at -0.43 0 0)
             (size 0.57 0.54)
@@ -1151,7 +1197,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "20acf39f-310f-47ba-9253-13a7deea0094")
-            (net 66 "hv-2"))
+            (net 66 "hv"))
         (pad "1" smd rect
             (at -0.8 0 90)
             (size 0.8 0.8)
@@ -1338,7 +1384,7 @@
             (layers "F.Cu" "F.Paste" "F.Mask")
             (remove_unused_layers no)
             (uuid "21e0ca29-debb-4bc1-948b-8e76cc1585ff")
-            (net 60 "gnd"))
+            (net 60 "gnd-3"))
         (pad "3" smd rect
             (at -1 0 0)
             (size 1.25 0.7)
@@ -11181,4 +11227,3 @@
     (group "current_led"
         (uuid "c69e369d-8ba2-4f92-aee3-ec50676e8787")
         (members "2fd9ba2a-05a3-4077-8e97-58c600af8baa" "3a19cd22-7484-44cf-b448-c3ea57a365f7")))
->>>>>>> Stashed changes
