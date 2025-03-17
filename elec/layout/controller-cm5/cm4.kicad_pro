@@ -240,7 +240,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "cm4.kicad_pro",
+    "filename": "cm5.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -274,7 +274,7 @@
     "last_paths": {
       "gencad": "",
       "idf": "",
-      "netlist": "../../../build/cm4/cm4.net",
+      "netlist": "../../../build/cm5/cm5.net",
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
