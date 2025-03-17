@@ -1,0 +1,121 @@
+from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+import ElectricPower, I2C
+import Capacitor, Resistor, MOSFET
+
+module OLED12832:
+    """OLED 128x32 module"""
+    # External interfaces
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
+    i2c = new I2C
+
+    # Internal rail - charge pump requires 3.5V to 4.2V input
+    regulator_4v = new LDK220M_R
+    power_5v ~ regulator_4v.power_in
+    regulator_4v.v_out = 4.2V +/- 3%
+
+    power_4v = new ElectricPower
+    power_4v ~ regulator_4v.power_out
+
+    # Display
+    display = new _Shenzhen_Allvision_Tech_N087_2832TSWYG02_H14
+    i2c ~ display.i2c
+    power_3v3 ~ display.power_vdd
+    power_4v ~ display.power_vbat
+
+
+    # Charge pump
+    charge_pump_cap_1 = new Capacitor
+    charge_pump_cap_1.capacitance = 1uF +/- 20%
+    charge_pump_cap_1.package = "C0402"
+    display.C1N ~ charge_pump_cap_1.p1
+    display.C1P ~ charge_pump_cap_1.p2
+
+    charge_pump_cap_2 = new Capacitor
+    charge_pump_cap_2.capacitance = 1uF +/- 20%
+    charge_pump_cap_2.package = "C0402"
+    display.C2N ~ charge_pump_cap_2.p1
+    display.C2P ~ charge_pump_cap_2.p2
+
+    # VDD
+    vdd_cap_1 = new Capacitor
+    vdd_cap_1.capacitance = 100nF +/- 20%
+    vdd_cap_1.package = "C0402"
+    display.power_vdd ~ vdd_cap_1.power
+
+    vdd_cap_2 = new Capacitor
+    vdd_cap_2.capacitance = 100nF +/- 20%
+    vdd_cap_2.package = "C0402"
+    display.power_vdd ~ vdd_cap_2.power
+
+    # VCC
+    vcc_cap_1 = new Capacitor
+    vcc_cap_1.capacitance = 100nF +/- 20%
+    vcc_cap_1.package = "C0402"
+    display.power_vcc ~ vcc_cap_1.power
+
+    vcc_cap_2 = new Capacitor
+    vcc_cap_2.capacitance = 4.7uF +/- 20%
+    vcc_cap_2.package = "C0402"
+    display.power_vcc ~ vcc_cap_2.power
+
+    # VCOMH
+    vcomh_cap_1 = new Capacitor
+    vcomh_cap_1.capacitance = 100nF +/- 20%
+    vcomh_cap_1.package = "C0402"
+    display.power_vcomh ~ vcomh_cap_1.power
+
+    # IREF
+    iref_resistor = new Resistor
+    iref_resistor.resistance = 560kohm +/- 10%
+    iref_resistor.package = "R0402"
+    display.IREF ~ iref_resistor.p1
+    iref_resistor.p2 ~ power_3v3.gnd
+
+component _Shenzhen_Allvision_Tech_N087_2832TSWYG02_H14:
+    """Shenzhen_Allvision_Tech_N087_2832TSWYG02_H14 component"""
+    lcsc_id = "C2890610"
+    manufacturer = "Shenzhen Allvision Tech"
+    mpn = "N087-2832TSWYG02-H14"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2208011430_Newvisio-N087-2832TSWYG02-H14_C2890610.pdf"
+    designator_prefix = "OLED"
+
+    # pins
+    signal C1N ~ pin 4
+    signal C1P ~ pin 3
+    signal C2N ~ pin 2
+    signal C2P ~ pin 1
+    signal IREF ~ pin 12
+    signal RESh ~ pin 9
+    signal SCL ~ pin 10
+    signal SDA ~ pin 11
+    signal VBAT ~ pin 5
+    signal VBREF ~ pin 6
+    signal VCC ~ pin 14
+    signal VCOMH ~ pin 13
+    signal VDD ~ pin 8
+    signal VSS ~ pin 7
+
+    power_vdd = new ElectricPower
+    power_vdd.vcc ~ VDD
+    power_vdd.gnd ~ VSS
+
+    power_vbat = new ElectricPower
+    power_vbat.vcc ~ VBAT
+    power_vbat.gnd ~ VSS
+
+    power_vcomh = new ElectricPower
+    power_vcomh.vcc ~ VCOMH
+    power_vcomh.gnd ~ VSS
+
+    power_vbat_ref = new ElectricPower
+    power_vbat_ref.vcc ~ VBREF
+    power_vbat_ref.gnd ~ VSS
+
+    power_vcc = new ElectricPower
+    power_vcc.vcc ~ VCC
+    power_vcc.gnd ~ VSS
+
+    i2c = new I2C
+    i2c.sda ~ SDA
+    i2c.scl ~ SCL
