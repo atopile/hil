@@ -1,0 +1,18 @@
+import ElectricPower, USB2_0
+
+module Littelfuse_SP0503BAHTG:
+    """Littelfuse_SP0503BAHTG ESD protection for USB2 interfaces"""
+    lcsc_id = "C7074"
+    manufacturer = "Littelfuse"
+    mpn = "SP0503BAHTG"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1811061811_Littelfuse-SP0503BAHTG_C7074.pdf"
+    designator_prefix = "D"
+
+    # External Interfaces
+    power_vbus = new ElectricPower
+    usb2 = new USB2_0
+
+    power_vbus.gnd ~ pin 1
+    usb2.usb_if.d.n ~ pin 2
+    usb2.usb_if.d.p ~ pin 3
+    power_vbus.vcc ~ pin 4
