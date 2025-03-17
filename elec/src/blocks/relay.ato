@@ -42,7 +42,7 @@ module PowerRelay:
     input = new ElectricSignal
 
     # Relay
-    relay = new HFD4_5_S
+    relay = new HFXiamen_Hongfa_Electroacoustic_HFD4_5
 
     # Indicator LED
     indicator_led = new PoweredLED
@@ -82,6 +82,28 @@ component HFD4_5_S:
     footprint = "RELAY-SMD_HFD4-5-SR"
     lcsc_id = "C64399"
 
+    # pins
+    coil = new ElectricPower
+    assert coil.voltage within 4.5V to 5.5V
+    coil.vcc ~ pin 1
+    coil.gnd ~ pin 8
+
+    power_out = new ElectricPower
+    power_out.vcc ~ pin 6
+    power_out.gnd ~ pin 3
+
+    power_in = new ElectricPower
+    power_in.vcc ~ pin 5
+    power_in.gnd ~ pin 4
+
+
+component HFXiamen_Hongfa_Electroacoustic_HFD4_5:
+    """HFXiamen_Hongfa_Electroacoustic_HFD4_5 component"""
+    lcsc_id = "C23510"
+    manufacturer = "HF(Xiamen Hongfa Electroacoustic)"
+    mpn = "HFD4/5"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_HF-Xiamen-Hongfa-Electroacoustic-HFD4-5_C23510.pdf"
+    designator_prefix = "K"
 
     # pins
     coil = new ElectricPower
