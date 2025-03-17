@@ -36,11 +36,11 @@ class CM5_MINIMAL(Module):
     gpio_ref: F.ElectricPower
     gpio = L.list_field(28, F.ElectricLogic)
     i2s: F.I2S
+    i2c0: F.I2C
     i2c1: F.I2C
     i2c2: F.I2C
     i2c3: F.I2C
     i2c4: F.I2C
-    i2c5: F.I2C
     spi3: F.SPI
     spi4: F.SPI
 
@@ -287,20 +287,20 @@ class CM5_MINIMAL(Module):
         self.i2s.sd.connect(self.gpio[21])
 
         # I2C
-        self.i2c1.scl.connect(self.gpio[9])
-        self.i2c1.sda.connect(self.gpio[8])
+        self.i2c0.scl.connect(self.gpio[9])
+        self.i2c0.sda.connect(self.gpio[8])
 
-        self.i2c2.scl.connect(self.gpio[10])
-        self.i2c2.sda.connect(self.gpio[11])
+        self.i2c1.scl.connect(self.gpio[3])
+        self.i2c1.sda.connect(self.gpio[2])
 
-        self.i2c3.scl.connect(self.gpio[12])
-        self.i2c3.sda.connect(self.gpio[13])
+        self.i2c2.scl.connect(self.gpio[5])
+        self.i2c2.sda.connect(self.gpio[4])
 
-        self.i2c4.scl.connect(self.gpio[14])
-        self.i2c4.sda.connect(self.gpio[15])
+        self.i2c3.scl.connect(self.gpio[7])
+        self.i2c3.sda.connect(self.gpio[6])
 
-        self.i2c5.scl.connect(self.gpio[16])
-        self.i2c5.sda.connect(self.gpio[17])
+        self.i2c4.scl.line.connect(self.hdi_a.pins[79])
+        self.i2c4.sda.line.connect(self.hdi_a.pins[81])
 
         # Power LEDs
         self.power_led_buffer.power.connect(self.power_3v3)
