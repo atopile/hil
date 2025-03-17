@@ -1,0 +1,121 @@
+import ElectricPower, UART, USB2_0
+import Resistor, Capacitor
+
+module SILICON_LABS_CP2102_GMR:
+    """ USB to UART bridge using the Silicon Labs CP2102GMR """
+
+    # External Interfaces
+    power_vbus = new ElectricPower
+    usb2 = new USB2_0
+    uart = new UART
+
+    # IC
+    ic = new _SILICON_LABS_CP2102_GMR
+
+    # UART Interface
+    uart.base_uart.rx.line ~ ic.RXD
+    uart.base_uart.tx.line ~ ic.TXD
+    uart.rts.line ~ ic.RTS
+    uart.cts.line ~ ic.CTS
+    uart.dtr.line ~ ic.DTR
+    uart.dsr.line ~ ic.DSR
+    uart.dcd.line ~ ic.DCD
+    uart.ri.line ~ ic.RI
+
+    uart.base_uart.rx.suggested_net_name = "uart_rx"
+    uart.base_uart.tx.suggested_net_name = "uart_tx"
+    uart.rts.suggested_net_name = "uart_rts"
+    uart.cts.suggested_net_name = "uart_cts"
+    uart.dtr.suggested_net_name = "uart_dtr"
+    uart.dsr.suggested_net_name = "uart_dsr"
+    uart.dcd.suggested_net_name = "uart_dcd"
+    uart.ri.suggested_net_name = "uart_ri"
+
+    # Connect references
+    uart.base_uart.rx.reference.gnd ~ power_vbus.gnd
+    uart.base_uart.tx.reference.gnd ~ power_vbus.gnd
+    uart.rts.reference.gnd ~ power_vbus.gnd
+    uart.dtr.reference.gnd ~ power_vbus.gnd
+    uart.dsr.reference.gnd ~ power_vbus.gnd
+    uart.dcd.reference.gnd ~ power_vbus.gnd
+    uart.ri.reference.gnd ~ power_vbus.gnd
+
+    # USB Interface
+    usb2.usb_if.d.n ~ ic.Dminus
+    usb2.usb_if.d.p ~ ic.Dplus
+
+    # Power Interface
+    power_vbus.vcc ~ ic.VBUS
+    power_vbus.gnd ~ ic.GND
+
+    # Power VDD
+    power_vdd = new ElectricPower
+    power_vdd.vcc ~ ic.VDD
+    power_vdd.gnd ~ ic.GND
+    power_vdd.gnd ~ ic.EP
+
+    vdd_cap_1 = new Capacitor
+    vdd_cap_1.capacitance = 100nF +/- 20%
+    vdd_cap_1.package = "C0402"
+    power_vdd ~ vdd_cap_1.power
+
+    vdd_cap_2 = new Capacitor
+    vdd_cap_2.capacitance = 4.7uF +/- 20%
+    vdd_cap_2.package = "C0402"
+    power_vdd ~ vdd_cap_2.power
+
+    # REGIN
+    power_regin = new ElectricPower
+    power_regin.vcc ~ ic.REGIN
+    power_regin.gnd ~ ic.GND
+
+    regin_cap_1 = new Capacitor
+    regin_cap_1.capacitance = 100nF +/- 20%
+    regin_cap_1.package = "C0402"
+    power_regin ~ regin_cap_1.power
+
+    regin_cap_2 = new Capacitor
+    regin_cap_2.capacitance = 1uF +/- 20%
+    regin_cap_2.package = "C0402"
+    power_regin ~ regin_cap_2.power
+
+    # RST pullup
+    rst_pullup = new Resistor
+    rst_pullup.resistance = 4.7kohm +/- 10%
+    rst_pullup.package = "R0402"
+    ic.RSTh ~ rst_pullup.p1; rst_pullup.p2 ~ power_vdd.vcc
+
+    # nSUSPEND pulldown
+    nsuspend_pulldown = new Resistor
+    nsuspend_pulldown.resistance = 10kohm +/- 10%
+    nsuspend_pulldown.package = "R0402"
+    ic.SUSPENDh ~ nsuspend_pulldown.p1; nsuspend_pulldown.p2 ~ power_vdd.gnd
+
+
+component _SILICON_LABS_CP2102_GMR:
+    """SILICON_LABS_CP2102_GMR component"""
+    lcsc_id = "C6568"
+    manufacturer = "SILICON LABS"
+    mpn = "CP2102-GMR"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1811081920_SKYWORKS-SILICON-LABS-CP2102-GMR_C6568.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal CTS ~ pin 23
+    signal DCD ~ pin 1
+    signal DSR ~ pin 27
+    signal DTR ~ pin 28
+    signal Dminus ~ pin 5
+    signal Dplus ~ pin 4
+    signal EP ~ pin 29
+    signal GND ~ pin 3
+    signal REGIN ~ pin 7
+    signal RI ~ pin 2
+    signal RSTh ~ pin 9
+    signal RTS ~ pin 24
+    signal RXD ~ pin 25
+    signal SUSPEND ~ pin 12
+    signal SUSPENDh ~ pin 11
+    signal TXD ~ pin 26
+    signal VBUS ~ pin 8
+    signal VDD ~ pin 6

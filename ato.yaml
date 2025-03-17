@@ -83,6 +83,9 @@ builds:
     entry: elec/src/blocks/oled-128-32.ato:OLED12832
     exclude_targets: [mfg-data]
 
+  usb-uart-bridge:
+    entry: elec/src/usb_uart_bridge.ato:UsbUartBridge
+
 dependencies:
   - name: ldk220m-r
     version_spec:

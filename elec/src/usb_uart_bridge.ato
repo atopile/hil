@@ -1,0 +1,23 @@
+import ElectricPower, UART, USB2_0
+from "components/silicon_labs_cp2102gmr.ato" import SILICON_LABS_CP2102_GMR
+from "components/littelfuse_sp0503b_ahtg.ato" import Littelfuse_SP0503BAHTG
+
+
+module UsbUartBridge:
+    """USB to UART bridge using the Silicon Labs CP2102GMR"""
+
+    # External Interfaces
+    power_vbus = new ElectricPower
+    usb2 = new USB2_0
+    uart = new UART
+
+    # IC
+    cp2102 = new SILICON_LABS_CP2102_GMR
+    power_vbus ~ cp2102.power_vbus
+    usb2 ~ cp2102.usb2
+    uart ~ cp2102.uart
+
+    # ESD Protection
+    esd_protection = new Littelfuse_SP0503BAHTG
+    esd_protection.power_vbus ~ power_vbus
+    esd_protection.usb2 ~ usb2
