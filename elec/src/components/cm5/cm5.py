@@ -37,9 +37,15 @@ class CM5_MINIMAL(Module):
     gpio = L.list_field(28, F.ElectricLogic)
     i2s: F.I2S
     i2c1: F.I2C
+    i2c2: F.I2C
+    i2c3: F.I2C
+    i2c4: F.I2C
+    i2c5: F.I2C
     spi3: F.SPI
     spi4: F.SPI
 
+    usb3_0: F.USB3
+    usb3_1: F.USB3
     spi3_cs: F.ElectricLogic
     spi4_cs: F.ElectricLogic
 
@@ -101,9 +107,24 @@ class CM5_MINIMAL(Module):
         self.hdmi1.cec.line.connect(self.hdi_b.pins[48])
         self.hdmi1.hotplug.line.connect(self.hdi_b.pins[42])
 
-        # USBS2
+        # USB2
         self.usb2.usb_if.d.p.line.connect(self.hdi_b.pins[4])
         self.usb2.usb_if.d.n.line.connect(self.hdi_b.pins[2])
+
+        # USB3
+        self.usb3_0.usb3_if.usb_if.d.p.line.connect(self.hdi_b.pins[33])
+        self.usb3_0.usb3_if.usb_if.d.n.line.connect(self.hdi_b.pins[35])
+        self.usb3_0.usb3_if.rx.p.line.connect(self.hdi_b.pins[29])
+        self.usb3_0.usb3_if.rx.n.line.connect(self.hdi_b.pins[37])
+        self.usb3_0.usb3_if.tx.p.line.connect(self.hdi_b.pins[41])
+        self.usb3_0.usb3_if.tx.n.line.connect(self.hdi_b.pins[39])
+
+        self.usb3_1.usb3_if.usb_if.d.p.line.connect(self.hdi_b.pins[62])
+        self.usb3_1.usb3_if.usb_if.d.n.line.connect(self.hdi_b.pins[64])
+        self.usb3_1.usb3_if.rx.p.line.connect(self.hdi_b.pins[58])
+        self.usb3_1.usb3_if.rx.n.line.connect(self.hdi_b.pins[56])
+        self.usb3_1.usb3_if.tx.p.line.connect(self.hdi_b.pins[70])
+        self.usb3_1.usb3_if.tx.n.line.connect(self.hdi_b.pins[68])
 
         # SPI
         # self.spi3.miso.connect(self.gpio[1])
@@ -268,6 +289,18 @@ class CM5_MINIMAL(Module):
         # I2C
         self.i2c1.scl.connect(self.gpio[9])
         self.i2c1.sda.connect(self.gpio[8])
+
+        self.i2c2.scl.connect(self.gpio[10])
+        self.i2c2.sda.connect(self.gpio[11])
+
+        self.i2c3.scl.connect(self.gpio[12])
+        self.i2c3.sda.connect(self.gpio[13])
+
+        self.i2c4.scl.connect(self.gpio[14])
+        self.i2c4.sda.connect(self.gpio[15])
+
+        self.i2c5.scl.connect(self.gpio[16])
+        self.i2c5.sda.connect(self.gpio[17])
 
         # Power LEDs
         self.power_led_buffer.power.connect(self.power_3v3)

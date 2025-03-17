@@ -2,6 +2,7 @@ import ElectricPower, I2C, SPI, USB2_0, ElectricLogic
 
 from "components/cm5/cm5.py" import CM5_MINIMAL
 from "components/cm5/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
+from "components/sinhoo_sm_tso2515c_tj.ato" import Sinhoo_SMTSO2515CTJ
 
 module ControllerCM5:
     """
@@ -20,6 +21,12 @@ module ControllerCM5:
 
     cm5 = new CM5_MINIMAL
     rj45 = new HANRUNZhongshan_HanRun_Elec_HR911130A
+
+    # Mounting studs - M2.5
+    stud1 = new Sinhoo_SMTSO2515CTJ
+    stud2 = new Sinhoo_SMTSO2515CTJ
+    stud3 = new Sinhoo_SMTSO2515CTJ
+    stud4 = new Sinhoo_SMTSO2515CTJ
 
     rj45.ethernet ~ cm5.ethernet
     rj45.power_led ~ cm5.power_3v3
