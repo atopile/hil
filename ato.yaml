@@ -5,6 +5,9 @@ builds:
   # space-bms-hil:
   #   entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
 
+  cellsim-16ch:
+    entry: elec/src/examples/cellsim-16ch.ato:CellSim16Ch
+
   # IO Blocks
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
@@ -81,11 +84,11 @@ builds:
 
   oled-128-32:
     entry: elec/src/blocks/oled-128-32.ato:OLED12832
+
     exclude_targets: [mfg-data]
 
   usb-uart-bridge:
     entry: elec/src/usb_uart_bridge.ato:UsbUartBridge
-
 dependencies:
   - name: ldk220m-r
     version_spec:
