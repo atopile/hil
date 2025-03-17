@@ -20,9 +20,9 @@ class GPIO_Ref_Voltages(Enum):
     V3_3 = 3.3
 
 
-class CM4_MINIMAL(Module):
+class CM5_MINIMAL(Module):
     """
-    CM4 module with minimal components
+    CM5 module with minimal components
     """
 
     # Interfaces

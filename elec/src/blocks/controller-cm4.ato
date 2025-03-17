@@ -1,11 +1,11 @@
 import ElectricPower, I2C, SPI, USB2_0, ElectricLogic
 
-from "components/cm4/cm4.py" import CM4_MINIMAL
-from "components/cm4/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
+from "components/cm5/cm5.py" import CM5_MINIMAL
+from "components/cm5/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
 
-module ControllerCM4:
+module ControllerCM5:
     """
-    Controller using Raspberry Pi CM4
+    Controller using Raspberry Pi cm5
     Includes ethernet interface
     """
     # External Interfaces
@@ -15,28 +15,28 @@ module ControllerCM4:
     spi4 = new SPI
     spi4_cs_1 = new ElectricLogic
     usb2 = new USB2_0
-    power_3v3 = new ElectricPower # CM4 Regulator output
-    power_5v = new ElectricPower # CM4 input power
+    power_3v3 = new ElectricPower # cm5 Regulator output
+    power_5v = new ElectricPower # cm5 input power
 
-    cm4 = new CM4_MINIMAL
+    cm5 = new CM5_MINIMAL
     rj45 = new HANRUNZhongshan_HanRun_Elec_HR911130A
 
-    rj45.ethernet ~ cm4.ethernet
-    rj45.power_led ~ cm4.power_3v3
-    i2c1 ~ cm4.i2c1
-    power_3v3 ~ cm4.power_3v3
-    power_5v ~ cm4.power_5v
+    rj45.ethernet ~ cm5.ethernet
+    rj45.power_led ~ cm5.power_3v3
+    i2c1 ~ cm5.i2c1
+    power_3v3 ~ cm5.power_3v3
+    power_5v ~ cm5.power_5v
 
     power_3v3.gnd ~ power_5v.gnd
 
     # Pass through interfaces
     # USB2
-    usb2 ~ cm4.usb2
+    usb2 ~ cm5.usb2
 
     # SPI3
-    spi3 ~ cm4.spi3
-    spi3_cs_1 ~ cm4.spi3_cs
+    spi3 ~ cm5.spi3
+    spi3_cs_1 ~ cm5.spi3_cs
 
     # SPI4
-    spi4 ~ cm4.spi4
-    spi4_cs_1 ~ cm4.spi4_cs
+    spi4 ~ cm5.spi4
+    spi4_cs_1 ~ cm5.spi4_cs
