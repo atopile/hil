@@ -1,7 +1,7 @@
 import ElectricPower, Electrical
 from "resistors.ato" import I2CPullup
 
-from "blocks/controller-cm4.ato" import ControllerCM4
+from "blocks/controller-cm5.ato" import ControllerCM5
 from "blocks/power-usbpd.ato" import PowerUSBPD
 from "blocks/relay.ato" import I2CRelay
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
@@ -33,7 +33,7 @@ module SpaceBMSHIL:
     # pass
 
     # Controller
-    # controller = new ControllerCM4
+    # controller = new ControllerCM5
 
     # Cells
     cell = new Cell

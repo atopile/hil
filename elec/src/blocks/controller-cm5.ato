@@ -1,0 +1,58 @@
+import ElectricPower, I2C, SPI, USB2_0, ElectricLogic
+
+from "components/cm5/cm5.py" import CM5_MINIMAL
+from "components/cm5/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
+from "components/sinhoo_sm_tso2515c_tj.ato" import Sinhoo_SMTSO2515CTJ
+
+module ControllerCM5:
+    """
+    Controller using Raspberry Pi cm5
+    Includes ethernet interface
+    """
+    # External Interfaces
+    i2c0 = new I2C
+    i2c1 = new I2C
+    i2c2 = new I2C
+    i2c3 = new I2C
+    i2c4 = new I2C
+
+    spi3 = new SPI
+    spi3_cs_1 = new ElectricLogic
+    spi4 = new SPI
+    spi4_cs_1 = new ElectricLogic
+    usb2 = new USB2_0
+    power_3v3 = new ElectricPower # cm5 Regulator output
+    power_5v = new ElectricPower # cm5 input power
+
+    cm5 = new CM5_MINIMAL
+    rj45 = new HANRUNZhongshan_HanRun_Elec_HR911130A
+
+    # Mounting studs - M2.5
+    stud1 = new Sinhoo_SMTSO2515CTJ
+    stud2 = new Sinhoo_SMTSO2515CTJ
+    stud3 = new Sinhoo_SMTSO2515CTJ
+    stud4 = new Sinhoo_SMTSO2515CTJ
+
+    rj45.ethernet ~ cm5.ethernet
+    rj45.power_led ~ cm5.power_3v3
+    i2c0 ~ cm5.i2c0
+    i2c1 ~ cm5.i2c1
+    i2c2 ~ cm5.i2c2
+    i2c3 ~ cm5.i2c3
+    i2c4 ~ cm5.i2c4
+    power_3v3 ~ cm5.power_3v3
+    power_5v ~ cm5.power_5v
+
+    power_3v3.gnd ~ power_5v.gnd
+
+    # Pass through interfaces
+    # USB2
+    usb2 ~ cm5.usb2
+
+    # SPI3
+    spi3 ~ cm5.spi3
+    spi3_cs_1 ~ cm5.spi3_cs
+
+    # SPI4
+    spi4 ~ cm5.spi4
+    spi4_cs_1 ~ cm5.spi4_cs

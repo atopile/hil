@@ -118,7 +118,7 @@
         "max_error": 0.005,
         "min_clearance": 0.0,
         "min_connection": 0.0,
-        "min_copper_edge_clearance": 0.5,
+        "min_copper_edge_clearance": 0.0,
         "min_hole_clearance": 0.25,
         "min_hole_to_hole": 0.25,
         "min_microvia_diameter": 0.2,
@@ -181,9 +181,7 @@
       ],
       "track_widths": [
         0.0,
-        0.15,
-        0.5,
-        1.0
+        0.15
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
@@ -242,7 +240,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "cell.kicad_pro",
+    "filename": "cm5.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -259,7 +257,7 @@
         "name": "Default",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.2,
+        "track_width": 0.15,
         "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6
@@ -276,7 +274,7 @@
     "last_paths": {
       "gencad": "",
       "idf": "",
-      "netlist": "../../../build/cell.net",
+      "netlist": "../../../build/cm5/cm5.net",
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
