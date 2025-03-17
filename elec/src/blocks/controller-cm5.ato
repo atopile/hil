@@ -10,7 +10,12 @@ module ControllerCM5:
     Includes ethernet interface
     """
     # External Interfaces
+    i2c0 = new I2C
     i2c1 = new I2C
+    i2c2 = new I2C
+    i2c3 = new I2C
+    i2c4 = new I2C
+
     spi3 = new SPI
     spi3_cs_1 = new ElectricLogic
     spi4 = new SPI
@@ -30,7 +35,11 @@ module ControllerCM5:
 
     rj45.ethernet ~ cm5.ethernet
     rj45.power_led ~ cm5.power_3v3
+    i2c0 ~ cm5.i2c0
     i2c1 ~ cm5.i2c1
+    i2c2 ~ cm5.i2c2
+    i2c3 ~ cm5.i2c3
+    i2c4 ~ cm5.i2c4
     power_3v3 ~ cm5.power_3v3
     power_5v ~ cm5.power_5v
 
