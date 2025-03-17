@@ -79,10 +79,10 @@ class _HANRUNZhongshan_HanRun_Elec_HR911130A(Module):
 
     def __preinit__(self):
         # Connections
-        self.link_led.cathode.connect(self.unnamed[2])
-        self.link_led.anode.connect(self.unnamed[3])
-        self.speed_led.cathode.connect(self.unnamed[0])
-        self.speed_led.anode.connect(self.unnamed[1])
+        self.link_led.cathode.connect(self.unnamed[3])
+        self.link_led.anode.connect(self.unnamed[2])
+        self.speed_led.cathode.connect(self.unnamed[1])
+        self.speed_led.anode.connect(self.unnamed[0])
 
         # Parameters
         self.link_led.color.alias_is(F.LED.Color.GREEN)
