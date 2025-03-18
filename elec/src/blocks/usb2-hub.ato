@@ -21,6 +21,7 @@ module USB2Hub:
 
     # Components
     hub = new Microchip_Tech_USB2514B_I_M2
+    power_3v3 ~ hub.power_3v3
     esd_up = new Littelfuse_SP0503BAHTG
     esd_down_1 = new Littelfuse_SP0503BAHTG
     esd_down_2 = new Littelfuse_SP0503BAHTG
@@ -32,6 +33,7 @@ module USB2Hub:
     power_5v ~ power_switch.power_in
     power_switch.power_out ~ power_vbus
     hub.vbus_enable ~ power_switch.enable
+    power_switch.power_in.gnd ~ power_3v3.gnd
 
     # ESD protection
     esd_up.power_vbus ~ power_vbus

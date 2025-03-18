@@ -18,6 +18,9 @@ module Diodes_Incorporated_AP22653W6_7:
     power_out.gnd ~ ic.GND
     power_in.gnd ~ power_out.gnd
 
+    # Enable
+    enable.line ~ ic.EN_ENh
+
     # ILIM
     ilim_pull_down = new Resistor
     ilim_pull_down.resistance = 15kohm +/- 3%

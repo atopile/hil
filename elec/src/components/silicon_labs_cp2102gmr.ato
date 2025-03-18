@@ -6,11 +6,13 @@ module SILICON_LABS_CP2102_GMR:
 
     # External Interfaces
     power_vbus = new ElectricPower
+    power_3v3 = new ElectricPower
     usb2 = new USB2_0
     uart = new UART
 
     # IC
     ic = new _SILICON_LABS_CP2102_GMR
+    power_3v3 ~ power_vdd
 
     # UART Interface
     uart.base_uart.rx.line ~ ic.RXD
