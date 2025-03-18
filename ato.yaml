@@ -42,8 +42,8 @@ builds:
     exclude_targets: [mfg-data]
 
   # Controllers and Interconnect
-  controller-cm4:
-    entry: elec/src/blocks/controller-cm4.ato:ControllerCM4
+  controller-cm5:
+    entry: elec/src/blocks/controller-cm5.ato:ControllerCM5
     exclude_targets: [mfg-data]
 
   isolator-i2c:

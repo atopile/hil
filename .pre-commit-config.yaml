@@ -27,7 +27,8 @@ repos:
       - id: check-symlinks
       - id: check-toml
       - id: check-vcs-permalinks
-      - id: check-yaml
+      # Disabled because it complains about python tags in the mkdocs.yml
+      # - id: check-yaml
       - id: debug-statements
       - id: detect-private-key
       - id: end-of-file-fixer

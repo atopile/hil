@@ -1,0 +1,8 @@
+component Sinhoo_SMTSO2515CTJ:
+    """Sinhoo_SMTSO2515CTJ component"""
+    lcsc_id = "C2915629"
+    manufacturer = "Sinhoo"
+    mpn = "SMTSO2515CTJ"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2111221230_Sinhoo-SMTSO2515CTJ_C2915629.pdf"
+    designator_prefix = "U"
+    signal p1 ~ pin 1
