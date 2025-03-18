@@ -66,7 +66,6 @@ module HILCore:
 
     # Power devices
     power_5v ~ controller.power_5v
-    power_3v3 ~ controller.power_3v3
 
     # USB UART
     usb_connector = new XKB_Connectivity_U262_241N_4BV64
