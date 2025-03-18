@@ -16,6 +16,7 @@ module Diodes_Incorporated_AP22653W6_7:
     power_in.gnd ~ ic.GND
     power_out.vcc ~ ic.OUT
     power_out.gnd ~ ic.GND
+    power_in.gnd ~ power_out.gnd
 
     # ILIM
     ilim_pull_down = new Resistor

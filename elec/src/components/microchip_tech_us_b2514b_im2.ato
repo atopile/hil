@@ -1,4 +1,4 @@
-import USB2_0, ElectricPower, I2C
+import USB2_0, ElectricPower, I2C, ElectricLogic
 import Resistor, Capacitor
 from "oscillators.ato" import Oscillator
 from "sjkshenzhen_crystal_tech7u24000e20ucg.ato" import SJKSHENZHEN_CRYSTAL_TECH_7U24000E20UCG
@@ -13,6 +13,7 @@ module Microchip_Tech_USB2514B_I_M2:
     usb2_4 = new USB2_0
     power_3v3 = new ElectricPower
     i2c = new I2C
+    vbus_enable = new ElectricLogic
 
     # Hub IC
     ic = new _Microchip_Tech_USB2514B_I_M2
@@ -22,6 +23,9 @@ module Microchip_Tech_USB2514B_I_M2:
     power_3v3.vcc ~ ic.VDDA33
     power_3v3.vcc ~ ic.VBUS_DET
     power_3v3.gnd ~ ic.EP
+
+    # VBUS enable
+    vbus_enable.line ~ ic.PRTPWR1_BC_EN1
 
     # Decoupling caps
     # 10uF decoupling caps

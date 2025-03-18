@@ -1,6 +1,7 @@
 import USB2_0, ElectricPower, I2C
 from "components/microchip_tech_us_b2514b_im2.ato" import Microchip_Tech_USB2514B_I_M2
 from "components/littelfuse_sp0503b_ahtg.ato" import Littelfuse_SP0503BAHTG
+from "components/diodes_incorporated_ap22653w67.ato" import Diodes_Incorporated_AP22653W6_7
 
 module USB2Hub:
     """USB2 Hub block"""
@@ -15,6 +16,9 @@ module USB2Hub:
     power_3v3 = new ElectricPower
     power_vbus = new ElectricPower # Current limited output
 
+    power_5v.gnd ~ power_3v3.gnd
+    power_5v.gnd ~ power_vbus.gnd
+
     # Components
     hub = new Microchip_Tech_USB2514B_I_M2
     esd_up = new Littelfuse_SP0503BAHTG
@@ -22,4 +26,29 @@ module USB2Hub:
     esd_down_2 = new Littelfuse_SP0503BAHTG
     esd_down_3 = new Littelfuse_SP0503BAHTG
     esd_down_4 = new Littelfuse_SP0503BAHTG
-    power_switch
+
+    # Power switch
+    power_switch = new Diodes_Incorporated_AP22653W6_7
+    power_5v ~ power_switch.power_in
+    power_switch.power_out ~ power_vbus
+    hub.vbus_enable ~ power_switch.enable
+
+    # ESD protection
+    esd_up.power_vbus ~ power_vbus
+    esd_down_1.power_vbus ~ power_vbus
+    esd_down_2.power_vbus ~ power_vbus
+    esd_down_3.power_vbus ~ power_vbus
+    esd_down_4.power_vbus ~ power_vbus
+
+    esd_up.usb2 ~ usb2_up
+    esd_down_1.usb2 ~ usb2_1
+    esd_down_2.usb2 ~ usb2_2
+    esd_down_3.usb2 ~ usb2_3
+    esd_down_4.usb2 ~ usb2_4
+
+    # Connect hub USB
+    usb2_up ~ hub.usb2_up
+    usb2_1 ~ hub.usb2_1
+    usb2_2 ~ hub.usb2_2
+    usb2_3 ~ hub.usb2_3
+    usb2_4 ~ hub.usb2_4
