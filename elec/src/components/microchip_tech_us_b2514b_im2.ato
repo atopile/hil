@@ -1,0 +1,175 @@
+import USB2_0, ElectricPower, I2C
+import Resistor, Capacitor
+from "oscillators.ato" import Oscillator
+from "sjkshenzhen_crystal_tech7u24000e20ucg.ato" import SJKSHENZHEN_CRYSTAL_TECH_7U24000E20UCG
+
+module Microchip_Tech_USB2514B_I_M2:
+    """Microchip_Tech_USB2514B_I_M2 component"""
+    # External Interfaces
+    usb2_up = new USB2_0
+    usb2_1 = new USB2_0
+    usb2_2 = new USB2_0
+    usb2_3 = new USB2_0
+    usb2_4 = new USB2_0
+    power_3v3 = new ElectricPower
+    i2c = new I2C
+
+    # Hub IC
+    ic = new _Microchip_Tech_USB2514B_I_M2
+
+    # Power
+    power_3v3.vcc ~ ic.VDD33
+    power_3v3.vcc ~ ic.VDDA33
+    power_3v3.vcc ~ ic.VBUS_DET
+    power_3v3.gnd ~ ic.EP
+
+    # Decoupling caps
+    # 10uF decoupling caps
+    decap_1 = new Capacitor
+    decap_1.capacitance = 10uF +/- 20%
+    decap_1.package = "C0603"
+    power_3v3 ~ decap_1.power
+
+    decap_2 = new Capacitor
+    decap_2.capacitance = 10uF +/- 20%
+    decap_2.package = "C0603"
+    power_3v3 ~ decap_2.power
+
+    # 100nF decoupling caps
+    decap_3 = new Capacitor
+    decap_3.capacitance = 100nF +/- 10%
+    decap_3.package = "C0402"
+    power_3v3 ~ decap_3.power
+
+    decap_4 = new Capacitor
+    decap_4.capacitance = 100nF +/- 10%
+    decap_4.package = "C0402"
+    power_3v3 ~ decap_4.power
+
+    decap_5 = new Capacitor
+    decap_5.capacitance = 100nF +/- 10%
+    decap_5.package = "C0402"
+    power_3v3 ~ decap_5.power
+
+    decap_6 = new Capacitor
+    decap_6.capacitance = 100nF +/- 10%
+    decap_6.package = "C0402"
+    power_3v3 ~ decap_6.power
+
+    decap_7 = new Capacitor
+    decap_7.capacitance = 100nF +/- 10%
+    decap_7.package = "C0402"
+    power_3v3 ~ decap_7.power
+
+    decap_8 = new Capacitor
+    decap_8.capacitance = 100nF +/- 10%
+    decap_8.package = "C0402"
+    power_3v3 ~ decap_8.power
+
+    # Oscillator
+    osc = new Oscillator
+    osc.crystal -> SJKSHENZHEN_CRYSTAL_TECH_7U24000E20UCG
+    osc.load_cap_1.capacitance = 20pF +/- 10%
+    osc.load_cap_2.capacitance = 20pF +/- 10%
+    osc.load_cap_1.package = "C0402"
+    osc.load_cap_2.package = "C0402"
+    osc.xin ~ ic.XTALIN_CLKIN
+    osc.xout ~ ic.XTALOUT
+    osc.gnd ~ power_3v3.gnd
+
+    # USB2 Connections
+    usb2_up.usb_if.d.p ~ ic.USBDP_UP
+    usb2_up.usb_if.d.n ~ ic.USBDM_UP
+
+    usb2_1.usb_if.d.p ~ ic.USBDP_DN1_PRT_DIS_P1
+    usb2_1.usb_if.d.n ~ ic.USBDM_DN1_PRT_DIS_M1
+
+    usb2_2.usb_if.d.p ~ ic.USBDP_DN2_PRT_DIS_P2
+    usb2_2.usb_if.d.n ~ ic.USBDM_DN2_PRT_DIS_M2
+
+    usb2_3.usb_if.d.p ~ ic.USBDP_DN3_PRT_DIS_P3
+    usb2_3.usb_if.d.n ~ ic.USBDM_DN3_PRT_DIS_M3
+
+    usb2_4.usb_if.d.p ~ ic.USBDP_DN4_PRT_DIS_P4
+    usb2_4.usb_if.d.n ~ ic.USBDM_DN4_PRT_DIS_M4
+
+    # R Bias
+    rbias = new Resistor
+    rbias.resistance = 12kohm +/- 10%
+    rbias.package = "R0402"
+    ic.RBIAS ~ rbias.p1; rbias.p2 ~ power_3v3.gnd
+
+    # I2C
+    i2c.scl ~ ic.SCL_SMBCLK_CFG_SEL0
+    i2c.sda ~ ic.SDA_SMBBATA_NON_REM1
+
+    # pulldown i2c to gnd with 36k resistor (Disabled by default)
+    i2c_pull_down_scl = new Resistor
+    i2c_pull_down_scl.resistance = 36kohm +/- 10%
+    i2c_pull_down_scl.package = "R0402"
+    i2c.scl ~ i2c_pull_down_scl.p1; i2c_pull_down_scl.p2 ~ power_3v3.gnd
+
+    i2c_pull_down_sda = new Resistor
+    i2c_pull_down_sda.resistance = 36kohm +/- 10%
+    i2c_pull_down_sda.package = "R0402"
+    i2c.sda ~ i2c_pull_down_sda.p1; i2c_pull_down_sda.p2 ~ power_3v3.gnd
+
+    # Suspend indicator (Disabled by default)
+    suspend_pull_down = new Resistor
+    suspend_pull_down.resistance = 36kohm +/- 10%
+    suspend_pull_down.package = "R0402"
+    ic.SUSP_IND_LOCAL_PWR_NON_REM0 ~ suspend_pull_down.p1; suspend_pull_down.p2 ~ power_3v3.gnd
+
+    # Speed indicator (Disabled by default)
+    speed_pull_down = new Resistor
+    speed_pull_down.resistance = 36kohm +/- 10%
+    speed_pull_down.package = "R0402"
+    ic.HS_IND_CFG_SEL1 ~ speed_pull_down.p1; speed_pull_down.p2 ~ power_3v3.gnd
+
+
+component _Microchip_Tech_USB2514B_I_M2:
+    """Microchip_Tech_USB2514B_I_M2 component"""
+    lcsc_id = "C220679"
+    manufacturer = "Microchip Tech"
+    mpn = "USB2514B-I/M2"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1809131537_Microchip-Tech-USB2514B-I-M2_C220679.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal CRFILT ~ pin 14
+    signal EP ~ pin 37
+    signal HS_IND_CFG_SEL1 ~ pin 25
+    signal OCS_N1 ~ pin 13
+    signal OCS_N2 ~ pin 17
+    signal OCS_N3 ~ pin 19
+    signal OCS_N4 ~ pin 21
+    signal PLLFILT ~ pin 34
+    signal PRTPWR1_BC_EN1 ~ pin 12
+    signal PRTPWR2_BC_EN2 ~ pin 16
+    signal PRTPWR3_BC_EN3 ~ pin 18
+    signal PRTPWR4_BC_EN4 ~ pin 20
+    signal RBIAS ~ pin 35
+    signal RESET_N ~ pin 26
+    signal SCL_SMBCLK_CFG_SEL0 ~ pin 24
+    signal SDA_SMBBATA_NON_REM1 ~ pin 22
+    signal SUSP_IND_LOCAL_PWR_NON_REM0 ~ pin 28
+    signal TEST ~ pin 11
+    signal USBDM_DN1_PRT_DIS_M1 ~ pin 1
+    signal USBDM_DN2_PRT_DIS_M2 ~ pin 3
+    signal USBDM_DN3_PRT_DIS_M3 ~ pin 6
+    signal USBDM_DN4_PRT_DIS_M4 ~ pin 8
+    signal USBDM_UP ~ pin 30
+    signal USBDP_DN1_PRT_DIS_P1 ~ pin 2
+    signal USBDP_DN2_PRT_DIS_P2 ~ pin 4
+    signal USBDP_DN3_PRT_DIS_P3 ~ pin 7
+    signal USBDP_DN4_PRT_DIS_P4 ~ pin 9
+    signal USBDP_UP ~ pin 31
+    signal VBUS_DET ~ pin 27
+    signal VDD33 ~ pin 15
+    VDD33 ~ pin 23
+    signal VDDA33 ~ pin 5
+    VDDA33 ~ pin 10
+    VDDA33 ~ pin 29
+    VDDA33 ~ pin 36
+    signal XTALIN_CLKIN ~ pin 33
+    signal XTALOUT ~ pin 32

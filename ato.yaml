@@ -84,7 +84,16 @@ builds:
     exclude_targets: [mfg-data]
 
   usb-uart-bridge:
-    entry: elec/src/usb_uart_bridge.ato:UsbUartBridge
+    entry: elec/src/blocks/usb_uart_bridge.ato:UsbUartBridge
+    exclude_targets: [mfg-data]
+
+  usb2-hub:
+    entry: elec/src/blocks/usb2-hub.ato:USB2Hub
+    exclude_targets: [mfg-data]
+
+  usb251b:
+    entry: elec/src/components/microchip_tech_us_b2514b_im2.ato:Microchip_Tech_USB2514B_I_M2
+    exclude_targets: [mfg-data]
 
 dependencies:
   - name: ldk220m-r

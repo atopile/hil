@@ -1,0 +1,15 @@
+from "oscillators.ato" import Crystal
+
+component SJKSHENZHEN_CRYSTAL_TECH_7U24000E20UCG from Crystal:
+    """SJKSHENZHEN_CRYSTAL_TECH_7U24000E20UCG component"""
+    lcsc_id = "C251613"
+    manufacturer = "SJK(SHENZHEN CRYSTAL TECH)"
+    mpn = "7U24000E20UCG"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2207271530_SJK-SHENZHEN-CRYSTAL-TECH-7U24000E20UCG_C251613.pdf"
+    designator_prefix = "X"
+
+    # pins
+    gnd ~ pin 4
+    gnd ~ pin 2
+    xin ~ pin 1
+    xout ~ pin 3

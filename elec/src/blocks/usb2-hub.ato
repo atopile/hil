@@ -1,0 +1,5 @@
+import USB2_0, ElectricPower, I2C
+from "components/microchip_tech_us_b2514b_im2.ato" import Microchip_Tech_USB2514B_I_M2
+
+module USB2Hub:
+    hub = new Microchip_Tech_USB2514B_I_M2
