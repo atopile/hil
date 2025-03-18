@@ -31,8 +31,6 @@ plugins:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
 
-  - mike
-
 repo_name: atopile/hil
 repo_url: https://github.com/atopile/hil
 
