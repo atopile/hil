@@ -14,7 +14,8 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-      - id: check-added-large-files
+      # Disabled for now, because the docs site required larger files
+      # - id: check-added-large-files
       - id: check-ast
       - id: check-case-conflict
       - id: check-docstring-first
@@ -26,7 +27,8 @@ repos:
       - id: check-symlinks
       - id: check-toml
       - id: check-vcs-permalinks
-      - id: check-yaml
+      # Disabled because it complains about python tags in the mkdocs.yml
+      # - id: check-yaml
       - id: debug-statements
       - id: detect-private-key
       - id: end-of-file-fixer
