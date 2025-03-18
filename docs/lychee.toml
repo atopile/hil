@@ -1,5 +1,5 @@
 exclude_path = [
-    "docs/overrides/main.html",
-    "docs/overrides/hooks/translations.html",
-    "docs/overrides/home.html",
+    "docs/docs/overrides/main.html",
+    "docs/docs/overrides/hooks/translations.html",
+    "docs/docs/overrides/home.html",
 ]
