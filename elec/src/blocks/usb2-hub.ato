@@ -1,5 +1,25 @@
 import USB2_0, ElectricPower, I2C
 from "components/microchip_tech_us_b2514b_im2.ato" import Microchip_Tech_USB2514B_I_M2
+from "components/littelfuse_sp0503b_ahtg.ato" import Littelfuse_SP0503BAHTG
 
 module USB2Hub:
+    """USB2 Hub block"""
+
+    # External Interfaces
+    usb2_up = new USB2_0
+    usb2_1 = new USB2_0
+    usb2_2 = new USB2_0
+    usb2_3 = new USB2_0
+    usb2_4 = new USB2_0
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
+    power_vbus = new ElectricPower # Current limited output
+
+    # Components
     hub = new Microchip_Tech_USB2514B_I_M2
+    esd_up = new Littelfuse_SP0503BAHTG
+    esd_down_1 = new Littelfuse_SP0503BAHTG
+    esd_down_2 = new Littelfuse_SP0503BAHTG
+    esd_down_3 = new Littelfuse_SP0503BAHTG
+    esd_down_4 = new Littelfuse_SP0503BAHTG
+    power_switch
