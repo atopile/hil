@@ -12,7 +12,8 @@ module AnalogOut4ch:
 
     """
     # External interfaces
-    power = new ElectricPower
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
     i2c = new I2C
     output_1 = new ElectricSignal
     output_2 = new ElectricSignal
@@ -26,6 +27,25 @@ module AnalogOut4ch:
     tvs_ch2 = new TVSProtection
     tvs_ch3 = new TVSProtection
     tvs_ch4 = new TVSProtection
+
+    # Power
+    power_3v3 ~ dac.power
+    power_5v ~ amplifier.power
+    power_5v ~ tvs_ch1.power
+    power_5v ~ tvs_ch2.power
+    power_5v ~ tvs_ch3.power
+    power_5v ~ tvs_ch4.power
+
+
+    # Gain - default to unity gain
+    amplifier.amplified_signal_1.feedback_resistor.resistance = 100ohm +/- 1%
+    amplifier.amplified_signal_1.input_resistor.resistance = 100ohm +/- 1%
+    amplifier.amplified_signal_2.feedback_resistor.resistance = 100ohm +/- 1%
+    amplifier.amplified_signal_2.input_resistor.resistance = 100ohm +/- 1%
+    amplifier.amplified_signal_3.feedback_resistor.resistance = 100ohm +/- 1%
+    amplifier.amplified_signal_3.input_resistor.resistance = 100ohm +/- 1%
+    amplifier.amplified_signal_4.feedback_resistor.resistance = 100ohm +/- 1%
+    amplifier.amplified_signal_4.input_resistor.resistance = 100ohm +/- 1%
 
     # Connections
     i2c ~ dac.i2c

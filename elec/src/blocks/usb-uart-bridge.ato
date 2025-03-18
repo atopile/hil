@@ -4,7 +4,11 @@ from "components/littelfuse_sp0503b_ahtg.ato" import Littelfuse_SP0503BAHTG
 
 
 module UsbUartBridge:
-    """USB to UART bridge using the Silicon Labs CP2102GMR"""
+    """
+    USB to UART bridge using the Silicon Labs CP2102GMR
+    - 3V3 UART (built-in regulator)
+    - ESD protection
+    """
 
     # External Interfaces
     power_vbus = new ElectricPower

@@ -9,6 +9,10 @@ builds:
     entry: elec/src/examples/cellsim-16ch.ato:CellSim16Ch
 
   # IO Blocks
+  hil-core:
+    entry: elec/src/blocks/hil-core.ato:HILCore
+    exclude_targets: [mfg-data]
+
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
     exclude_targets: [mfg-data]
@@ -84,11 +88,12 @@ builds:
 
   oled-128-32:
     entry: elec/src/blocks/oled-128-32.ato:OLED12832
-
     exclude_targets: [mfg-data]
 
   usb-uart-bridge:
-    entry: elec/src/usb_uart_bridge.ato:UsbUartBridge
+    entry: elec/src/blocks/usb-uart-bridge.ato:UsbUartBridge
+    exclude_targets: [mfg-data]
+
 dependencies:
   - name: ldk220m-r
     version_spec:

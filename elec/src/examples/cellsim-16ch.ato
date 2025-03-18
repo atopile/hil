@@ -1,0 +1,58 @@
+from "blocks/hil-core.ato" import HILCore
+from "blocks/cellsim-8ch.ato" import CellSim8Ch
+from "blocks/analog-out-4ch.ato" import AnalogOut4ch
+from "blocks/coms-can.ato" import ComsCANISO
+
+module CellSim16Ch:
+    """
+    Cellsim 16ch module
+    """
+    # HIL Core
+    hil_core = new HILCore
+
+    # Cells
+    cell_block_1_8 = new CellSim8Ch
+    cell_block_9_16 = new CellSim8Ch
+
+    # Power cells
+    hil_core.power_24v ~ cell_block_1_8.power_24v
+    hil_core.power_24v ~ cell_block_9_16.power_24v
+    hil_core.power_5v ~ cell_block_1_8.power_5v
+    hil_core.power_5v ~ cell_block_9_16.power_5v
+    hil_core.power_3v3 ~ cell_block_1_8.power_3v3
+    hil_core.power_3v3 ~ cell_block_9_16.power_3v3
+
+    # I2C
+    hil_core.controller.i2c0 ~ cell_block_1_8.i2c
+    hil_core.controller.i2c1 ~ cell_block_9_16.i2c
+
+    # Connect blocks
+    cell_block_1_8.block_up ~ cell_block_9_16.block_down
+
+    # Connect LED Data
+    hil_core.controller.led_data ~ cell_block_1_8.block_down.led_data
+
+    # Thermistors
+    thermistors_1_4 = new AnalogOut4ch
+    thermistors_5_8 = new AnalogOut4ch
+
+    # Power thermistors
+    hil_core.power_3v3 ~ thermistors_1_4.power_3v3
+    hil_core.power_3v3 ~ thermistors_5_8.power_3v3
+    hil_core.power_5v ~ thermistors_1_4.power_5v
+    hil_core.power_5v ~ thermistors_5_8.power_5v
+
+    # I2C
+    hil_core.controller.i2c2 ~ thermistors_1_4.i2c
+    hil_core.controller.i2c3 ~ thermistors_5_8.i2c
+
+    # CAN Interface
+    can_controller = new ComsCANISO
+
+    # Power
+    hil_core.power_5v ~ can_controller.power_5v
+    hil_core.power_3v3 ~ can_controller.power_3v3
+
+    # SPI
+    hil_core.controller.spi3 ~ can_controller.spi
+    hil_core.controller.spi3_cs_1 ~ can_controller.spi_cs

@@ -89,8 +89,8 @@ module Gain:
     # should give rough gain of ~ 7.27 meaning a signal from 3.3v to 24v
     feedback_resistor.package = "R0402"
     input_resistor.package = "R0402"
-    feedback_resistor.resistance = 240kohm +/- 1%
-    input_resistor.resistance = 33kohm +/- 1%
+    # feedback_resistor.resistance = 240kohm +/- 1%
+    # input_resistor.resistance = 33kohm +/- 1%
 
     # Connections
     reference.lv ~ input_resistor.p1; input_resistor.p2 ~ feedback_resistor.p1
