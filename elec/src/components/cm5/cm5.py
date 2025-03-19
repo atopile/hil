@@ -45,7 +45,9 @@ class CM5_MINIMAL(Module):
     spi0: F.SPI
     spi0_cs0: F.ElectricLogic
     spi0_cs1: F.ElectricLogic
+    spi0_int: F.ElectricLogic
 
+    # LED
     led_data: F.ElectricLogic
 
     # USB
@@ -139,6 +141,9 @@ class CM5_MINIMAL(Module):
 
         # LED Data
         self.led_data.connect(self.gpio[20])
+
+        # SPI Interrupt
+        self.spi0_int.connect(self.gpio[6])
 
         # UART
         self.uart0.base_uart.tx.connect(self.gpio[14])

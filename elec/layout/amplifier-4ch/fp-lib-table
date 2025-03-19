@@ -5,6 +5,4 @@
         (type "KiCad")
         (uri "${KIPRJMOD}/../../../build/kicad/libs/footprints/atopile.pretty")
         (options "")
-        (descr "atopile: atopile footprints")
-    )
-)
+        (descr "atopile: atopile footprints")))
