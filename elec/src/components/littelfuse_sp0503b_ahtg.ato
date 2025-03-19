@@ -13,6 +13,6 @@ module Littelfuse_SP0503BAHTG:
     usb2 = new USB2_0
 
     power_vbus.gnd ~ pin 1
-    usb2.usb_if.d.n ~ pin 2
-    usb2.usb_if.d.p ~ pin 3
+    usb2.usb_if.d.n.line ~ pin 2
+    usb2.usb_if.d.p.line ~ pin 3
     power_vbus.vcc ~ pin 4

@@ -2,6 +2,10 @@ from "blocks/hil-core.ato" import HILCore
 from "blocks/cellsim-8ch.ato" import CellSim8Ch
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
 from "blocks/coms-can.ato" import ComsCANISO
+from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
+from "components/banana-power.ato" import BananaPower
+from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
+from "components/jst-gh.ato" import JSTGH4Pin
 
 module CellSim16Ch:
     """
@@ -13,6 +17,7 @@ module CellSim16Ch:
     # Cells
     cell_block_1_8 = new CellSim8Ch
     cell_block_9_16 = new CellSim8Ch
+    dmm_mux = new MultiplexerI2C8Ch
 
     # Power cells
     hil_core.power_24v ~ cell_block_1_8.power_24v
@@ -32,6 +37,40 @@ module CellSim16Ch:
     # Connect LED Data
     hil_core.controller.led_data ~ cell_block_1_8.block_down.led_data
 
+    # Cell Output Connector
+    cell_output_connector = new IDCVSH16S
+    cell_block_1_8.cell1.power_out.gnd ~ cell_output_connector.cell0
+    cell_block_1_8.cell1.power_out.vcc ~ cell_output_connector.cell1
+    cell_block_1_8.cell2.power_out.vcc ~ cell_output_connector.cell2
+    cell_block_1_8.cell3.power_out.vcc ~ cell_output_connector.cell3
+    cell_block_1_8.cell4.power_out.vcc ~ cell_output_connector.cell4
+    cell_block_1_8.cell5.power_out.vcc ~ cell_output_connector.cell5
+    cell_block_1_8.cell6.power_out.vcc ~ cell_output_connector.cell6
+    cell_block_1_8.cell7.power_out.vcc ~ cell_output_connector.cell7
+    cell_block_1_8.cell8.power_out.vcc ~ cell_output_connector.cell8
+    cell_block_9_16.cell1.power_out.vcc ~ cell_output_connector.cell9
+    cell_block_9_16.cell2.power_out.vcc ~ cell_output_connector.cell10
+    cell_block_9_16.cell3.power_out.vcc ~ cell_output_connector.cell11
+    cell_block_9_16.cell4.power_out.vcc ~ cell_output_connector.cell12
+    cell_block_9_16.cell5.power_out.vcc ~ cell_output_connector.cell13
+    cell_block_9_16.cell6.power_out.vcc ~ cell_output_connector.cell14
+    cell_block_9_16.cell7.power_out.vcc ~ cell_output_connector.cell15
+    cell_block_9_16.cell8.power_out.vcc ~ cell_output_connector.cell16
+
+    cell_block_1_8.cell1.power_out.gnd ~ cell_output_connector.power.gnd
+    cell_block_9_16.cell8.power_out.vcc ~ cell_output_connector.power.vcc
+
+    # DMM output selection
+    hil_core.power_3v3 ~ dmm_mux.power_3v3
+    hil_core.controller.i2c2 ~ dmm_mux.i2c
+    dmm_mux.output_1 ~ cell_block_1_8.dmm_relay_enable
+    dmm_mux.output_2 ~ cell_block_9_16.dmm_relay_enable
+
+    # DMM output
+    banana_power = new BananaPower
+    banana_power.power ~ cell_block_1_8.dmm_out
+    banana_power.power ~ cell_block_9_16.dmm_out
+
     # Thermistors
     thermistors_1_4 = new AnalogOut4ch
     thermistors_5_8 = new AnalogOut4ch
@@ -41,6 +80,17 @@ module CellSim16Ch:
     hil_core.power_3v3 ~ thermistors_5_8.power_3v3
     hil_core.power_5v ~ thermistors_1_4.power_5v
     hil_core.power_5v ~ thermistors_5_8.power_5v
+
+    # Connect thermistors
+    thermistor_connector = new NTCIDC8CH
+    thermistors_1_4.output_1 ~ thermistor_connector.ntc1
+    thermistors_1_4.output_2 ~ thermistor_connector.ntc2
+    thermistors_1_4.output_3 ~ thermistor_connector.ntc3
+    thermistors_1_4.output_4 ~ thermistor_connector.ntc4
+    thermistors_5_8.output_1 ~ thermistor_connector.ntc5
+    thermistors_5_8.output_2 ~ thermistor_connector.ntc6
+    thermistors_5_8.output_3 ~ thermistor_connector.ntc7
+    thermistors_5_8.output_4 ~ thermistor_connector.ntc8
 
     # I2C
     hil_core.controller.i2c2 ~ thermistors_1_4.i2c
@@ -56,3 +106,8 @@ module CellSim16Ch:
     # SPI
     hil_core.controller.spi0 ~ can_controller.spi
     hil_core.controller.spi0_cs0 ~ can_controller.spi_cs
+
+    # Connector
+    can_connector = new JSTGH4Pin
+    can_controller.can ~ can_connector.can
+    hil_core.power_5v ~ can_connector.power_5v

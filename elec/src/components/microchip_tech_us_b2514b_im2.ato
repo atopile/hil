@@ -82,20 +82,20 @@ module Microchip_Tech_USB2514B_I_M2:
     osc.gnd ~ power_3v3.gnd
 
     # USB2 Connections
-    usb2_up.usb_if.d.p ~ ic.USBDP_UP
-    usb2_up.usb_if.d.n ~ ic.USBDM_UP
+    usb2_up.usb_if.d.p.line ~ ic.USBDP_UP
+    usb2_up.usb_if.d.n.line ~ ic.USBDM_UP
 
-    usb2_1.usb_if.d.p ~ ic.USBDP_DN1_PRT_DIS_P1
-    usb2_1.usb_if.d.n ~ ic.USBDM_DN1_PRT_DIS_M1
+    usb2_1.usb_if.d.p.line ~ ic.USBDP_DN1_PRT_DIS_P1
+    usb2_1.usb_if.d.n.line ~ ic.USBDM_DN1_PRT_DIS_M1
 
-    usb2_2.usb_if.d.p ~ ic.USBDP_DN2_PRT_DIS_P2
-    usb2_2.usb_if.d.n ~ ic.USBDM_DN2_PRT_DIS_M2
+    usb2_2.usb_if.d.p.line ~ ic.USBDP_DN2_PRT_DIS_P2
+    usb2_2.usb_if.d.n.line ~ ic.USBDM_DN2_PRT_DIS_M2
 
-    usb2_3.usb_if.d.p ~ ic.USBDP_DN3_PRT_DIS_P3
-    usb2_3.usb_if.d.n ~ ic.USBDM_DN3_PRT_DIS_M3
+    usb2_3.usb_if.d.p.line ~ ic.USBDP_DN3_PRT_DIS_P3
+    usb2_3.usb_if.d.n.line ~ ic.USBDM_DN3_PRT_DIS_M3
 
-    usb2_4.usb_if.d.p ~ ic.USBDP_DN4_PRT_DIS_P4
-    usb2_4.usb_if.d.n ~ ic.USBDM_DN4_PRT_DIS_M4
+    usb2_4.usb_if.d.p.line ~ ic.USBDP_DN4_PRT_DIS_P4
+    usb2_4.usb_if.d.n.line ~ ic.USBDM_DN4_PRT_DIS_M4
 
     # R Bias
     rbias = new Resistor

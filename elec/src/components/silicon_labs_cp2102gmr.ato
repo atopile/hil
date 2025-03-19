@@ -23,14 +23,14 @@ module SILICON_LABS_CP2102_GMR:
     uart.dcd.line ~ ic.DCD
     uart.ri.line ~ ic.RI
 
-    uart.base_uart.rx.suggested_net_name = "uart_rx"
-    uart.base_uart.tx.suggested_net_name = "uart_tx"
-    uart.rts.suggested_net_name = "uart_rts"
-    uart.cts.suggested_net_name = "uart_cts"
-    uart.dtr.suggested_net_name = "uart_dtr"
-    uart.dsr.suggested_net_name = "uart_dsr"
-    uart.dcd.suggested_net_name = "uart_dcd"
-    uart.ri.suggested_net_name = "uart_ri"
+    # uart.base_uart.rx.suggested_net_name = "uart_rx"
+    # uart.base_uart.tx.suggested_net_name = "uart_tx"
+    # uart.rts.suggested_net_name = "uart_rts"
+    # uart.cts.suggested_net_name = "uart_cts"
+    # uart.dtr.suggested_net_name = "uart_dtr"
+    # uart.dsr.suggested_net_name = "uart_dsr"
+    # uart.dcd.suggested_net_name = "uart_dcd"
+    # uart.ri.suggested_net_name = "uart_ri"
 
     # Connect references
     uart.base_uart.rx.reference.gnd ~ power_vbus.gnd
