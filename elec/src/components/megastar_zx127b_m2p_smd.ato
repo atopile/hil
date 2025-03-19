@@ -1,0 +1,12 @@
+component Megastar_ZX_1_27BM_2PSMD:
+    """Megastar_ZX_1_27BM_2PSMD component"""
+    lcsc_id = "C7462922"
+    manufacturer = "Megastar"
+    mpn = "ZX-1.27BM-2PSMD"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2310121016_Megastar-ZX-1-27BM-2PSMD_C7462922.pdf"
+    designator_prefix = "U"
+
+    signal sw1_1 ~ pin 1
+    signal sw1_2 ~ pin 4
+    signal sw2_1 ~ pin 2
+    signal sw2_2 ~ pin 3

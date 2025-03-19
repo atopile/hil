@@ -3,6 +3,7 @@ import ElectricPower, I2C, SPI, USB2_0, ElectricLogic, USB3, UART
 from "components/cm5/cm5.py" import CM5_MINIMAL
 from "components/cm5/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
 from "components/sinhoo_sm_tso2515c_tj.ato" import Sinhoo_SMTSO2515CTJ
+from "components/xk_bconnectivity_ts1101cw.ato" import XKB_Connectivity_TS_1101_C_W_Pulldown
 
 module ControllerCM5:
     """
@@ -68,3 +69,9 @@ module ControllerCM5:
     stud2 = new Sinhoo_SMTSO2515CTJ
     stud3 = new Sinhoo_SMTSO2515CTJ
     stud4 = new Sinhoo_SMTSO2515CTJ
+
+    # Boot mode/power button
+    boot_mode_switch = new XKB_Connectivity_TS_1101_C_W_Pulldown
+    boot_mode_switch.input ~ cm5.boot_mode
+    power_button_switch = new XKB_Connectivity_TS_1101_C_W_Pulldown
+    power_button_switch.input ~ cm5.power_button

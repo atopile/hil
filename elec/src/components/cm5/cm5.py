@@ -58,6 +58,10 @@ class CM5_MINIMAL(Module):
     # UART
     uart0: F.UART
 
+    # Boot mode
+    boot_mode: F.ElectricLogic
+    power_button: F.ElectricLogic
+
     # Components
     hdi_a: HRSHirose_DF40C_100DS_0_4V51
     hdi_b: HRSHirose_DF40C_100DS_0_4V51
@@ -150,6 +154,10 @@ class CM5_MINIMAL(Module):
         self.uart0.base_uart.rx.connect(self.gpio[15])
         self.uart0.cts.connect(self.gpio[16])
         self.uart0.rts.connect(self.gpio[17])
+
+        # Boot mode
+        self.boot_mode.line.connect(self.hdi_a.pins[92])
+        self.power_button.line.connect(self.hdi_a.pins[91])
 
         # Power
         # 5V power pins
@@ -344,6 +352,8 @@ class CM5_MINIMAL(Module):
                     self.usb3_0,
                     self.usb3_1,
                     self.uart0,
+                    self.boot_mode,
+                    self.power_button,
                 ]
             )
         )

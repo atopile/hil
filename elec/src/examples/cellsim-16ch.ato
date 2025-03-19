@@ -107,7 +107,8 @@ module CellSim16Ch:
     hil_core.controller.spi0 ~ can_controller.spi
     hil_core.controller.spi0_cs0 ~ can_controller.spi_cs
     hil_core.controller.spi0_int ~ can_controller.interrupt
+
     # Connector
     can_connector = new JSTGH4Pin
     can_controller.can ~ can_connector.can
-    hil_core.power_5v ~ can_connector.power
+    can_controller._power_5v_iso ~ can_connector.power

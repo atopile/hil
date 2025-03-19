@@ -63,12 +63,15 @@ module CANTermination:
     # Components
     resistor_can_high = new Resistor
     resistor_can_high.resistance = 60ohm +/- 2%
+    resistor_can_high.package = "R0402"
 
     resistor_can_low = new Resistor
     resistor_can_low.resistance = 60ohm +/- 2%
+    resistor_can_low.package = "R0402"
 
     capacitor_can = new Capacitor
     capacitor_can.capacitance = 4.7nF +/- 20%
+    capacitor_can.package = "C0402"
 
     # CAN
     signal _midpoint
