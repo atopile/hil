@@ -8,6 +8,10 @@ nav:
   - Getting Started:
       - index.md
 
+  - Software:
+      - software/index.md
+      - software/os.md
+
 plugins:
   - search
   - mkdocstrings:
