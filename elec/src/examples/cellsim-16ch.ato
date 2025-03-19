@@ -110,4 +110,4 @@ module CellSim16Ch:
     # Connector
     can_connector = new JSTGH4Pin
     can_controller.can ~ can_connector.can
-    hil_core.power_5v ~ can_connector.power_5v
+    hil_core.power_5v ~ can_connector.power

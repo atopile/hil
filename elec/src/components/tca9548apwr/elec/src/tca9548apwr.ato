@@ -49,12 +49,12 @@ module TCA9548APWR:
 
     #bypass caps
     c1 = new Capacitor
-    c1.value = 100nF +/- 20%
+    c1.capacitance = 100nF +/- 20%
     c1.package = "C0402"
     c1.power ~ power
 
     c2 = new Capacitor
-    c2.value = 2.2uF +/- 20%
+    c2.capacitance = 2.2uF +/- 20%
     c2.package = "C0603"
     c2.power ~ power
 
@@ -62,7 +62,7 @@ module TCA9548APWR:
     reset.line ~ ic.RESET_
     reset.reference.gnd ~ power.gnd
     reset_pullup = new Resistor
-    reset_pullup.value = 10kohm +/- 10%
+    reset_pullup.resistance = 10kohm +/- 10%
     reset_pullup.package = "R0402"
     reset.line ~ reset_pullup.p1; reset_pullup.p2 ~ power.vcc
 

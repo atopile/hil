@@ -32,25 +32,25 @@ module Amplifier4Ch:
     amplified_signal_4 = new Gain
 
     # Connections
-    quad_opamp.OUT1 ~ amplified_signal_1.output_terminal
-    quad_opamp.OUT2 ~ amplified_signal_2.output_terminal
-    quad_opamp.OUT3 ~ amplified_signal_3.output_terminal
-    quad_opamp.OUT4 ~ amplified_signal_4.output_terminal
+    quad_opamp.OUT1 ~ amplified_signal_1.output_terminal.line
+    quad_opamp.OUT2 ~ amplified_signal_2.output_terminal.line
+    quad_opamp.OUT3 ~ amplified_signal_3.output_terminal.line
+    quad_opamp.OUT4 ~ amplified_signal_4.output_terminal.line
 
-    input_4 ~ quad_opamp.IN4plus
-    input_3 ~ quad_opamp.IN3plus
-    input_2 ~ quad_opamp.IN2plus
-    input_1 ~ quad_opamp.IN1plus
+    input_4.line ~ quad_opamp.IN4plus
+    input_3.line ~ quad_opamp.IN3plus
+    input_2.line ~ quad_opamp.IN2plus
+    input_1.line ~ quad_opamp.IN1plus
 
-    quad_opamp.IN1_ ~ amplified_signal_1.negative_terminal
-    quad_opamp.IN2_ ~ amplified_signal_2.negative_terminal
-    quad_opamp.IN3_ ~ amplified_signal_3.negative_terminal
-    quad_opamp.IN4_ ~ amplified_signal_4.negative_terminal
+    quad_opamp.IN1_ ~ amplified_signal_1.negative_terminal.line
+    quad_opamp.IN2_ ~ amplified_signal_2.negative_terminal.line
+    quad_opamp.IN3_ ~ amplified_signal_3.negative_terminal.line
+    quad_opamp.IN4_ ~ amplified_signal_4.negative_terminal.line
 
-    output_1 ~ amplified_signal_1.output_terminal
-    output_2 ~ amplified_signal_2.output_terminal
-    output_3 ~ amplified_signal_3.output_terminal
-    output_4 ~ amplified_signal_4.output_terminal
+    output_1.line ~ amplified_signal_1.output_terminal.line
+    output_2.line ~ amplified_signal_2.output_terminal.line
+    output_3.line ~ amplified_signal_3.output_terminal.line
+    output_4.line ~ amplified_signal_4.output_terminal.line
 
     power ~ amplified_signal_1.reference
     power ~ amplified_signal_2.reference
@@ -94,5 +94,5 @@ module Gain:
 
     # Connections
     reference.lv ~ input_resistor.p1; input_resistor.p2 ~ feedback_resistor.p1
-    negative_terminal ~ input_resistor.p2
-    feedback_resistor.p2 ~ output_terminal; feedback_resistor.p2 ~ result
+    negative_terminal.line ~ input_resistor.p2
+    feedback_resistor.p2 ~ output_terminal.line; feedback_resistor.p2 ~ result.line

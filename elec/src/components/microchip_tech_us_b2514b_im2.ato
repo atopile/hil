@@ -104,19 +104,19 @@ module Microchip_Tech_USB2514B_I_M2:
     ic.RBIAS ~ rbias.p1; rbias.p2 ~ power_3v3.gnd
 
     # I2C
-    i2c.scl ~ ic.SCL_SMBCLK_CFG_SEL0
-    i2c.sda ~ ic.SDA_SMBBATA_NON_REM1
+    i2c.scl.line ~ ic.SCL_SMBCLK_CFG_SEL0
+    i2c.sda.line ~ ic.SDA_SMBBATA_NON_REM1
 
     # pulldown i2c to gnd with 36k resistor (Disabled by default)
     i2c_pull_down_scl = new Resistor
     i2c_pull_down_scl.resistance = 36kohm +/- 10%
     i2c_pull_down_scl.package = "R0402"
-    i2c.scl ~ i2c_pull_down_scl.p1; i2c_pull_down_scl.p2 ~ power_3v3.gnd
+    i2c.scl.line ~ i2c_pull_down_scl.p1; i2c_pull_down_scl.p2 ~ power_3v3.gnd
 
     i2c_pull_down_sda = new Resistor
     i2c_pull_down_sda.resistance = 36kohm +/- 10%
     i2c_pull_down_sda.package = "R0402"
-    i2c.sda ~ i2c_pull_down_sda.p1; i2c_pull_down_sda.p2 ~ power_3v3.gnd
+    i2c.sda.line ~ i2c_pull_down_sda.p1; i2c_pull_down_sda.p2 ~ power_3v3.gnd
 
     # Suspend indicator (Disabled by default)
     suspend_pull_down = new Resistor

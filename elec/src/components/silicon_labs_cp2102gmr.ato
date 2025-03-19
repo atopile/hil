@@ -42,8 +42,8 @@ module SILICON_LABS_CP2102_GMR:
     uart.ri.reference.gnd ~ power_vbus.gnd
 
     # USB Interface
-    usb2.usb_if.d.n ~ ic.Dminus
-    usb2.usb_if.d.p ~ ic.Dplus
+    usb2.usb_if.d.n.line ~ ic.Dminus
+    usb2.usb_if.d.p.line ~ ic.Dplus
 
     # Power Interface
     power_vbus.vcc ~ ic.VBUS
