@@ -76,7 +76,11 @@ module HILCore:
     usb_connector.usb2 ~ usb_hub.usb2_up
     usb_hub.usb2_1 ~ usb_uart.usb2
     usb_hub.usb2_2 ~ controller.usb2
-    usb_uart.uart ~ controller.uart0
+    # usb_uart.uart ~ controller.uart0 # Doesnt currently handle flipping
+    usb_uart.uart.base_uart.rx ~ controller.uart0.base_uart.tx
+    usb_uart.uart.base_uart.tx ~ controller.uart0.base_uart.rx
+    usb_uart.uart.cts ~ controller.uart0.rts
+    usb_uart.uart.rts ~ controller.uart0.cts
     usb_connector.power_vbus.gnd ~ power_vusb.gnd # GND Only
     power_5v ~ usb_hub.power_5v
     power_3v3 ~ usb_hub.power_3v3

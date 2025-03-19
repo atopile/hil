@@ -30,10 +30,11 @@ module AnalogOut4ch:
     # Power
     power_3v3 ~ dac.power
     power_5v ~ amplifier.power
-    power_5v ~ tvs_ch1.power
-    power_5v ~ tvs_ch2.power
-    power_5v ~ tvs_ch3.power
-    power_5v ~ tvs_ch4.power
+    power_5v.gnd ~ tvs_ch1.power.gnd
+    power_5v.gnd ~ tvs_ch2.power.gnd
+    power_5v.gnd ~ tvs_ch3.power.gnd
+    power_5v.gnd ~ tvs_ch4.power.gnd
+    power_3v3.gnd ~ power_5v.gnd
 
 
     # Gain - default to unity gain
