@@ -1,7 +1,7 @@
 (kicad_pcb
-	(version 20240108)
+	(version 20241229)
 	(generator "pcbnew")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(general
 		(thickness 1.6)
 		(legacy_teardrops no)
@@ -9,34 +9,34 @@
 	(paper "A4")
 	(layers
 		(0 "F.Cu" signal)
-		(31 "B.Cu" signal)
-		(32 "B.Adhes" user "B.Adhesive")
-		(33 "F.Adhes" user "F.Adhesive")
-		(34 "B.Paste" user)
-		(35 "F.Paste" user)
-		(36 "B.SilkS" user "B.Silkscreen")
-		(37 "F.SilkS" user "F.Silkscreen")
-		(38 "B.Mask" user)
-		(39 "F.Mask" user)
-		(40 "Dwgs.User" user "User.Drawings")
-		(41 "Cmts.User" user "User.Comments")
-		(42 "Eco1.User" user "User.Eco1")
-		(43 "Eco2.User" user "User.Eco2")
-		(44 "Edge.Cuts" user)
-		(45 "Margin" user)
-		(46 "B.CrtYd" user "B.Courtyard")
-		(47 "F.CrtYd" user "F.Courtyard")
-		(48 "B.Fab" user)
-		(49 "F.Fab" user)
-		(50 "User.1" user)
-		(51 "User.2" user)
-		(52 "User.3" user)
-		(53 "User.4" user)
-		(54 "User.5" user)
-		(55 "User.6" user)
-		(56 "User.7" user)
-		(57 "User.8" user)
-		(58 "User.9" user)
+		(2 "B.Cu" signal)
+		(9 "F.Adhes" user "F.Adhesive")
+		(11 "B.Adhes" user "B.Adhesive")
+		(13 "F.Paste" user)
+		(15 "B.Paste" user)
+		(5 "F.SilkS" user "F.Silkscreen")
+		(7 "B.SilkS" user "B.Silkscreen")
+		(1 "F.Mask" user)
+		(3 "B.Mask" user)
+		(17 "Dwgs.User" user "User.Drawings")
+		(19 "Cmts.User" user "User.Comments")
+		(21 "Eco1.User" user "User.Eco1")
+		(23 "Eco2.User" user "User.Eco2")
+		(25 "Edge.Cuts" user)
+		(27 "Margin" user)
+		(31 "F.CrtYd" user "F.Courtyard")
+		(29 "B.CrtYd" user "B.Courtyard")
+		(35 "F.Fab" user)
+		(33 "B.Fab" user)
+		(39 "User.1" user)
+		(41 "User.2" user)
+		(43 "User.3" user)
+		(45 "User.4" user)
+		(47 "User.5" user)
+		(49 "User.6" user)
+		(51 "User.7" user)
+		(53 "User.8" user)
+		(55 "User.9" user)
 	)
 	(setup
 		(stackup
@@ -80,9 +80,10 @@
 		)
 		(pad_to_mask_clearance 0)
 		(allow_soldermask_bridges_in_footprints no)
+		(tenting front back)
 		(pcbplotparams
-			(layerselection 0x00010fc_ffffffff)
-			(plot_on_all_layers_selection 0x0000000_00000000)
+			(layerselection 0x00000000_00000000_55555555_5755f5ff)
+			(plot_on_all_layers_selection 0x00000000_00000000_00000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
 			(usegerberattributes yes)
@@ -92,7 +93,6 @@
 			(dashed_line_gap_ratio 3.000000)
 			(svgprecision 4)
 			(plotframeref no)
-			(viasonmask no)
 			(mode 1)
 			(useauxorigin no)
 			(hpglpennumber 1)
@@ -100,16 +100,20 @@
 			(hpglpendiameter 15.000000)
 			(pdf_front_fp_property_popups yes)
 			(pdf_back_fp_property_popups yes)
+			(pdf_metadata yes)
+			(pdf_single_document no)
 			(dxfpolygonmode yes)
 			(dxfimperialunits yes)
 			(dxfusepcbnewfont yes)
 			(psnegative no)
 			(psa4output no)
-			(plotreference yes)
-			(plotvalue yes)
-			(plotfptext yes)
+			(plot_black_and_white yes)
 			(plotinvisibletext no)
 			(sketchpadsonfab no)
+			(plotpadnumbers no)
+			(hidednponfab no)
+			(sketchdnponfab yes)
+			(crossoutdnponfab yes)
 			(subtractmaskfromsilk no)
 			(outputformat 1)
 			(mirror no)
@@ -167,18 +171,6 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "atopile:R0402-56259e"
-			(at 0 0 0)
-			(layer "User.9")
-			(hide yes)
-			(uuid "d0b1ba0a-9e27-4d4d-b7de-1c214642524b")
-			(effects
-				(font
-					(size 0.125 0.125)
-					(thickness 0.01875)
 				)
 			)
 		)
@@ -346,7 +338,7 @@
 				(width 0.06)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.Fab")
 			(uuid "a5f75bb8-041b-4095-910c-6d9bf3036186")
 		)
@@ -375,17 +367,18 @@
 		(pad "1" smd rect
 			(at -0.43 0)
 			(size 0.57 0.54)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 8 "line-1")
 			(uuid "e1bc1f25-4551-43d3-9e16-a46d70cf19aa")
 		)
 		(pad "2" smd rect
 			(at 0.43 0)
 			(size 0.57 0.54)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 17 "gnd-3")
 			(uuid "cbb03acd-e41f-48e7-888b-5f6fd1a0b56e")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "atopile:LED0603-RD-c81ffb"
 		(layer "F.Cu")
@@ -413,20 +406,8 @@
 				)
 			)
 		)
-		(property "Footprint" "atopile:LED0603-RD-c81ffb"
-			(at 0 0 -90)
-			(layer "User.9")
-			(hide yes)
-			(uuid "f1d2feed-0385-46f6-a534-f4bf4642524b")
-			(effects
-				(font
-					(size 0.125 0.125)
-					(thickness 0.01875)
-				)
-			)
-		)
 		(property "Datasheet" ""
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "b73b879a-e756-4add-8405-e330ba20e27d")
@@ -438,7 +419,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "2f282bd6-8b07-467a-b3da-12811139bd44")
@@ -462,7 +443,7 @@
 			)
 		)
 		(property "Partnumber" "KT-0603G"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "User.9")
 			(hide yes)
 			(uuid "db4a6c87-b8af-435f-bd29-bea44642524b")
@@ -474,7 +455,7 @@
 			)
 		)
 		(property "LCSC" "C12624"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "User.9")
 			(hide yes)
 			(uuid "8218c505-00b6-467a-9b66-d0874642524b")
@@ -486,7 +467,7 @@
 			)
 		)
 		(property "Manufacturer" "Hubei KENTO Elec"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "User.9")
 			(hide yes)
 			(uuid "be69f45b-7d11-4c99-a053-8b844642524b")
@@ -498,7 +479,7 @@
 			)
 		)
 		(property "JLCPCB description" "Emerald 0603 LED Indication - Discrete ROHS"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "User.9")
 			(hide yes)
 			(uuid "d86561c9-51d6-4b5b-abaf-4d5e4642524b")
@@ -510,7 +491,7 @@
 			)
 		)
 		(property "atopile_address" "relay.indicator_led.led"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "User.9")
 			(hide yes)
 			(uuid "2fb96b3f-628d-4658-8058-19014642524b")
@@ -689,7 +670,7 @@
 				(width 0.06)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.Fab")
 			(uuid "93d2a6d7-ffdf-4075-b109-55f36515b9e6")
 		)
@@ -718,17 +699,18 @@
 		(pad "1" smd rect
 			(at -0.8 0)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 22 "cathode")
 			(uuid "5210f42a-30bc-4904-90f1-c8ad242774f8")
 		)
 		(pad "2" smd rect
 			(at 0.8 0)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 7 "hv-2")
 			(uuid "5d435d9e-5b74-4530-9384-957ba81bef37")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "atopile:RELAY-TH_HFDXXX-689a1e"
 		(layer "F.Cu")
@@ -753,18 +735,6 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "atopile:RELAY-TH_HFDXXX-689a1e"
-			(at 0 0 0)
-			(layer "User.9")
-			(hide yes)
-			(uuid "cdf70cf2-f60c-4968-8197-a49f4642524b")
-			(effects
-				(font
-					(size 0.125 0.125)
-					(thickness 0.01875)
 				)
 			)
 		)
@@ -992,7 +962,7 @@
 				(width 0.3)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.SilkS")
 			(uuid "94cad85a-162f-4123-9e76-b31ae7c141f0")
 		)
@@ -1003,7 +973,7 @@
 				(width 0.3)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "Cmts.User")
 			(uuid "1d98dc7c-7a00-4c62-9472-35035aa1a6fb")
 		)
@@ -1014,7 +984,7 @@
 				(width 0.06)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.Fab")
 			(uuid "23205bce-6e1a-46e5-b7fd-420ac39a244e")
 		)
@@ -1044,12 +1014,7 @@
 			(at -3.8 2.54)
 			(size 1.6 1.6)
 			(drill 0.999998)
-			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
-				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
-				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
-				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
-				"In29.Cu" "In30.Cu"
-			)
+			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 7 "hv-2")
 			(uuid "c2f89f2a-27e2-4aef-b64a-910e9b5ec716")
@@ -1058,12 +1023,7 @@
 			(at -0.6 2.54)
 			(size 1.6 1.6)
 			(drill 0.999998)
-			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
-				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
-				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
-				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
-				"In29.Cu" "In30.Cu"
-			)
+			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 25 "relay.relay.footprint.pins[1].net-net")
 			(uuid "d314cdeb-1acc-4b6e-b441-78e0c0395302")
@@ -1072,12 +1032,7 @@
 			(at 1.6 2.54)
 			(size 1.6 1.6)
 			(drill 0.999998)
-			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
-				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
-				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
-				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
-				"In29.Cu" "In30.Cu"
-			)
+			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 9 "gnd-2")
 			(uuid "67b09568-867c-4667-95f4-a217784f8756")
@@ -1086,12 +1041,7 @@
 			(at 3.8 2.54)
 			(size 1.6 1.6)
 			(drill 0.999998)
-			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
-				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
-				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
-				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
-				"In29.Cu" "In30.Cu"
-			)
+			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 16 "gnd")
 			(uuid "2fe374ba-ab6b-47eb-8ac3-360d889e7fef")
@@ -1100,12 +1050,7 @@
 			(at 3.8 -2.54)
 			(size 1.6 1.6)
 			(drill 0.999998)
-			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
-				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
-				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
-				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
-				"In29.Cu" "In30.Cu"
-			)
+			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 13 "hv")
 			(uuid "0da1439a-bb84-409d-836b-3ccfd78e2874")
@@ -1114,12 +1059,7 @@
 			(at 1.6 -2.54)
 			(size 1.6 1.6)
 			(drill 0.999998)
-			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
-				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
-				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
-				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
-				"In29.Cu" "In30.Cu"
-			)
+			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 4 "hv-1")
 			(uuid "4dfeaf36-0703-42de-ab7f-306b15454ce2")
@@ -1128,12 +1068,7 @@
 			(at -0.6 -2.54)
 			(size 1.6 1.6)
 			(drill 0.999998)
-			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
-				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
-				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
-				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
-				"In29.Cu" "In30.Cu"
-			)
+			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 24 "relay.relay.footprint.pins[6].net-net")
 			(uuid "0ea96c36-d940-43ab-b4b6-23e164a25052")
@@ -1142,16 +1077,12 @@
 			(at -3.8 -2.54)
 			(size 1.6 1.6)
 			(drill 0.999998)
-			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
-				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
-				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
-				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
-				"In29.Cu" "In30.Cu"
-			)
+			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
 			(net 21 "relay-gnd")
 			(uuid "525a5ce5-ee3b-475c-8cc7-7a31002d9347")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "atopile:R0402-56259e"
 		(layer "F.Cu")
@@ -1176,18 +1107,6 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "atopile:R0402-56259e"
-			(at 0 0 90)
-			(layer "User.9")
-			(hide yes)
-			(uuid "47a254f1-fb53-4f92-9f8f-6d104642524b")
-			(effects
-				(font
-					(size 0.125 0.125)
-					(thickness 0.01875)
 				)
 			)
 		)
@@ -1355,7 +1274,7 @@
 				(width 0.06)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.Fab")
 			(uuid "2778e1e3-a52f-4ec0-acc4-9c54279fafec")
 		)
@@ -1384,17 +1303,18 @@
 		(pad "1" smd rect
 			(at -0.43 0 90)
 			(size 0.57 0.54)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 22 "cathode")
 			(uuid "f979f9c7-7a57-4fec-b498-e66c81f427eb")
 		)
 		(pad "2" smd rect
 			(at 0.43 0 90)
 			(size 0.57 0.54)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 21 "relay-gnd")
 			(uuid "41a3bd0d-ebaa-456c-8574-410cd61dc2cd")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "atopile:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR-688f29"
 		(layer "F.Cu")
@@ -1419,18 +1339,6 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "atopile:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR-688f29"
-			(at 0 0 180)
-			(layer "User.9")
-			(hide yes)
-			(uuid "e72d3643-78fb-48bf-a503-f2784642524b")
-			(effects
-				(font
-					(size 0.125 0.125)
-					(thickness 0.01875)
 				)
 			)
 		)
@@ -1588,7 +1496,7 @@
 				(width 0.2)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "Cmts.User")
 			(uuid "db99147e-b293-4455-887f-dd13a6d631e1")
 		)
@@ -1599,7 +1507,7 @@
 				(width 0.06)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.Fab")
 			(uuid "ead81f33-a53d-469e-bcb7-60a9d59f3423")
 		)
@@ -1628,24 +1536,25 @@
 		(pad "1" smd rect
 			(at 1 0.95 180)
 			(size 1.25 0.7)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 18 "gate")
 			(uuid "9ddf170c-efb6-4f62-a0fd-885ef3d318ac")
 		)
 		(pad "2" smd rect
 			(at 1 -0.95 180)
 			(size 1.25 0.7)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 17 "gnd-3")
 			(uuid "9ed601fa-74ae-4907-984c-574c1e188a00")
 		)
 		(pad "3" smd rect
 			(at -1 0 180)
 			(size 1.25 0.7)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 21 "relay-gnd")
 			(uuid "b22267bf-aec7-47b3-954a-9f664504e4b3")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "atopile:QFN-16_L3.0-W3.0-P0.50-BL-EP1.7-3a4c56"
 		(layer "F.Cu")
@@ -1670,18 +1579,6 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "atopile:QFN-16_L3.0-W3.0-P0.50-BL-EP1.7-3a4c56"
-			(at 0 0 90)
-			(layer "User.9")
-			(hide yes)
-			(uuid "2762f9a3-0658-4dd6-8b8d-6c004642524b")
-			(effects
-				(font
-					(size 0.125 0.125)
-					(thickness 0.01875)
 				)
 			)
 		)
@@ -1879,7 +1776,7 @@
 				(width 0.15)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.SilkS")
 			(uuid "2936dd3a-cb74-45c8-80c7-0782ddac3d96")
 		)
@@ -1890,7 +1787,7 @@
 				(width 0.15)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "Cmts.User")
 			(uuid "66d07425-2236-4044-a8d0-f6ae9e0778bb")
 		)
@@ -1901,7 +1798,7 @@
 				(width 0.06)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.Fab")
 			(uuid "2222d2fd-28f2-4c79-bcf1-515a2a8e4dde")
 		)
@@ -1930,122 +1827,123 @@
 		(pad "1" smd rect
 			(at -0.75 1.41 90)
 			(size 0.28 0.66)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 12 "RESET")
 			(uuid "a9e9daac-c4a9-4a41-8707-04be9eb054bd")
 		)
 		(pad "2" smd rect
 			(at -0.25 1.41 90)
 			(size 0.28 0.66)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 8 "line-1")
 			(uuid "9a5dd22a-fccd-4e9e-8b8b-e0bb60226ec0")
 		)
 		(pad "3" smd rect
 			(at 0.25 1.41 90)
 			(size 0.28 0.66)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 19 "gpio_expander-net")
 			(uuid "32f6d194-199f-4eee-b53d-a201ee298d87")
 		)
 		(pad "4" smd rect
 			(at 0.75 1.41 90)
 			(size 0.28 0.66)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 1 "gpio_expander-net-1")
 			(uuid "8b9a352a-706e-4733-96ed-a9df421b8591")
 		)
 		(pad "5" smd rect
 			(at 1.41 0.75 90)
 			(size 0.66 0.28)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 15 "gpio_expander-net-6")
 			(uuid "e9b9251e-1bb7-4adf-98c5-40c17795720a")
 		)
 		(pad "6" smd rect
 			(at 1.41 0.25 90)
 			(size 0.66 0.28)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 20 "gnd-1")
 			(uuid "703fc9f4-be76-4bef-99af-a0cadad5dc5b")
 		)
 		(pad "7" smd rect
 			(at 1.41 -0.25 90)
 			(size 0.66 0.28)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 5 "gpio_expander-net-5")
 			(uuid "6187248d-be6e-4572-9c9b-405ed4885560")
 		)
 		(pad "8" smd rect
 			(at 1.41 -0.75 90)
 			(size 0.66 0.28)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 11 "gpio_expander-net-3")
 			(uuid "e9425ef5-0cd6-4e25-b3b2-a344184f7e3e")
 		)
 		(pad "9" smd rect
 			(at 0.75 -1.41 90)
 			(size 0.28 0.66)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 6 "gpio_expander-net-2")
 			(uuid "0e10ae41-82b1-422b-a536-f38639e0630f")
 		)
 		(pad "10" smd rect
 			(at 0.25 -1.41 90)
 			(size 0.28 0.66)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 3 "gpio_expander-net-4")
 			(uuid "8acc8a34-9e92-47b3-8651-8978a5cc43f0")
 		)
 		(pad "11" smd rect
 			(at -0.25 -1.41 90)
 			(size 0.28 0.66)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 10 "INT")
 			(uuid "0169b694-9d88-4c0b-afb8-5f6550fd38e3")
 		)
 		(pad "12" smd rect
 			(at -0.75 -1.41 90)
 			(size 0.28 0.66)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 2 "line-2")
 			(uuid "ebca773f-bc0f-4474-bf7a-87e3279d594f")
 		)
 		(pad "13" smd rect
 			(at -1.41 -0.75 90)
 			(size 0.66 0.28)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 14 "line")
 			(uuid "372cecde-614d-4730-9be4-a9808f45d915")
 		)
 		(pad "14" smd rect
 			(at -1.41 -0.25 90)
 			(size 0.66 0.28)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 12 "RESET")
 			(uuid "90d41cde-6d5a-4257-b3c6-3496e8bfe308")
 		)
 		(pad "15" smd rect
 			(at -1.41 0.25 90)
 			(size 0.66 0.28)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 12 "RESET")
 			(uuid "86d83765-d821-4e65-a884-6c9ab87bd0d5")
 		)
 		(pad "16" smd rect
 			(at -1.41 0.75 90)
 			(size 0.66 0.28)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 23 "ADDR")
 			(uuid "6794e50f-0117-4ff3-b7c8-48378aaea676")
 		)
 		(pad "17" smd rect
 			(at 0 0 90)
 			(size 1.75 1.75)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 20 "gnd-1")
 			(uuid "48d3e8bf-ecbd-4591-9ed8-81d612682ced")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "atopile:R0402-56259e"
 		(layer "F.Cu")
@@ -2070,18 +1968,6 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "atopile:R0402-56259e"
-			(at 0 0 0)
-			(layer "User.9")
-			(hide yes)
-			(uuid "f24d2a8a-038a-4d17-a4df-d3f04642524b")
-			(effects
-				(font
-					(size 0.125 0.125)
-					(thickness 0.01875)
 				)
 			)
 		)
@@ -2249,7 +2135,7 @@
 				(width 0.06)
 				(type solid)
 			)
-			(fill none)
+			(fill no)
 			(layer "F.Fab")
 			(uuid "d2145d70-65c7-47cb-b681-25dd0a5d1f85")
 		)
@@ -2278,17 +2164,18 @@
 		(pad "1" smd rect
 			(at -0.43 0)
 			(size 0.57 0.54)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 8 "line-1")
 			(uuid "c911ccb4-fbc1-429c-8298-78c89e03be11")
 		)
 		(pad "2" smd rect
 			(at 0.43 0)
 			(size 0.57 0.54)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(net 18 "gate")
 			(uuid "00795118-d470-439a-ad36-862293506989")
 		)
+		(embedded_fonts no)
 	)
 	(segment
 		(start 67.69 30.57)
@@ -2577,4 +2464,5 @@
 			"e8bd0707-cc5a-43fb-a27e-0ec04642524b"
 		)
 	)
+	(embedded_fonts no)
 )
