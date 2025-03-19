@@ -138,7 +138,7 @@ class CM5_MINIMAL(Module):
         self.spi0.sclk.connect(self.gpio[11])
 
         # LED Data
-        self.led_data.connect(self.gpio[10])
+        self.led_data.connect(self.gpio[20])
 
         # UART
         self.uart0.base_uart.tx.connect(self.gpio[14])
@@ -302,6 +302,9 @@ class CM5_MINIMAL(Module):
         self.power_3v3.hv.connect_via(
             [self.power_led, self.power_led_resistor], self.power_led_buffer.output.line
         )
+        self.power_led_resistor.resistance.constrain_subset(
+            L.Range.from_center_rel(2 * P.kohm, 0.05)
+        )
         # self.power_led.color.constrain_subset(F.LED.Color.GREEN)
         self.power_led.add(F.has_descriptive_properties_defined({"LCSC": "C12624"}))
         self.power_led_resistor.add(F.has_package("R0402"))
@@ -309,6 +312,9 @@ class CM5_MINIMAL(Module):
         # Activity LED
         self.power_3v3.hv.connect_via(
             [self.activity_led, self.activity_led_resistor], self.hdi_a.pins[20]
+        )
+        self.activity_led_resistor.resistance.constrain_subset(
+            L.Range.from_center_rel(2 * P.kohm, 0.05)
         )
         # self.activity_led.color.constrain_subset(F.LED.Color.YELLOW)
         self.activity_led.add(F.has_descriptive_properties_defined({"LCSC": "C72038"}))

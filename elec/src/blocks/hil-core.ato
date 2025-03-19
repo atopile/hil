@@ -38,17 +38,21 @@ module HILCore:
     # Controller
     controller = new ControllerCM5
 
-    # Configure power rails
-    power_vusb.voltage = 5V to 21V
-    power_24v.voltage = 24V +/- 5%
-    power_5v.voltage = 5V +/- 5%
-    power_3v3.voltage = 3.3V +/- 5%
+    # # Configure power rails
+    # power_vusb.voltage = 5V to 21V
+    # power_24v.voltage = 24V +/- 5%
+    # power_5v.voltage = 5V +/- 5%
+    # power_3v3.voltage = 3.3V +/- 5%
 
     # Power supplies
     usbpd = new PowerUSBPD
     boost_24v = new Texas_Instruments_TPS55340RTER
     buck_5v = new LV2842XReferenceDesign
     ldo_3v3 = new LDK220M_R
+
+    # Configure power supplies
+    buck_5v.v_out = 5V +/- 3%
+    ldo_3v3.v_out = 3.3V +/- 3%
 
     # # Power supplies connections
     usbpd.power_out ~ power_vusb
