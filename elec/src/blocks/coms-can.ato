@@ -31,6 +31,9 @@ module ComsCANISO:
     protection = new Nexperia_PESD1CAN_215
     termination = new CANTermination
 
+    # Interrupts
+    interrupt ~ controller.interrupt_h
+
     # Power
     power_5v ~ regulator.power_in
     regulator.power_out ~ _power_5v_iso
