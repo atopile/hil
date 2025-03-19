@@ -4,6 +4,7 @@ AECQ
 ato
 atopile
 autoplay
+baudrate
 BLDC
 Blockdef
 Bobsville
@@ -12,6 +13,7 @@ CANL
 datasheet
 debugpy
 decless
+dtoverlay
 ECAD
 elec
 filenode
@@ -29,6 +31,7 @@ Lilium
 Mohm
 mosfet
 mosfets
+napowderly
 NFET
 Opamp
 partno
@@ -45,4 +48,5 @@ substack
 tstamp
 UNITLESS
 upvote
+usbboot
 visualiser
