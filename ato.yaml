@@ -6,7 +6,7 @@ builds:
   #   entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
 
   cellsim-16ch:
-    entry: elec/src/examples/cellsim-16ch.ato:CellSim16Ch
+    entry: examples/cellsim/cellsim-16ch.ato:CellSim16Ch
 
   # IO Blocks
   hil-core:
