@@ -1,4 +1,26 @@
-import ElectricPower, ElectricLogic, USB2_0
+import ElectricPower, ElectricLogic, USB2_0, Resistor
+
+module XKB_Connectivity_U262_241N_4BV64_CC:
+    """XKB Connectivity U262-241N-4BV64 with CC1 and CC2"""
+    connector = new XKB_Connectivity_U262_241N_4BV64
+    usb2 = new USB2_0
+    power_vbus = new ElectricPower
+
+    usb2 ~ connector.usb2
+    power_vbus ~ connector.power_vbus
+
+    cc1_resistor = new Resistor
+    cc2_resistor = new Resistor
+
+    connector.CC1 ~ cc1_resistor.p1; cc1_resistor.p2 ~ connector.GND
+    connector.CC2 ~ cc2_resistor.p1; cc2_resistor.p2 ~ connector.GND
+
+    cc1_resistor.resistance = 5.1kohm +/- 1%
+    cc2_resistor.resistance = 5.1kohm +/- 1%
+
+    cc1_resistor.package = "R0402"
+    cc2_resistor.package = "R0402"
+
 
 component XKB_Connectivity_U262_241N_4BV64:
     """XKB_Connectivity_U262_241N_4BV64 component"""

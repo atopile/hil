@@ -54,5 +54,5 @@ module CellSim16Ch:
     hil_core.power_3v3 ~ can_controller.power_3v3
 
     # SPI
-    hil_core.controller.spi3 ~ can_controller.spi
-    hil_core.controller.spi3_cs_1 ~ can_controller.spi_cs
+    hil_core.controller.spi0 ~ can_controller.spi
+    hil_core.controller.spi0_cs0 ~ can_controller.spi_cs

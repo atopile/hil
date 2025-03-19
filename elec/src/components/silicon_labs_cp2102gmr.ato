@@ -12,7 +12,6 @@ module SILICON_LABS_CP2102_GMR:
 
     # IC
     ic = new _SILICON_LABS_CP2102_GMR
-    power_3v3 ~ power_vdd
 
     # UART Interface
     uart.base_uart.rx.line ~ ic.RXD
@@ -52,6 +51,7 @@ module SILICON_LABS_CP2102_GMR:
 
     # Power VDD
     power_vdd = new ElectricPower
+    power_3v3 ~ power_vdd
     power_vdd.vcc ~ ic.VDD
     power_vdd.gnd ~ ic.GND
     power_vdd.gnd ~ ic.EP
