@@ -2,12 +2,12 @@ ato-version: 0.3.0
 
 builds:
   # Project Examples
-  # space-bms-hil:
-  #   entry: elec/src/examples/space-bms-hil.ato:SpaceBMSHIL
+  space-bms-hil:
+    entry: examples/space-bms-hil/space-bms-hil.ato:SpaceBMSHIL
 
   # IO Blocks
   analog-out:
-    entry: elec/src/blocks/analog-out.ato:AnalogOut
+    entry: examples/space-bms-hil/space-bms-hil.ato:AnalogOut
     exclude_targets: [mfg-data]
 
   relay:
