@@ -12,34 +12,34 @@ import pytest
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from ..conftest import Hil
+    from ..conftest import CellsimV1Hil
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
-async def test_performance(hil: "Hil"):
-    async with hil:
-        for cell in hil.cellsim.cells:
+async def test_performance(cellsim_v1_hil: "CellsimV1Hil"):
+    async with cellsim_v1_hil:
+        for cell in cellsim_v1_hil.cellsim.cells:
             await cell.reset()
             await cell.set_voltage(1)
 
         for _ in range(10):
-            for cell in hil.cellsim.cells:
+            for cell in cellsim_v1_hil.cellsim.cells:
                 await cell.enable()
                 await cell.turn_off_output_relay()
                 await cell.close_load_switch()
 
             await asyncio.gather(
-                *[cell.get_voltage() for cell in hil.cellsim.cells],
-                *[cell.get_current() for cell in hil.cellsim.cells],
+                *[cell.get_voltage() for cell in cellsim_v1_hil.cellsim.cells],
+                *[cell.get_current() for cell in cellsim_v1_hil.cellsim.cells],
             )
 
-            for cell in hil.cellsim.cells:
+            for cell in cellsim_v1_hil.cellsim.cells:
                 await cell.open_load_switch()
                 await cell.disable()
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
-async def test_output_voltage(hil: "Hil", record: Recorder):
+async def test_output_voltage(cellsim_v1_hil: "CellsimV1Hil", record: Recorder):
     """
     Set output voltage (0.5- 4.3V, 0.1V steps)
         - Set output voltage
@@ -48,8 +48,8 @@ async def test_output_voltage(hil: "Hil", record: Recorder):
     """
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
     VOLTAGES = [v / 10 for v in range(5, 42)]
-    cells = hil.cellsim.cells
-    async with hil:
+    cells = cellsim_v1_hil.cellsim.cells
+    async with cellsim_v1_hil:
         # Set up the cell
         # for cell in cells:
         await asyncio.gather(*[cell.calibrate(data_points=32) for cell in cells])
@@ -99,7 +99,7 @@ async def test_output_voltage(hil: "Hil", record: Recorder):
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
-async def test_buck_voltage(hil: "Hil", record: Recorder):
+async def test_buck_voltage(cellsim_v1_hil: "CellsimV1Hil", record: Recorder):
     """
     Set Buck voltage (1.5 - 4.4V, 0.1V steps)
         - Set Buck voltage
@@ -107,9 +107,9 @@ async def test_buck_voltage(hil: "Hil", record: Recorder):
         - Check voltage within 0.1V
     """
     BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
-    cells = hil.cellsim.cells
+    cells = cellsim_v1_hil.cellsim.cells
 
-    async with hil:
+    async with cellsim_v1_hil:
         for cell in cells:
             await cell.enable()
             await cell.turn_off_output_relay()
@@ -162,15 +162,15 @@ async def test_buck_voltage(hil: "Hil", record: Recorder):
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
-async def test_mux(hil: "Hil"):
-    async with hil:
+async def test_mux(cellsim_v1_hil: "CellsimV1Hil"):
+    async with cellsim_v1_hil:
         # Write binary to the mux for each cell
-        for cell in hil.cellsim.cells:
+        for cell in cellsim_v1_hil.cellsim.cells:
             async with cell.bus() as handle:
                 await handle.write_byte_data(cell.Devices.GPIO, 0x01, cell.cell_num)
 
         # Verify written values
-        for cell in hil.cellsim.cells:
+        for cell in cellsim_v1_hil.cellsim.cells:
             async with cell.bus() as handle:
                 read_value = await handle.read_byte_data(cell.Devices.GPIO, 0x01)
                 error_msg = f"Cell {cell.cell_num} GPIO state mismatch: wrote {cell.cell_num}, read {read_value}"
@@ -178,10 +178,10 @@ async def test_mux(hil: "Hil"):
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
-async def test_cell_calibration(hil: "Hil"):
+async def test_cell_calibration(cellsim_v1_hil: "CellsimV1Hil"):
     """Test the cell calibration functionality"""
-    async with hil:
-        cell = hil.cellsim.cells[0]  # Test with first cell
+    async with cellsim_v1_hil:
+        cell = cellsim_v1_hil.cellsim.cells[0]  # Test with first cell
         await cell.enable()
 
         # Store initial calibration values

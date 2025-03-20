@@ -1,6 +1,7 @@
 import logging
 from typing import Sequence
 
+from hil.drivers.mcp4728 import MCP4728
 from hil.utils.config import ConfigDict
 import pytest
 from hil.drivers.aiosmbus2 import AsyncSMBus, AsyncSMBusBranch, AsyncSMBusPeripheral
@@ -37,7 +38,7 @@ class CellSim:
         return self
 
 
-class Hil:
+class CellsimV1Hil:
     """
     Simulates a HIL for testing purposes.
     """
@@ -70,9 +71,37 @@ class Hil:
 
 
 @pytest.fixture(scope="session")
-async def hil(machine_config: ConfigDict):
+async def cellsim_v1_hil(machine_config: ConfigDict):
     # Create HIL instance
-    hil = await Hil.create(machine_config)
+    hil = await CellsimV1Hil.create(machine_config)
     # Open bus for the duration of the test session
     async with hil.physical_bus:
+        yield hil
+
+
+class SpaceBMSHiLDevV1:
+    bus: AsyncSMBus
+    config: ConfigDict
+    _mux: TCA9548A
+    _branch_buses: Sequence[AsyncSMBus]
+    analog_out_4ch: MCP4728
+
+    @classmethod
+    async def create(cls, config: ConfigDict):
+        self = cls()
+        self.config = config
+        self.bus = AsyncSMBusPeripheral(1)
+        async with self.bus:
+            self._mux = TCA9548A(self.bus)
+            self._branch_buses = AsyncSMBusBranch.from_channels(
+                self.bus, self._mux, list(range(0, 8))
+            )
+            self.analog_out_4ch = MCP4728(self.bus)
+        return self
+
+
+@pytest.fixture(scope="session")
+async def spacebms_hil_dev_v1(machine_config: ConfigDict):
+    hil = await SpaceBMSHiLDevV1.create(machine_config)
+    async with hil.bus:
         yield hil
