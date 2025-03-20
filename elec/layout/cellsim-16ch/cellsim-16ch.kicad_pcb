@@ -350345,7 +350345,7 @@
 			(justify left bottom)
 		)
 	)
-	(gr_text "{{githash}}"
+	(gr_text "{{GITHASH}}"
 		(at 219.3 -30.05 0)
 		(layer "F.SilkS")
 		(uuid "2a421cf0-bf67-40a4-b2f5-6f29034c1d03")
