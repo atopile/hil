@@ -3,6 +3,7 @@ from "blocks/cellsim-8ch.ato" import CellSim8Ch
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
 from "blocks/coms-can.ato" import ComsCANISO
 from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
+from "blocks/debug-saleae.ato" import DebugSaleae
 from "components/banana-power.ato" import BananaPower
 from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
 from "components/jst-gh.ato" import JSTGH4Pin
@@ -112,3 +113,22 @@ module CellSim16Ch:
     can_connector = new JSTGH4Pin
     can_controller.can ~ can_connector.can
     can_controller._power_5v_iso ~ can_connector.power
+
+    # Test points
+    debug_saleae_i2c0_i2c_1 = new DebugSaleae
+    debug_saleae_i2c0_i2c_1.i2c ~ hil_core.controller.i2c0
+    debug_saleae_i2c0_i2c_1.i2c2 ~ hil_core.controller.i2c1
+
+    debug_saleae_i2c2_i2c_3 = new DebugSaleae
+    debug_saleae_i2c2_i2c_3.i2c ~ hil_core.controller.i2c2
+    debug_saleae_i2c2_i2c_3.i2c2 ~ hil_core.controller.i2c3
+
+    debug_saleae_spi0 = new DebugSaleae
+    debug_saleae_spi0.spi ~ hil_core.controller.spi0
+    debug_saleae_spi0.spi_cs ~ hil_core.controller.spi0_cs0
+
+    debug_saleae_power = new DebugSaleae
+    debug_saleae_power.ch0.line ~ hil_core.power_5v.vcc
+    debug_saleae_power.ch1.line ~ hil_core.power_3v3.vcc
+    debug_saleae_power.ch0.reference.gnd ~ hil_core.power_5v.gnd
+    debug_saleae_power.ch1.reference.gnd ~ hil_core.power_3v3.gnd

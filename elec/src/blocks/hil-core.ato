@@ -85,7 +85,8 @@ module HILCore:
     usb_uart.uart.base_uart.tx ~ controller.uart0.base_uart.rx
     usb_uart.uart.cts ~ controller.uart0.rts
     usb_uart.uart.rts ~ controller.uart0.cts
-    usb_connector.power_vbus.gnd ~ power_vusb.gnd # GND Only
+    usb_connector.power_vbus ~ usb_uart.power_vbus
+    usb_connector.power_vbus.gnd ~ power_vusb.gnd
     power_5v ~ usb_hub.power_5v
     power_3v3 ~ usb_hub.power_3v3
 
