@@ -52,7 +52,7 @@ module PowerRelay:
 
     # Mosfet
     fet = new MOSFET
-    fet.lcsc_id = "C5364305"
+    fet.lcsc_id = "C67273"
     fet_gate_resistor = new Resistor
     fet_ilim_resistor = new Resistor
     fet_gate_resistor.package = "R0402"
