@@ -91,7 +91,7 @@ builds:
     exclude_targets: [mfg-data]
 
   usb-uart-bridge:
-    entry: elec/src/blocks/usb_uart_bridge.ato:UsbUartBridge
+    entry: elec/src/blocks/usb-uart-bridge.ato:UsbUartBridge
     exclude_targets: [mfg-data]
 
   usb2-hub:
