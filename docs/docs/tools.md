@@ -63,7 +63,7 @@ Finally, there's the **green (right)** category of equipment optimised to provid
 
 Early phases and low fidelity. This is the first time you get a board and you want to check it out.
 
-Picture a lam bench with multimeters, scopes, bench-top power supplies and everything is bespoke. You're connecting to the board via probes and harnesses. Typically done by the design engineers who created the board. Some results are logged as evidence of design verification, but particularly early much is based on spot-checked, one-shot tests conducted in an dedicated ad-hoc setup.
+Picture a lab bench with multimeters, scopes, bench-top power supplies and everything is bespoke. You're connecting to the board via probes and harnesses. Typically done by the design engineers who created the board. Some results are logged as evidence of design verification, but particularly early much is based on spot-checked, one-shot tests conducted in an dedicated ad-hoc setup.
 
 
 #### Reliability
