@@ -46,13 +46,13 @@ To add some color, here's who's often responsible for these tests:
 
 There are also typically some tests which suit well to share test equipment of the same function between them. It's frequently useful to break-up the equipment between these boundaries since even if they superficially appear to achieve the same goal, they're often constrained in their interfaces, precision, cost and ease to configure that makes them best suited to these niches.
 
-You can think of the **blue (bottom-left)** as tools like your multimeter - they typically have a readout, are setup ad-hoc and are dedicated to a user or lab. This means it's helpful for them to be relatively cheap, portable and easy to configure.
+You can think of the **lab** (blue, bottom-left) as tools like your multimeter - they typically have a readout, are setup ad-hoc and are dedicated to a user or lab. This means it's helpful for them to be relatively cheap, portable and easy to configure.
 
-In **red (top-left)**, think of a server rack filled with testers for specific functions and shared amongst a team. These tools are typically much more stable, automated, orchestrated as when to run. Integration testing also frequently will combine multiple racks of these to emulate a substantial part of a system.
+The **shared** (red, top-left) are tools like a server rack filled with testers for specific functions and shared amongst a team. These tools are typically much more stable, automated, orchestrated as when to run. Integration testing also frequently will combine multiple racks of these to emulate a substantial part of a system.
 
 One often-overlooked distinction between these two categories, and a misstep in combining them, is availability. If you need to run CI, it's extremely costly to have someone borrow the equipment for an ad-hoc setup.
 
-Finally, there's the **green (right)** category of equipment optimised to provide a self-contained, automated, but dedicated and manually triggered setup for factory testing.
+The **factory** (green, right) is equipment optimised to provide a self-contained, automated, but dedicated and manually triggered setup for factory testing.
 
 ![](assets/img/phase-fidelity-equipment.svg)
 
