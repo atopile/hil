@@ -105,7 +105,7 @@ Typically, HiL testing:
 - is done with a system that's shared between many engineers
 - is orchestrated via Github and a test runner, like `pytest`
 - stores results for verification and auditing
-- provides broad coverage, rountinely running hundreds of tests for every commit
+- provides broad coverage, routinely running hundreds of tests for every commit
 - must be very reliable and fast, since it's run so frequently and its results should be used to gate features merging
 
 
