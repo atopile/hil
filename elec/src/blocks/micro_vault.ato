@@ -1,0 +1,16 @@
+import ElectricPower
+from "components/texas_instruments_ref5050aidr.ato" import Texas_Instruments_REF5050AIDR
+from "components/texas_instruments_ads1219ipwr.ato" import Texas_Instruments_ADS1219IPWR
+
+module MicroVault:
+
+    # Interfaces
+    power_5v5 = new ElectricPower
+    power_3v3 = new ElectricPower
+
+    # Components
+    reference = new Texas_Instruments_REF5050AIDR
+    adc = new Texas_Instruments_ADS1219IPWR
+    temp_sensor = new Texas_Instruments_TMP006
+    heater_controller = new HeaterController
+    eeprom = new Microchip_Tech_24AA02E48_I_M0

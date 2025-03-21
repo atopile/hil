@@ -46,8 +46,8 @@ module Cell:
     # External interfaces
     power_in = new ElectricPower
     power_out = new ElectricPower
-    power_5v = new ElectricPower # micro gnd referenced rail
-    power_isolator = new ElectricPower # power for digital isolators
+    power_5v = new ElectricPower
+    power_isolator = new ElectricPower
     dmm_out = new ElectricPower
     i2c = new I2C
     cell_up = new CellJumper

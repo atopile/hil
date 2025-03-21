@@ -104,6 +104,18 @@ builds:
     entry: elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
     exclude_targets: [mfg-data]
 
+  cell-stack-isolator:
+    entry: /Users/narayanpowderly/projects/hil/elec/src/cell_stack_isolator.ato:CellStackIsolator
+    exclude_targets: [mfg-data]
+
+  micro-vault:
+    entry: /Users/narayanpowderly/projects/hil/elec/src/blocks/micro_vault.ato:MicroVault
+    exclude_targets: [mfg-data]
+
+  ads1219ipwr:
+    entry: elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
+    exclude_targets: [mfg-data]
+
 dependencies:
   - name: ldk220m-r
     version_spec:

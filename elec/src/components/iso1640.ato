@@ -23,3 +23,27 @@ component ISO1640BDR:
     i2c_isolated = new I2C
     i2c_isolated.scl.line ~ pin 6
     i2c_isolated.sda.line ~ pin 7
+
+
+component ISO1640QDWRQ1:
+    """
+    i2c digital isolator
+    """
+    lcsc_id = "C5216231"
+    mpn = "ISO1640QDWRQ1"
+    # pins
+    power_non_isolated = new ElectricPower
+    power_non_isolated.vcc ~ pin 3
+    power_non_isolated.gnd ~ pin 1
+
+    power_isolated = new ElectricPower
+    power_isolated.vcc ~ pin 14
+    power_isolated.gnd ~ pin 15
+
+    i2c_non_isolated = new I2C
+    i2c_non_isolated.scl.line ~ pin 6
+    i2c_non_isolated.sda.line ~ pin 5
+
+    i2c_isolated = new I2C
+    i2c_isolated.scl.line ~ pin 11
+    i2c_isolated.sda.line ~ pin 12

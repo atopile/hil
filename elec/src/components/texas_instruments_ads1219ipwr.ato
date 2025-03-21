@@ -1,0 +1,97 @@
+import ElectricPower, I2C, ElectricSignal
+import Capacitor
+from "components/nettie.ato" import NetTie
+
+module Texas_Instruments_ADS1219IPWR:
+    ic = new _Texas_Instruments_ADS1219IPWR
+
+    # Power
+    power = new ElectricPower
+    power.vcc ~ ic.DVDD
+    power.gnd ~ ic.DGND
+    assert power.voltage within 2.7V to 5.5V
+
+    power_analog = new ElectricPower
+    power_analog.vcc ~ ic.AVDD
+    power_analog.gnd ~ ic.AGND
+
+    # Netties
+    agnd_nettie = new NetTie
+    power.gnd ~ agnd_nettie.p1
+    power_analog.gnd ~ agnd_nettie.p2
+
+    avdd_nettie = new NetTie
+    power_analog.vcc ~ avdd_nettie.p1
+    power.vcc ~ avdd_nettie.p2
+
+    # Input capacitors
+    digital_cap = new Capacitor
+    digital_cap.capacitance = 100nF +/- 20%
+    digital_cap.package = "C0402"
+    power ~ digital_cap.power
+
+    analog_cap_1 = new Capacitor
+    analog_cap_1.capacitance = 100nF +/- 20%
+    analog_cap_1.package = "C0402"
+    power_analog ~ analog_cap_1.power
+
+    analog_cap_2 = new Capacitor
+    analog_cap_2.capacitance = 10uF +/- 20%
+    analog_cap_2.package = "C0603"
+    power_analog ~ analog_cap_2.power
+
+    # Inputs
+    input_0 = new ElectricSignal
+    input_0.line ~ ic.AIN0
+    input_0.reference ~ power_analog
+
+    input_1 = new ElectricSignal
+    input_1.line ~ ic.AIN1
+    input_1.reference ~ power_analog
+
+    input_2 = new ElectricSignal
+    input_2.line ~ ic.AIN2
+    input_2.reference ~ power_analog
+
+    input_3 = new ElectricSignal
+    input_3.line ~ ic.AIN3
+    input_3.reference ~ power_analog
+
+    # Reference
+    reference = new ElectricPower
+    reference.vcc ~ ic.REFN
+    reference.gnd ~ ic.REFP
+    reference.gnd ~ power_analog.gnd
+
+    # Address 0x40 (default)
+    power.gnd ~ ic.A0
+    power.gnd ~ ic.A1
+
+    # Reset - disabled by default
+    ic.RESETh ~ power.vcc
+
+component _Texas_Instruments_ADS1219IPWR:
+    """Texas_Instruments_ADS1219IPWR component"""
+    lcsc_id = "C2869313"
+    manufacturer = "Texas Instruments"
+    mpn = "ADS1219IPWR"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2303010401_Texas-Instruments-ADS1219IPWR_C2869313.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal A0 ~ pin 1
+    signal A1 ~ pin 2
+    signal AGND ~ pin 5
+    signal AIN0 ~ pin 11
+    signal AIN1 ~ pin 10
+    signal AIN2 ~ pin 7
+    signal AIN3 ~ pin 6
+    signal AVDD ~ pin 12
+    signal DGND ~ pin 4
+    signal DRDYh ~ pin 14
+    signal DVDD ~ pin 13
+    signal REFN ~ pin 8
+    signal REFP ~ pin 9
+    signal RESETh ~ pin 3
+    signal SCL ~ pin 16
+    signal SDA ~ pin 15

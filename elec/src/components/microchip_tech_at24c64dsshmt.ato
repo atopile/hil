@@ -1,0 +1,32 @@
+import ElectricPower, I2C
+
+component Microchip_Tech_AT24C64DSSHMT:
+    """Microchip_Tech_AT24C64DSSHMT component"""
+    lcsc_id = "C6487"
+    manufacturer = "Microchip Tech"
+    mpn = "AT24C64D-SSHM-T"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1809192324_Microchip-Tech-AT24C64D-SSHM-T_C6487.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal A0 ~ pin 1
+    signal A1 ~ pin 2
+    signal A2 ~ pin 3
+    signal GND ~ pin 4
+    signal SCL ~ pin 6
+    signal SDA ~ pin 5
+    signal VCC ~ pin 8
+    signal WP ~ pin 7
+
+    power_3v3 = new ElectricPower
+    power_3v3.vcc ~ VCC
+    power_3v3.gnd ~ GND
+
+    i2c = new I2C
+    i2c.scl.line ~ SCL
+    i2c.sda.line ~ SDA
+
+    # Address default to 0x50
+    power_3v3.gnd ~ A0
+    power_3v3.gnd ~ A1
+    power_3v3.gnd ~ A2
