@@ -1,0 +1,134 @@
+from "blocks/hil-core.ato" import HILCore
+from "blocks/cellsim-8ch.ato" import CellSim8Ch
+from "blocks/analog-out-4ch.ato" import AnalogOut4ch
+from "blocks/coms-can.ato" import ComsCANISO
+from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
+from "blocks/debug-saleae.ato" import DebugSaleae
+from "components/banana-power.ato" import BananaPower
+from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
+from "components/jst-gh.ato" import JSTGH4Pin
+
+module CellSim16Ch:
+    """
+    Cellsim 16ch module
+    """
+    # HIL Core
+    hil_core = new HILCore
+
+    # Cells
+    cell_block_1_8 = new CellSim8Ch
+    cell_block_9_16 = new CellSim8Ch
+    dmm_mux = new MultiplexerI2C8Ch
+
+    # Power cells
+    hil_core.power_24v ~ cell_block_1_8.power_24v
+    hil_core.power_24v ~ cell_block_9_16.power_24v
+    hil_core.power_5v ~ cell_block_1_8.power_5v
+    hil_core.power_5v ~ cell_block_9_16.power_5v
+    hil_core.power_3v3 ~ cell_block_1_8.power_3v3
+    hil_core.power_3v3 ~ cell_block_9_16.power_3v3
+
+    # I2C
+    hil_core.controller.i2c0 ~ cell_block_1_8.i2c
+    hil_core.controller.i2c1 ~ cell_block_9_16.i2c
+
+    # Connect blocks
+    cell_block_1_8.block_up ~ cell_block_9_16.block_down
+
+    # Connect LED Data
+    hil_core.controller.led_data ~ cell_block_1_8.block_down.led_data
+
+    # Cell Output Connector
+    cell_output_connector = new IDCVSH16S
+    cell_block_1_8.cell1.power_out.gnd ~ cell_output_connector.cell0
+    cell_block_1_8.cell1.power_out.vcc ~ cell_output_connector.cell1
+    cell_block_1_8.cell2.power_out.vcc ~ cell_output_connector.cell2
+    cell_block_1_8.cell3.power_out.vcc ~ cell_output_connector.cell3
+    cell_block_1_8.cell4.power_out.vcc ~ cell_output_connector.cell4
+    cell_block_1_8.cell5.power_out.vcc ~ cell_output_connector.cell5
+    cell_block_1_8.cell6.power_out.vcc ~ cell_output_connector.cell6
+    cell_block_1_8.cell7.power_out.vcc ~ cell_output_connector.cell7
+    cell_block_1_8.cell8.power_out.vcc ~ cell_output_connector.cell8
+    cell_block_9_16.cell1.power_out.vcc ~ cell_output_connector.cell9
+    cell_block_9_16.cell2.power_out.vcc ~ cell_output_connector.cell10
+    cell_block_9_16.cell3.power_out.vcc ~ cell_output_connector.cell11
+    cell_block_9_16.cell4.power_out.vcc ~ cell_output_connector.cell12
+    cell_block_9_16.cell5.power_out.vcc ~ cell_output_connector.cell13
+    cell_block_9_16.cell6.power_out.vcc ~ cell_output_connector.cell14
+    cell_block_9_16.cell7.power_out.vcc ~ cell_output_connector.cell15
+    cell_block_9_16.cell8.power_out.vcc ~ cell_output_connector.cell16
+
+    cell_block_1_8.cell1.power_out.gnd ~ cell_output_connector.power.gnd
+    cell_block_9_16.cell8.power_out.vcc ~ cell_output_connector.power.vcc
+
+    # DMM output selection
+    hil_core.power_3v3 ~ dmm_mux.power_3v3
+    hil_core.controller.i2c2 ~ dmm_mux.i2c
+    dmm_mux.output_1 ~ cell_block_1_8.dmm_relay_enable
+    dmm_mux.output_2 ~ cell_block_9_16.dmm_relay_enable
+
+    # DMM output
+    banana_power = new BananaPower
+    banana_power.power ~ cell_block_1_8.dmm_out
+    banana_power.power ~ cell_block_9_16.dmm_out
+
+    # Thermistors
+    thermistors_1_4 = new AnalogOut4ch
+    thermistors_5_8 = new AnalogOut4ch
+
+    # Power thermistors
+    hil_core.power_3v3 ~ thermistors_1_4.power_3v3
+    hil_core.power_3v3 ~ thermistors_5_8.power_3v3
+    hil_core.power_5v ~ thermistors_1_4.power_5v
+    hil_core.power_5v ~ thermistors_5_8.power_5v
+
+    # Connect thermistors
+    thermistor_connector = new NTCIDC8CH
+    thermistors_1_4.output_1 ~ thermistor_connector.ntc1
+    thermistors_1_4.output_2 ~ thermistor_connector.ntc2
+    thermistors_1_4.output_3 ~ thermistor_connector.ntc3
+    thermistors_1_4.output_4 ~ thermistor_connector.ntc4
+    thermistors_5_8.output_1 ~ thermistor_connector.ntc5
+    thermistors_5_8.output_2 ~ thermistor_connector.ntc6
+    thermistors_5_8.output_3 ~ thermistor_connector.ntc7
+    thermistors_5_8.output_4 ~ thermistor_connector.ntc8
+
+    # I2C
+    hil_core.controller.i2c2 ~ thermistors_1_4.i2c
+    hil_core.controller.i2c3 ~ thermistors_5_8.i2c
+
+    # CAN Interface
+    can_controller = new ComsCANISO
+
+    # Power
+    hil_core.power_5v ~ can_controller.power_5v
+    hil_core.power_3v3 ~ can_controller.power_3v3
+
+    # SPI
+    hil_core.controller.spi0 ~ can_controller.spi
+    hil_core.controller.spi0_cs0 ~ can_controller.spi_cs
+    hil_core.controller.spi0_int ~ can_controller.interrupt
+
+    # Connector
+    can_connector = new JSTGH4Pin
+    can_controller.can ~ can_connector.can
+    can_controller._power_5v_iso ~ can_connector.power
+
+    # Test points
+    debug_saleae_i2c0_i2c_1 = new DebugSaleae
+    debug_saleae_i2c0_i2c_1.i2c ~ hil_core.controller.i2c0
+    debug_saleae_i2c0_i2c_1.i2c2 ~ hil_core.controller.i2c1
+
+    debug_saleae_i2c2_i2c_3 = new DebugSaleae
+    debug_saleae_i2c2_i2c_3.i2c ~ hil_core.controller.i2c2
+    debug_saleae_i2c2_i2c_3.i2c2 ~ hil_core.controller.i2c3
+
+    debug_saleae_spi0 = new DebugSaleae
+    debug_saleae_spi0.spi ~ hil_core.controller.spi0
+    debug_saleae_spi0.spi_cs ~ hil_core.controller.spi0_cs0
+
+    debug_saleae_power = new DebugSaleae
+    debug_saleae_power.ch0.line ~ hil_core.power_5v.vcc
+    debug_saleae_power.ch1.line ~ hil_core.power_3v3.vcc
+    debug_saleae_power.ch0.reference.gnd ~ hil_core.power_5v.gnd
+    debug_saleae_power.ch1.reference.gnd ~ hil_core.power_3v3.gnd

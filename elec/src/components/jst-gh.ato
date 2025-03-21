@@ -1,0 +1,16 @@
+import ElectricPower
+from "interfaces.ato" import CAN
+
+component JSTGH4Pin:
+    power = new ElectricPower
+    can = new CAN
+
+    power.vcc ~ pin 1
+    can.CANH ~ pin 2
+    can.CANL ~ pin 3
+    power.gnd ~ pin 4
+    power.gnd ~ pin 5
+    power.gnd ~ pin 6
+
+    lcsc_id = "C189895"
+    designator_prefix = "J"

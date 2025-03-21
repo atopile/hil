@@ -165,7 +165,7 @@ module Cell:
     filter.power_out ~ load_switch.power_in
     load_switch.load.vcc ~ load_resistor.p1
     load_switch.load.gnd ~ load_resistor.p2
-    load_switch.fet.lcsc_id = "C5364305"
+    load_switch.fet.lcsc_id = "C67273"
     load_resistor.package = "R0805"
     load_switch.pulldown_resistor.package = "R0402"
     load_switch.gate_resistor.package = "R0402"
@@ -179,7 +179,7 @@ module Cell:
     power_out ~ external_load.power_in
     external_load.load.vcc ~ external_load_resistor.p1
     external_load.load.gnd ~ external_load_resistor.p2
-    external_load.fet.lcsc_id = "C5364305"
+    external_load.fet.lcsc_id = "C67273"
     external_load.pulldown_resistor.package = "R0402"
     external_load.gate_resistor.package = "R0402"
     # external_load_resistor.package = "R1206"
@@ -208,9 +208,9 @@ module Cell:
 
     gpio.ADDR ~ _power_3v3.gnd # 0x20
 
-    _power_3v3.vcc.suggested_net_name = "3V3"
-    _power_3v3.gnd.suggested_net_name = "3V3_GND"
-    _power_5v.vcc.suggested_net_name = "5V"
+    _power_3v3.vcc.suggest_net_name = "3V3"
+    _power_3v3.gnd.suggest_net_name = "3V3_GND"
+    _power_5v.vcc.suggest_net_name = "5V"
 
 
 # Custom interface for connecting the cells together

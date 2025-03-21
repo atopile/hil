@@ -18,8 +18,8 @@ module Microchip_Tech_MCP4728_E_UN:
 
     # I2C
     i2c = new I2C
-    i2c.scl ~ ic.SCL
-    i2c.sda ~ ic.SDA
+    i2c.scl.line ~ ic.SCL
+    i2c.sda.line ~ ic.SDA
 
     # Outputs
     vout_1 = new ElectricSignal

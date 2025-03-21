@@ -117,5 +117,5 @@ component _Shenzhen_Allvision_Tech_N087_2832TSWYG02_H14:
     power_vcc.gnd ~ VSS
 
     i2c = new I2C
-    i2c.sda ~ SDA
-    i2c.scl ~ SCL
+    i2c.sda.line ~ SDA
+    i2c.scl.line ~ SCL

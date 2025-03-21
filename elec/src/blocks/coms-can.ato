@@ -17,6 +17,7 @@ module ComsCANISO:
     spi = new SPI
     spi_cs = new ElectricLogic
     can = new CAN
+    interrupt = new ElectricLogic
     power_3v3 = new ElectricPower
     power_5v = new ElectricPower
 
@@ -29,6 +30,9 @@ module ComsCANISO:
     transceiver = new Texas_Instruments_ISO1044BDR
     protection = new Nexperia_PESD1CAN_215
     termination = new CANTermination
+
+    # Interrupts
+    interrupt ~ controller.interrupt_h
 
     # Power
     power_5v ~ regulator.power_in
@@ -62,12 +66,15 @@ module CANTermination:
     # Components
     resistor_can_high = new Resistor
     resistor_can_high.resistance = 60ohm +/- 2%
+    resistor_can_high.package = "R0402"
 
     resistor_can_low = new Resistor
     resistor_can_low.resistance = 60ohm +/- 2%
+    resistor_can_low.package = "R0402"
 
     capacitor_can = new Capacitor
     capacitor_can.capacitance = 4.7nF +/- 20%
+    capacitor_can.package = "C0402"
 
     # CAN
     signal _midpoint

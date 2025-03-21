@@ -6,6 +6,7 @@ module SILICON_LABS_CP2102_GMR:
 
     # External Interfaces
     power_vbus = new ElectricPower
+    power_3v3 = new ElectricPower
     usb2 = new USB2_0
     uart = new UART
 
@@ -22,14 +23,14 @@ module SILICON_LABS_CP2102_GMR:
     uart.dcd.line ~ ic.DCD
     uart.ri.line ~ ic.RI
 
-    uart.base_uart.rx.suggested_net_name = "uart_rx"
-    uart.base_uart.tx.suggested_net_name = "uart_tx"
-    uart.rts.suggested_net_name = "uart_rts"
-    uart.cts.suggested_net_name = "uart_cts"
-    uart.dtr.suggested_net_name = "uart_dtr"
-    uart.dsr.suggested_net_name = "uart_dsr"
-    uart.dcd.suggested_net_name = "uart_dcd"
-    uart.ri.suggested_net_name = "uart_ri"
+    # uart.base_uart.rx.suggested_net_name = "uart_rx"
+    # uart.base_uart.tx.suggested_net_name = "uart_tx"
+    # uart.rts.suggested_net_name = "uart_rts"
+    # uart.cts.suggested_net_name = "uart_cts"
+    # uart.dtr.suggested_net_name = "uart_dtr"
+    # uart.dsr.suggested_net_name = "uart_dsr"
+    # uart.dcd.suggested_net_name = "uart_dcd"
+    # uart.ri.suggested_net_name = "uart_ri"
 
     # Connect references
     uart.base_uart.rx.reference.gnd ~ power_vbus.gnd
@@ -41,8 +42,8 @@ module SILICON_LABS_CP2102_GMR:
     uart.ri.reference.gnd ~ power_vbus.gnd
 
     # USB Interface
-    usb2.usb_if.d.n ~ ic.Dminus
-    usb2.usb_if.d.p ~ ic.Dplus
+    usb2.usb_if.d.n.line ~ ic.Dminus
+    usb2.usb_if.d.p.line ~ ic.Dplus
 
     # Power Interface
     power_vbus.vcc ~ ic.VBUS
@@ -50,6 +51,7 @@ module SILICON_LABS_CP2102_GMR:
 
     # Power VDD
     power_vdd = new ElectricPower
+    power_3v3 ~ power_vdd
     power_vdd.vcc ~ ic.VDD
     power_vdd.gnd ~ ic.GND
     power_vdd.gnd ~ ic.EP

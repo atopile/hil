@@ -1,0 +1,23 @@
+import ElectricLogic
+
+module XKB_Connectivity_TS_1101_C_W_Pulldown:
+    """
+    XKB Connectivity TS-1101-C-W that connects
+    electrical signal to their reference gnd
+    """
+    switch = new _XKB_Connectivity_TS_1101_C_W
+    input = new ElectricLogic
+
+    input.line ~ switch.p1
+    input.reference.gnd ~ switch.p2
+
+component _XKB_Connectivity_TS_1101_C_W:
+    """XKB_Connectivity_TS_1101_C_W component"""
+    lcsc_id = "C318938"
+    manufacturer = "XKB Connectivity"
+    mpn = "TS-1101-C-W"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2002271735_XKB-Connection-TS-1101-C-W_C318938.pdf"
+    designator_prefix = "SW"
+
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2

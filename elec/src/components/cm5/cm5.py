@@ -29,28 +29,38 @@ class CM5_MINIMAL(Module):
     hdmi0: F.HDMI
     hdmi1: F.HDMI
     ethernet: F.Ethernet
-    usb2: F.USB2_0
     power_5v: F.ElectricPower
     power_3v3: F.ElectricPower
     power_1v8: F.ElectricPower
     gpio_ref: F.ElectricPower
     gpio = L.list_field(28, F.ElectricLogic)
-    i2s: F.I2S
+
+    # I2C
     i2c0: F.I2C
     i2c1: F.I2C
     i2c2: F.I2C
     i2c3: F.I2C
-    i2c4: F.I2C
-    spi3: F.SPI
-    spi4: F.SPI
 
+    # SPI
+    spi0: F.SPI
+    spi0_cs0: F.ElectricLogic
+    spi0_cs1: F.ElectricLogic
+    spi0_int: F.ElectricLogic
+
+    # LED
+    led_data: F.ElectricLogic
+
+    # USB
+    usb2: F.USB2_0
     usb3_0: F.USB3
     usb3_1: F.USB3
-    spi3_cs: F.ElectricLogic
-    spi4_cs: F.ElectricLogic
 
-    uart_rx: F.ElectricLogic
-    uart_tx: F.ElectricLogic
+    # UART
+    uart0: F.UART
+
+    # Boot mode
+    boot_mode: F.ElectricLogic
+    power_button: F.ElectricLogic
 
     # Components
     hdi_a: HRSHirose_DF40C_100DS_0_4V51
@@ -127,23 +137,27 @@ class CM5_MINIMAL(Module):
         self.usb3_1.usb3_if.tx.n.line.connect(self.hdi_b.pins[68])
 
         # SPI
-        # self.spi3.miso.connect(self.gpio[1])
-        # self.spi3.mosi.connect(self.gpio[2])
-        # self.spi3.sclk.connect(self.gpio[3])
-        # self.spi3_cs.connect(self.gpio[4])
+        self.spi0_cs1.connect(self.gpio[7])
+        self.spi0_cs0.connect(self.gpio[8])
+        self.spi0.miso.connect(self.gpio[9])
+        self.spi0.mosi.connect(self.gpio[10])
+        self.spi0.sclk.connect(self.gpio[11])
 
-        self.spi4.miso.connect(self.gpio[5])
-        self.spi4.mosi.connect(self.gpio[6])
-        self.spi4.sclk.connect(self.gpio[7])
-        self.spi4_cs.connect(self.gpio[4])
+        # LED Data
+        self.led_data.connect(self.gpio[20])
+
+        # SPI Interrupt
+        self.spi0_int.connect(self.gpio[6])
 
         # UART
-        F.Net.with_name("UART_TX").part_of.connect(
-            self.gpio[13].line, self.uart_tx.line
-        )
-        F.Net.with_name("UART_RX").part_of.connect(
-            self.gpio[14].line, self.uart_rx.line
-        )
+        self.uart0.base_uart.tx.connect(self.gpio[14])
+        self.uart0.base_uart.rx.connect(self.gpio[15])
+        self.uart0.cts.connect(self.gpio[16])
+        self.uart0.rts.connect(self.gpio[17])
+
+        # Boot mode
+        self.boot_mode.line.connect(self.hdi_a.pins[92])
+        self.power_button.line.connect(self.hdi_a.pins[91])
 
         # Power
         # 5V power pins
@@ -172,7 +186,6 @@ class CM5_MINIMAL(Module):
             7,
             12,
             13,
-            20,
             21,
             22,
             31,
@@ -230,6 +243,8 @@ class CM5_MINIMAL(Module):
 
         # GPIO mapping
         gpio_mapping = {
+            0: 35,
+            1: 34,
             2: 57,
             3: 55,
             4: 53,
@@ -281,32 +296,27 @@ class CM5_MINIMAL(Module):
         self.ethernet.led_link.line.connect(self.hdi_a.pins[14])
         self.ethernet.led_speed.line.connect(self.hdi_a.pins[16])
 
-        # I2S
-        self.i2s.sck.connect(self.gpio[18])
-        self.i2s.ws.connect(self.gpio[19])
-        self.i2s.sd.connect(self.gpio[21])
-
         # I2C
-        self.i2c0.scl.connect(self.gpio[9])
-        self.i2c0.sda.connect(self.gpio[8])
+        self.i2c0.sda.connect(self.gpio[0])
+        self.i2c0.scl.connect(self.gpio[1])
 
-        self.i2c1.scl.connect(self.gpio[3])
         self.i2c1.sda.connect(self.gpio[2])
+        self.i2c1.scl.connect(self.gpio[3])
 
-        self.i2c2.scl.connect(self.gpio[5])
-        self.i2c2.sda.connect(self.gpio[4])
+        self.i2c2.sda.connect(self.gpio[12])
+        self.i2c2.scl.connect(self.gpio[13])
 
-        self.i2c3.scl.connect(self.gpio[7])
-        self.i2c3.sda.connect(self.gpio[6])
-
-        self.i2c4.scl.line.connect(self.hdi_a.pins[79])
-        self.i2c4.sda.line.connect(self.hdi_a.pins[81])
+        self.i2c3.sda.connect(self.gpio[22])
+        self.i2c3.scl.connect(self.gpio[23])
 
         # Power LEDs
         self.power_led_buffer.power.connect(self.power_3v3)
-        self.power_led_buffer.input.line.connect(self.hdi_a.pins[95])
+        self.power_led_buffer.input.line.connect(self.hdi_a.pins[94])
         self.power_3v3.hv.connect_via(
             [self.power_led, self.power_led_resistor], self.power_led_buffer.output.line
+        )
+        self.power_led_resistor.resistance.constrain_subset(
+            L.Range.from_center_rel(2 * P.kohm, 0.05)
         )
         # self.power_led.color.constrain_subset(F.LED.Color.GREEN)
         self.power_led.add(F.has_descriptive_properties_defined({"LCSC": "C12624"}))
@@ -314,80 +324,36 @@ class CM5_MINIMAL(Module):
 
         # Activity LED
         self.power_3v3.hv.connect_via(
-            [self.activity_led, self.activity_led_resistor], self.hdi_a.pins[19]
+            [self.activity_led, self.activity_led_resistor], self.hdi_a.pins[20]
+        )
+        self.activity_led_resistor.resistance.constrain_subset(
+            L.Range.from_center_rel(2 * P.kohm, 0.05)
         )
         # self.activity_led.color.constrain_subset(F.LED.Color.YELLOW)
         self.activity_led.add(F.has_descriptive_properties_defined({"LCSC": "C72038"}))
         self.activity_led_resistor.add(F.has_package("R0402"))
         # self.activity_led.add(F.has_package())
 
-        # Net name overrides
-        F.Net.with_name("VCC_5V").part_of.connect(self.power_5v.hv)
-        F.Net.with_name("VCC_3V3").part_of.connect(self.power_3v3.hv)
-        F.Net.with_name("VCC_1V8").part_of.connect(self.power_1v8.hv)
-        # F.Net.with_name("GND").part_of.connect(self.power_5v.lv)
-        F.Net.with_name("SCL").part_of.connect(self.i2c1.scl.line)
-        F.Net.with_name("SDA").part_of.connect(self.i2c1.sda.line)
-        F.Net.with_name("HDMI0_D0_P").part_of.connect(self.hdmi0.data[0].p.line)
-        F.Net.with_name("HDMI0_D0_N").part_of.connect(self.hdmi0.data[0].n.line)
-        F.Net.with_name("HDMI0_D1_P").part_of.connect(self.hdmi0.data[1].p.line)
-        F.Net.with_name("HDMI0_D1_N").part_of.connect(self.hdmi0.data[1].n.line)
-        F.Net.with_name("HDMI0_D2_P").part_of.connect(self.hdmi0.data[2].p.line)
-        F.Net.with_name("HDMI0_D2_N").part_of.connect(self.hdmi0.data[2].n.line)
-        F.Net.with_name("HDMI0_CK_P").part_of.connect(self.hdmi0.clock.p.line)
-        F.Net.with_name("HDMI0_CK_N").part_of.connect(self.hdmi0.clock.n.line)
-        F.Net.with_name("HDMI0_CEC").part_of.connect(self.hdmi0.cec.line)
-        F.Net.with_name("HDMI0_HOTPLUG").part_of.connect(self.hdmi0.hotplug.line)
-        F.Net.with_name("HDMI1_D0_P").part_of.connect(self.hdmi1.data[0].p.line)
-        F.Net.with_name("HDMI1_D0_N").part_of.connect(self.hdmi1.data[0].n.line)
-        F.Net.with_name("HDMI1_D1_P").part_of.connect(self.hdmi1.data[1].p.line)
-        F.Net.with_name("HDMI1_D1_N").part_of.connect(self.hdmi1.data[1].n.line)
-        F.Net.with_name("HDMI1_D2_P").part_of.connect(self.hdmi1.data[2].p.line)
-        F.Net.with_name("HDMI1_D2_N").part_of.connect(self.hdmi1.data[2].n.line)
-        F.Net.with_name("HDMI1_CK_P").part_of.connect(self.hdmi1.clock.p.line)
-        F.Net.with_name("HDMI1_CK_N").part_of.connect(self.hdmi1.clock.n.line)
-        F.Net.with_name("HDMI1_CEC").part_of.connect(self.hdmi1.cec.line)
-        F.Net.with_name("HDMI1_HOTPLUG").part_of.connect(self.hdmi1.hotplug.line)
-        F.Net.with_name("USB2_D_P").part_of.connect(self.usb2.usb_if.d.p.line)
-        F.Net.with_name("USB2_D_N").part_of.connect(self.usb2.usb_if.d.n.line)
-        F.Net.with_name("ETH_P0_P").part_of.connect(self.ethernet.pairs[0].p.line)
-        F.Net.with_name("ETH_P0_N").part_of.connect(self.ethernet.pairs[0].n.line)
-        F.Net.with_name("ETH_P1_P").part_of.connect(self.ethernet.pairs[1].p.line)
-        F.Net.with_name("ETH_P1_N").part_of.connect(self.ethernet.pairs[1].n.line)
-        F.Net.with_name("ETH_P2_P").part_of.connect(self.ethernet.pairs[2].p.line)
-        F.Net.with_name("ETH_P2_N").part_of.connect(self.ethernet.pairs[2].n.line)
-        F.Net.with_name("ETH_P3_P").part_of.connect(self.ethernet.pairs[3].p.line)
-        F.Net.with_name("ETH_P3_N").part_of.connect(self.ethernet.pairs[3].n.line)
-        F.Net.with_name("ETH_LED_LINK").part_of.connect(self.ethernet.led_link.line)
-        F.Net.with_name("ETH_LED_ACTIVITY").part_of.connect(
-            self.ethernet.led_speed.line
-        )
-        F.Net.with_name("I2S_SCK").part_of.connect(self.i2s.sck.line)
-        F.Net.with_name("I2S_WS").part_of.connect(self.i2s.ws.line)
-        F.Net.with_name("I2S_SD").part_of.connect(self.i2s.sd.line)
-        F.Net.with_name("PWR_LED").part_of.connect(self.power_led_buffer.input.line)
-
-        # ------------------------------------
-        #          parametrization
-        # ------------------------------------
-        # self.power_5v.voltage.constrain_subset(L.Range.from_center_rel(5 * P.V, 0.05))
-        # self.power_3v3.voltage.constrain_subset(
-        #     L.Range.from_center_rel(3.3 * P.V, 0.05)
-        # )
-        # self.power_1v8.voltage.constrain_subset(
-        #     L.Range.from_center_rel(1.8 * P.V, 0.05)
-        # )
-
         self.power_3v3.connect(
             F.ElectricLogic.connect_all_node_references(
                 nodes=self.gpio
                 + [
+                    self.i2c0,
                     self.i2c1,
+                    self.i2c2,
+                    self.i2c3,
+                    self.spi0,
+                    self.spi0_cs0,
+                    self.spi0_cs1,
                     self.hdmi0,
                     self.hdmi1,
                     self.ethernet,
                     self.usb2,
-                    self.i2s,
+                    self.usb3_0,
+                    self.usb3_1,
+                    self.uart0,
+                    self.boot_mode,
+                    self.power_button,
                 ]
             )
         )

@@ -2,7 +2,7 @@ import ElectricPower, ElectricLogic, I2C
 from "components/tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
 from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
 from "blocks/relay.ato" import PowerRelay
-from "components/cell.ato" import Cell
+from "components/cell.ato" import Cell, CellJumper
 from "resistors.ato" import I2CPullup
 
 module CellSim8Ch:
@@ -11,7 +11,8 @@ module CellSim8Ch:
     power_24v = new ElectricPower
     power_5v = new ElectricPower
     power_3v3 = new ElectricPower
-    led_data = new ElectricLogic
+    block_down = new CellJumper
+    block_up = new CellJumper
     dmm_out = new ElectricPower
     dmm_relay_enable = new ElectricLogic
     i2c = new I2C

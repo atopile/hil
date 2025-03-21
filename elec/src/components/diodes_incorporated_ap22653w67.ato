@@ -1,0 +1,77 @@
+import ElectricPower, ElectricLogic
+import Capacitor, Resistor
+
+module Diodes_Incorporated_AP22653W6_7:
+    """Current limit switch configurable via ILIM pin"""
+
+    # External Interfaces
+    power_in = new ElectricPower
+    power_out = new ElectricPower
+    enable = new ElectricLogic
+
+    ic = new _Diodes_Incorporated_AP22653W6_7
+
+    # Power
+    power_in.vcc ~ ic.IN
+    power_in.gnd ~ ic.GND
+    power_out.vcc ~ ic.OUT
+    power_out.gnd ~ ic.GND
+    power_in.gnd ~ power_out.gnd
+
+    # Enable
+    enable.line ~ ic.EN_ENh
+
+    # ILIM
+    ilim_pull_down = new Resistor
+    ilim_pull_down.resistance = 15kohm +/- 3%
+    ilim_pull_down.package = "R0402"
+    ic.ILIM ~ ilim_pull_down.p1; ilim_pull_down.p2 ~ power_in.gnd
+
+    # Decoupling input cap
+    decap_in = new Capacitor
+    decap_in.capacitance = 10uF +/- 20%
+    decap_in.package = "C0603"
+    power_in ~ decap_in.power
+
+    # Decoupling output caps
+    decap_out_1 = new Capacitor
+    decap_out_1.capacitance = 10uF +/- 20%
+    decap_out_1.package = "C0603"
+    power_out ~ decap_out_1.power
+
+    decap_out_2 = new Capacitor
+    decap_out_2.capacitance = 10uF +/- 20%
+    decap_out_2.package = "C0603"
+    power_out ~ decap_out_2.power
+
+    decap_out_3 = new Capacitor
+    decap_out_3.capacitance = 10uF +/- 20%
+    decap_out_3.package = "C0603"
+    power_out ~ decap_out_3.power
+
+    decap_out_4 = new Capacitor
+    decap_out_4.capacitance = 10uF +/- 20%
+    decap_out_4.package = "C0603"
+    power_out ~ decap_out_4.power
+
+    decap_out_5 = new Capacitor
+    decap_out_5.capacitance = 10uF +/- 20%
+    decap_out_5.package = "C0603"
+    power_out ~ decap_out_5.power
+
+
+component _Diodes_Incorporated_AP22653W6_7:
+    """Diodes_Incorporated_AP22653W6_7 component"""
+    lcsc_id = "C2158037"
+    manufacturer = "Diodes Incorporated"
+    mpn = "AP22653W6-7"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Diodes-Incorporated-AP22653W6-7_C2158037.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal EN_ENh ~ pin 3
+    signal FAULTh ~ pin 4
+    signal GND ~ pin 2
+    signal ILIM ~ pin 5
+    signal IN ~ pin 1
+    signal OUT ~ pin 6

@@ -14,8 +14,8 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-      # Disabled for now, because the docs site required larger files
-      # - id: check-added-large-files
+      - id: check-added-large-files
+        args: [--maxkb=20000]
       - id: check-ast
       - id: check-case-conflict
       - id: check-docstring-first

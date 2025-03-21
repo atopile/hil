@@ -3,7 +3,14 @@ ato-version: 0.3.0
 builds:
   # Project Examples
 
+  cellsim-16ch:
+    entry: examples/cellsim/cellsim-16ch.ato:CellSim16Ch
+
   # IO Blocks
+  hil-core:
+    entry: elec/src/blocks/hil-core.ato:HILCore
+    exclude_targets: [mfg-data]
+
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
     exclude_targets: [mfg-data]
@@ -82,7 +89,20 @@ builds:
     exclude_targets: [mfg-data]
 
   usb-uart-bridge:
-    entry: elec/src/usb_uart_bridge.ato:UsbUartBridge
+    entry: elec/src/blocks/usb-uart-bridge.ato:UsbUartBridge
+    exclude_targets: [mfg-data]
+
+  usb2-hub:
+    entry: elec/src/blocks/usb2-hub.ato:USB2Hub
+    exclude_targets: [mfg-data]
+
+  usb251b:
+    entry: elec/src/components/microchip_tech_us_b2514b_im2.ato:Microchip_Tech_USB2514B_I_M2
+    exclude_targets: [mfg-data]
+
+  current-limit-switch:
+    entry: elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
+    exclude_targets: [mfg-data]
 
 dependencies:
   - name: ldk220m-r

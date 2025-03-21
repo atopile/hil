@@ -1,31 +1,68 @@
-import ElectricPower, I2C, SPI, USB2_0, ElectricLogic
+import ElectricPower, I2C, SPI, USB2_0, ElectricLogic, USB3, UART
 
 from "components/cm5/cm5.py" import CM5_MINIMAL
 from "components/cm5/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
 from "components/sinhoo_sm_tso2515c_tj.ato" import Sinhoo_SMTSO2515CTJ
+from "components/xk_bconnectivity_ts1101cw.ato" import XKB_Connectivity_TS_1101_C_W_Pulldown
 
 module ControllerCM5:
     """
-    Controller using Raspberry Pi cm5
+    Controller using Raspberry Pi CM5
     Includes ethernet interface
     """
-    # External Interfaces
+    # Power
+    power_3v3 = new ElectricPower # cm5 Regulator output
+    power_5v = new ElectricPower # cm5 input power
+
+    # Controller
+    cm5 = new CM5_MINIMAL
+    power_3v3 ~ cm5.power_3v3
+    power_5v ~ cm5.power_5v
+    power_3v3.gnd ~ power_5v.gnd
+
+    # I2C
     i2c0 = new I2C
     i2c1 = new I2C
     i2c2 = new I2C
     i2c3 = new I2C
-    i2c4 = new I2C
 
-    spi3 = new SPI
-    spi3_cs_1 = new ElectricLogic
-    spi4 = new SPI
-    spi4_cs_1 = new ElectricLogic
+    i2c0 ~ cm5.i2c0
+    i2c1 ~ cm5.i2c1
+    i2c2 ~ cm5.i2c2
+    i2c3 ~ cm5.i2c3
+
+    # SPI
+    spi0 = new SPI
+    spi0_cs0 = new ElectricLogic
+    spi0_cs1 = new ElectricLogic
+    spi0_int = new ElectricLogic
+
+    spi0 ~ cm5.spi0
+    spi0_cs0 ~ cm5.spi0_cs0
+    spi0_cs1 ~ cm5.spi0_cs1
+    spi0_int ~ cm5.spi0_int
+
+    # USB
     usb2 = new USB2_0
-    power_3v3 = new ElectricPower # cm5 Regulator output
-    power_5v = new ElectricPower # cm5 input power
+    usb3_0 = new USB3
+    usb3_1 = new USB3
 
-    cm5 = new CM5_MINIMAL
+    usb2 ~ cm5.usb2
+    usb3_0 ~ cm5.usb3_0
+    usb3_1 ~ cm5.usb3_1
+
+    # UART
+    uart0 = new UART
+    uart0 ~ cm5.uart0
+
+    # LED Data
+    led_data = new ElectricLogic
+    led_data ~ cm5.led_data
+
+    # Ethernet
     rj45 = new HANRUNZhongshan_HanRun_Elec_HR911130A
+    rj45.ethernet ~ cm5.ethernet
+    power_3v3 ~ rj45.power_led
 
     # Mounting studs - M2.5
     stud1 = new Sinhoo_SMTSO2515CTJ
@@ -33,26 +70,8 @@ module ControllerCM5:
     stud3 = new Sinhoo_SMTSO2515CTJ
     stud4 = new Sinhoo_SMTSO2515CTJ
 
-    rj45.ethernet ~ cm5.ethernet
-    rj45.power_led ~ cm5.power_3v3
-    i2c0 ~ cm5.i2c0
-    i2c1 ~ cm5.i2c1
-    i2c2 ~ cm5.i2c2
-    i2c3 ~ cm5.i2c3
-    i2c4 ~ cm5.i2c4
-    power_3v3 ~ cm5.power_3v3
-    power_5v ~ cm5.power_5v
-
-    power_3v3.gnd ~ power_5v.gnd
-
-    # Pass through interfaces
-    # USB2
-    usb2 ~ cm5.usb2
-
-    # SPI3
-    spi3 ~ cm5.spi3
-    spi3_cs_1 ~ cm5.spi3_cs
-
-    # SPI4
-    spi4 ~ cm5.spi4
-    spi4_cs_1 ~ cm5.spi4_cs
+    # Boot mode/power button
+    boot_mode_switch = new XKB_Connectivity_TS_1101_C_W_Pulldown
+    boot_mode_switch.input ~ cm5.boot_mode
+    power_button_switch = new XKB_Connectivity_TS_1101_C_W_Pulldown
+    power_button_switch.input ~ cm5.power_button

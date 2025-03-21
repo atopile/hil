@@ -1,0 +1,21 @@
+import ElectricPower
+
+module BananaPower:
+    socket_red = new BananaSocketRed
+    socket_black = new BananaSocketBlack
+
+    power = new ElectricPower
+    power.vcc ~ socket_red.p1
+    power.gnd ~ socket_black.p1
+
+component BananaSocketBlack:
+    lcsc_id = "C7437322"
+    # pins
+    signal p1 ~ pin 1
+    p1 ~ pin 2
+
+component BananaSocketRed:
+    lcsc_id = "C7437321"
+    # pins
+    signal p1 ~ pin 1
+    p1 ~ pin 2

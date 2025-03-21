@@ -1,0 +1,78 @@
+import ElectricPower, ElectricSignal
+
+module IDCVSH16S:
+    connector = new Z_231012820106
+
+    signal cell0 ~ connector.p18
+    signal cell1 ~ connector.p17
+    signal cell2 ~ connector.p16
+    signal cell3 ~ connector.p15
+    signal cell4 ~ connector.p14
+    signal cell5 ~ connector.p13
+    signal cell6 ~ connector.p12
+    signal cell7 ~ connector.p11
+    signal cell8 ~ connector.p10
+    signal cell9 ~ connector.p9
+    signal cell10 ~ connector.p8
+    signal cell11 ~ connector.p7
+    signal cell12 ~ connector.p6
+    signal cell13 ~ connector.p5
+    signal cell14 ~ connector.p4
+    signal cell15 ~ connector.p3
+    signal cell16 ~ connector.p2
+
+    power = new ElectricPower
+    power.vcc ~ connector.p1
+    power.gnd ~ connector.p19
+
+component Z_231012820106:
+    lcsc_id = "C110608"
+    # pins
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
+    signal p4 ~ pin 4
+    signal p5 ~ pin 5
+    signal p6 ~ pin 6
+    signal p7 ~ pin 7
+    signal p8 ~ pin 8
+    signal p9 ~ pin 9
+    signal p10 ~ pin 10
+    signal p11 ~ pin 11
+    signal p12 ~ pin 12
+    signal p13 ~ pin 13
+    signal p14 ~ pin 14
+    signal p15 ~ pin 15
+    signal p16 ~ pin 16
+    signal p17 ~ pin 17
+    signal p18 ~ pin 18
+    signal p19 ~ pin 19
+    signal p20 ~ pin 20
+
+component NTCIDC8CH:
+    lcsc_id = "C7501252"
+    # pins
+    ntc1 = new ElectricSignal
+    ntc1.line ~ pin 1
+    ntc1.reference.gnd ~ pin 2
+    ntc2 = new ElectricSignal
+    ntc2.line ~ pin 3
+    ntc2.reference.gnd ~ pin 4
+    ntc3 = new ElectricSignal
+    ntc3.line ~ pin 5
+    ntc3.reference.gnd ~ pin 6
+    ntc4 = new ElectricSignal
+    ntc4.line ~ pin 7
+    ntc4.reference.gnd ~ pin 8
+    ntc5 = new ElectricSignal
+    ntc5.line ~ pin 9
+    ntc5.reference.gnd ~ pin 10
+    ntc6 = new ElectricSignal
+    ntc6.line ~ pin 11
+    ntc6.reference.gnd ~ pin 12
+    ntc7 = new ElectricSignal
+    ntc7.line ~ pin 13
+    ntc7.reference.gnd ~ pin 14
+    ntc8 = new ElectricSignal
+    ntc8.line ~ pin 15
+    ntc8.reference.gnd ~ pin 16

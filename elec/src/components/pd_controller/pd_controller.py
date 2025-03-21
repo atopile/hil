@@ -82,10 +82,10 @@ class PDController(Module):
         self.vreg_1v2_cap.add(F.has_package("C0402"))
 
         # Regulator rail net naming
-        vreg_2v7 = F.Net.with_name("VREG_2V7")
-        vreg_1v2 = F.Net.with_name("VREG_1V2")
-        vreg_2v7.part_of.connect(self.pd_controller.VREG_2V7.hv)
-        vreg_1v2.part_of.connect(self.pd_controller.VREG_1V2.hv)
+        # vreg_2v7 = F.Net.with_name("VREG_2V7")
+        # vreg_1v2 = F.Net.with_name("VREG_1V2")
+        # vreg_2v7.part_of.connect(self.pd_controller.VREG_2V7.hv)
+        # vreg_1v2.part_of.connect(self.pd_controller.VREG_1V2.hv)
 
         self.vbus_cap.unnamed[0].connect(self.power_vbus.lv)
         self.vbus_cap.unnamed[1].connect(self.power_vbus.hv)
@@ -100,8 +100,8 @@ class PDController(Module):
         self.power_vbus.connect(self.pd_controller.VDD)
 
         # VBUS net naming
-        vbus = F.Net.with_name("VBUS")
-        vbus.part_of.connect(self.power_vbus.hv)
+        # vbus = F.Net.with_name("VBUS")
+        # vbus.part_of.connect(self.power_vbus.hv)
 
         # ESD protection
         self.power_vbus.hv.connect_via(self.vbus_esd_diode, self.power_vbus.lv)
@@ -111,10 +111,10 @@ class PDController(Module):
         self.power_vbus.lv.connect(self.esd_cc.A)
 
         # CC line net naming
-        cc1 = F.Net.with_name("CC1")
-        cc2 = F.Net.with_name("CC2")
-        cc1.part_of.connect(self.pd_controller.CC1.line)
-        cc2.part_of.connect(self.pd_controller.CC2.line)
+        # cc1 = F.Net.with_name("CC1")
+        # cc2 = F.Net.with_name("CC2")
+        # cc1.part_of.connect(self.pd_controller.CC1.line)
+        # cc2.part_of.connect(self.pd_controller.CC2.line)
 
         # VSINK SWITCH
         # self.VSINK_MOSFET.channel_type.alias_is(F.MOSFET.ChannelType.P_CHANNEL)
@@ -123,8 +123,8 @@ class PDController(Module):
         self.power_vbus.hv.connect_via(self.vsink_mosfet, self.power_vsink.hv)
 
         # VSINK voltage divider for VCC
-        self.VSINK_VCC = F.Net.with_name("VSINK_VCC")
-        self.VSINK_VCC.part_of.connect(self.power_vsink.hv)
+        # self.VSINK_VCC = F.Net.with_name("VSINK_VCC")
+        # self.VSINK_VCC.part_of.connect(self.power_vsink.hv)
 
         # Gate pullup resistor divider
         self.vsink_gate_r.resistance.constrain_subset(

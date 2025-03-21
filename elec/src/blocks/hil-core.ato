@@ -1,0 +1,97 @@
+import ElectricPower, Electrical
+
+# Blocks
+from "blocks/controller-cm5.ato" import ControllerCM5
+from "blocks/power-usbpd.ato" import PowerUSBPD
+from "blocks/usb-uart-bridge.ato" import UsbUartBridge
+from "blocks/oled-128-32.ato" import OLED12832
+from "blocks/usb2-hub.ato" import USB2Hub
+
+# Components
+from "components/texas_instruments_tp_s55340r_ter.ato" import Texas_Instruments_TPS55340RTER
+from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64_CC
+from "lv2842xlvddcr.git/elec/src/lv284xx.ato" import LV2842XReferenceDesign
+from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+
+module HILCore:
+    """
+    HIL Core module
+    - CM5 Controller
+    - USB to UART bridge
+    - USB-OTG for programming and debugging PI
+    - 128x32 OLED display
+    - USBPD power input
+    - 24V supply
+    - 5V supply
+    - 3.3V supply
+    """
+
+    # External Power rails
+    power_24v = new ElectricPower
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
+
+    # Internal Rails
+    power_vusb = new ElectricPower
+    gnd = new Electrical
+
+    # Controller
+    controller = new ControllerCM5
+
+    # # Configure power rails
+    # power_vusb.voltage = 5V to 21V
+    # power_24v.voltage = 24V +/- 5%
+    # power_5v.voltage = 5V +/- 5%
+    # power_3v3.voltage = 3.3V +/- 5%
+
+    # Power supplies
+    usbpd = new PowerUSBPD
+    boost_24v = new Texas_Instruments_TPS55340RTER
+    buck_5v = new LV2842XReferenceDesign
+    ldo_3v3 = new LDK220M_R
+
+    # Configure power supplies
+    buck_5v.v_out = 5V +/- 3%
+    ldo_3v3.v_out = 3.3V +/- 3%
+
+    # # Power supplies connections
+    usbpd.power_out ~ power_vusb
+    power_vusb ~ boost_24v.power_in
+    boost_24v.power_out ~ power_24v
+    power_24v ~ buck_5v.power_in
+    buck_5v.power_out ~ power_5v
+    power_5v ~ ldo_3v3.power_in
+    ldo_3v3.power_out ~ power_3v3
+
+    # Common ground
+    gnd ~ power_vusb.gnd
+    gnd ~ power_24v.gnd
+    gnd ~ power_5v.gnd
+    gnd ~ power_3v3.gnd
+
+    # Power devices
+    power_5v ~ controller.power_5v
+
+    # USB UART
+    usb_connector = new XKB_Connectivity_U262_241N_4BV64_CC
+    usb_uart = new UsbUartBridge
+    usb_hub = new USB2Hub
+
+    usb_connector.usb2 ~ usb_hub.usb2_up
+    usb_hub.usb2_1 ~ usb_uart.usb2
+    usb_hub.usb2_2 ~ controller.usb2
+    # usb_uart.uart ~ controller.uart0 # Doesnt currently handle flipping
+    usb_uart.uart.base_uart.rx ~ controller.uart0.base_uart.tx
+    usb_uart.uart.base_uart.tx ~ controller.uart0.base_uart.rx
+    usb_uart.uart.cts ~ controller.uart0.rts
+    usb_uart.uart.rts ~ controller.uart0.cts
+    usb_connector.power_vbus ~ usb_uart.power_vbus
+    usb_connector.power_vbus.gnd ~ power_vusb.gnd
+    power_5v ~ usb_hub.power_5v
+    power_3v3 ~ usb_hub.power_3v3
+
+    # OLED
+    oled = new OLED12832
+    power_5v ~ oled.power_5v
+    power_3v3 ~ oled.power_3v3
+    controller.i2c3 ~ oled.i2c
