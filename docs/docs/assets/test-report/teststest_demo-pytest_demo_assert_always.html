@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #vis.vega-embed {
+      width: 100%;
+      display: flex;
+    }
+
+    #vis.vega-embed details,
+    #vis.vega-embed details summary {
+      position: relative;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@5.20.1"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    (function(vegaEmbed) {
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "layer": [{"data": {"name": "data-bb8d6ecd5b70331a14d30d9438afeae9"}, "mark": {"type": "line", "interpolate": "monotone", "point": true}, "encoding": {"color": {"field": "trace", "type": "nominal"}, "tooltip": [{"field": "timestamp", "title": "Time", "type": "temporal"}, {"field": "trace", "title": "Trace", "type": "nominal"}, {"field": "value", "title": "Value", "type": "quantitative"}], "x": {"axis": {"format": "%Y-%m-%d %H:%M:%S.%L", "labelAngle": -45, "tickCount": 10, "tickMinStep": 0.01}, "field": "timestamp", "title": "Time", "type": "temporal"}, "y": {"field": "value", "type": "quantitative"}}, "name": "view_3"}, {"data": {"name": "data-4f53cda18c2baa0c0354bb5f9a3ecbe5"}, "mark": {"type": "tick", "thickness": 6}, "encoding": {"color": {"field": "log_level", "title": "Level", "type": "nominal"}, "tooltip": [{"field": "log_level", "title": "Level", "type": "nominal"}, {"field": "message", "title": "Message", "type": "nominal"}, {"field": "timestamp", "format": "%Y-%m-%d %H:%M:%S.%L", "title": "Log Time", "type": "temporal"}], "x": {"field": "timestamp", "title": "Time", "type": "temporal"}, "y": {"value": 0}}}], "height": 400, "params": [{"name": "param_3", "select": {"type": "interval", "encodings": ["x", "y"]}, "bind": "scales", "views": ["view_3"]}], "width": "container", "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json", "datasets": {"data-bb8d6ecd5b70331a14d30d9438afeae9": [{"timestamp": "2025-03-20T22:39:22.346", "trace": "source_1", "value": 1.0}, {"timestamp": "2025-03-20T22:39:22.357", "trace": "source_1", "value": 2.0}, {"timestamp": "2025-03-20T22:39:22.368", "trace": "source_1", "value": 3.0}, {"timestamp": "2025-03-20T22:39:22.379", "trace": "source_1", "value": 4.0}, {"timestamp": "2025-03-20T22:39:22.390", "trace": "source_1", "value": 5.0}, {"timestamp": "2025-03-20T22:39:22.401", "trace": "source_1", "value": 6.0}, {"timestamp": "2025-03-20T22:39:22.412", "trace": "source_1", "value": 7.0}, {"timestamp": "2025-03-20T22:39:22.424", "trace": "source_1", "value": 8.0}, {"timestamp": "2025-03-20T22:39:22.435", "trace": "source_1", "value": 9.0}, {"timestamp": "2025-03-20T22:39:22.445", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.456", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.467", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.478", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.489", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.499", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.511", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.521", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.532", "trace": "source_1", "value": 10.0}, {"timestamp": "2025-03-20T22:39:22.543", "trace": "source_1", "value": 10.0}], "data-4f53cda18c2baa0c0354bb5f9a3ecbe5": []}};
+      var embedOpt = {"mode": "vega-lite"};
+
+      function showError(el, error){
+          el.innerHTML = ('<div style="color:red;">'
+                          + '<p>JavaScript Error: ' + error.message + '</p>'
+                          + "<p>This usually means there's a typo in your chart specification. "
+                          + "See the javascript console for the full traceback.</p>"
+                          + '</div>');
+          throw error;
+      }
+      const el = document.getElementById('vis');
+      vegaEmbed("#vis", spec, embedOpt)
+        .catch(error => showError(el, error));
+    })(vegaEmbed);
+
+  </script>
+</body>
+</html>
