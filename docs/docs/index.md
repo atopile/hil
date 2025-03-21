@@ -2,7 +2,7 @@
 
 For building awesome hardware tests.
 
-This site is a work in Progress 🏗️ 🚧
+This site is a Work in Progress 🏗️ 🚧
 
 Check out the [GitHub repo](https://github.com/atopile/hil) for the source code and latest updates.
 
@@ -12,14 +12,14 @@ Check out the [GitHub repo](https://github.com/atopile/hil) for the source code 
 
 Make it trivial to exercise, measure and communicate with electronics hardware.
 
-Take for example this 16ch cell simulator. Using these blocks it's only 134 lines of [`atopile` code](https://atopile.io) code.
+Take for example this 16ch cell simulator. Using these blocks it's only 134 lines of [`atopile`](https://atopile.io) code.
 
 ![](assets/img/partial-cell-sim.png)
 
 
 ### Test Framework 🧪
 
-This suite includes a test framework making it near trivial to start scripting tests in python and produce (beautiful) reports - based on top of `pytest`
+This suite includes a test framework making it near trivial to start scripting tests in python and produce (beautiful) reports - based on top of `pytest`.
 
 ```python
 @pytest.mark.runs_on(hostname="chunky-otter")
