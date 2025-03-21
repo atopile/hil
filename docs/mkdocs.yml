@@ -7,6 +7,7 @@ site_description: >-
 nav:
   - Getting Started:
       - index.md
+      - tools.md
 
   - Software:
       - software/index.md
