@@ -17,7 +17,7 @@ Take for example this 16ch cell simulator. Using these blocks it's only 134 line
 ![](assets/img/partial-cell-sim.png)
 
 
-## Test Framework 🧪
+### Test Framework 🧪
 
 This suite includes a test framework making it near trivial to start scripting tests in python and produce (beautiful) reports - based on top of `pytest`
 
@@ -34,7 +34,7 @@ Running tests will also automatically generate an [interactive report](assets/te
 
 ![](assets/img/test-report-snapshot.png)
 
-## Test Distribution 🚀
+### Test Distribution 🚀
 
 Managing HiL setups is typically a pain. Instead, simply mark your tests with the requirements of the hardware they need to run on, and invoke them normally - the orchestration will automatically send it to an appropriate setup to run it for you with the click of a button
 
