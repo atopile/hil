@@ -105,11 +105,11 @@ builds:
     exclude_targets: [mfg-data]
 
   cell-stack-isolator:
-    entry: /Users/narayanpowderly/projects/hil/elec/src/cell_stack_isolator.ato:CellStackIsolator
+    entry: elec/src/cell_stack_isolator.ato:CellStackIsolator
     exclude_targets: [mfg-data]
 
   micro-vault:
-    entry: /Users/narayanpowderly/projects/hil/elec/src/blocks/micro_vault.ato:MicroVault
+    entry: elec/src/blocks/micro_vault.ato:MicroVault
     exclude_targets: [mfg-data]
 
   ads1219ipwr:
@@ -121,7 +121,11 @@ builds:
     exclude_targets: [mfg-data]
 
   heater-controller:
-    entry: /Users/narayanpowderly/projects/hil/elec/src/heater_controller.ato:HeaterController
+    entry: hil/elec/src/heater_controller.ato:HeaterController
+    exclude_targets: [mfg-data]
+
+  micro-vault-dev-board:
+    entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
 
 dependencies:
   - name: ldk220m-r
@@ -135,7 +139,7 @@ dependencies:
     path: .ato/modules/saleae-header
     source:
   - name: xt-connectors
-    version_spec: "@3719ec970da96df05b6763671993ca2276df968b"
+    version_spec:
     link_broken: false
     path: .ato/modules/xt-connectors
     source:
