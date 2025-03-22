@@ -4,23 +4,18 @@ from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
 from "blocks/relay.ato" import PowerRelay
 from "components/cell.ato" import Cell, CellJumper
 from "resistors.ato" import I2CPullup
-from "components/b2405s.ato" import B2405S_2WR2
-from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 
 module CellSim8Ch:
 
     # External interfaces
     power_24v = new ElectricPower
     power_5v = new ElectricPower
-    power_5v_iso = new ElectricPower
-    power_3v3_iso = new ElectricPower
     power_3v3 = new ElectricPower
     block_down = new CellJumper
     block_up = new CellJumper
     dmm_out = new ElectricPower
     dmm_relay_enable = new ElectricLogic
     i2c = new I2C
-    i2c_iso = new I2C
 
     # Cells
     cell1 = new Cell
@@ -43,36 +38,14 @@ module CellSim8Ch:
     power_3v3 ~ i2c_mux.power
     power_3v3 ~ gpio_mux.power_3v3
 
-    i2c_iso ~ i2c_mux.i2c #0x70
-    i2c_iso ~ gpio_mux.i2c #0x21
+    i2c ~ i2c_mux.i2c #0x70
+    i2c ~ gpio_mux.i2c #0x21
 
     # DMM
     dmm_relay = new PowerRelay
     power_5v ~ dmm_relay.power_relay
     dmm_relay.power_out ~ dmm_out
     dmm_relay.input ~ dmm_relay_enable
-
-    # Isolated power
-    regulator_5v_iso = new B2405S_2WR2
-    regulator_3v3_iso = new LDK220M_R
-
-    power_24v ~ regulator_5v_iso.power_in
-    regulator_5v_iso.power_out ~ power_5v_iso
-
-    power_5v_iso ~ regulator_3v3_iso.power_in
-    regulator_3v3_iso.power_out ~ power_3v3_iso
-
-    # I2C Isolator
-    i2c_isolator = new ISO1640QDWRQ1
-    power_3v3 ~ i2c_isolator.power_non_isolated
-    power_3v3_iso ~ i2c_isolator.power_isolated
-    i2c ~ i2c_isolator.i2c_non_isolated
-    i2c_iso ~ i2c_isolator.i2c_isolated
-
-    # Pullup iso i2c
-    pullup_iso_i2c = new I2CPullup
-    power_3v3_iso ~ pullup_iso_i2c.power
-    i2c_iso ~ pullup_iso_i2c.i2c
 
     # Cell Power
     power_24v ~ cell1.power_in
@@ -84,23 +57,23 @@ module CellSim8Ch:
     power_24v ~ cell7.power_in
     power_24v ~ cell8.power_in
 
-    power_5v_iso ~ cell1.power_5v
-    power_5v_iso ~ cell2.power_5v
-    power_5v_iso ~ cell3.power_5v
-    power_5v_iso ~ cell4.power_5v
-    power_5v_iso ~ cell5.power_5v
-    power_5v_iso ~ cell6.power_5v
-    power_5v_iso ~ cell7.power_5v
-    power_5v_iso ~ cell8.power_5v
+    power_5v ~ cell1.power_5v
+    power_5v ~ cell2.power_5v
+    power_5v ~ cell3.power_5v
+    power_5v ~ cell4.power_5v
+    power_5v ~ cell5.power_5v
+    power_5v ~ cell6.power_5v
+    power_5v ~ cell7.power_5v
+    power_5v ~ cell8.power_5v
 
-    power_3v3_iso ~ cell1.power_isolator
-    power_3v3_iso ~ cell2.power_isolator
-    power_3v3_iso ~ cell3.power_isolator
-    power_3v3_iso ~ cell4.power_isolator
-    power_3v3_iso ~ cell5.power_isolator
-    power_3v3_iso ~ cell6.power_isolator
-    power_3v3_iso ~ cell7.power_isolator
-    power_3v3_iso ~ cell8.power_isolator
+    power_3v3 ~ cell1.power_isolator
+    power_3v3 ~ cell2.power_isolator
+    power_3v3 ~ cell3.power_isolator
+    power_3v3 ~ cell4.power_isolator
+    power_3v3 ~ cell5.power_isolator
+    power_3v3 ~ cell6.power_isolator
+    power_3v3 ~ cell7.power_isolator
+    power_3v3 ~ cell8.power_isolator
 
     # Cell to cell connections
     cell1.cell_up ~ cell2.cell_down
@@ -110,6 +83,7 @@ module CellSim8Ch:
     cell5.cell_up ~ cell6.cell_down
     cell6.cell_up ~ cell7.cell_down
     cell7.cell_up ~ cell8.cell_down
+
 
     # Cell to i2c mux connections
     i2c_mux.i2c0 ~ cell1.i2c
@@ -141,3 +115,7 @@ module CellSim8Ch:
     dmm_relay.power_in ~ cell6.dmm_out
     dmm_relay.power_in ~ cell7.dmm_out
     dmm_relay.power_in ~ cell8.dmm_out
+
+
+module Test:
+    pullup = new I2CPullup
