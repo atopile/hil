@@ -104,10 +104,6 @@ builds:
     entry: elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
     exclude_targets: [mfg-data]
 
-  cell-stack-isolator:
-    entry: elec/src/cell_stack_isolator.ato:CellStackIsolator
-    exclude_targets: [mfg-data]
-
   micro-vault:
     entry: elec/src/blocks/micro_vault.ato:MicroVault
     exclude_targets: [mfg-data]
@@ -121,7 +117,7 @@ builds:
     exclude_targets: [mfg-data]
 
   heater-controller:
-    entry: hil/elec/src/heater_controller.ato:HeaterController
+    entry: elec/src/blocks/heater_controller.ato:HeaterController
     exclude_targets: [mfg-data]
 
   micro-vault-dev-board:
