@@ -7,10 +7,11 @@ _For technical folks who may not specialize in test but need a straightforward w
 There's a bunch of tooling that goes into good hardware testing.
 
 Consider whether to:
+
 - one-shot vs. automate runs
 - orchestrate vs. setup ad-hoc
 - log results vs. read them out
-- shared setups to log into vs. dedicated per-user or per-test setups
+- have shared setups to log into vs. dedicated per-user or per-test setups
 - capture statistical vs. pass-fail results
 - spot-check values vs. sweep for coverage
 - test all-up vs. mock out parts of the system
@@ -63,14 +64,14 @@ The **factory** (green, right) is equipment optimised to provide a self-containe
 
 Early phases and low fidelity. This is the first time you get a board and you want to check it out.
 
-Picture a lab bench with multimeters, scopes, bench-top power supplies and everything is bespoke. You're connecting to the board via probes and harnesses. Typically done by the design engineers who created the board. Some results are logged as evidence of design verification, but particularly early much is based on spot-checked, one-shot tests conducted in an dedicated ad-hoc setup.
+Picture a lab bench with multimeters, scopes, bench-top power supplies and everything is bespoke. You're connecting to the board via probes and harnesses. Typically done by the design engineers who created the board. Some results are logged as evidence of design verification, but particularly early much is based on spot-checked, one-shot tests conducted in a dedicated ad-hoc setup.
 
 
 #### Reliability
 
 Phase typically just after bring-up, but with higher fidelity - ensuring the exercise of the board is more representative of the real world.
 
-Technically also broadly under "design verification", but typically done in a more bespoke environment, like a thermal chamber or vibration table. These setups are more often than not also highly bespoke, but run for longer periods and are therefore more costly, meaning their results are logged as explicit evidence of design verification. This testing might include some abuse such as thermal cycling, vibration or salt spray
+Technically also broadly under "design verification", but typically done in a more bespoke environment, like a thermal chamber or vibration table. These setups are more often than not also highly bespoke, but run for longer periods and are therefore more costly, meaning their results are logged as explicit evidence of design verification. This testing might include some abuse such as thermal cycling, vibration or salt spray.
 
 
 #### Design Verification
@@ -104,7 +105,7 @@ Typically, HiL testing:
 - is done with a system that's shared between many engineers
 - is orchestrated via Github and a test runner, like `pytest`
 - stores results for verification and auditing
-- provides broad coverage, rountinely running hundreds of tests for every commit
+- provides broad coverage, routinely running hundreds of tests for every commit
 - must be very reliable and fast, since it's run so frequently and its results should be used to gate features merging
 
 
@@ -114,7 +115,7 @@ A phase of testing after bring-up with increasing fidelity as each component is 
 
 When said alone, it typically refers to bringing a few components together but not yet a full system.
 
-You might also head the term "buck" thrown around here often in the automotive industry, which refers to a partially complete system for running tests on.
+You might also hear the term "buck" thrown around here often in the automotive industry, which refers to a partially complete system for running tests on.
 
 
 #### System
