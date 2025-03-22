@@ -116,10 +116,6 @@ builds:
     entry: elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
     exclude_targets: [mfg-data]
 
-  heater-controller:
-    entry: elec/src/blocks/heater_controller.ato:HeaterController
-    exclude_targets: [mfg-data]
-
   micro-vault-dev-board:
     entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
 
