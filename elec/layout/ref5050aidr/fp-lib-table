@@ -7,11 +7,4 @@
         (options "")
         (descr "atopile: atopile footprints")
     )
-    (lib
-        (name "lib")
-        (type "KiCad")
-        (uri "${KIPRJMOD}/../../../build/footprints/footprints.pretty")
-        (options "")
-        (descr "atopile: lib footprints")
-    )
 )

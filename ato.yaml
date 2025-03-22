@@ -116,6 +116,13 @@ builds:
     entry: elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
     exclude_targets: [mfg-data]
 
+  ref5050aidr:
+    entry: elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
+    exclude_targets: [mfg-data]
+
+  heater-controller:
+    entry: /Users/narayanpowderly/projects/hil/elec/src/heater_controller.ato:HeaterController
+
 dependencies:
   - name: ldk220m-r
     version_spec:

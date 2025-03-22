@@ -70,6 +70,11 @@ module Texas_Instruments_ADS1219IPWR:
     # Reset - disabled by default
     ic.RESETh ~ power.vcc
 
+    i2c = new I2C
+    i2c.scl.line ~ ic.SCL
+    i2c.sda.line ~ ic.SDA
+
+
 component _Texas_Instruments_ADS1219IPWR:
     """Texas_Instruments_ADS1219IPWR component"""
     lcsc_id = "C2869313"

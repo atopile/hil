@@ -18,15 +18,15 @@ component Microchip_Tech_AT24C64DSSHMT:
     signal VCC ~ pin 8
     signal WP ~ pin 7
 
-    power_3v3 = new ElectricPower
-    power_3v3.vcc ~ VCC
-    power_3v3.gnd ~ GND
+    power = new ElectricPower
+    power.vcc ~ VCC
+    power.gnd ~ GND
 
     i2c = new I2C
     i2c.scl.line ~ SCL
     i2c.sda.line ~ SDA
 
     # Address default to 0x50
-    power_3v3.gnd ~ A0
-    power_3v3.gnd ~ A1
-    power_3v3.gnd ~ A2
+    power.gnd ~ A0
+    power.gnd ~ A1
+    power.gnd ~ A2
