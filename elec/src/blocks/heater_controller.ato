@@ -64,6 +64,10 @@ module HeaterController:
     comparator.OUT1 ~ hysteresis_resistor.p1
     hysteresis_resistor.p2 ~ comparator.IN1plus
 
+    # Switch hack
+    load_switch.pulldown_resistor.p1 ~ comparator.OUT1
+    load_switch.pulldown_resistor.p2 ~ power.gnd
+
     # Heater
     power ~ load_switch.power
     load_switch.load.vcc ~ load_resistor_1.p1
