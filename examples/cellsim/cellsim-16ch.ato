@@ -1,7 +1,7 @@
 from "blocks/hil-core.ato" import HILCore
 from "blocks/cellsim-8ch.ato" import CellSim8Ch
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
-from "blocks/coms-can.ato" import ComsCANISO
+from "blocks/coms-can.ato" import ComsCANISO, SplitCANTermination
 from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
 from "blocks/debug-saleae.ato" import DebugSaleae
 from "components/banana-power.ato" import BananaPower
@@ -99,6 +99,7 @@ module CellSim16Ch:
 
     # CAN Interface
     can_controller = new ComsCANISO
+    can_controller.termination -> SplitCANTermination
 
     # Power
     hil_core.power_5v ~ can_controller.power_5v
