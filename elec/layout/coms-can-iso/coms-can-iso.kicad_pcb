@@ -4235,6 +4235,18 @@
 		(layer "Edge.Cuts")
 		(uuid "008ccbb6-d8c9-42d1-abaa-a5b2e544f91c")
 	)
+	(gr_text "450V RMS ISO"
+		(at 158.74 77.67 90)
+		(layer "F.SilkS")
+		(uuid "07361c42-16fe-4e57-aa08-30596ba57ac3")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
+	)
 	(gr_text "COMS-CAN-ISO"
 		(at 137.42 65.17 0)
 		(layer "F.SilkS")
