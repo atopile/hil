@@ -2,7 +2,6 @@ ato-version: 0.3.0
 
 builds:
   # Project Examples
-
   cellsim-16ch:
     entry: examples/cellsim/cellsim-16ch.ato:CellSim16Ch
 
@@ -61,7 +60,8 @@ builds:
     exclude_targets: [mfg-data]
 
   buck-boost:
-    entry: elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
+    entry:
+      elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
 
   analog-out-4ch:
@@ -69,7 +69,8 @@ builds:
     exclude_targets: [mfg-data]
 
   boost-converter:
-    entry: elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
+    entry:
+      elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
     exclude_targets: [mfg-data]
 
   variable-resistor:
@@ -97,11 +98,13 @@ builds:
     exclude_targets: [mfg-data]
 
   usb251b:
-    entry: elec/src/components/microchip_tech_us_b2514b_im2.ato:Microchip_Tech_USB2514B_I_M2
+    entry:
+      elec/src/components/microchip_tech_us_b2514b_im2.ato:Microchip_Tech_USB2514B_I_M2
     exclude_targets: [mfg-data]
 
   current-limit-switch:
-    entry: elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
+    entry:
+      elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
     exclude_targets: [mfg-data]
 
   micro-vault:
@@ -109,34 +112,36 @@ builds:
     exclude_targets: [mfg-data]
 
   ads1219ipwr:
-    entry: elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
+    entry:
+      elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
     exclude_targets: [mfg-data]
 
   ref5050aidr:
-    entry: elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
+    entry:
+      elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
     exclude_targets: [mfg-data]
 
   micro-vault-dev-board:
     entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
 
 dependencies:
-  - name: ldk220m-r
-    version_spec:
-    link_broken: false
-    path: .ato/modules/ldk220m-r
-    source:
-  - name: saleae-header
-    version_spec: "@d8281da01a1efdde7779499647c31a10ab47ec45"
-    link_broken: false
-    path: .ato/modules/saleae-header
-    source:
-  - name: xt-connectors
-    version_spec:
-    link_broken: false
-    path: .ato/modules/xt-connectors
-    source:
-  - name: https://github.com/atopile/lv2842xlvddcr.git
-    version_spec: "@ac20c5b8415de66fa9af8c74218dd52d0c579ad6"
-    link_broken: false
-    path: .ato/modules/lv2842xlvddcr.git
-    source:
+- name: ldk220m-r
+  version_spec:
+  link_broken: false
+  path: .ato/modules/ldk220m-r
+  source:
+- name: saleae-header
+  version_spec: '@d8281da01a1efdde7779499647c31a10ab47ec45'
+  link_broken: false
+  path: .ato/modules/saleae-header
+  source:
+- name: xt-connectors
+  version_spec:
+  link_broken: false
+  path: .ato/modules/xt-connectors
+  source:
+- name: https://github.com/atopile/lv2842xlvddcr.git
+  version_spec: '@ac20c5b8415de66fa9af8c74218dd52d0c579ad6'
+  link_broken: false
+  path: .ato/modules/lv2842xlvddcr.git
+  source:
