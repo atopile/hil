@@ -1,0 +1,33 @@
+component Texas_Instruments_PCF8575DBR:
+    """Texas_Instruments_PCF8575DBR component"""
+    lcsc_id = "C2863388"
+    manufacturer = "Texas Instruments"
+    mpn = "PCF8575DBR"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2303010800_Texas-Instruments-PCF8575DBR_C2863388.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal A0 ~ pin 21
+    signal A1 ~ pin 2
+    signal A2 ~ pin 3
+    signal GND ~ pin 12
+    signal INTh ~ pin 1
+    signal P00 ~ pin 4
+    signal P01 ~ pin 5
+    signal P02 ~ pin 6
+    signal P03 ~ pin 7
+    signal P04 ~ pin 8
+    signal P05 ~ pin 9
+    signal P06 ~ pin 10
+    signal P07 ~ pin 11
+    signal P10 ~ pin 13
+    signal P11 ~ pin 14
+    signal P12 ~ pin 15
+    signal P13 ~ pin 16
+    signal P14 ~ pin 17
+    signal P15 ~ pin 18
+    signal P16 ~ pin 19
+    signal P17 ~ pin 20
+    signal SCL ~ pin 22
+    signal SDA ~ pin 23
+    signal VCC ~ pin 24

@@ -119,6 +119,16 @@ builds:
   micro-vault-dev-board:
     entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
 
+  gpio-expander-16ch:
+    entry: elec/src/components/texas_instruments_pc_f8575d_br.py:Texas_Instruments_PCF8575DBR
+    exclude_targets: [mfg-data]
+
+  hardware-id:
+    entry: elec/src/hardware_id.py:HardwareID
+
+  test:
+    entry: elec/src/test.ato:Test
+
 dependencies:
   - name: ldk220m-r
     version_spec:

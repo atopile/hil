@@ -1,0 +1,5 @@
+from "blocks/hardware_id.py" import HardwareID
+
+module Test:
+    hardware_id = new HardwareID
+    hardware_id.id = 12345
