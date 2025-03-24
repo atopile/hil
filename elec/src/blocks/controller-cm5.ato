@@ -35,12 +35,10 @@ module ControllerCM5:
     spi0 = new SPI
     spi0_cs0 = new ElectricLogic
     spi0_cs1 = new ElectricLogic
-    spi0_int = new ElectricLogic
 
     spi0 ~ cm5.spi0
     spi0_cs0 ~ cm5.spi0_cs0
     spi0_cs1 ~ cm5.spi0_cs1
-    spi0_int ~ cm5.spi0_int
 
     # USB
     usb2 = new USB2_0
