@@ -1,0 +1,81 @@
+import ElectricPower, ElectricSignal
+import Resistor
+from "components/texas_instruments_tl_v9032d_gkr.ato" import Texas_Instruments_TLV9032DGKR
+from "mosfets.ato" import LowSideSwitch
+
+module HeaterController:
+    """
+    Heater Controller, takes a positive coefficeint voltage
+    and reference voltage, tries to keep the temperature
+    close to the reference voltage by turning on and off
+    a load resistor.
+    """
+    # External interaces
+    power = new ElectricPower
+    power_3v3 = new ElectricPower
+    temp_input = new ElectricSignal
+    reference_input = new ElectricSignal
+
+    # Components
+    comparator = new Texas_Instruments_TLV9032DGKR
+    hysteresis_resistor = new Resistor
+    load_switch = new LowSideSwitch
+    load_resistor_1 = new Resistor
+    load_resistor_2 = new Resistor
+    load_resistor_3 = new Resistor
+    load_resistor_4 = new Resistor
+    load_resistor_5 = new Resistor
+    load_resistor_6 = new Resistor
+    load_resistor_7 = new Resistor
+    load_resistor_8 = new Resistor
+
+    power_3v3 ~ comparator.power
+
+    load_resistor_1.resistance = 22ohm +/- 10%
+    load_resistor_2.resistance = 22ohm +/- 10%
+    load_resistor_3.resistance = 22ohm +/- 10%
+    load_resistor_4.resistance = 22ohm +/- 10%
+    load_resistor_5.resistance = 22ohm +/- 10%
+    load_resistor_6.resistance = 22ohm +/- 10%
+    load_resistor_7.resistance = 22ohm +/- 10%
+    load_resistor_8.resistance = 22ohm +/- 10%
+    hysteresis_resistor.resistance = 1Mohm +/- 10%
+
+    load_resistor_1.package = "R0603"
+    load_resistor_2.package = "R0603"
+    load_resistor_3.package = "R0603"
+    load_resistor_4.package = "R0603"
+    load_resistor_5.package = "R0603"
+    load_resistor_6.package = "R0603"
+    load_resistor_7.package = "R0603"
+    load_resistor_8.package = "R0603"
+    hysteresis_resistor.package = "R0402"
+    load_switch.gate_resistor.package = "R0402"
+    load_switch.pulldown_resistor.package = "R0402"
+
+    load_switch.fet.lcsc_id = "C67273"
+
+    # Connections
+    temp_input.line ~ comparator.IN1minus
+    reference_input.line ~ comparator.IN1plus
+    comparator.OUT1 ~ load_switch.input.line
+
+    # Hysteresis
+    comparator.OUT1 ~ hysteresis_resistor.p1
+    hysteresis_resistor.p2 ~ comparator.IN1plus
+
+    # Switch hack
+    load_switch.pulldown_resistor.p1 ~ comparator.OUT1
+    load_switch.pulldown_resistor.p2 ~ power.gnd
+
+    # Heater
+    power ~ load_switch.power
+    load_switch.load.vcc ~ load_resistor_1.p1
+    load_resistor_1.p2 ~ load_resistor_2.p1
+    load_resistor_2.p2 ~ load_resistor_3.p1
+    load_resistor_3.p2 ~ load_resistor_4.p1
+    load_resistor_4.p2 ~ load_resistor_5.p1
+    load_resistor_5.p2 ~ load_resistor_6.p1
+    load_resistor_6.p2 ~ load_resistor_7.p1
+    load_resistor_7.p2 ~ load_resistor_8.p1
+    load_resistor_8.p2 ~ load_switch.load.gnd

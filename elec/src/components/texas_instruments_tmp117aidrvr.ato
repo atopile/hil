@@ -1,0 +1,37 @@
+import ElectricPower, I2C
+
+component Texas_Instruments_TMP117AIDRVR:
+    """Texas_Instruments_TMP117AIDRVR component"""
+    lcsc_id = "C699536"
+    manufacturer = "Texas Instruments"
+    mpn = "TMP117AIDRVR"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2309221403_Texas-Instruments-TMP117AIDRVR_C699536.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal ADD0 ~ pin 4
+    signal ALERT ~ pin 3
+    signal EP ~ pin 7
+    signal GND ~ pin 2
+    signal SCL ~ pin 1
+    signal SDA ~ pin 6
+    signal Vplus ~ pin 5
+
+    power = new ElectricPower
+    power.vcc ~ Vplus
+    power.gnd ~ GND
+    power.gnd ~ EP
+
+    i2c = new I2C
+    i2c.scl.line ~ SCL
+    i2c.sda.line ~ SDA
+
+    # Address pin
+    # I2C Address Configuration:
+    #   ADD0 Pin    | Address
+    #   ---------------------
+    #   GND         | 0x48
+    #   V+          | 0x49
+    #   SDA         | 0x4A
+    #   SCL         | 0x4B
+    power.gnd ~ ADD0

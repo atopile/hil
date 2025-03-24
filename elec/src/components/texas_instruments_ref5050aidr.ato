@@ -1,0 +1,58 @@
+import ElectricPower, ElectricSignal, Capacitor
+
+component Texas_Instruments_REF5050AIDR:
+    """Texas_Instruments_REF5050AIDR component"""
+    power_in = new ElectricPower
+    power_out = new ElectricPower
+
+    ic = new _Texas_Instruments_REF5050AIDR
+
+    # Power connections
+    power_in.vcc ~ ic.VIN
+    power_in.gnd ~ ic.GND
+    power_out.vcc ~ ic.VOUT
+    power_out.gnd ~ ic.GND
+
+    # Temp output
+    temp_out = new ElectricSignal
+    temp_out.line ~ ic.TEMP
+    temp_out.reference.gnd ~ power_in.gnd
+
+    # Input cap
+    input_cap = new Capacitor
+    input_cap.capacitance = 1uF +/- 20%
+    input_cap.package = "C0402"
+    input_cap.power ~ power_in
+
+    # Output cap
+    output_cap_1 = new Capacitor
+    output_cap_1.capacitance = 1uF +/- 20%
+    output_cap_1.package = "C0402"
+    output_cap_1.power ~ power_out
+
+    output_cap_2 = new Capacitor
+    output_cap_2.capacitance = 10uF +/- 20%
+    output_cap_2.package = "C0603"
+    output_cap_2.power ~ power_out
+
+    output_cap_3 = new Capacitor
+    output_cap_3.capacitance = 10uF +/- 20%
+    output_cap_3.package = "C0603"
+    output_cap_3.power ~ power_out
+
+component _Texas_Instruments_REF5050AIDR:
+    """Texas_Instruments_REF5050AIDR component"""
+    lcsc_id = "C27804"
+    manufacturer = "Texas Instruments"
+    mpn = "REF5050AIDR"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1809112105_Texas-Instruments-REF5050AIDR_C27804.pdf"
+    designator_prefix = "U"
+
+    # pins
+    # signal DNC ~ pin 1
+    # signal DNC1 ~ pin 8
+    signal GND ~ pin 4
+    signal TEMP ~ pin 3
+    signal TRIMNR ~ pin 5
+    signal VIN ~ pin 2
+    signal VOUT ~ pin 6

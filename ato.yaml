@@ -104,6 +104,21 @@ builds:
     entry: elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
     exclude_targets: [mfg-data]
 
+  micro-vault:
+    entry: elec/src/blocks/micro_vault.ato:MicroVault
+    exclude_targets: [mfg-data]
+
+  ads1219ipwr:
+    entry: elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
+    exclude_targets: [mfg-data]
+
+  ref5050aidr:
+    entry: elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
+    exclude_targets: [mfg-data]
+
+  micro-vault-dev-board:
+    entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
+
 dependencies:
   - name: ldk220m-r
     version_spec:
@@ -116,7 +131,7 @@ dependencies:
     path: .ato/modules/saleae-header
     source:
   - name: xt-connectors
-    version_spec: "@3719ec970da96df05b6763671993ca2276df968b"
+    version_spec:
     link_broken: false
     path: .ato/modules/xt-connectors
     source:

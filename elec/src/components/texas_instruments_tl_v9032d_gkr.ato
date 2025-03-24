@@ -1,0 +1,23 @@
+import ElectricPower, ElectricSignal
+
+component Texas_Instruments_TLV9032DGKR:
+    """Texas_Instruments_TLV9032DGKR component"""
+    lcsc_id = "C3658717"
+    manufacturer = "Texas Instruments"
+    mpn = "TLV9032DGKR"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2302220130_Texas-Instruments-TLV9032DGKR_C3658717.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal IN1minus ~ pin 2
+    signal IN1plus ~ pin 3
+    signal IN2minus ~ pin 6
+    signal IN2plus ~ pin 5
+    signal OUT1 ~ pin 1
+    signal OUT2 ~ pin 7
+    signal Vminus ~ pin 4
+    signal Vplus ~ pin 8
+
+    power = new ElectricPower
+    power.vcc ~ Vplus
+    power.gnd ~ Vminus
