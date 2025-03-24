@@ -6,6 +6,3 @@ component Sinhoo_SMTSO2515CTJ:
     datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2111221230_Sinhoo-SMTSO2515CTJ_C2915629.pdf"
     designator_prefix = "U"
     signal p1 ~ pin 1
-    signal p2 ~ pin 2
-    signal p3 ~ pin 3
-    signal p4 ~ pin 4
