@@ -124,6 +124,12 @@ builds:
   micro-vault-dev-board:
     entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
 
+  # Outlines
+  ## These provide simple board shapes
+  boardshapes-gridfinity-3x100mm:
+    entry:
+      elec/src/boardshapes/boardshape_gridfinity_3x100mm.ato:BoardshapeGridfinity3x100mm
+
 dependencies:
 - name: ldk220m-r
   version_spec:
