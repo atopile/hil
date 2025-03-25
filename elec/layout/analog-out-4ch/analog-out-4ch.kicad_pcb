@@ -110,6 +110,7 @@
 		(property "Reference" "U15"
 			(at 0 -4 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "ce27b2c9-7a3e-4020-b4e6-279eecdb4c1d")
 			(effects
 				(font
@@ -121,6 +122,7 @@
 		(property "Value" ""
 			(at 0 4 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "497a879b-6d5c-4e55-8cb8-0dce6c05a7b3")
 			(effects
 				(font
@@ -132,6 +134,7 @@
 		(property "Datasheet" ""
 			(at 0 0 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "b4e9bc58-bf38-4b22-8c36-51f24c774965")
 			(effects
 				(font
@@ -143,6 +146,7 @@
 		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "816a68c6-ae46-4809-aaf2-83b902d12f23")
 			(effects
 				(font
@@ -154,6 +158,7 @@
 		(property "__atopile_lib_fp_hash__" "bd8166b3-f9c1-3fdc-fa6e-d4ab28406286"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "e3b16e34-a17c-4d34-b2b5-b6dc4642524b")
 			(effects
 				(font
@@ -165,6 +170,7 @@
 		(property "LCSC" "C152100"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "3aefcceb-60d0-4ad0-b362-cd564642524b")
 			(effects
 				(font
@@ -176,6 +182,7 @@
 		(property "Manufacturer" "BORN"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "70383143-4554-4cfb-b9f9-a6a54642524b")
 			(effects
 				(font
@@ -187,6 +194,7 @@
 		(property "Partnumber" "SMBJ26A"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "ad1a875a-deff-498e-be01-2db54642524b")
 			(effects
 				(font
@@ -198,6 +206,7 @@
 		(property "JLCPCB description" "14.3A 42.1V 28.9V 26V SMB(DO-214AA)  ESD and Surge Protection (TVS/ESD) ROHS"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "0afc5546-f3c0-4888-837e-6ae84642524b")
 			(effects
 				(font
@@ -209,6 +218,7 @@
 		(property "atopile_address" "tvs_ch4.diode"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "d1385442-08fa-4119-a4e9-8df94642524b")
 			(effects
 				(font
@@ -279,28 +289,6 @@
 			(layer "F.Fab")
 			(uuid "36392828-bac0-446f-bd38-66c581c7ab36")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 90)
-			(layer "F.SilkS")
-			(uuid "58bec405-93de-4f3d-b57b-031cfd0a661e")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 90)
-			(layer "F.Fab")
-			(uuid "e187aa58-88f8-4428-a968-4e134d38c9bc")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -2.36 0 270)
 			(size 2.05 2.19)
@@ -324,6 +312,7 @@
 		(property "Reference" "U14"
 			(at -1.34 -3.8 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "05a287af-7744-4b0b-abc5-52533cc45f5e")
 			(effects
 				(font
@@ -335,6 +324,7 @@
 		(property "Value" ""
 			(at 0 4 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "f2d313f4-554d-4c1b-8cf0-523459172713")
 			(effects
 				(font
@@ -346,6 +336,7 @@
 		(property "Datasheet" ""
 			(at 0 0 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "0a3ec9c0-5bfc-4137-a62b-37c2b8d5b70d")
 			(effects
 				(font
@@ -357,6 +348,7 @@
 		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "9ea55512-79e3-4fed-ab9d-f01e2a5f949c")
 			(effects
 				(font
@@ -368,6 +360,7 @@
 		(property "__atopile_lib_fp_hash__" "58ec7fc0-a2f2-5bf9-a85c-dfcb9365dbc9"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "5b088ce7-4234-49f2-81c9-fde04642524b")
 			(effects
 				(font
@@ -379,6 +372,7 @@
 		(property "LCSC" "C152100"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "65e1ed4a-9b92-4931-b9cd-6d604642524b")
 			(effects
 				(font
@@ -390,6 +384,7 @@
 		(property "Manufacturer" "BORN"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "18574058-c610-49c9-ab09-b1544642524b")
 			(effects
 				(font
@@ -401,6 +396,7 @@
 		(property "Partnumber" "SMBJ26A"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "6d046216-c37b-4ea8-ba55-30864642524b")
 			(effects
 				(font
@@ -412,6 +408,7 @@
 		(property "JLCPCB description" "14.3A 42.1V 28.9V 26V SMB(DO-214AA)  ESD and Surge Protection (TVS/ESD) ROHS"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "400933ac-bbc6-4af7-8781-d7c24642524b")
 			(effects
 				(font
@@ -423,6 +420,7 @@
 		(property "atopile_address" "tvs_ch3.diode"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "ea6ac25e-d45d-4c98-a937-ea814642524b")
 			(effects
 				(font
@@ -493,28 +491,6 @@
 			(layer "F.Fab")
 			(uuid "de938be5-311a-4a4f-b221-8148fc12098e")
 		)
-		(fp_text user "${REFERENCE}"
-			(at -1.34 -3.8 90)
-			(layer "F.SilkS")
-			(uuid "671e6e12-2035-406f-8e9b-8635406814bb")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 90)
-			(layer "F.Fab")
-			(uuid "af218b38-d2d7-4db1-9676-37ddec62266e")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -2.36 0 270)
 			(size 2.05 2.19)
@@ -538,6 +514,7 @@
 		(property "Reference" "U7"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "d2f37283-da76-49d9-9d96-a1c16668031b")
 			(effects
 				(font
@@ -549,6 +526,7 @@
 		(property "Value" "100Ω ±1% 62.5mW"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "02195f27-95a5-4ca0-889d-4002304017eb")
 			(effects
 				(font
@@ -560,6 +538,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "a8f43500-3f00-432f-8fd4-46fe01678c3c")
 			(effects
 				(font
@@ -571,6 +550,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "3ff6b481-0d0a-4fc1-93a9-b68919ed86db")
 			(effects
 				(font
@@ -582,6 +562,7 @@
 		(property "__atopile_lib_fp_hash__" "f9ce5e52-a79d-e40d-b5aa-844b5196409c"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "a5e4b2c6-682a-4c8d-942d-6c3c4642524b")
 			(effects
 				(font
@@ -593,6 +574,7 @@
 		(property "LCSC" "C25076"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "5700d84d-e3cc-49cd-8c19-df644642524b")
 			(effects
 				(font
@@ -604,6 +586,7 @@
 		(property "Partnumber" "0402WGF1000TCE"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "8760e403-e428-4f0f-a25f-13dc4642524b")
 			(effects
 				(font
@@ -615,6 +598,7 @@
 		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "b0312042-2be4-474e-aaf9-d56e4642524b")
 			(effects
 				(font
@@ -626,6 +610,7 @@
 		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "ba0e8eb0-4e8d-4f08-a876-7a484642524b")
 			(effects
 				(font
@@ -637,6 +622,7 @@
 		(property "atopile_address" "amplifier.amplified_signal_4.feedback_resistor"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "5633c4da-b35f-47a6-b7b3-dceb4642524b")
 			(effects
 				(font
@@ -717,28 +703,6 @@
 			(layer "F.Fab")
 			(uuid "4a13cb2a-5b2c-4af5-bbf7-1371f95dc7b5")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "f950518e-2aa3-406d-bf70-8f06890c70b1")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "931c239c-d434-4b03-ab00-323e244bf164")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.43 0 180)
 			(size 0.57 0.54)
@@ -762,6 +726,7 @@
 		(property "Reference" "U10"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "fe3e110a-223a-4f19-a5f1-0639ddf09bd0")
 			(effects
 				(font
@@ -773,6 +738,7 @@
 		(property "Value" "100nF ±10% 16V X7R"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "9a641889-8dc4-4220-aa06-76d5d452854e")
 			(effects
 				(font
@@ -784,6 +750,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "95711942-8d7e-439c-bb58-b5a795481ff1")
 			(effects
 				(font
@@ -795,6 +762,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "f4e9364f-7e88-4ad1-9f31-2e8ea2dcd83a")
 			(effects
 				(font
@@ -806,6 +774,7 @@
 		(property "__atopile_lib_fp_hash__" "12bb96bc-09fb-f3cb-ac75-0e7a43735649"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "372e2dad-7a9c-47fc-b790-bf864642524b")
 			(effects
 				(font
@@ -817,6 +786,7 @@
 		(property "LCSC" "C1525"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "d4bfd87e-05a8-485a-a9af-700d4642524b")
 			(effects
 				(font
@@ -828,6 +798,7 @@
 		(property "Partnumber" "CL05B104KO5NNNC"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "bfe8878a-ed4d-4e08-af9e-62ab4642524b")
 			(effects
 				(font
@@ -839,6 +810,7 @@
 		(property "Manufacturer" "Samsung Electro-Mechanics"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "6efd9e52-7610-4d14-8cb5-9bbc4642524b")
 			(effects
 				(font
@@ -850,6 +822,7 @@
 		(property "JLCPCB description" "16V 100nF X7R ±10% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "347555eb-f824-4c80-855d-ec8b4642524b")
 			(effects
 				(font
@@ -861,6 +834,7 @@
 		(property "atopile_address" "dac.bypass_cap"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "5acf7c12-e81a-401e-9c87-cdbe4642524b")
 			(effects
 				(font
@@ -985,28 +959,6 @@
 			(layer "F.Fab")
 			(uuid "0f70be98-a6ab-4d8f-98de-1993174fa910")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "14f9820e-23bf-4a37-b6f0-89c14fd0b924")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "74bf022e-5e37-4c2d-a7df-3ade8a6380c8")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.55 0)
 			(size 0.79 0.54)
@@ -1030,6 +982,7 @@
 		(property "Reference" "U5"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "5fb0f68a-6032-4b25-a82a-1b2a0a385033")
 			(effects
 				(font
@@ -1041,6 +994,7 @@
 		(property "Value" "100Ω ±1% 62.5mW"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "8fc024e1-4642-4c8f-a761-bbf0f3b9f58a")
 			(effects
 				(font
@@ -1052,6 +1006,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "577bae8f-02bc-47c2-b69a-8f71d090781e")
 			(effects
 				(font
@@ -1063,6 +1018,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "ffd981a8-2291-4a08-8531-b862b5338dcb")
 			(effects
 				(font
@@ -1074,6 +1030,7 @@
 		(property "__atopile_lib_fp_hash__" "ff1dd6d8-bbdb-c490-b898-e9dfc49bf717"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "08758a37-357f-4bcd-9e0f-57854642524b")
 			(effects
 				(font
@@ -1085,6 +1042,7 @@
 		(property "LCSC" "C25076"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "20948dd0-75ed-459c-b6d3-a5614642524b")
 			(effects
 				(font
@@ -1096,6 +1054,7 @@
 		(property "Partnumber" "0402WGF1000TCE"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "6d97333c-6ce8-4293-9e59-c1d54642524b")
 			(effects
 				(font
@@ -1107,6 +1066,7 @@
 		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "38763634-b01c-4180-9455-85304642524b")
 			(effects
 				(font
@@ -1118,6 +1078,7 @@
 		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "f7176f89-d484-4a65-a06d-68314642524b")
 			(effects
 				(font
@@ -1129,6 +1090,7 @@
 		(property "atopile_address" "amplifier.amplified_signal_3.feedback_resistor"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "bd89c374-b03c-4628-862f-32894642524b")
 			(effects
 				(font
@@ -1209,28 +1171,6 @@
 			(layer "F.Fab")
 			(uuid "330ff1cd-e37e-4ddb-8908-f7282ce89fb1")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "5972d136-f19b-41d9-92cb-7178dc2f082f")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "36072a91-0dd1-4e39-9d6d-b18629bb3a8a")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.43 0)
 			(size 0.57 0.54)
@@ -1254,6 +1194,7 @@
 		(property "Reference" "U13"
 			(at 0 -4 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "bf230049-501f-48f4-9546-150ae2e35ea9")
 			(effects
 				(font
@@ -1265,6 +1206,7 @@
 		(property "Value" ""
 			(at 0 4 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "fcd7df50-76d5-42df-b3e3-256f43553556")
 			(effects
 				(font
@@ -1276,6 +1218,7 @@
 		(property "Datasheet" ""
 			(at 0 0 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "d05de1d4-1a0a-41c3-a80f-5e2c2e05b693")
 			(effects
 				(font
@@ -1287,6 +1230,7 @@
 		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "55822073-5882-4661-882b-35fba56037c6")
 			(effects
 				(font
@@ -1298,6 +1242,7 @@
 		(property "__atopile_lib_fp_hash__" "243ec6c5-e1eb-d701-5b5d-ad320b86003f"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "fda71eee-da96-4d1b-83e0-1f1c4642524b")
 			(effects
 				(font
@@ -1309,6 +1254,7 @@
 		(property "LCSC" "C152100"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "430900f8-3a9f-4886-b185-b07f4642524b")
 			(effects
 				(font
@@ -1320,6 +1266,7 @@
 		(property "Manufacturer" "BORN"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "9cd9fdd2-c1bd-4461-a23d-603e4642524b")
 			(effects
 				(font
@@ -1331,6 +1278,7 @@
 		(property "Partnumber" "SMBJ26A"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "00125570-945b-416e-9a3f-75f04642524b")
 			(effects
 				(font
@@ -1342,6 +1290,7 @@
 		(property "JLCPCB description" "14.3A 42.1V 28.9V 26V SMB(DO-214AA)  ESD and Surge Protection (TVS/ESD) ROHS"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "a50e01fe-3677-4934-8fb2-69c84642524b")
 			(effects
 				(font
@@ -1353,6 +1302,7 @@
 		(property "atopile_address" "tvs_ch2.diode"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "56914a10-9084-456e-84a1-5f4c4642524b")
 			(effects
 				(font
@@ -1423,28 +1373,6 @@
 			(layer "F.Fab")
 			(uuid "505a4036-d4f9-478a-8d93-f0a69641b17f")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 90)
-			(layer "F.SilkS")
-			(uuid "87bb7f00-e960-45fd-be24-722997396dd1")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 90)
-			(layer "F.Fab")
-			(uuid "da0da78a-1263-4c69-9b09-2bb6871ef880")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -2.36 0 90)
 			(size 2.05 2.19)
@@ -1468,6 +1396,7 @@
 		(property "Reference" "U8"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "97cfbab1-8148-4ab4-9968-5c90e1db715d")
 			(effects
 				(font
@@ -1479,6 +1408,7 @@
 		(property "Value" "100Ω ±1% 62.5mW"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "5dae3f86-fc8f-4772-b070-7acbcb753539")
 			(effects
 				(font
@@ -1490,6 +1420,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "dafee676-74fc-4a7a-ae8f-7f37f05b919e")
 			(effects
 				(font
@@ -1501,6 +1432,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "4cb21a94-6224-489e-ac15-fdcdb8cd882c")
 			(effects
 				(font
@@ -1512,6 +1444,7 @@
 		(property "__atopile_lib_fp_hash__" "99834045-0bd3-ceb9-9051-561fd5a19a31"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "e60f9721-dba3-4d7c-b531-44754642524b")
 			(effects
 				(font
@@ -1523,6 +1456,7 @@
 		(property "LCSC" "C25076"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "f64f3599-73f4-4b8a-ab2d-60a84642524b")
 			(effects
 				(font
@@ -1534,6 +1468,7 @@
 		(property "Partnumber" "0402WGF1000TCE"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "373656f7-9b39-42dc-8a90-56924642524b")
 			(effects
 				(font
@@ -1545,6 +1480,7 @@
 		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "05f3e884-ab95-470f-8405-00e24642524b")
 			(effects
 				(font
@@ -1556,6 +1492,7 @@
 		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "226cc14b-d18c-4e04-b1f0-96d64642524b")
 			(effects
 				(font
@@ -1567,6 +1504,7 @@
 		(property "atopile_address" "amplifier.amplified_signal_4.input_resistor"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "366e06d2-3d63-40d4-9738-5dd94642524b")
 			(effects
 				(font
@@ -1647,28 +1585,6 @@
 			(layer "F.Fab")
 			(uuid "3a7808d6-e056-45c4-845e-e82f2a22d98a")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "336f7a45-2020-4969-86d0-dc58cd0f85d7")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "cf31b634-c6c2-4095-8bc7-cf47441e2d6a")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.43 0 180)
 			(size 0.57 0.54)
@@ -1692,6 +1608,7 @@
 		(property "Reference" "U4"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "c2a974c9-8470-4096-8963-bf2aa346e052")
 			(effects
 				(font
@@ -1703,6 +1620,7 @@
 		(property "Value" "100Ω ±1% 62.5mW"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "8be754cf-6d7c-4962-b036-0abcfc096ca7")
 			(effects
 				(font
@@ -1714,6 +1632,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "7e993a05-a0fc-4df9-a45f-bef6ce7ba414")
 			(effects
 				(font
@@ -1725,6 +1644,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "6484ad28-7bc1-4868-8b79-80515cd3155f")
 			(effects
 				(font
@@ -1736,6 +1656,7 @@
 		(property "__atopile_lib_fp_hash__" "21df915b-1593-3021-f8c5-0a899bf36f44"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "d16ba7e9-f65b-477f-90a3-c8244642524b")
 			(effects
 				(font
@@ -1747,6 +1668,7 @@
 		(property "LCSC" "C25076"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "1c512ba3-d789-4250-9583-a5314642524b")
 			(effects
 				(font
@@ -1758,6 +1680,7 @@
 		(property "Partnumber" "0402WGF1000TCE"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "959194bf-8c45-4b3a-84be-3b7a4642524b")
 			(effects
 				(font
@@ -1769,6 +1692,7 @@
 		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "3f3a19e2-edad-4426-b761-e6c84642524b")
 			(effects
 				(font
@@ -1780,6 +1704,7 @@
 		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "3c5f7c79-17ad-47e0-8b65-3c704642524b")
 			(effects
 				(font
@@ -1791,6 +1716,7 @@
 		(property "atopile_address" "amplifier.amplified_signal_2.input_resistor"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "9d274205-b1ec-4f17-8fac-29904642524b")
 			(effects
 				(font
@@ -1871,28 +1797,6 @@
 			(layer "F.Fab")
 			(uuid "f39fa261-7703-40a5-8805-8bd9ba199545")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "c3d2dbf5-829f-4907-8ec4-a135dcf22e4e")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "dd88a039-5d90-44e8-87ca-49b94e515045")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.43 0)
 			(size 0.57 0.54)
@@ -1916,6 +1820,7 @@
 		(property "Reference" "U6"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "4c71d5a4-0ca9-4ccc-a950-fcfc3648a3b4")
 			(effects
 				(font
@@ -1927,6 +1832,7 @@
 		(property "Value" "100Ω ±1% 62.5mW"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "5c18b594-5489-436e-bc28-1901c9b19511")
 			(effects
 				(font
@@ -1938,6 +1844,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "de6917e0-47c7-4774-b75f-1b21ce6c1268")
 			(effects
 				(font
@@ -1949,6 +1856,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "1c674208-cc68-401a-acda-93b26928697d")
 			(effects
 				(font
@@ -1960,6 +1868,7 @@
 		(property "__atopile_lib_fp_hash__" "81c80e99-c627-7213-bb9f-c19afbaad12c"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "18eb6a18-46e3-4217-b516-f7904642524b")
 			(effects
 				(font
@@ -1971,6 +1880,7 @@
 		(property "LCSC" "C25076"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "213b2d89-2297-41bb-9ab3-f3804642524b")
 			(effects
 				(font
@@ -1982,6 +1892,7 @@
 		(property "Partnumber" "0402WGF1000TCE"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "a0c6f12a-3423-433a-83bb-ef834642524b")
 			(effects
 				(font
@@ -1993,6 +1904,7 @@
 		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "0ee2b18e-c82c-4558-820b-266a4642524b")
 			(effects
 				(font
@@ -2004,6 +1916,7 @@
 		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "c11166fc-6004-43df-8399-56b74642524b")
 			(effects
 				(font
@@ -2015,6 +1928,7 @@
 		(property "atopile_address" "amplifier.amplified_signal_3.input_resistor"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "de7dc728-60be-444d-83e4-262b4642524b")
 			(effects
 				(font
@@ -2095,28 +2009,6 @@
 			(layer "F.Fab")
 			(uuid "46c3482f-df8e-401d-bf63-f79a4246ba3e")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "13ac771b-3361-4b89-b72b-5d8afa919cb3")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "96f3abb3-2ff3-4a9c-9426-b56c5084e391")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.43 0)
 			(size 0.57 0.54)
@@ -2140,6 +2032,7 @@
 		(property "Reference" "U1"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "15b01cf0-5fda-4be6-921d-0ae083703e5a")
 			(effects
 				(font
@@ -2151,6 +2044,7 @@
 		(property "Value" "100Ω ±1% 62.5mW"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "b1aac74e-9017-4144-b936-8a344905b6ce")
 			(effects
 				(font
@@ -2162,6 +2056,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "7af2e3d7-deaf-464b-b613-62686ca865bc")
 			(effects
 				(font
@@ -2173,6 +2068,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "03b32c86-fb64-4680-99c3-ad553140009e")
 			(effects
 				(font
@@ -2184,6 +2080,7 @@
 		(property "__atopile_lib_fp_hash__" "3c5acf2c-abfc-4fbf-bb4b-25afa0694489"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "be06401c-ed32-455d-b482-bf714642524b")
 			(effects
 				(font
@@ -2195,6 +2092,7 @@
 		(property "LCSC" "C25076"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "b80bf63b-05bb-45f4-967b-05f94642524b")
 			(effects
 				(font
@@ -2206,6 +2104,7 @@
 		(property "Partnumber" "0402WGF1000TCE"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "d20d34b1-8aab-4d3a-bcdf-d5614642524b")
 			(effects
 				(font
@@ -2217,6 +2116,7 @@
 		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "b51804f7-06d2-4a00-aa5c-4b874642524b")
 			(effects
 				(font
@@ -2228,6 +2128,7 @@
 		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "aa5b68a1-3012-44d1-8065-e7f24642524b")
 			(effects
 				(font
@@ -2239,6 +2140,7 @@
 		(property "atopile_address" "amplifier.amplified_signal_1.feedback_resistor"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "2728a285-e4cf-43df-898f-5b9a4642524b")
 			(effects
 				(font
@@ -2319,28 +2221,6 @@
 			(layer "F.Fab")
 			(uuid "ff24f4a2-121c-4fd4-b6d3-023433589e50")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "27df9fd2-8eb2-4e83-b777-f67785e9e6e5")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "1e495a5c-fc05-47e9-b978-016ea44cf426")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.43 0 180)
 			(size 0.57 0.54)
@@ -2364,6 +2244,7 @@
 		(property "Reference" "U11"
 			(at 0 -5 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "54897fdd-35b3-4cd8-89c7-a9856fab6e74")
 			(effects
 				(font
@@ -2375,6 +2256,7 @@
 		(property "Value" ""
 			(at 0 5 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "0b2d0d15-dacb-4f63-a098-f7c6913f18f1")
 			(effects
 				(font
@@ -2386,6 +2268,7 @@
 		(property "Datasheet" "https://www.lcsc.com/datasheet/lcsc_datasheet_1811151641_Microchip-Tech-MCP4728-E-UN_C108207.pdf"
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "3a9aace1-0e7d-4384-a59e-213c3e5bf16a")
 			(effects
 				(font
@@ -2397,6 +2280,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "4a8ffb9f-8a50-418b-92ae-6dc0434b6431")
 			(effects
 				(font
@@ -2408,6 +2292,7 @@
 		(property "__atopile_lib_fp_hash__" "2acf6476-bb56-308a-e19a-83df398829f4"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "b8da6fed-907e-4125-9a1d-2cbe4642524b")
 			(effects
 				(font
@@ -2419,6 +2304,7 @@
 		(property "LCSC" "C108207"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "c9ae30dc-95e6-47e9-9b4c-1d484642524b")
 			(effects
 				(font
@@ -2430,6 +2316,7 @@
 		(property "Manufacturer" "Microchip Tech"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "a53ba07a-7dc8-4371-bef3-2a924642524b")
 			(effects
 				(font
@@ -2441,6 +2328,7 @@
 		(property "Partnumber" "MCP4728-E/UN"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "7f27e7e0-b2df-4c01-8dc9-77aa4642524b")
 			(effects
 				(font
@@ -2452,6 +2340,7 @@
 		(property "JLCPCB description" "6us I2C 2.7V~5.5V 12 Bits MSOP-10 Digital to Analog Converters (DAC) ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "42ac0016-ba41-4da8-922a-9e7f4642524b")
 			(effects
 				(font
@@ -2463,6 +2352,7 @@
 		(property "atopile_address" "dac.ic"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "54b9506e-3177-4b3b-aa51-66494642524b")
 			(effects
 				(font
@@ -2586,28 +2476,6 @@
 			(layer "F.Fab")
 			(uuid "4c53a10d-a958-403f-97bd-0267174c0afe")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -5 0)
-			(layer "F.SilkS")
-			(uuid "8b02bb21-5b82-4b73-b87a-f2e18f7f5074")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "1c729105-7440-4799-a0aa-a7c779d8ae0d")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -2.45 -1)
 			(size 1.5 0.3)
@@ -2687,6 +2555,7 @@
 		(property "Reference" "U3"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "12e627da-410d-49ea-8062-6d265c2cf56d")
 			(effects
 				(font
@@ -2698,6 +2567,7 @@
 		(property "Value" "100Ω ±1% 62.5mW"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "57016bc0-c7c9-4c43-ab5f-1893cfb024d6")
 			(effects
 				(font
@@ -2709,6 +2579,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "07a5a952-0c98-42b5-8c48-c2cb89f66aac")
 			(effects
 				(font
@@ -2720,6 +2591,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "bb8c3957-f75e-4dd0-bdb4-33e9347395c4")
 			(effects
 				(font
@@ -2731,6 +2603,7 @@
 		(property "__atopile_lib_fp_hash__" "42a869a2-5883-7eb1-c7f8-ca247177da0d"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "3aaf3ee4-0825-40a0-9842-9a294642524b")
 			(effects
 				(font
@@ -2742,6 +2615,7 @@
 		(property "LCSC" "C25076"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "7ac74032-0a62-4e66-aad6-286e4642524b")
 			(effects
 				(font
@@ -2753,6 +2627,7 @@
 		(property "Partnumber" "0402WGF1000TCE"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "b725342c-d976-45af-8a05-a00d4642524b")
 			(effects
 				(font
@@ -2764,6 +2639,7 @@
 		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "21896a98-f4b0-4b54-97ab-14394642524b")
 			(effects
 				(font
@@ -2775,6 +2651,7 @@
 		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "9f01a285-598f-4cbd-8d99-ae8b4642524b")
 			(effects
 				(font
@@ -2786,6 +2663,7 @@
 		(property "atopile_address" "amplifier.amplified_signal_2.feedback_resistor"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "31ab31af-94b5-4bb8-bfbc-a8fc4642524b")
 			(effects
 				(font
@@ -2866,28 +2744,6 @@
 			(layer "F.Fab")
 			(uuid "faef91e3-8ea6-4d8d-80f9-0683e912cf2c")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "29b76cfb-f8da-449c-add2-c82a082cb444")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "dd5af0a1-b426-47e4-9029-ed4e8d58e73b")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.43 0)
 			(size 0.57 0.54)
@@ -2911,6 +2767,7 @@
 		(property "Reference" "U2"
 			(at 0 -4 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "874f4aff-e2f7-4c80-a099-afeae24c016c")
 			(effects
 				(font
@@ -2922,6 +2779,7 @@
 		(property "Value" "100Ω ±1% 62.5mW"
 			(at 0 4 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "a530f842-f817-4461-9ab4-a45f5dda3f4e")
 			(effects
 				(font
@@ -2933,6 +2791,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "4d6cd2e3-991d-4bfa-8bbe-0a0584afa9fd")
 			(effects
 				(font
@@ -2944,6 +2803,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "e3bd7268-cf0b-4670-ac32-97bd76e62898")
 			(effects
 				(font
@@ -2955,6 +2815,7 @@
 		(property "__atopile_lib_fp_hash__" "94f02a70-7f62-7120-9651-8e52bd160f1f"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "9833415e-8951-4a2d-b9d9-8a774642524b")
 			(effects
 				(font
@@ -2966,6 +2827,7 @@
 		(property "LCSC" "C25076"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "4ab991b7-34e6-4c76-9ccc-78614642524b")
 			(effects
 				(font
@@ -2977,6 +2839,7 @@
 		(property "Partnumber" "0402WGF1000TCE"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "f046ce44-ae2d-444e-a283-ca614642524b")
 			(effects
 				(font
@@ -2988,6 +2851,7 @@
 		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "4c0419df-838c-4eb5-941b-840c4642524b")
 			(effects
 				(font
@@ -2999,6 +2863,7 @@
 		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "fe7a6d93-45fc-4823-85c0-262c4642524b")
 			(effects
 				(font
@@ -3010,6 +2875,7 @@
 		(property "atopile_address" "amplifier.amplified_signal_1.input_resistor"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "95f4dc4b-a875-45e2-901e-7ce54642524b")
 			(effects
 				(font
@@ -3090,28 +2956,6 @@
 			(layer "F.Fab")
 			(uuid "50894f9a-d363-4293-9e5e-c385519e60f6")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 0)
-			(layer "F.SilkS")
-			(uuid "ffe81cb7-8554-425a-8353-138f0c3854e1")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "0b6d24a9-7984-4d78-9214-2591581709c2")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -0.43 0 180)
 			(size 0.57 0.54)
@@ -3135,6 +2979,7 @@
 		(property "Reference" "U9"
 			(at 0 -6.77 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "88967569-16fc-4fe1-8ac9-05eda9b43c22")
 			(effects
 				(font
@@ -3146,6 +2991,7 @@
 		(property "Value" ""
 			(at 0 6.77 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "a26a894b-e42b-4068-82c8-810b2a000999")
 			(effects
 				(font
@@ -3157,6 +3003,7 @@
 		(property "Datasheet" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "fd151ef0-d797-4513-9a40-ef35f40ae86b")
 			(effects
 				(font
@@ -3168,6 +3015,7 @@
 		(property "Description" ""
 			(at 0 0 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "ddc64ff9-d253-4a76-946e-a8a0b9d58b4c")
 			(effects
 				(font
@@ -3179,6 +3027,7 @@
 		(property "__atopile_lib_fp_hash__" "5aaf4ede-4fee-a568-a075-662885c8c224"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "69492f06-e927-47a4-9924-6c034642524b")
 			(effects
 				(font
@@ -3190,6 +3039,7 @@
 		(property "LCSC" "C113552"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "ff57c4f5-9502-4e34-a7f4-55ad4642524b")
 			(effects
 				(font
@@ -3201,6 +3051,7 @@
 		(property "Manufacturer" "onsemi"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "7b5c1524-ede5-4020-8a19-22744642524b")
 			(effects
 				(font
@@ -3212,6 +3063,7 @@
 		(property "Partnumber" "MC33174DR2G"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "ffcdab21-e690-43d2-8dc7-a5174642524b")
 			(effects
 				(font
@@ -3223,6 +3075,7 @@
 		(property "JLCPCB description" "Quad 20nA 2.1V/us 1.8MHz SOIC-14 Operational Amplifier ROHS"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "49d7b082-2e37-4c1e-9dff-3c094642524b")
 			(effects
 				(font
@@ -3234,6 +3087,7 @@
 		(property "atopile_address" "amplifier.quad_opamp"
 			(at 0 0 0)
 			(layer "User.9")
+			(hide yes)
 			(uuid "bf46cfaf-fb5b-4f86-9d09-b5254642524b")
 			(effects
 				(font
@@ -3326,28 +3180,6 @@
 			(fill no)
 			(layer "F.Fab")
 			(uuid "b06b8fcd-2a69-49a4-b46d-4a7d255a0084")
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -6.77 0)
-			(layer "F.SilkS")
-			(uuid "e70fb810-a9aa-47d6-9634-10fc997c7901")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(uuid "6824ff7f-a324-4e9b-a886-618ab025f9af")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
 		)
 		(pad "1" smd oval
 			(at -3.81 2.77)
@@ -3456,6 +3288,7 @@
 		(property "Reference" "U12"
 			(at 0 -4 90)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "e6fbb710-1ed6-4533-aadb-7a7171caa733")
 			(effects
 				(font
@@ -3467,6 +3300,7 @@
 		(property "Value" ""
 			(at 0 4 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "e74f7b4c-033e-4983-9a3f-de37fbe99cd1")
 			(effects
 				(font
@@ -3478,6 +3312,7 @@
 		(property "Datasheet" ""
 			(at 0 0 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "e57b5308-01aa-411c-87f7-564d0c931576")
 			(effects
 				(font
@@ -3489,6 +3324,7 @@
 		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "314069d7-3db9-41eb-a24b-1e173602549c")
 			(effects
 				(font
@@ -3500,6 +3336,7 @@
 		(property "__atopile_lib_fp_hash__" "eb41b836-241f-7a4f-59c8-c0a5f727dc62"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "c5b1928c-2481-4682-bd8c-91e64642524b")
 			(effects
 				(font
@@ -3511,6 +3348,7 @@
 		(property "LCSC" "C152100"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "441e55b9-ef8b-48d2-a5b3-0d4c4642524b")
 			(effects
 				(font
@@ -3522,6 +3360,7 @@
 		(property "Manufacturer" "BORN"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "70c4b7ea-80c4-4b3f-9766-b0884642524b")
 			(effects
 				(font
@@ -3533,6 +3372,7 @@
 		(property "Partnumber" "SMBJ26A"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "bbd01663-9528-4efc-9a79-05a24642524b")
 			(effects
 				(font
@@ -3544,6 +3384,7 @@
 		(property "JLCPCB description" "14.3A 42.1V 28.9V 26V SMB(DO-214AA)  ESD and Surge Protection (TVS/ESD) ROHS"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "b5e1588e-1078-45ee-8a7a-225d4642524b")
 			(effects
 				(font
@@ -3555,6 +3396,7 @@
 		(property "atopile_address" "tvs_ch1.diode"
 			(at 0 0 90)
 			(layer "User.9")
+			(hide yes)
 			(uuid "c11eced8-2500-415f-a264-9c6a4642524b")
 			(effects
 				(font
@@ -3625,28 +3467,6 @@
 			(layer "F.Fab")
 			(uuid "3a7db5c7-abfc-4794-a7eb-4474255ecad2")
 		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -4 90)
-			(layer "F.SilkS")
-			(uuid "9c729809-c54b-4a92-a137-88daf1d0b4ae")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 0 90)
-			(layer "F.Fab")
-			(uuid "78a401cb-0da9-4147-b15d-879d9df87369")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(pad "1" smd rect
 			(at -2.36 0 90)
 			(size 2.05 2.19)
@@ -3662,6 +3482,112 @@
 			(uuid "7220dc79-c425-44b2-83fd-d253d3dd7b7a")
 		)
 		(embedded_fonts no)
+	)
+	(gr_line
+		(start 157.77 72.65)
+		(end 165.061552 72.65)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "002b4908-13af-49a9-9499-87ee1179577f")
+	)
+	(gr_line
+		(start 188.42 84.59)
+		(end 157.77 84.59)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "0ca23cb1-7f4a-40f9-90eb-b1b8e3be33aa")
+	)
+	(gr_line
+		(start 190.42 74.65)
+		(end 190.42 82.59)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "15c2d9a6-e07b-40ac-a052-def868a859c6")
+	)
+	(gr_arc
+		(start 155.77 74.65)
+		(mid 156.355786 73.235786)
+		(end 157.77 72.65)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "3a82f2c3-dea6-4566-823e-542331aa70ae")
+	)
+	(gr_arc
+		(start 190.42 82.59)
+		(mid 189.834214 84.004214)
+		(end 188.42 84.59)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "4b2cd68d-3cfe-4ad4-9c37-f79578bf8d2b")
+	)
+	(gr_arc
+		(start 157.77 84.59)
+		(mid 156.355786 84.004214)
+		(end 155.77 82.59)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "73201e79-b47f-45b2-a312-fc6dcc64f26c")
+	)
+	(gr_line
+		(start 180.921268 72.65)
+		(end 188.42 72.65)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "a4bcadd3-24e6-4c79-b9da-3561f3d7fc02")
+	)
+	(gr_arc
+		(start 188.42 72.65)
+		(mid 189.834214 73.235786)
+		(end 190.42 74.65)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "ab1ce3b9-1008-42d4-8e73-d0f7ee1019a7")
+	)
+	(gr_line
+		(start 155.77 82.59)
+		(end 155.77 74.65)
+		(stroke
+			(width 1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "d83fcc02-10ad-455a-b780-fbdcdf98aa84")
+	)
+	(gr_text "ANALOG-OUT-4CH"
+		(at 165.98 73.25 0)
+		(layer "F.SilkS")
+		(uuid "3f10e080-ceb9-4715-9ae8-f16f2bd22e7b")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+			(justify left bottom)
+		)
 	)
 	(segment
 		(start 166.792433 80)
