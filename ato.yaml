@@ -119,6 +119,10 @@ builds:
   micro-vault-dev-board:
     entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
 
+  isolated-20w-power-supply:
+    entry: elec/src/components/tdpower_tdk2024s24wh.ato:TDPOWER_TDK20_24S24WH
+    exclude_targets: [mfg-data]
+
 dependencies:
   - name: ldk220m-r
     version_spec:
