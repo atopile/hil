@@ -1,7 +1,7 @@
 import ElectricPower, Capacitor, Resistor, SPI, ElectricLogic
 from "interfaces.ato" import CAN
 
-from "components/ylptec_b0505s2wr3.ato" import YLPTEC_B0505S_2WR3
+from "components/Ylptec_BYYXX.ato" import _B0505, BYYXXS_2WR2
 from "components/nexperia_pe_sd1c_an215.ato" import Nexperia_PESD1CAN_215
 from "components/texas_instruments_is_o1044b_dr.ato" import Texas_Instruments_ISO1044BDR
 from "components/microchip_tech_mc_p2518f_dteqb_b.ato" import Microchip_Tech_MCP2518FDT_E_QBB
@@ -25,7 +25,8 @@ module ComsCANISO:
     _power_5v_iso = new ElectricPower
 
     # Components
-    regulator = new YLPTEC_B0505S_2WR3
+    regulator = new BYYXXS_2WR2
+    regulator.converter -> _B0505
     controller = new Microchip_Tech_MCP2518FDT_E_QBB
     transceiver = new Texas_Instruments_ISO1044BDR
     protection = new Nexperia_PESD1CAN_215
