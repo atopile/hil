@@ -171,6 +171,164 @@
 		)
 	)
 	(net 0 "")
+	(net 1 "handle-net-1")
+	(net 2 "handle-net")
+	(net 3 "POWER_24V")
+	(net 4 "POWER_5V")
+	(net 5 "POWER_3V3")
+	(net 6 "GND")
+	(footprint "lib:NetTie-2_SMD_Pad0.25mm"
+		(layer "F.Cu")
+		(uuid "d67783c8-d328-45ae-9914-b7a14642524b")
+		(at 94 43.5)
+		(property "Reference" "R1"
+			(at 0 -1.2 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "6526a824-ed6f-4638-9bf9-4da7521abae0")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" ""
+			(at 0 1.2 0)
+			(layer "F.Fab")
+			(uuid "1da11b1c-3a9f-495b-8454-d0da58716ab3")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "b925051b-8d29-4741-9e8c-a7beb2720cac")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 0 0 0)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "0923cfca-0d7a-4e50-b4c6-3edd69fb3111")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "__atopile_lib_fp_hash__" "04339b4f-90b8-45a9-eed6-f97325ef4d8a"
+			(at 0 0 0)
+			(layer "User.9")
+			(hide yes)
+			(uuid "b222fd0a-e02e-47ff-a34f-03874642524b")
+			(effects
+				(font
+					(size 0.125 0.125)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 0 0 0)
+			(layer "User.9")
+			(hide yes)
+			(uuid "c1261652-388e-4660-8f60-931c4642524b")
+			(effects
+				(font
+					(size 0.125 0.125)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(property "Partnumber" "NetTie_250u"
+			(at 0 0 0)
+			(layer "User.9")
+			(hide yes)
+			(uuid "aa657968-3079-453d-bffb-9a4c4642524b")
+			(effects
+				(font
+					(size 0.125 0.125)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
+			(at 0 0 0)
+			(layer "User.9")
+			(hide yes)
+			(uuid "ce412612-e679-44ed-93f3-7e224642524b")
+			(effects
+				(font
+					(size 0.125 0.125)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
+			(at 0 0 0)
+			(layer "User.9")
+			(hide yes)
+			(uuid "e1ff0d9a-3819-424e-b2d5-eed24642524b")
+			(effects
+				(font
+					(size 0.125 0.125)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(property "atopile_address" "handle"
+			(at 0 0 0)
+			(layer "User.9")
+			(hide yes)
+			(uuid "ee1942cd-8f9f-454f-8ee5-0e264642524b")
+			(effects
+				(font
+					(size 0.125 0.125)
+					(thickness 0.01875)
+				)
+			)
+		)
+		(attr exclude_from_pos_files exclude_from_bom)
+		(fp_poly
+			(pts
+				(xy 0 -0.125) (xy 0.5 -0.125) (xy 0.5 0.125) (xy 0 0.125)
+			)
+			(stroke
+				(width 0)
+				(type solid)
+			)
+			(fill yes)
+			(layer "F.Cu")
+			(uuid "af3346f8-185b-4116-a5cb-2ff03ef220c8")
+		)
+		(pad "1" smd circle
+			(at 0 0)
+			(size 0.25 0.25)
+			(layers "F.Cu")
+			(net 1 "handle-net-1")
+			(uuid "3059bc93-f08d-4d60-a082-a17e50e8893b")
+		)
+		(pad "2" smd circle
+			(at 0.5 0)
+			(size 0.25 0.25)
+			(layers "F.Cu")
+			(net 2 "handle-net")
+			(uuid "283afad3-4277-4979-9428-b9b986f2862f")
+		)
+		(embedded_fonts no)
+	)
 	(gr_circle
 		(center 203.5 47)
 		(end 205.15 47)
@@ -300,8 +458,8 @@
 		(uuid "f3125583-d4e1-4da7-87ee-1bba4c3dbb3e")
 	)
 	(zone
-		(net 0)
-		(net_name "")
+		(net 6)
+		(net_name "GND")
 		(layers "F.Cu" "B.Cu" "In1.Cu")
 		(uuid "e747e2a3-e5d8-4491-a35a-99efd6b015d6")
 		(name "gnd")
@@ -343,8 +501,8 @@
 		)
 	)
 	(zone
-		(net 0)
-		(net_name "")
+		(net 5)
+		(net_name "POWER_3V3")
 		(layer "In2.Cu")
 		(uuid "a9b0e2b9-a7b5-4ab5-8b93-21d70728cf8f")
 		(name "3v3")
@@ -386,8 +544,8 @@
 		)
 	)
 	(zone
-		(net 0)
-		(net_name "")
+		(net 4)
+		(net_name "POWER_5V")
 		(layer "In3.Cu")
 		(uuid "2bf542ef-f34b-4bea-b7a2-809d4c28f2de")
 		(name "5v")
@@ -429,8 +587,8 @@
 		)
 	)
 	(zone
-		(net 0)
-		(net_name "")
+		(net 3)
+		(net_name "POWER_24V")
 		(layer "In4.Cu")
 		(uuid "a4188078-b59c-473b-9a0b-bfd91403de12")
 		(name "24v")
