@@ -1,0 +1,21 @@
+component DB9RightAngleMale:
+    """DB9 Right Angle Male with screw mounting holes"""
+    lcsc_id = "C141880"
+    manufacturer = "Ckmtw(Shenzhen Cankemeng)"
+    mpn = "D-DMR009PM-D002"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1810071709_Ckmtw-Shenzhen-Cankemeng-D-DMR009PM-D002_C141880.pdf"
+    designator_prefix = "DSub"
+
+    # pins
+    pin 1
+    pin 2
+    pin 3
+    pin 4
+    pin 5
+    pin 6
+    pin 7
+    pin 8
+    pin 9
+
+    signal MH1 ~ pin 10
+    signal MH2 ~ pin 11

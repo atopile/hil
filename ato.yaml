@@ -5,6 +5,9 @@ builds:
   cellsim-16ch:
     entry: examples/cellsim/cellsim-16ch.ato:CellSim16Ch
 
+  canjay:
+    entry: examples/canjay/canjay.ato:Canjay
+
   # IO Blocks
   hil-core:
     entry: elec/src/blocks/hil-core.ato:HILCore

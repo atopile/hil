@@ -29,9 +29,7 @@ module ComsCANISO:
     power_5v = new ElectricPower
 
     ## Specialize termination if CAN termination is required
-    termination = new CANTerminationInterface
-    # Configure default to use the split termination
-    termination -> SplitCANTermination
+    termination = new SplitCANTermination
 
     # Internals of the module
 
@@ -75,17 +73,11 @@ module CANTerminationInterface:
     """
     can = new CAN
     signal gnd  # ground of the power reference of the CAN interface
+    signal _midpoint
 
-
-module SplitCANTermination from CANTerminationInterface:
-    """
-    CAN termination 120Ohm with center tap capacitor
-
-    Split termination improves the electromagnetic emissions
-    behavior of the network by eliminating fluctuations in the
-    bus common-mode voltages at the start and end of message transmissions.
-    """
-    # Components
+    # FIXME: This is a heinous hack to get the mutability of this to work
+    # with the layout blocks as well. We need the components here to
+    # make the layouts the same, but we simply don't connect them up. Ew.
     resistor_can_high = new Resistor
     resistor_can_high.resistance = 60ohm +/- 2%
     resistor_can_high.package = "R0402"
@@ -98,8 +90,17 @@ module SplitCANTermination from CANTerminationInterface:
     capacitor_can.capacitance = 4.7nF +/- 20%
     capacitor_can.package = "C0402"
 
+
+module SplitCANTermination from CANTerminationInterface:
+    """
+    CAN termination 120Ohm with center tap capacitor
+
+    Split termination improves the electromagnetic emissions
+    behavior of the network by eliminating fluctuations in the
+    bus common-mode voltages at the start and end of message transmissions.
+    """
+
     # CAN
-    signal _midpoint
     can.CANH ~ resistor_can_high.p1
     resistor_can_high.p2 ~ _midpoint
     _midpoint ~ resistor_can_low.p1

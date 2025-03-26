@@ -1,0 +1,11 @@
+component SpringTerminal3P:
+    """MAX_MX250_3_5_03P_B_GY01_Cu_A component with those nice spring push terminals"""
+    lcsc_id = "C7470117"
+    manufacturer = "MAX"
+    mpn = "MX250-3.5-03P-B-GY01-Cu-A"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2309150914_MAX-MX250-3-5-03P-B-GY01-Cu-A_C7470117.pdf"
+    designator_prefix = "U"
+
+    pin 1
+    pin 2
+    pin 3

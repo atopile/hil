@@ -1,0 +1,58 @@
+from "blocks/hil-core.ato" import HILCore
+from "blocks/coms-can.ato" import ComsCANISO, CANTerminationInterface
+from "blocks/debug-saleae.ato" import DebugSaleae
+
+from "components/ma_xmx2503503p_bgy01cu_a.ato" import SpringTerminal3P
+from "components/db9right_angle_male.ato" import DB9RightAngleMale
+from "boardshapes/boardshape_gridfinity_3x100mm.ato" import BoardshapeGridfinity3x100mm
+
+
+module Canjay:
+    hil_core = new HILCore
+
+    can0 = new ComsCANISO
+    can1 = new ComsCANISO
+
+    # SPI
+    hil_core.controller.spi0 ~ can0.spi
+    hil_core.controller.spi0_cs0 ~ can0.spi_cs
+    hil_core.controller.cm5.gpio_6 ~ can0.interrupt
+
+    hil_core.controller.spi0 ~ can1.spi
+    hil_core.controller.spi0_cs1 ~ can1.spi_cs
+    hil_core.controller.cm5.gpio_5 ~ can1.interrupt
+
+    # Power
+    hil_core.power_5v ~ can0.power_5v
+    hil_core.power_5v ~ can1.power_5v
+    hil_core.power_3v3 ~ can0.power_3v3
+    hil_core.power_3v3 ~ can1.power_3v3
+
+    can0_connector = new SpringTerminal3P
+    can0.can.CANH ~ can0_connector.2
+    can0.can.CANL ~ can0_connector.1
+    can0.termination.gnd ~ can0_connector.3
+
+    can1_connector = new SpringTerminal3P
+    can1.can.CANH ~ can1_connector.2
+    can1.can.CANL ~ can1_connector.1
+    can1.termination.gnd ~ can1_connector.3
+
+    # Standard DB9 connector layout, typically for lab use
+    can0_db9 = new DB9RightAngleMale
+    can0.can.CANL ~ can0_db9.2
+    can0.can.CANH ~ can0_db9.7
+    can0.termination.gnd ~ can0_db9.6
+
+    can1_db9 = new DB9RightAngleMale
+    can1.can.CANL ~ can1_db9.2
+    can1.can.CANH ~ can1_db9.7
+    can1.termination.gnd ~ can1_db9.6
+
+    _boardshape = new BoardshapeGridfinity3x100mm
+
+    ## HACK: modify the termination resistances to something super high
+    can0.termination.resistor_can_high.resistance = 1Mohm +/- 5%
+    can0.termination.resistor_can_low.resistance = 1Mohm +/- 5%
+    can1.termination.resistor_can_high.resistance = 1Mohm +/- 5%
+    can1.termination.resistor_can_low.resistance = 1Mohm +/- 5%
