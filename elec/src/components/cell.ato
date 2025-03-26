@@ -46,8 +46,7 @@ module Cell:
     # External interfaces
     power_in = new ElectricPower
     power_out = new ElectricPower
-    power_5v = new ElectricPower # micro gnd referenced rail
-    power_iso_5v = new ElectricPower # isolated 5V rail
+    power_5v = new ElectricPower # isolated 5V rail
     power_isolator = new ElectricPower # power for digital isolators
     dmm_out = new ElectricPower
     i2c = new I2C
@@ -138,7 +137,7 @@ module Cell:
     _power_3v3 ~ gpio.power
     _power_3v3 ~ current_sense.power
     _power_5v ~ output_relay.power_relay
-    power_iso_5v ~ dmm_relay.power_relay
+    power_5v ~ dmm_relay.power_relay
 
     #TODO: do the math in ato
     # Buck config: vout = 5v when vctrl = 0V, vout = 0V when vctrl = 3.3V

@@ -27,12 +27,22 @@ module BYYXXS_2WR2 from Regulator:
     output_cap.package = "C0805"
     power_out ~ output_cap.power
 
+module BYYXXS_1WR3 from Regulator:
+    """
+    Isolated 1W DC-DC converter
+    Usage: Specalize converter to part below, eg
+    my_regulator.converter -> _B2405 for 5V output, 24V input
+    """
+    converter = new _BYYXX
+
 
 component _BYYXX:
     """
     Generic YLPTEC 24V isolated converter, specalize with
     - 5V, 9V, 24V output (Below)
     """
+    # footprint = "PWRM-TH_BXXXXS-2WR2" # why doesnt this work?
+
     # pins
     power_in = new ElectricPower
     power_in.vcc ~ pin 1

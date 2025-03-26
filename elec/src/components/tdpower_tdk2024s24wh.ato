@@ -11,15 +11,20 @@ module TDPOWER_TDK20_24S24WH from Regulator:
     power_in ~ input_cap_1.power
     input_cap_1.package = "C0805"
     assert input_cap_1.max_voltage within 30V to 100V
-    assert input_cap_1.capacitance within 1uF +/- 10%
+    assert input_cap_1.capacitance within 10uF +/- 10%
 
     input_cap_2 = new Capacitor
     power_in ~ input_cap_2.power
-    input_cap_2.lcsc_id = "C3339"
+    input_cap_2.package = "C0805"
+    assert input_cap_2.max_voltage within 30V to 100V
+    assert input_cap_2.capacitance within 10uF +/- 10%
 
     input_cap_3 = new Capacitor
     power_in ~ input_cap_3.power
-    input_cap_3.lcsc_id = "C3339"
+    input_cap_3.package = "C0805"
+    assert input_cap_3.max_voltage within 30V to 100V
+    assert input_cap_3.capacitance within 1uF +/- 10%
+
 
     output_cap_1 = new Capacitor
     power_out ~ output_cap_1.power

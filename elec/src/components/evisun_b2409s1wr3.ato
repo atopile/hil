@@ -1,0 +1,47 @@
+import Regulator, ElectricPower
+import Capacitor
+
+module EVISUN_B2409S_1WR3 from Regulator:
+    """
+    Isolated 1W DC-DC converter
+    Usage: Specalize converter to part below, eg
+    my_regulator.converter -> _B2405 for 5V output, 24V input
+    """
+    converter = new _EVISUN_B2409S_1WR3
+    power_in ~ converter.power_in
+    power_out ~ converter.power_out
+
+    input_cap = new Capacitor
+    input_cap.package = "C0805"
+    input_cap.capacitance = 2.2uF +/- 10%
+    input_cap.max_voltage = 50V to 100V
+    input_cap.power ~ converter.power_in
+
+    output_cap = new Capacitor
+    output_cap.package = "C0805"
+    output_cap.capacitance = 2.2uF +/- 10%
+    output_cap.max_voltage = 50V to 100V
+    output_cap.power ~ converter.power_out
+
+
+component _EVISUN_B2409S_1WR3:
+    """EVISUN_B2409S_1WR3 component"""
+    lcsc_id = "C19272673"
+    manufacturer = "EVISUN"
+    mpn = "B2409S-1WR3"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2312012002_EVISUN-B2409S-1WR3_C19272673.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal _VIN ~ pin 1
+    signal _VOUT ~ pin 3
+    signal plusVIN ~ pin 2
+    signal plusVOUT ~ pin 4
+
+    power_in = new ElectricPower
+    power_in.vcc ~ pin 2
+    power_in.gnd ~ pin 1
+
+    power_out = new ElectricPower
+    power_out.vcc ~ pin 4
+    power_out.gnd ~ pin 3
