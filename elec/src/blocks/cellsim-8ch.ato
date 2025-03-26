@@ -10,7 +10,7 @@ from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 from "components/iso1640.ato" import ISO1640QDWRQ1, ISO1640BDR
 from "components/Ylptec_BYYXX.ato" import BYYXXS_2WR2, _B2424
 from "components/evisun_b2409s1wr3.ato" import EVISUN_B2409S_1WR3
-from "components/texas_instruments_is_o7720d_r.ato" import Texas_Instruments_ISO7720DR
+from "components/analog_devices_ad_um121n1b_rzrl7.ato" import Analog_Devices_ADUM121N1BRZ_RL7
 
 module CellSim8Ch:
 
@@ -28,7 +28,8 @@ module CellSim8Ch:
     power_3v3_isolated = new ElectricPower
     i2c_isolated = new I2C
     dmm_out = new ElectricPower
-    led_data = new ElectricLogic
+    led_data_in = new ElectricLogic
+    led_data_out = new ElectricLogic
 
     # Regulators
     regulator_24v_isolated = new TDPOWER_TDK20_24S24WH
@@ -58,11 +59,13 @@ module CellSim8Ch:
 
 
     # LED Isolator - 1500V isolation
-    led_isolator = new Texas_Instruments_ISO7720DR
-    power_3v3 ~ led_isolator.power_in
-    power_3v3_isolated ~ led_isolator.power_out
-    block_down.led_data ~ led_isolator.a_in
-    led_isolator.a_out ~ led_data
+    led_isolator = new Analog_Devices_ADUM121N1BRZ_RL7
+    power_3v3 ~ led_isolator.power_non_isolated
+    power_5v_isolated ~ led_isolator.power_isolated
+    block_down.led_data ~ led_isolator.input_a
+    led_isolator.output_a ~ led_data_in
+    led_data_out ~ led_isolator.input_b
+    led_isolator.output_b ~ block_up.led_data
 
     # I2C Isolator - 1500V isolation
     i2c_isolator = new ISO1640QDWRQ1
@@ -125,7 +128,8 @@ module CellSim8Ch:
     cell8 = new Cell
 
     # LED Data
-    led_data ~ cell1.cell_down.led_data
+    led_data_in ~ cell1.cell_down.led_data
+    cell8.cell_up.led_data ~ led_data_out
 
     # Common gnd
     power_24v_isolated.gnd ~ power_5v_isolated.gnd
