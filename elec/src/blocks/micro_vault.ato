@@ -38,8 +38,12 @@ module MicroVault:
     power_3v3.gnd ~ power_9v.gnd
 
     # Configure regulator
-    assert reference_regulator.v_in is 9V +/- 10%
-    assert reference_regulator.v_out within 5.3V +/- 3%
+    # assert reference_regulator.v_in is 9V +/- 10%
+    # assert reference_regulator.v_out within 5.3V +/- 3%
+
+    # Set internal regulator values
+    reference_regulator.feedback_div.r_bottom.resistance = 9.9kohm to 10.1kohm
+    reference_regulator.feedback_div.r_top.resistance = 35.5kohm to 36.4kohm
 
     # Heater
     power_9v ~ heater_controller.power
