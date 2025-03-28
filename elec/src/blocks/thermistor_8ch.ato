@@ -1,0 +1,113 @@
+import ElectricPower, I2C, ElectricSignal
+from "resistors.ato" import I2CPullup
+from "blocks/analog-out-4ch.ato" import AnalogOut4ch
+from "components/iso1640.ato" import ISO1640QDWRQ1
+from "components/ads1115.ato" import ADS1115IDGSR
+from "components/tdpower_tdk2024s24wh.ato" import TDPOWER_TDK20_24S24WH
+from "lv2842xlvddcr.git/elec/src/lv284xx.ato" import LV2842XReferenceDesign
+from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+from "tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
+
+
+module Thermistor8ch:
+    """
+    Block of 8 thermistor emulators with an isolated power supply
+    and isolated I2C interface.
+    - 0-5V output
+    - 12bit DAC
+    - 16bit ADC for self-test/calibration
+    """
+
+    # External interfaces
+    power_24v = new ElectricPower
+    power_3v3 = new ElectricPower
+    i2c = new I2C
+    thermistor_1 = new ElectricSignal
+    thermistor_2 = new ElectricSignal
+    thermistor_3 = new ElectricSignal
+    thermistor_4 = new ElectricSignal
+    thermistor_5 = new ElectricSignal
+    thermistor_6 = new ElectricSignal
+    thermistor_7 = new ElectricSignal
+    thermistor_8 = new ElectricSignal
+
+    # Internal interfaces
+    power_24v_isolated = new ElectricPower
+    power_5v_isolated = new ElectricPower
+    power_3v3_isolated = new ElectricPower
+    i2c_isolated = new I2C
+
+    # Connect gnd together
+    power_24v.gnd ~ power_3v3.gnd
+    power_24v_isolated.gnd ~ power_3v3_isolated.gnd
+    power_24v_isolated.gnd ~ power_5v_isolated.gnd
+
+    # Regulators
+    regulator_24v_isolated = new TDPOWER_TDK20_24S24WH
+    buck_5v = new LV2842XReferenceDesign
+    ldo_3v3 = new LDK220M_R
+
+    # Connect up regulators
+    power_24v ~ regulator_24v_isolated.power_in
+    regulator_24v_isolated.power_out ~ power_24v_isolated
+
+    power_24v_isolated ~ buck_5v.power_in
+    buck_5v.power_out ~ power_5v_isolated
+
+    power_5v_isolated ~ ldo_3v3.power_in
+    ldo_3v3.power_out ~ power_3v3_isolated
+
+    # Configure regulators
+    # assert buck_5v.v_out within 5V +/- 5%
+    # assert ldo_3v3.v_out within 3.3V +/- 5%
+
+    # Set regulator feedback components (hack while compiler is slow af)
+    buck_5v.feedback_div.r_bottom.resistance = 8.1kohm to 8.3kohm
+    buck_5v.feedback_div.r_top.resistance = 46.5kohm to 47.5kohm
+
+    ldo_3v3.feedback_div.r_bottom.resistance = 9.9kohm to 10.1kohm
+    ldo_3v3.feedback_div.r_top.resistance = 17.82kohm to 18.18kohm
+
+    # I2C Isolator - 1500V isolation
+    i2c_isolator = new ISO1640QDWRQ1
+    power_3v3 ~ i2c_isolator.power_non_isolated
+    power_3v3_isolated ~ i2c_isolator.power_isolated
+    i2c ~ i2c_isolator.i2c_non_isolated
+    i2c_isolated ~ i2c_isolator.i2c_isolated
+
+    # Pullup i2c lines
+    i2c_pullup = new I2CPullup
+    power_3v3_isolated ~ i2c_pullup.power
+    i2c_isolated ~ i2c_pullup.i2c
+
+    # Devices
+    i2c_mux = new TCA9548APWR
+    dac_1_4 = new AnalogOut4ch
+    dac_5_8 = new AnalogOut4ch
+    adc_1_4 = new ADS1115IDGSR
+    adc_5_8 = new ADS1115IDGSR
+
+    # Connect up devices
+    power_5v_isolated ~ dac_1_4.power_5v
+    power_5v_isolated ~ dac_5_8.power_5v
+    power_3v3_isolated ~ dac_1_4.power_3v3
+    power_3v3_isolated ~ dac_5_8.power_3v3
+    power_3v3_isolated ~ adc_1_4.power
+    power_3v3_isolated ~ adc_5_8.power
+    power_3v3_isolated ~ i2c_mux.power
+
+    i2c_isolated ~ i2c_mux.i2c
+    i2c_mux.i2c0 ~ dac_1_4.i2c
+    i2c_mux.i2c1 ~ dac_5_8.i2c
+    i2c_mux.i2c2 ~ adc_1_4.i2c
+    i2c_mux.i2c3 ~ adc_5_8.i2c
+
+    # Connect up thermistors
+    thermistor_1 ~ dac_1_4.output_1
+    thermistor_2 ~ dac_1_4.output_2
+    thermistor_3 ~ dac_1_4.output_3
+    thermistor_4 ~ dac_1_4.output_4
+    thermistor_5 ~ dac_5_8.output_1
+    thermistor_6 ~ dac_5_8.output_2
+    thermistor_7 ~ dac_5_8.output_3
+    thermistor_8 ~ dac_5_8.output_4

@@ -7,3 +7,6 @@ component Sinhoo_SMTSO2515CTJ:
     designator_prefix = "U"
     footprint = "SMD_BD5.6-D4.1-12eb58"
     signal p1 ~ pin 1
+    p1 ~ pin 2
+    p1 ~ pin 3
+    p1 ~ pin 4
