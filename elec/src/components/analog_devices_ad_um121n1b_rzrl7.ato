@@ -38,6 +38,6 @@ component Analog_Devices_ADUM121N1BRZ_RL7:
 
     # Connect references
     power_non_isolated ~ output_a.reference
-    power_non_isolated ~ input_a.reference
+    power_non_isolated ~ input_b.reference
     power_isolated ~ output_b.reference
-    power_isolated ~ input_b.reference
+    power_isolated ~ input_a.reference

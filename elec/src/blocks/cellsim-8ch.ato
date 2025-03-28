@@ -62,10 +62,10 @@ module CellSim8Ch:
     led_isolator = new Analog_Devices_ADUM121N1BRZ_RL7
     power_3v3 ~ led_isolator.power_non_isolated
     power_5v_isolated ~ led_isolator.power_isolated
-    block_down.led_data ~ led_isolator.input_a
-    led_isolator.output_a ~ led_data_in
-    led_data_out ~ led_isolator.input_b
-    led_isolator.output_b ~ block_up.led_data
+    block_down.led_data ~ led_isolator.input_b # non isolated input
+    led_data_in ~ led_isolator.output_b # isolated output
+    led_isolator.input_a ~ led_data_out # isolated input
+    led_isolator.output_a ~ block_up.led_data # non isolated output
 
     # I2C Isolator - 1500V isolation
     i2c_isolator = new ISO1640QDWRQ1
