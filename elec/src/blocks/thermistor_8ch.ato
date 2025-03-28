@@ -92,15 +92,15 @@ module Thermistor8ch:
     power_5v_isolated ~ dac_5_8.power_5v
     power_3v3_isolated ~ dac_1_4.power_3v3
     power_3v3_isolated ~ dac_5_8.power_3v3
-    power_3v3_isolated ~ adc_1_4.power
-    power_3v3_isolated ~ adc_5_8.power
+    power_5v_isolated ~ adc_1_4.power
+    power_5v_isolated ~ adc_5_8.power
     power_3v3_isolated ~ i2c_mux.power
 
     i2c_isolated ~ i2c_mux.i2c
     i2c_mux.i2c0 ~ dac_1_4.i2c
     i2c_mux.i2c1 ~ dac_5_8.i2c
-    i2c_mux.i2c2 ~ adc_1_4.i2c
-    i2c_mux.i2c3 ~ adc_5_8.i2c
+    i2c_mux.i2c2 ~ adc_5_8.i2c
+    i2c_mux.i2c3 ~ adc_1_4.i2c
 
     # Connect up thermistors
     thermistor_1 ~ dac_1_4.output_1
@@ -111,3 +111,13 @@ module Thermistor8ch:
     thermistor_6 ~ dac_5_8.output_2
     thermistor_7 ~ dac_5_8.output_3
     thermistor_8 ~ dac_5_8.output_4
+
+    # connect adc to thermistor outputs
+    thermistor_1 ~ adc_1_4.input_1
+    thermistor_2 ~ adc_1_4.input_2
+    thermistor_3 ~ adc_1_4.input_3
+    thermistor_4 ~ adc_1_4.input_4
+    thermistor_5 ~ adc_5_8.input_1
+    thermistor_6 ~ adc_5_8.input_2
+    thermistor_7 ~ adc_5_8.input_3
+    thermistor_8 ~ adc_5_8.input_4
