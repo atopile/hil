@@ -31,14 +31,14 @@ module HeaterController:
 
     power_3v3 ~ comparator.power
 
-    load_resistor_1.resistance = 22ohm +/- 10%
-    load_resistor_2.resistance = 22ohm +/- 10%
-    load_resistor_3.resistance = 22ohm +/- 10%
-    load_resistor_4.resistance = 22ohm +/- 10%
-    load_resistor_5.resistance = 22ohm +/- 10%
-    load_resistor_6.resistance = 22ohm +/- 10%
-    load_resistor_7.resistance = 22ohm +/- 10%
-    load_resistor_8.resistance = 22ohm +/- 10%
+    load_resistor_1.resistance = 15ohm +/- 10%
+    load_resistor_2.resistance = 15ohm +/- 10%
+    load_resistor_3.resistance = 15ohm +/- 10%
+    load_resistor_4.resistance = 15ohm +/- 10%
+    load_resistor_5.resistance = 15ohm +/- 10%
+    load_resistor_6.resistance = 15ohm +/- 10%
+    load_resistor_7.resistance = 15ohm +/- 10%
+    load_resistor_8.resistance = 15ohm +/- 10%
     hysteresis_resistor.resistance = 1Mohm +/- 10%
 
     load_resistor_1.package = "R0603"
