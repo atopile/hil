@@ -36,6 +36,7 @@ module MicroVault:
     power_3v3 ~ temp_sensor.power
     power_3v3 ~ heater_controller.power_3v3
     power_3v3.gnd ~ power_9v.gnd
+    adc.reference ~ _reference_5v
 
     # Configure regulator
     # assert reference_regulator.v_in is 9V +/- 10%
