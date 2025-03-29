@@ -2,11 +2,10 @@ from "blocks/hil-core.ato" import HILCore
 from "blocks/cellsim-8ch.ato" import CellSim8Ch
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
 from "blocks/coms-can.ato" import ComsCANISO
-from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
 from "blocks/debug-saleae.ato" import DebugSaleae
-from "components/banana-power.ato" import BananaPower
 from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
 from "components/jst-gh.ato" import JSTGH4Pin
+from "blocks/thermistor_8ch.ato" import Thermistor8ch
 
 module CellSim16Ch:
     """
@@ -18,7 +17,6 @@ module CellSim16Ch:
     # Cells
     cell_block_1_8 = new CellSim8Ch
     cell_block_9_16 = new CellSim8Ch
-    dmm_mux = new MultiplexerI2C8Ch
 
     # Power cells
     hil_core.power_24v ~ cell_block_1_8.power_24v
@@ -61,41 +59,26 @@ module CellSim16Ch:
     cell_block_1_8.cell1.power_out.gnd ~ cell_output_connector.power.gnd
     cell_block_9_16.cell8.power_out.vcc ~ cell_output_connector.power.vcc
 
-    # DMM output selection
-    hil_core.power_3v3 ~ dmm_mux.power_3v3
-    hil_core.controller.i2c2 ~ dmm_mux.i2c
-    dmm_mux.output_1 ~ cell_block_1_8.dmm_relay_enable
-    dmm_mux.output_2 ~ cell_block_9_16.dmm_relay_enable
-
-    # DMM output
-    banana_power = new BananaPower
-    banana_power.power ~ cell_block_1_8.dmm_out
-    banana_power.power ~ cell_block_9_16.dmm_out
-
     # Thermistors
-    thermistors_1_4 = new AnalogOut4ch
-    thermistors_5_8 = new AnalogOut4ch
+    thermistor_8ch = new Thermistor8ch
 
     # Power thermistors
-    hil_core.power_3v3 ~ thermistors_1_4.power_3v3
-    hil_core.power_3v3 ~ thermistors_5_8.power_3v3
-    hil_core.power_5v ~ thermistors_1_4.power_5v
-    hil_core.power_5v ~ thermistors_5_8.power_5v
+    hil_core.power_24v ~ thermistor_8ch.power_24v
+    hil_core.power_3v3 ~ thermistor_8ch.power_3v3
 
     # Connect thermistors
     thermistor_connector = new NTCIDC8CH
-    thermistors_1_4.output_1 ~ thermistor_connector.ntc1
-    thermistors_1_4.output_2 ~ thermistor_connector.ntc2
-    thermistors_1_4.output_3 ~ thermistor_connector.ntc3
-    thermistors_1_4.output_4 ~ thermistor_connector.ntc4
-    thermistors_5_8.output_1 ~ thermistor_connector.ntc5
-    thermistors_5_8.output_2 ~ thermistor_connector.ntc6
-    thermistors_5_8.output_3 ~ thermistor_connector.ntc7
-    thermistors_5_8.output_4 ~ thermistor_connector.ntc8
+    thermistor_8ch.thermistor_1 ~ thermistor_connector.ntc1
+    thermistor_8ch.thermistor_2 ~ thermistor_connector.ntc2
+    thermistor_8ch.thermistor_3 ~ thermistor_connector.ntc3
+    thermistor_8ch.thermistor_4 ~ thermistor_connector.ntc4
+    thermistor_8ch.thermistor_5 ~ thermistor_connector.ntc5
+    thermistor_8ch.thermistor_6 ~ thermistor_connector.ntc6
+    thermistor_8ch.thermistor_7 ~ thermistor_connector.ntc7
+    thermistor_8ch.thermistor_8 ~ thermistor_connector.ntc8
 
     # I2C
-    hil_core.controller.i2c2 ~ thermistors_1_4.i2c
-    hil_core.controller.i2c3 ~ thermistors_5_8.i2c
+    hil_core.controller.i2c2 ~ thermistor_8ch.i2c
 
     # CAN Interface
     can_controller = new ComsCANISO

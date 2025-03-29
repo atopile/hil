@@ -119,6 +119,18 @@ builds:
   micro-vault-dev-board:
     entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
 
+  isolated-20w-power-supply:
+    entry: elec/src/components/tdpower_tdk2024s24wh.ato:TDPOWER_TDK20_24S24WH
+    exclude_targets: [mfg-data]
+
+  thermistor-8ch:
+    entry: elec/src/blocks/thermistor_8ch.ato:Thermistor8ch
+    exclude_targets: [mfg-data]
+
+  saleae-header:
+    entry: elec/src/blocks/debug-saleae.ato:DebugSaleae
+    exclude_targets: [mfg-data]
+
 dependencies:
   - name: ldk220m-r
     version_spec:
@@ -139,4 +151,9 @@ dependencies:
     version_spec: "@ac20c5b8415de66fa9af8c74218dd52d0c579ad6"
     link_broken: false
     path: .ato/modules/lv2842xlvddcr.git
+    source:
+  - name: tca9548apwr
+    version_spec: "@093fa7ecc112a1c3ffa5921eb91bed4f5e96e12d"
+    link_broken: false
+    path: .ato/modules/tca9548apwr
     source:

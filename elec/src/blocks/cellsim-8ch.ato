@@ -1,9 +1,16 @@
-import ElectricPower, ElectricLogic, I2C
-from "components/tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
+import ElectricPower, ElectricLogic, I2C, FilterElectricalRC
+from "tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
 from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
-from "blocks/relay.ato" import PowerRelay
+from "blocks/micro_vault.ato" import MicroVault
 from "components/cell.ato" import Cell, CellJumper
 from "resistors.ato" import I2CPullup
+from "components/tdpower_tdk2024s24wh.ato" import TDPOWER_TDK20_24S24WH
+from "lv2842xlvddcr.git/elec/src/lv284xx.ato" import LV2842XReferenceDesign
+from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+from "components/iso1640.ato" import ISO1640QDWRQ1, ISO1640BDR
+from "components/Ylptec_BYYXX.ato" import BYYXXS_2WR2, _B2424
+from "components/evisun_b2409s1wr3.ato" import EVISUN_B2409S_1WR3
+from "components/analog_devices_ad_um121n1b_rzrl7.ato" import Analog_Devices_ADUM121N1BRZ_RL7
 
 module CellSim8Ch:
 
@@ -13,9 +20,101 @@ module CellSim8Ch:
     power_3v3 = new ElectricPower
     block_down = new CellJumper
     block_up = new CellJumper
-    dmm_out = new ElectricPower
-    dmm_relay_enable = new ElectricLogic
     i2c = new I2C
+
+    # Internal rails
+    power_24v_isolated = new ElectricPower
+    power_5v_isolated = new ElectricPower
+    power_3v3_isolated = new ElectricPower
+    i2c_isolated = new I2C
+    dmm_out = new ElectricPower
+    led_data_in = new ElectricLogic
+    led_data_out = new ElectricLogic
+
+    # Regulators
+    regulator_24v_isolated = new TDPOWER_TDK20_24S24WH
+    buck_5v = new LV2842XReferenceDesign
+    ldo_3v3 = new LDK220M_R
+
+    # Connect up regulators
+    power_24v ~ regulator_24v_isolated.power_in
+    regulator_24v_isolated.power_out ~ power_24v_isolated
+
+    power_24v_isolated ~ buck_5v.power_in
+    buck_5v.power_out ~ power_5v_isolated
+
+    power_5v_isolated ~ ldo_3v3.power_in
+    ldo_3v3.power_out ~ power_3v3_isolated
+
+    # Configure regulators
+    # assert buck_5v.v_out within 5V +/- 5%
+    # assert ldo_3v3.v_out within 3.3V +/- 5%
+
+    # Set regulator feedback components (hack while compiler is slow af)
+    buck_5v.feedback_div.r_bottom.resistance = 8.1kohm to 8.3kohm
+    buck_5v.feedback_div.r_top.resistance = 46.5kohm to 47.5kohm
+
+    ldo_3v3.feedback_div.r_bottom.resistance = 9.9kohm to 10.1kohm
+    ldo_3v3.feedback_div.r_top.resistance = 17.82kohm to 18.18kohm
+
+    # LED Isolator - 1500V isolation
+    led_isolator = new Analog_Devices_ADUM121N1BRZ_RL7
+    power_3v3 ~ led_isolator.power_non_isolated
+    power_5v_isolated ~ led_isolator.power_isolated
+    block_down.led_data ~ led_isolator.input_b # non isolated input
+    led_data_in ~ led_isolator.output_b # isolated output
+    led_isolator.input_a ~ led_data_out # isolated input
+    led_isolator.output_a ~ block_up.led_data # non isolated output
+
+    # I2C Isolator - 1500V isolation
+    i2c_isolator = new ISO1640QDWRQ1
+    power_3v3 ~ i2c_isolator.power_non_isolated
+    power_3v3_isolated ~ i2c_isolator.power_isolated
+    i2c ~ i2c_isolator.i2c_non_isolated
+    i2c_isolated ~ i2c_isolator.i2c_isolated
+
+    i2c_pullup = new I2CPullup
+    power_3v3_isolated ~ i2c_pullup.power
+    i2c_isolated ~ i2c_pullup.i2c
+
+    # High precision voltage sense
+    micro_vault = new MicroVault
+
+    # Input filter
+    dmm_input_filter = new FilterElectricalRC
+    dmm_input_filter.in_.line ~ dmm_out.vcc
+    dmm_input_filter.in_.reference.gnd ~ dmm_out.gnd
+    dmm_input_filter.out ~ micro_vault.adc.input_0
+    # Device gnd should be connected to microVault gnd
+    dmm_out.gnd ~ micro_vault.power_3v3.gnd
+
+    # Configure input filter
+    dmm_input_filter.capacitor.capacitance = 100nF +/- 10%
+    dmm_input_filter.resistor.resistance = 10kohm +/- 1%
+
+    # Isolated supply for microVault
+    micro_vault_power_supply = new EVISUN_B2409S_1WR3
+    power_24v_isolated ~ micro_vault_power_supply.power_in
+    micro_vault_power_supply.power_out ~ micro_vault.power_9v
+
+    micro_vault_ldo_3v3 = new LDK220M_R
+    micro_vault_ldo_3v3.power_in ~ micro_vault_power_supply.power_out
+    micro_vault_ldo_3v3.power_out ~ micro_vault.power_3v3
+
+    # Isolator for i2c, needs to float with respect to the cells
+    micro_vault_isolator = new ISO1640BDR
+    power_3v3_isolated ~ micro_vault_isolator.power_non_isolated
+    micro_vault_ldo_3v3.power_out ~ micro_vault_isolator.power_isolated
+    i2c_isolated ~ micro_vault_isolator.i2c_non_isolated
+    micro_vault_isolator.i2c_isolated ~ micro_vault.i2c
+
+    # micro_vault_ldo_3v3.v_out = 3.3V +/- 5%
+    micro_vault_ldo_3v3.feedback_div.r_bottom.resistance = 9.9kohm to 10.1kohm
+    micro_vault_ldo_3v3.feedback_div.r_top.resistance = 17.82kohm to 18.18kohm
+
+    i2c_pullup_micro_vault = new I2CPullup
+    micro_vault.power_3v3 ~ i2c_pullup_micro_vault.power
+    micro_vault.i2c ~ i2c_pullup_micro_vault.i2c
 
     # Cells
     cell1 = new Cell
@@ -27,53 +126,55 @@ module CellSim8Ch:
     cell7 = new Cell
     cell8 = new Cell
 
+    # LED Data
+    led_data_in ~ cell1.cell_down.led_data
+    cell8.cell_up.led_data ~ led_data_out
+
     # Common gnd
-    power_24v.gnd ~ power_5v.gnd
-    power_24v.gnd ~ power_3v3.gnd
+    power_24v_isolated.gnd ~ power_5v_isolated.gnd
+    power_24v_isolated.gnd ~ power_3v3_isolated.gnd
 
     # Mux
     i2c_mux = new TCA9548APWR
     gpio_mux = new MultiplexerI2C8Ch
 
-    power_3v3 ~ i2c_mux.power
-    power_3v3 ~ gpio_mux.power_3v3
+    power_3v3_isolated ~ i2c_mux.power
+    power_3v3_isolated ~ gpio_mux.power_3v3
 
-    i2c ~ i2c_mux.i2c #0x70
-    i2c ~ gpio_mux.i2c #0x21
+    i2c_isolated ~ i2c_mux.i2c #0x70
+    i2c_isolated ~ gpio_mux.i2c #0x21
 
-    # DMM
-    dmm_relay = new PowerRelay
-    power_5v ~ dmm_relay.power_relay
-    dmm_relay.power_out ~ dmm_out
-    dmm_relay.input ~ dmm_relay_enable
+    # Block cell connections
+    block_down.cell ~ cell1.cell_down.cell
+    block_up.cell ~ cell8.cell_up.cell
 
     # Cell Power
-    power_24v ~ cell1.power_in
-    power_24v ~ cell2.power_in
-    power_24v ~ cell3.power_in
-    power_24v ~ cell4.power_in
-    power_24v ~ cell5.power_in
-    power_24v ~ cell6.power_in
-    power_24v ~ cell7.power_in
-    power_24v ~ cell8.power_in
+    power_24v_isolated ~ cell1.power_in
+    power_24v_isolated ~ cell2.power_in
+    power_24v_isolated ~ cell3.power_in
+    power_24v_isolated ~ cell4.power_in
+    power_24v_isolated ~ cell5.power_in
+    power_24v_isolated ~ cell6.power_in
+    power_24v_isolated ~ cell7.power_in
+    power_24v_isolated ~ cell8.power_in
 
-    power_5v ~ cell1.power_5v
-    power_5v ~ cell2.power_5v
-    power_5v ~ cell3.power_5v
-    power_5v ~ cell4.power_5v
-    power_5v ~ cell5.power_5v
-    power_5v ~ cell6.power_5v
-    power_5v ~ cell7.power_5v
-    power_5v ~ cell8.power_5v
+    power_5v_isolated ~ cell1.power_5v
+    power_5v_isolated ~ cell2.power_5v
+    power_5v_isolated ~ cell3.power_5v
+    power_5v_isolated ~ cell4.power_5v
+    power_5v_isolated ~ cell5.power_5v
+    power_5v_isolated ~ cell6.power_5v
+    power_5v_isolated ~ cell7.power_5v
+    power_5v_isolated ~ cell8.power_5v
 
-    power_3v3 ~ cell1.power_isolator
-    power_3v3 ~ cell2.power_isolator
-    power_3v3 ~ cell3.power_isolator
-    power_3v3 ~ cell4.power_isolator
-    power_3v3 ~ cell5.power_isolator
-    power_3v3 ~ cell6.power_isolator
-    power_3v3 ~ cell7.power_isolator
-    power_3v3 ~ cell8.power_isolator
+    power_3v3_isolated ~ cell1.power_isolator
+    power_3v3_isolated ~ cell2.power_isolator
+    power_3v3_isolated ~ cell3.power_isolator
+    power_3v3_isolated ~ cell4.power_isolator
+    power_3v3_isolated ~ cell5.power_isolator
+    power_3v3_isolated ~ cell6.power_isolator
+    power_3v3_isolated ~ cell7.power_isolator
+    power_3v3_isolated ~ cell8.power_isolator
 
     # Cell to cell connections
     cell1.cell_up ~ cell2.cell_down
@@ -83,7 +184,6 @@ module CellSim8Ch:
     cell5.cell_up ~ cell6.cell_down
     cell6.cell_up ~ cell7.cell_down
     cell7.cell_up ~ cell8.cell_down
-
 
     # Cell to i2c mux connections
     i2c_mux.i2c0 ~ cell1.i2c
@@ -106,16 +206,11 @@ module CellSim8Ch:
     gpio_mux.output_8 ~ cell8.dmm_relay_enable
 
     # DMM Mux output connections
-    dmm_out ~ dmm_relay.power_out
-    dmm_relay.power_in ~ cell1.dmm_out
-    dmm_relay.power_in ~ cell2.dmm_out
-    dmm_relay.power_in ~ cell3.dmm_out
-    dmm_relay.power_in ~ cell4.dmm_out
-    dmm_relay.power_in ~ cell5.dmm_out
-    dmm_relay.power_in ~ cell6.dmm_out
-    dmm_relay.power_in ~ cell7.dmm_out
-    dmm_relay.power_in ~ cell8.dmm_out
-
-
-module Test:
-    pullup = new I2CPullup
+    dmm_out ~ cell1.dmm_out
+    dmm_out ~ cell2.dmm_out
+    dmm_out ~ cell3.dmm_out
+    dmm_out ~ cell4.dmm_out
+    dmm_out ~ cell5.dmm_out
+    dmm_out ~ cell6.dmm_out
+    dmm_out ~ cell7.dmm_out
+    dmm_out ~ cell8.dmm_out

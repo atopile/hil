@@ -1,0 +1,35 @@
+import ElectricPower, ElectricLogic
+
+component Texas_Instruments_ISO7720DR:
+    """Texas_Instruments_ISO7720DR component"""
+    lcsc_id = "C486037"
+    manufacturer = "Texas Instruments"
+    mpn = "ISO7720DR"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2001181535_Texas-Instruments-ISO7720DR_C486037.pdf"
+    designator_prefix = "ISO"
+
+    power_in = new ElectricPower # Input side power
+    power_out = new ElectricPower # Output side power
+
+    a_in = new ElectricLogic
+    b_in = new ElectricLogic
+    a_out = new ElectricLogic
+    b_out = new ElectricLogic
+
+    # Input
+    power_in.vcc ~ pin 1
+    power_in.gnd ~ pin 4
+    a_in.line ~ pin 2
+    b_in.line ~ pin 3
+
+    # Output
+    power_out.vcc ~ pin 8
+    power_out.gnd ~ pin 5
+    a_out.line ~ pin 7
+    b_out.line ~ pin 6
+
+    # Connect references
+    power_in ~ a_in.reference
+    power_in ~ b_in.reference
+    power_out ~ a_out.reference
+    power_out ~ b_out.reference

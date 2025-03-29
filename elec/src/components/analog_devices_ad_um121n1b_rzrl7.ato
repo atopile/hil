@@ -1,0 +1,43 @@
+import ElectricLogic, ElectricPower
+
+component Analog_Devices_ADUM121N1BRZ_RL7:
+    """Analog_Devices_ADUM121N1BRZ_RL7 component"""
+    lcsc_id = "C190783"
+    manufacturer = "Analog Devices"
+    mpn = "ADUM121N1BRZ-RL7"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Analog-Devices-ADUM121N1BRZ-RL7_C190783.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal GND1 ~ pin 4
+    signal GND2 ~ pin 5
+    signal VDD1 ~ pin 1
+    signal VDD2 ~ pin 8
+    signal VIA ~ pin 7
+    signal VIB ~ pin 3
+    signal VOA ~ pin 2
+    signal VOB ~ pin 6
+
+    # Interfaces
+    power_isolated = new ElectricPower
+    power_non_isolated = new ElectricPower
+    power_non_isolated.vcc ~ VDD1
+    power_non_isolated.gnd ~ GND1
+    power_isolated.vcc ~ VDD2
+    power_isolated.gnd ~ GND2
+
+    input_a = new ElectricLogic
+    output_a = new ElectricLogic
+    input_b = new ElectricLogic
+    output_b = new ElectricLogic
+
+    input_a.line ~ VIA
+    input_b.line ~ VIB
+    output_a.line ~ VOA
+    output_b.line ~ VOB
+
+    # Connect references
+    power_non_isolated ~ output_a.reference
+    power_non_isolated ~ input_b.reference
+    power_isolated ~ output_b.reference
+    power_isolated ~ input_a.reference

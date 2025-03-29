@@ -5,4 +5,8 @@ component Sinhoo_SMTSO2515CTJ:
     mpn = "SMTSO2515CTJ"
     datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2111221230_Sinhoo-SMTSO2515CTJ_C2915629.pdf"
     designator_prefix = "U"
+    footprint = "SMD_BD5.6-D4.1-12eb58"
     signal p1 ~ pin 1
+    p1 ~ pin 2
+    p1 ~ pin 3
+    p1 ~ pin 4
