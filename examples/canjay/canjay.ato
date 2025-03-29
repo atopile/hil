@@ -1,5 +1,5 @@
 from "blocks/hil-core.ato" import HILCore
-from "blocks/coms-can.ato" import ComsCANISO, CANTerminationInterface
+from "blocks/coms-can.ato" import ComsCANISO, UnterminatedCAN
 from "blocks/debug-saleae.ato" import DebugSaleae
 
 from "components/ma_xmx2503503p_bgy01cu_a.ato" import SpringTerminal3P
@@ -51,8 +51,6 @@ module Canjay:
 
     _boardshape = new BoardshapeGridfinity3x100mm
 
-    ## HACK: modify the termination resistances to something super high
-    can0.termination.resistor_can_high.resistance = 1Mohm +/- 5%
-    can0.termination.resistor_can_low.resistance = 1Mohm +/- 5%
-    can1.termination.resistor_can_high.resistance = 1Mohm +/- 5%
-    can1.termination.resistor_can_low.resistance = 1Mohm +/- 5%
+    # Termination
+    can0.termination -> UnterminatedCAN
+    can1.termination -> UnterminatedCAN

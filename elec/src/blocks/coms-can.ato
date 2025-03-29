@@ -29,7 +29,7 @@ module ComsCANISO:
     power_5v = new ElectricPower
 
     ## Specialize termination if CAN termination is required
-    termination = new SplitCANTermination
+    termination = new CANTerminationInterface
 
     # Internals of the module
 
@@ -91,17 +91,7 @@ module CANTerminationInterface:
     capacitor_can.capacitance = 4.7nF +/- 20%
     capacitor_can.package = "C0402"
 
-
-module SplitCANTermination from CANTerminationInterface:
-    """
-    CAN termination 120Ohm with center tap capacitor
-
-    Split termination improves the electromagnetic emissions
-    behavior of the network by eliminating fluctuations in the
-    bus common-mode voltages at the start and end of message transmissions.
-    """
-
-    # CAN
+    # Connections
     can.CANH ~ resistor_can_high.p1
     resistor_can_high.p2 ~ _midpoint
     _midpoint ~ resistor_can_low.p1
@@ -109,3 +99,18 @@ module SplitCANTermination from CANTerminationInterface:
 
     _midpoint ~ capacitor_can.p1
     capacitor_can.p2 ~ gnd
+
+
+module UnterminatedCAN from CANTerminationInterface:
+    """
+    Unterminated CAN, useing 1MOhm resistors as a hack
+    """
+    resistor_can_high.resistance = 1Mohm +/- 2%
+    resistor_can_low.resistance = 1Mohm +/- 2%
+
+module TerminatedCAN120R from CANTerminationInterface:
+    """
+    CAN termination 120Ohm with center tap capacitor
+    """
+    resistor_can_high.resistance = 60ohm +/- 2%
+    resistor_can_low.resistance = 60ohm +/- 2%
