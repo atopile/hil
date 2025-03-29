@@ -159,8 +159,8 @@ dependencies:
     link_broken: false
     path: .ato/modules/lv2842xlvddcr.git
     source:
-      - name: tca9548apwr
-        version_spec: "@093fa7ecc112a1c3ffa5921eb91bed4f5e96e12d"
-        link_broken: false
-        path: .ato/modules/tca9548apwr
-        source:
+  - name: tca9548apwr
+    version_spec: "@093fa7ecc112a1c3ffa5921eb91bed4f5e96e12d"
+    link_broken: false
+    path: .ato/modules/tca9548apwr
+    source:
