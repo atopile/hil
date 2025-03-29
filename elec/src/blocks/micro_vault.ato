@@ -36,16 +36,22 @@ module MicroVault:
     power_3v3 ~ temp_sensor.power
     power_3v3 ~ heater_controller.power_3v3
     power_3v3.gnd ~ power_9v.gnd
+    adc.reference ~ _reference_5v
 
     # Configure regulator
-    assert reference_regulator.v_in is 9V +/- 10%
-    assert reference_regulator.v_out within 5.3V +/- 3%
+    # assert reference_regulator.v_in is 9V +/- 10%
+    # assert reference_regulator.v_out within 5.3V +/- 3%
+
+    # Set internal regulator values
+    reference_regulator.feedback_div.r_bottom.resistance = 9.9kohm to 10.1kohm
+    reference_regulator.feedback_div.r_top.resistance = 35.5kohm to 36.4kohm
 
     # Heater
     power_9v ~ heater_controller.power
     _power_5v3 ~ heater_vdiv.power
     heater_vdiv.output ~ heater_controller.reference_input
     reference.temp_out ~ heater_controller.temp_input
+    # target temp to 55C
     assert heater_vdiv.r_bottom.resistance within 12kohm +/- 1%
     assert heater_vdiv.r_top.resistance within 88kohm +/- 1%
 

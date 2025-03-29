@@ -68,6 +68,11 @@ module ControllerCM5:
     stud3 = new Sinhoo_SMTSO2515CTJ
     stud4 = new Sinhoo_SMTSO2515CTJ
 
+    stud1.p1 ~ cm5.power_3v3.gnd
+    stud2.p1 ~ cm5.power_3v3.gnd
+    stud3.p1 ~ cm5.power_3v3.gnd
+    stud4.p1 ~ cm5.power_3v3.gnd
+
     # Boot mode/power button
     boot_mode_switch = new XKB_Connectivity_TS_1101_C_W_Pulldown
     boot_mode_switch.input ~ cm5.boot_mode

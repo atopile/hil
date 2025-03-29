@@ -1,0 +1,89 @@
+import Regulator, ElectricPower
+import Capacitor, CapacitorElectrolytic
+
+module TDPOWER_TDK20_24S24WH from Regulator:
+    """TDPOWER_TDK20_24S24WH"""
+    converter = new _TDPOWER_TDK20_24S24WH
+    power_in ~ converter.power_in
+    power_out ~ converter.power_out
+
+    input_cap_1 = new Capacitor
+    power_in ~ input_cap_1.power
+    input_cap_1.package = "C0805"
+    assert input_cap_1.max_voltage within 30V to 100V
+    assert input_cap_1.capacitance within 10uF +/- 10%
+
+    input_cap_2 = new Capacitor
+    power_in ~ input_cap_2.power
+    input_cap_2.package = "C0805"
+    assert input_cap_2.max_voltage within 30V to 100V
+    assert input_cap_2.capacitance within 10uF +/- 10%
+
+    input_cap_3 = new Capacitor
+    power_in ~ input_cap_3.power
+    input_cap_3.package = "C0805"
+    assert input_cap_3.max_voltage within 30V to 100V
+    assert input_cap_3.capacitance within 1uF +/- 10%
+
+
+    output_cap_1 = new Capacitor
+    power_out ~ output_cap_1.power
+    output_cap_1.package = "C0805"
+    assert output_cap_1.max_voltage within 30V to 100V
+    assert output_cap_1.capacitance within 1uF +/- 10%
+
+    output_cap_2 = new Capacitor
+    power_out ~ output_cap_2.power
+    output_cap_2.lcsc_id = "C3339"
+
+    output_cap_3 = new Capacitor
+    power_out ~ output_cap_3.power
+    output_cap_3.lcsc_id = "C3339"
+
+    y_cap_1 = new Capacitor
+    y_cap_2 = new Capacitor
+    y_cap_3 = new Capacitor
+
+    # Connect the Y capacitors across the power input and output gnd
+    power_in.gnd ~ y_cap_1.p1; y_cap_1.p2 ~ y_cap_2.p1
+    y_cap_2.p2 ~ y_cap_3.p1; y_cap_3.p2 ~ power_out.gnd
+
+    assert y_cap_1.max_voltage within 1kV to 2kV
+    assert y_cap_2.max_voltage within 1kV to 2kV
+    assert y_cap_3.max_voltage within 1kV to 2kV
+
+    assert y_cap_1.capacitance within 2.2nF +/- 20%
+    assert y_cap_2.capacitance within 2.2nF +/- 20%
+    assert y_cap_3.capacitance within 2.2nF +/- 20%
+
+    y_cap_1.package = "C1206"
+    y_cap_2.package = "C1206"
+    y_cap_3.package = "C1206"
+
+    # Enabled by default
+    converter.CNT ~ power_in.vcc
+
+
+component _TDPOWER_TDK20_24S24WH:
+    """TDPOWER_TDK20_24S24WH component"""
+    lcsc_id = "C3033163"
+    manufacturer = "TDPOWER"
+    mpn = "TDK20-24S24WH"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2206101730_TDPOWER-TDK20-24S24WH_C3033163.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal CNT ~ pin 3
+    signal NP ~ pin 5
+    signal VIN_ ~ pin 2
+    signal VINplus ~ pin 1
+    signal VO_ ~ pin 4
+    signal VOplus ~ pin 6
+
+    power_in = new ElectricPower
+    power_out = new ElectricPower
+
+    power_in.vcc ~ pin 1
+    power_in.gnd ~ pin 2
+    power_out.vcc ~ pin 6
+    power_out.gnd ~ pin 4
