@@ -1,5 +1,5 @@
 import ElectricPower, ElectricLogic, I2C, FilterElectricalRC
-from "components/tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
+from "tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
 from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
 from "blocks/micro_vault.ato" import MicroVault
 from "components/cell.ato" import Cell, CellJumper
@@ -56,7 +56,6 @@ module CellSim8Ch:
 
     ldo_3v3.feedback_div.r_bottom.resistance = 9.9kohm to 10.1kohm
     ldo_3v3.feedback_div.r_top.resistance = 17.82kohm to 18.18kohm
-
 
     # LED Isolator - 1500V isolation
     led_isolator = new Analog_Devices_ADUM121N1BRZ_RL7
@@ -144,6 +143,10 @@ module CellSim8Ch:
 
     i2c_isolated ~ i2c_mux.i2c #0x70
     i2c_isolated ~ gpio_mux.i2c #0x21
+
+    # Block cell connections
+    block_down.cell ~ cell1.cell_down.cell
+    block_up.cell ~ cell8.cell_up.cell
 
     # Cell Power
     power_24v_isolated ~ cell1.power_in
