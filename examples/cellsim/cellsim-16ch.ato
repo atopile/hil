@@ -82,7 +82,7 @@ module CellSim16Ch:
 
     # CAN Interface
     can_controller = new ComsCANISO
-    can_controller.termination -> TerminatedCAN120R
+    # can_controller.termination -> TerminatedCAN120R
 
     # Power
     hil_core.power_5v ~ can_controller.power_5v
