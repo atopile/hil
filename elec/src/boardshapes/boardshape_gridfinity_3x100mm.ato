@@ -1,0 +1,11 @@
+from "components/nettie.ato" import NetTie
+
+
+module BoardshapeGridfinity3x100mm:
+    """
+    Boardshape for Gridfinity-compatible 3-unit (42mm x 3 = 120mm) x 100mm tall
+    """
+
+    # Handle to provide something to click on
+    # to select and sync the board shape
+    handle = new NetTie

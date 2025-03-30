@@ -1,7 +1,7 @@
 from "blocks/hil-core.ato" import HILCore
 from "blocks/cellsim-8ch.ato" import CellSim8Ch
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
-from "blocks/coms-can.ato" import ComsCANISO
+from "blocks/coms-can.ato" import ComsCANISO, TerminatedCAN120R
 from "blocks/debug-saleae.ato" import DebugSaleae
 from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
 from "components/jst-gh.ato" import JSTGH4Pin
@@ -82,6 +82,7 @@ module CellSim16Ch:
 
     # CAN Interface
     can_controller = new ComsCANISO
+    # can_controller.termination -> TerminatedCAN120R
 
     # Power
     hil_core.power_5v ~ can_controller.power_5v
@@ -90,7 +91,7 @@ module CellSim16Ch:
     # SPI
     hil_core.controller.spi0 ~ can_controller.spi
     hil_core.controller.spi0_cs0 ~ can_controller.spi_cs
-    hil_core.controller.spi0_int ~ can_controller.interrupt
+    hil_core.controller.cm5.gpio_6 ~ can_controller.interrupt
 
     # Connector
     can_connector = new JSTGH4Pin

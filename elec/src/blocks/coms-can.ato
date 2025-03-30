@@ -1,10 +1,12 @@
 import ElectricPower, Capacitor, Resistor, SPI, ElectricLogic
+
 from "interfaces.ato" import CAN
 
 from "components/Ylptec_BYYXX.ato" import _B0505, BYYXXS_2WR2
 from "components/nexperia_pe_sd1c_an215.ato" import Nexperia_PESD1CAN_215
 from "components/texas_instruments_is_o1044b_dr.ato" import Texas_Instruments_ISO1044BDR
 from "components/microchip_tech_mc_p2518f_dteqb_b.ato" import Microchip_Tech_MCP2518FDT_E_QBB
+
 
 module ComsCANISO:
     """
@@ -13,15 +15,24 @@ module ComsCANISO:
     - Up to 5Mbps (CAN FD)
     - Isolated CAN interface (1KV)
     """
-    # external interfaces
+    # Please configure me!
+    ## SPI, CS and Interrupt are all required to connect to the controller
     spi = new SPI
     spi_cs = new ElectricLogic
-    can = new CAN
     interrupt = new ElectricLogic
+
+    ## External Network Connection
+    can = new CAN
+
+    ## Provide power
     power_3v3 = new ElectricPower
     power_5v = new ElectricPower
 
-    # internal interfaces
+    ## Specialize termination if CAN termination is required
+    termination = new CANTerminationInterface
+
+    # Internals of the module
+
     _power_5v_iso = new ElectricPower
 
     # Components
@@ -30,7 +41,6 @@ module ComsCANISO:
     controller = new Microchip_Tech_MCP2518FDT_E_QBB
     transceiver = new Texas_Instruments_ISO1044BDR
     protection = new Nexperia_PESD1CAN_215
-    termination = new CANTermination
 
     # Interrupts
     interrupt ~ controller.interrupt_h
@@ -57,28 +67,31 @@ module ComsCANISO:
     termination.can ~ can
     termination.gnd ~ _power_5v_iso.gnd
 
-module CANTermination:
+
+module CANTerminationInterface:
     """
-    CAN termination 120Ohm with center tap capacitor
+    Generic CAN termination interface
     """
     can = new CAN
-    signal gnd
+    signal gnd  # ground of the power reference of the CAN interface
+    signal _midpoint
 
-    # Components
+    # FIXME: This is a heinous hack to get the mutability of this to work
+    # with the layout blocks as well. We need the components here to
+    # make the layouts the same, but we simply don't connect them up. Ew.
     resistor_can_high = new Resistor
-    resistor_can_high.resistance = 60ohm +/- 2%
+    resistor_can_high.resistance = 1Mohm +/- 2%
     resistor_can_high.package = "R0402"
 
     resistor_can_low = new Resistor
-    resistor_can_low.resistance = 60ohm +/- 2%
+    resistor_can_low.resistance = 1Mohm +/- 2%
     resistor_can_low.package = "R0402"
 
     capacitor_can = new Capacitor
     capacitor_can.capacitance = 4.7nF +/- 20%
     capacitor_can.package = "C0402"
 
-    # CAN
-    signal _midpoint
+    # Connections
     can.CANH ~ resistor_can_high.p1
     resistor_can_high.p2 ~ _midpoint
     _midpoint ~ resistor_can_low.p1
@@ -86,3 +99,18 @@ module CANTermination:
 
     _midpoint ~ capacitor_can.p1
     capacitor_can.p2 ~ gnd
+
+
+module UnterminatedCAN from CANTerminationInterface:
+    """
+    Unterminated CAN, useing 1MOhm resistors as a hack
+    """
+    resistor_can_high.resistance = 1Mohm +/- 2%
+    resistor_can_low.resistance = 1Mohm +/- 2%
+
+module TerminatedCAN120R from CANTerminationInterface:
+    """
+    CAN termination 120Ohm with center tap capacitor
+    """
+    resistor_can_high.resistance = 60ohm +/- 2%
+    resistor_can_low.resistance = 60ohm +/- 2%

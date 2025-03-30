@@ -51,7 +51,7 @@ wheels = [
 
 [[package]]
 name = "atopile"
-version = "0.3.20"
+version = "0.3.21"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "antlr4-python3-runtime" },
@@ -86,12 +86,12 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e5/ec/f9e94711091b18381387cd2a3e3f4693ca75c4105c8b04537b7f396e1f9e/atopile-0.3.20.tar.gz", hash = "sha256:3b015a82b93338c7521d0e99f2638d043e077501352eb7a8e6115bc1aa299e10", size = 43425379 }
+sdist = { url = "https://files.pythonhosted.org/packages/f8/14/82892950f89c4664b0092e62bc108dd4e8749c205b86af5fab3888dd54b9/atopile-0.3.21.tar.gz", hash = "sha256:d545427b0a86aa97465d0a6c06b1fcf35efe96fc721d37fb93064753f187f734", size = 43425574 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/6e/3d47f2f08b0c8a42b27217a0dc3951189419ea4380aa78beeec1ad981041/atopile-0.3.20-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:97279733cf423b592ed100adcb3791880254883c8638251edaa1284d39f43d2a", size = 883767 },
-    { url = "https://files.pythonhosted.org/packages/41/64/65784a2c3ee623e76c43e495ffd89c4585619164df264b034a31e2769a84/atopile-0.3.20-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:72d670adbe9b6c2f1fa0f1798a8d9712a5ccf2191addf1116a3555845c96a878", size = 874215 },
-    { url = "https://files.pythonhosted.org/packages/64/11/e7195826270f3a71059eda53f0b0d1aa64bcefb84978492cd45b3c53d453/atopile-0.3.20-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:f5c0d4ce8a22e00b27288530c14f340e17c3e0078c1e9a5adeaa08e7128abcff", size = 908460 },
-    { url = "https://files.pythonhosted.org/packages/e7/81/ad38fef653004e929349f1633314009012b252c9f840fb1f3011b7a4d7b5/atopile-0.3.20-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:cf3a4765c8c39ac3ae146588d5e8141c52394d6a8fd41350ee0a8fdbf338d90f", size = 1341877 },
+    { url = "https://files.pythonhosted.org/packages/7c/d3/af91dc904431f67d89abe2e4212d6c561dcd71e266d4376917d250772e27/atopile-0.3.21-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:1a46de6075acf5065c2c1d8ca591217edc9eff08e6d5c9f8532cb02f6d6de29d", size = 883908 },
+    { url = "https://files.pythonhosted.org/packages/0b/be/15046dfa6aed51e1d3ad6ceb2570f39fbff3d05bb15863be17b8b18d533d/atopile-0.3.21-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:52dbe9ad6ba6a5cfd73da34e69f0859c4418797333c448ec17e417c99089f5e4", size = 874355 },
+    { url = "https://files.pythonhosted.org/packages/7e/a7/a02baece3574fb988491c127243326a55687e0d33c4b4847694a863d63a7/atopile-0.3.21-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:8af08efd0fc2c0a1adf1cf7b4a7b88534a19b2d01939262a49d473efc621cffe", size = 908602 },
+    { url = "https://files.pythonhosted.org/packages/6f/4f/b0e2b5e0d2486d5c772cf228ac7e09476cec050279e2c2883836070c3bbd/atopile-0.3.21-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:0730252beeaebedf411ffd27473046386a5701edf85761488d5761acce7324d0", size = 1342019 },
 ]
 
 [[package]]
@@ -449,7 +449,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "altair", specifier = ">=5.5.0" },
-    { name = "atopile", specifier = ">=0.3.20" },
+    { name = "atopile", specifier = "==0.3.21" },
     { name = "numpy", specifier = ">=2.2.2" },
     { name = "pathvalidate", specifier = ">=3.2.3" },
     { name = "polars", specifier = ">=1.22.0" },

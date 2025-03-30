@@ -2,9 +2,11 @@ ato-version: 0.3.0
 
 builds:
   # Project Examples
-
   cellsim-16ch:
     entry: examples/cellsim/cellsim-16ch.ato:CellSim16Ch
+
+  canjay:
+    entry: examples/canjay/canjay.ato:Canjay
 
   # IO Blocks
   hil-core:
@@ -130,6 +132,11 @@ builds:
   saleae-header:
     entry: elec/src/blocks/debug-saleae.ato:DebugSaleae
     exclude_targets: [mfg-data]
+
+  # Outlines
+  ## These provide simple board shapes
+  boardshapes-gridfinity-3x100mm:
+    entry: elec/src/boardshapes/boardshape_gridfinity_3x100mm.ato:BoardshapeGridfinity3x100mm
 
 dependencies:
   - name: ldk220m-r

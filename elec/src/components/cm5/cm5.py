@@ -45,7 +45,6 @@ class CM5_MINIMAL(Module):
     spi0: F.SPI
     spi0_cs0: F.ElectricLogic
     spi0_cs1: F.ElectricLogic
-    spi0_int: F.ElectricLogic
 
     # LED
     led_data: F.ElectricLogic
@@ -145,9 +144,6 @@ class CM5_MINIMAL(Module):
 
         # LED Data
         self.led_data.connect(self.gpio[20])
-
-        # SPI Interrupt
-        self.spi0_int.connect(self.gpio[6])
 
         # UART
         self.uart0.base_uart.tx.connect(self.gpio[14])
@@ -275,6 +271,37 @@ class CM5_MINIMAL(Module):
 
         for gpio_num, pin_num in gpio_mapping.items():
             self.gpio[gpio_num].line.connect(self.hdi_a.pins[pin_num])
+
+        # TODO: Remove this once we have access
+        # to the GPIOs via square brackets
+        self.gpio_0 = self.gpio[0]
+        self.gpio_1 = self.gpio[1]
+        self.gpio_2 = self.gpio[2]
+        self.gpio_3 = self.gpio[3]
+        self.gpio_4 = self.gpio[4]
+        self.gpio_5 = self.gpio[5]
+        self.gpio_6 = self.gpio[6]
+        self.gpio_7 = self.gpio[7]
+        self.gpio_8 = self.gpio[8]
+        self.gpio_9 = self.gpio[9]
+        self.gpio_10 = self.gpio[10]
+        self.gpio_11 = self.gpio[11]
+        self.gpio_12 = self.gpio[12]
+        self.gpio_13 = self.gpio[13]
+        self.gpio_14 = self.gpio[14]
+        self.gpio_15 = self.gpio[15]
+        self.gpio_16 = self.gpio[16]
+        self.gpio_17 = self.gpio[17]
+        self.gpio_18 = self.gpio[18]
+        self.gpio_19 = self.gpio[19]
+        self.gpio_20 = self.gpio[20]
+        self.gpio_21 = self.gpio[21]
+        self.gpio_22 = self.gpio[22]
+        self.gpio_23 = self.gpio[23]
+        self.gpio_24 = self.gpio[24]
+        self.gpio_25 = self.gpio[25]
+        self.gpio_26 = self.gpio[26]
+        self.gpio_27 = self.gpio[27]
 
         # GPIO Reference voltage setter
         if self.gpio_ref_voltage == GPIO_Ref_Voltages.V1_8:

@@ -44,6 +44,16 @@ module HILCore:
     # power_5v.voltage = 5V +/- 5%
     # power_3v3.voltage = 3.3V +/- 5%
 
+    # Explicitly name the power nets here, so we can expect these
+    # in every design to remain the same. This lets us name nets
+    # and zones in other blocks as a top-level stitching layer,
+    # as we'd typically bemoan, but is a useful carry-over until
+    # we can support layout better
+    power_24v.vcc.override_net_name = "POWER_24V"
+    power_5v.vcc.override_net_name = "POWER_5V"
+    power_3v3.vcc.override_net_name = "POWER_3V3"
+    power_3v3.gnd.override_net_name = "GND"
+
     # Power supplies
     usbpd = new PowerUSBPD
     boost_24v = new Texas_Instruments_TPS55340RTER
