@@ -1,4 +1,4 @@
-from "blocks/hil-core.ato" import HILCore
+from "blocks/hil-core.ato" import HILCoreATX
 from "blocks/cellsim-8ch.ato" import CellSim8Ch
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
 from "blocks/coms-can.ato" import ComsCANISO
@@ -204,16 +204,21 @@ module SpaceBMSHIL:
     dep_relay = new I2CRelay
     sep_relay = new I2CRelay
 
+    hil_core.power_5v ~ dep_relay.power_5v
+    hil_core.power_5v ~ sep_relay.power_5v
+    hil_core.power_3v3 ~ dep_relay.power_3v3
+    hil_core.power_3v3 ~ sep_relay.power_3v3
+
     # I2C
     i2c_3_mux.i2c5 ~ dep_relay.i2c
     i2c_3_mux.i2c6 ~ sep_relay.i2c
 
     # Connector - Pins flipped due to connector style
     dep_sep_connector = new Molex5051100492
-    dep_sep_connector.p4 ~ dep_relay.power_out.vcc
-    dep_sep_connector.p3 ~ dep_relay.power_in.vcc
-    dep_sep_connector.p2 ~ sep_relay.power_out.vcc
-    dep_sep_connector.p1 ~ sep_relay.power_in.vcc
+    dep_sep_connector.p4 ~ dep_relay.input.vcc
+    dep_sep_connector.p3 ~ dep_relay.output.vcc
+    dep_sep_connector.p2 ~ sep_relay.output.vcc
+    dep_sep_connector.p1 ~ sep_relay.input.vcc
 
     ############################################################
     # Debug
