@@ -278,7 +278,7 @@
     "last_paths": {
       "gencad": "",
       "idf": "",
-      "netlist": "",
+      "netlist": "../space-bms-hil/",
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",

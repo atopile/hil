@@ -1,0 +1,52 @@
+import ElectricPower, ElectricLogic, Electrical
+
+component MOLEX_39281243:
+    """MOLEX_39281243 ATX 24Pin connector"""
+    lcsc_id = "C114088"
+    manufacturer = "MOLEX"
+    mpn = "39281243"
+    designator_prefix = "CN"
+
+    # External Interfaces
+    power_12v = new ElectricPower
+    power_5v = new ElectricPower
+    power_5v_always_on = new ElectricPower
+    power_3v3 = new ElectricPower
+    power_12v_neg = new ElectricPower
+    power_ok = new ElectricLogic
+    ps_on = new ElectricLogic
+
+    gnd = new Electrical
+    gnd ~ power_12v.gnd
+    gnd ~ power_5v.gnd
+    gnd ~ power_5v_always_on.gnd
+    gnd ~ power_3v3.gnd
+    gnd ~ power_12v_neg.gnd
+    gnd ~ power_ok.reference.gnd
+    gnd ~ ps_on.reference.gnd
+
+    # Pins
+    pin 1  ~ power_3v3.vcc
+    pin 2  ~ power_3v3.vcc
+    pin 3  ~ gnd
+    pin 4  ~ power_5v.vcc
+    pin 5  ~ gnd
+    pin 6  ~ power_5v.vcc
+    pin 7  ~ gnd
+    pin 8  ~ power_ok.line
+    pin 9  ~ power_5v_always_on.vcc
+    pin 10 ~ power_12v.vcc
+    pin 11 ~ power_12v.vcc
+    pin 12 ~ power_3v3.vcc
+    pin 13 ~ power_3v3.vcc
+    pin 14 ~ power_12v_neg.vcc
+    pin 15 ~ gnd
+    pin 16 ~ ps_on.line
+    pin 17 ~ gnd
+    pin 18 ~ gnd
+    pin 19 ~ power_5v.vcc
+    pin 20 ~ power_5v.vcc
+    pin 21 ~ power_5v.vcc
+    pin 22 ~ power_5v.vcc
+    pin 23 ~ power_5v.vcc
+    pin 24 ~ gnd

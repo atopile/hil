@@ -1,0 +1,14 @@
+import ElectricPower
+
+component Omron_Electronics_G2R_1_E_DC24V:
+    """Omron_Electronics_G2R_1_E_DC24V component"""
+    lcsc_id = "C133339"
+    manufacturer = "Omron Electronics"
+    mpn = "G2R-1-E-DC24V"
+    designator_prefix = "K"
+
+    # pins
+    signal IN ~ pin 3
+    IN ~ pin 6
+    signal NO ~ pin 4
+    NO ~ pin 5

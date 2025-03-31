@@ -8,9 +8,16 @@ builds:
   canjay:
     entry: examples/canjay/canjay.ato:Canjay
 
+  space-bms-hil:
+    entry: examples/space-bms-hil/space-bms-hil.ato:SpaceBMSHIL
+
   # IO Blocks
   hil-core:
     entry: elec/src/blocks/hil-core.ato:HILCore
+    exclude_targets: [mfg-data]
+
+  hil-core-atx:
+    entry: elec/src/blocks/hil-core.ato:HILCoreATX
     exclude_targets: [mfg-data]
 
   analog-out:
@@ -19,6 +26,10 @@ builds:
 
   relay:
     entry: elec/src/blocks/relay.ato:PowerRelay
+    exclude_targets: [mfg-data]
+
+  omron-power-relay:
+    entry: elec/src/blocks/relay.ato:OmronPowerRelay
     exclude_targets: [mfg-data]
 
   i2c-relay:
@@ -133,6 +144,10 @@ builds:
     entry: elec/src/blocks/debug-saleae.ato:DebugSaleae
     exclude_targets: [mfg-data]
 
+  estop:
+    entry: elec/src/blocks/estop.ato:Estop
+    exclude_targets: [mfg-data]
+
   # Outlines
   ## These provide simple board shapes
   boardshapes-gridfinity-3x100mm:
@@ -145,7 +160,6 @@ dependencies:
     path: .ato/modules/ldk220m-r
     source:
   - name: saleae-header
-    version_spec: "@d8281da01a1efdde7779499647c31a10ab47ec45"
     link_broken: false
     path: .ato/modules/saleae-header
     source:
@@ -155,12 +169,10 @@ dependencies:
     path: .ato/modules/xt-connectors
     source:
   - name: https://github.com/atopile/lv2842xlvddcr.git
-    version_spec: "@ac20c5b8415de66fa9af8c74218dd52d0c579ad6"
     link_broken: false
     path: .ato/modules/lv2842xlvddcr.git
     source:
   - name: tca9548apwr
-    version_spec: "@093fa7ecc112a1c3ffa5921eb91bed4f5e96e12d"
     link_broken: false
     path: .ato/modules/tca9548apwr
     source:

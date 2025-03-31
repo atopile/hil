@@ -1,4 +1,4 @@
-from "generics/interfaces.ato" import Power
+import ElectricPower
 
 component Molex5026030270:
     """
@@ -6,11 +6,10 @@ component Molex5026030270:
     """
     footprint = "CONN-TH_2P-P2.00-5026030270"
     lcsc_id = "C17267869"
-    mpn = "C17267869"
     # pins
     signal p1 ~ pin 1
     signal p2 ~ pin 2
 
-    power = new Power
+    power = new ElectricPower
     power.vcc ~ p1
     power.gnd ~ p2

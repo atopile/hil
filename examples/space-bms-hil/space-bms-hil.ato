@@ -1,0 +1,239 @@
+from "blocks/hil-core.ato" import HILCore
+from "blocks/cellsim-8ch.ato" import CellSim8Ch
+from "blocks/analog-out-4ch.ato" import AnalogOut4ch
+from "blocks/coms-can.ato" import ComsCANISO
+from "blocks/debug-saleae.ato" import DebugSaleae
+from "blocks/variable-resistor.ato" import VariableResistor
+from "blocks/relay.ato" import I2CRelay
+from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
+from "components/jst-gh.ato" import JSTGH4Pin
+from "blocks/thermistor_8ch.ato" import Thermistor8ch
+from "components/texas_instruments_bq25756r_rvr.ato" import Texas_Instruments_BQ25756RRVR
+from "xt-connectors/xt-connectors.ato" import XT30_Female_Vertical
+from "components/Molex5026030270.ato" import Molex5026030270
+from "components/Molex5030912221.ato" import Molex5030912221
+from "components/Molex5051100492.ato" import Molex5051100492
+from "components/Molex5051101292.ato" import Molex5051101292
+from "tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
+
+module SpaceBMSHIL:
+    """
+    Space BMS HIL
+    - 12S Cellsimulator
+    - 4x Thermistor channels
+    - 3x Resistive heater emulators
+    - 2x Bi-Directional Buck-Boost Converter
+    - 1x CAN Interface
+
+    I2C Map: #TODO: Generate this automatically
+    i2c0:
+    pins:
+        sda: GPIO0
+        scl: GPIO1
+    devices:
+        cell_block_1_8
+
+    i2c1:
+    pins:
+        sda: GPIO2
+        scl: GPIO3
+    devices:
+        cell_block_9_16
+
+    i2c2:
+    pins:
+        sda: GPIO12
+        scl: GPIO13
+    devices:
+        thermistor_8ch
+
+    i2c3:
+    pins:
+        sda: GPIO22
+        scl: GPIO23
+    devices:
+        multiplexer
+            ch0: buck_boost_batt
+            ch1: buck_boost_sat
+            ch2: variable_heater_1
+            ch3: variable_heater_2
+            ch4: variable_heater_3
+            ch5: dep_relay
+            ch6: sep_relay
+    """
+
+    ############################################################
+    # HIL Core
+    ############################################################
+    hil_core = new HILCoreATX
+
+    i2c_3_mux = new TCA9548APWR
+    i2c_3_mux.power ~ hil_core.power_3v3
+    hil_core.controller.i2c3 ~ i2c_3_mux.i2c
+
+    ############################################################
+    # Cells
+    ############################################################
+    cell_block_1_8 = new CellSim8Ch
+    cell_block_9_16 = new CellSim8Ch
+
+    # Power cells
+    hil_core.power_24v ~ cell_block_1_8.power_24v
+    hil_core.power_24v ~ cell_block_9_16.power_24v
+    hil_core.power_5v ~ cell_block_1_8.power_5v
+    hil_core.power_5v ~ cell_block_9_16.power_5v
+    hil_core.power_3v3 ~ cell_block_1_8.power_3v3
+    hil_core.power_3v3 ~ cell_block_9_16.power_3v3
+
+    # I2C
+    hil_core.controller.i2c0 ~ cell_block_1_8.i2c
+    hil_core.controller.i2c1 ~ cell_block_9_16.i2c
+
+    # Connect blocks
+    cell_block_1_8.block_up ~ cell_block_9_16.block_down
+
+    # Connect LED Data
+    hil_core.controller.led_data ~ cell_block_1_8.block_down.led_data
+
+    # Cell Output Connector
+    vsh_connector = new Molex5030912221
+    cell_block_1_8.cell1.power_out.gnd ~ vsh_connector.p13
+    cell_block_1_8.cell1.power_out.vcc ~ vsh_connector.p12
+    cell_block_1_8.cell2.power_out.vcc ~ vsh_connector.p11
+    cell_block_1_8.cell3.power_out.vcc ~ vsh_connector.p10
+    cell_block_1_8.cell4.power_out.vcc ~ vsh_connector.p9
+    cell_block_1_8.cell5.power_out.vcc ~ vsh_connector.p8
+    cell_block_1_8.cell6.power_out.vcc ~ vsh_connector.p7
+    cell_block_1_8.cell7.power_out.vcc ~ vsh_connector.p6
+    cell_block_1_8.cell8.power_out.vcc ~ vsh_connector.p5
+    cell_block_9_16.cell1.power_out.vcc ~ vsh_connector.p4
+    cell_block_9_16.cell2.power_out.vcc ~ vsh_connector.p3
+    cell_block_9_16.cell3.power_out.vcc ~ vsh_connector.p2
+    cell_block_9_16.cell4.power_out.vcc ~ vsh_connector.p1
+
+    cell_block_1_8.cell1.power_out.gnd ~ vsh_connector.p13
+    cell_block_9_16.cell4.power_out.vcc ~ vsh_connector.p1
+
+    ############################################################
+    # Thermistors
+    ############################################################
+    thermistor_8ch = new Thermistor8ch
+
+    # Power thermistors
+    hil_core.power_24v ~ thermistor_8ch.power_24v
+    hil_core.power_3v3 ~ thermistor_8ch.power_3v3
+
+    # Connect thermistors
+    thermistor_8ch.thermistor_1.line ~ vsh_connector.p15
+    thermistor_8ch.thermistor_1.reference.gnd ~ vsh_connector.p16
+    thermistor_8ch.thermistor_2.line ~ vsh_connector.p17
+    thermistor_8ch.thermistor_2.reference.gnd ~ vsh_connector.p18
+    thermistor_8ch.thermistor_3.line ~ vsh_connector.p19
+    thermistor_8ch.thermistor_3.reference.gnd ~ vsh_connector.p20
+    thermistor_8ch.thermistor_4.line ~ vsh_connector.p21
+    thermistor_8ch.thermistor_4.reference.gnd ~ vsh_connector.p22
+
+    ############################################################
+    # Heaters
+    ############################################################
+    heater_1_connector = new Molex5026030270
+    heater_2_connector = new Molex5026030270
+    heater_3_connector = new Molex5026030270
+    heater_emulator_1 = new VariableResistor
+    heater_emulator_2 = new VariableResistor
+    heater_emulator_3 = new VariableResistor
+
+    hil_core.power_5v ~ heater_emulator_1.power_5v
+    hil_core.power_5v ~ heater_emulator_2.power_5v
+    hil_core.power_5v ~ heater_emulator_3.power_5v
+
+    hil_core.power_3v3 ~ heater_emulator_1.power_3v3
+    hil_core.power_3v3 ~ heater_emulator_2.power_3v3
+    hil_core.power_3v3 ~ heater_emulator_3.power_3v3
+
+    heater_1_connector.power ~ heater_emulator_1.power_in
+    heater_2_connector.power ~ heater_emulator_2.power_in
+    heater_3_connector.power ~ heater_emulator_3.power_in
+
+    i2c_3_mux.i2c2 ~ heater_emulator_1.i2c
+    i2c_3_mux.i2c3 ~ heater_emulator_2.i2c
+    i2c_3_mux.i2c4 ~ heater_emulator_3.i2c
+
+    # I2C
+    hil_core.controller.i2c2 ~ thermistor_8ch.i2c
+
+    ############################################################
+    # CAN
+    ############################################################
+    can_controller = new ComsCANISO
+
+    # Connector
+    can_connector = new Molex5051101292
+
+
+    # Power
+    hil_core.power_5v ~ can_controller.power_5v
+    hil_core.power_3v3 ~ can_controller.power_3v3
+
+    # SPI
+    hil_core.controller.spi0 ~ can_controller.spi
+    hil_core.controller.spi0_cs0 ~ can_controller.spi_cs
+    hil_core.controller.cm5.gpio_6 ~ can_controller.interrupt
+
+    ############################################################
+    # Battery/Sat Power Buck-Boost Converter
+    ############################################################
+    buck_boost_batt = new Texas_Instruments_BQ25756RRVR
+    buck_boost_sat = new Texas_Instruments_BQ25756RRVR
+
+    hil_core.power_24v ~ buck_boost_batt.power_in
+    hil_core.power_24v ~ buck_boost_sat.power_in
+
+    i2c_3_mux.i2c0 ~ buck_boost_batt.i2c
+    i2c_3_mux.i2c1 ~ buck_boost_sat.i2c
+
+    # Connectors
+    sat_power_connector = new XT30_Female_Vertical
+    bat_power_connector = new XT30_Female_Vertical
+    buck_boost_batt.power_out ~ sat_power_connector.power
+    buck_boost_batt.power_out ~ bat_power_connector.power
+
+    ############################################################
+    # DEP/SEP Relays
+    ############################################################
+    dep_relay = new I2CRelay
+    sep_relay = new I2CRelay
+
+    # I2C
+    i2c_3_mux.i2c5 ~ dep_relay.i2c
+    i2c_3_mux.i2c6 ~ sep_relay.i2c
+
+    # Connector - Pins flipped due to connector style
+    dep_sep_connector = new Molex5051100492
+    dep_sep_connector.p4 ~ dep_relay.power_out.vcc
+    dep_sep_connector.p3 ~ dep_relay.power_in.vcc
+    dep_sep_connector.p2 ~ sep_relay.power_out.vcc
+    dep_sep_connector.p1 ~ sep_relay.power_in.vcc
+
+    ############################################################
+    # Debug
+    ############################################################
+
+    # Test points
+    debug_saleae_i2c0_i2c_1 = new DebugSaleae
+    debug_saleae_i2c0_i2c_1.i2c ~ hil_core.controller.i2c0
+    debug_saleae_i2c0_i2c_1.i2c2 ~ hil_core.controller.i2c1
+
+    debug_saleae_i2c2_i2c_3 = new DebugSaleae
+    debug_saleae_i2c2_i2c_3.i2c ~ hil_core.controller.i2c2
+    debug_saleae_i2c2_i2c_3.i2c2 ~ hil_core.controller.i2c3
+
+    debug_saleae_spi0 = new DebugSaleae
+    debug_saleae_spi0.spi ~ hil_core.controller.spi0
+    debug_saleae_spi0.spi_cs ~ hil_core.controller.spi0_cs0
+
+    debug_saleae_power = new DebugSaleae
+    debug_saleae_power.ch0.line ~ hil_core.power_5v.vcc
+    debug_saleae_power.ch1.line ~ hil_core.power_3v3.vcc
+    debug_saleae_power.ch0.reference.gnd ~ hil_core.power_5v.gnd
+    debug_saleae_power.ch1.reference.gnd ~ hil_core.power_3v3.gnd
