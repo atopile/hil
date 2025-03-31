@@ -16,9 +16,9 @@ builds:
     entry: elec/src/blocks/hil-core.ato:HILCore
     exclude_targets: [mfg-data]
 
-  hil-core-atx:
-    entry: elec/src/blocks/hil-core.ato:HILCoreATX
-    exclude_targets: [mfg-data]
+  # hil-core-atx:
+  #   entry: elec/src/blocks/hil-core.ato:HILCoreATX
+  #   exclude_targets: [mfg-data]
 
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
@@ -163,7 +163,7 @@ dependencies:
     link_broken: false
     path: .ato/modules/saleae-header
     source:
-  - name: xt-connectors
+  - name: xt-connectorsa
     version_spec:
     link_broken: false
     path: .ato/modules/xt-connectors
