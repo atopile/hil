@@ -223,8 +223,11 @@ module SpaceBMSHIL:
     # Connectors
     sat_power_connector = new XT30_Female_Vertical
     bat_power_connector = new XT30_Female_Vertical
-    buck_boost_batt.power_out ~ sat_power_connector.power
+    buck_boost_sat.power_out ~ sat_power_connector.power
     buck_boost_batt.power_out ~ bat_power_connector.power
+
+    # Big old caps
+
 
     ############################################################
     # DEP/SEP Relays
