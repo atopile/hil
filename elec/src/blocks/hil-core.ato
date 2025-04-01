@@ -1,4 +1,4 @@
-import ElectricPower, Electrical
+import ElectricPower, Electrical, Resistor
 
 # Blocks
 from "blocks/controller-cm5.ato" import ControllerCM5
@@ -12,6 +12,7 @@ from "components/texas_instruments_tp_s55340r_ter.ato" import Texas_Instruments_
 from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64_CC
 from "lv2842xlvddcr.git/elec/src/lv284xx.ato" import LV2842XReferenceDesign
 from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+from "components/molex39281243.ato" import MOLEX_39281243
 
 module HILCore:
     """
@@ -105,3 +106,25 @@ module HILCore:
     power_5v ~ oled.power_5v
     power_3v3 ~ oled.power_3v3
     controller.i2c3 ~ oled.i2c
+
+# Only support one layout per module, apparently inheritance counts
+# module HILCoreATX from HILCore:
+#     """
+#     HIL Core module with ATX power input
+#     """
+#     boost_24v_atx = new Texas_Instruments_TPS55340RTER
+#     atx_connector = new MOLEX_39281243
+
+#     atx_connector.power_12v ~ boost_24v_atx.power_in
+#     # Hack to allow two sources on the same bus
+#     boost_24v_atx.power_out.vcc ~ power_24v.vcc
+#     boost_24v_atx.power_out.gnd ~ power_24v.gnd
+#     atx_connector.power_5v ~ power_5v
+#     atx_connector.power_3v3 ~ power_3v3
+
+#     # Enable resistor
+#     atx_enable_resistor = new Resistor
+#     atx_enable_resistor.resistance = 100ohm +/- 1%
+#     atx_enable_resistor.package = "R0402"
+#     atx_connector.ps_on.line ~ atx_enable_resistor.p1
+#     atx_connector.ps_on.reference.gnd ~ atx_enable_resistor.p2

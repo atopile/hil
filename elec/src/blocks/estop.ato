@@ -1,0 +1,27 @@
+
+
+module PowerSwitch:
+    """
+    Power Switch module
+    - External estop loop input
+    - Switches 3 power rails
+    - Controller actuated low side switch
+    """
+
+    # External Interfaces
+    power_24v_in = new ElectricPower
+    power_24v_out = new ElectricPower
+    power_5v_in = new ElectricPower
+    power_5v_out = new ElectricPower
+    power_3v3_in = new ElectricPower
+    power_3v3_out = new ElectricPower
+
+    # Controller Interfaces
+    enable_24v = new ElectricLogic
+    enable_5v = new ElectricLogic
+    enable_3v3 = new ElectricLogic
+
+    # relay
+    relay = new Relay
+    relay.coil_power ~ power_3v3_in
+    relay.power_out ~ power_3v3_out

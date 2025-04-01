@@ -12,7 +12,11 @@ module OLED12832:
     # Internal rail - charge pump requires 3.5V to 4.2V input
     regulator_4v = new LDK220M_R
     power_5v ~ regulator_4v.power_in
-    regulator_4v.v_out = 4.2V +/- 3%
+    # regulator_4v.v_out = 4.2V +/- 3%
+    regulator_4v.feedback_div.r_top.package = "R0402"
+    regulator_4v.feedback_div.r_bottom.package = "R0402"
+    regulator_4v.feedback_div.r_top.resistance = 25.5kohm +/- 1%
+    regulator_4v.feedback_div.r_bottom.resistance = 10kohm +/- 1%
 
     power_4v = new ElectricPower
     power_4v ~ regulator_4v.power_out

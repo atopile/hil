@@ -44,6 +44,14 @@ module VariableResistor:
     base_resistor.resistance = 100ohms +/- 5%
     voltage_divider_output_resistor.resistance = 100ohms +/- 5%
 
+    feedback_div.r_top.package = "R0402"
+    feedback_div.r_bottom.package = "R0402"
+    output_resistor.package = "R0402"
+    inter_stage_resistor.package = "R0402"
+    stage_2_output_resistor.package = "R0402"
+    base_resistor.package = "R0402"
+    voltage_divider_output_resistor.package = "R0402"
+
     # Component Specializations
     bjt.lcsc_id = "C10634"
     stage_1_smoothing_cap.lcsc_id = "C1550"
