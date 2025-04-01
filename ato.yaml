@@ -144,10 +144,6 @@ builds:
     entry: elec/src/blocks/debug-saleae.ato:DebugSaleae
     exclude_targets: [mfg-data]
 
-  estop:
-    entry: elec/src/blocks/estop.ato:Estop
-    exclude_targets: [mfg-data]
-
   # Outlines
   ## These provide simple board shapes
   boardshapes-gridfinity-3x100mm:

@@ -9,7 +9,7 @@ from "blocks/relay.ato" import I2CRelay
 from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
 from "components/jst-gh.ato" import JSTGH4Pin
 from "blocks/thermistor_8ch.ato" import Thermistor8ch
-from "components/texas_instruments_bq25756r_rvr.ato" import Texas_Instruments_BQ25756RRVR
+from "components/texas_instruments_bq25756r_rvr.ato" import Texas_Instruments_BQ25756RRVR, CapBank
 from "xt-connectors/xt-connectors.ato" import XT30_Female_Vertical
 from "components/Molex5026030270.ato" import Molex5026030270
 from "components/Molex5030912221.ato" import Molex5030912221
@@ -197,7 +197,11 @@ module SpaceBMSHIL:
 
     # Connector
     can_connector = new Molex5051101292
-
+    can_controller.can.CANL ~ can_connector.9
+    can_controller.can.CANH ~ can_connector.8
+    can_controller._power_5v_iso.gnd ~ can_connector.12
+    can_controller._power_5v_iso.gnd ~ can_connector.11
+    can_controller._power_5v_iso.gnd ~ can_connector.10
 
     # Power
     hil_core.power_5v ~ can_controller.power_5v
@@ -225,8 +229,6 @@ module SpaceBMSHIL:
     bat_power_connector = new XT30_Female_Vertical
     buck_boost_sat.power_out ~ sat_power_connector.power
     buck_boost_batt.power_out ~ bat_power_connector.power
-
-    # Big old caps
 
 
     ############################################################
