@@ -28,10 +28,6 @@ builds:
     entry: elec/src/blocks/relay.ato:PowerRelay
     exclude_targets: [mfg-data]
 
-  omron-power-relay:
-    entry: elec/src/blocks/relay.ato:OmronPowerRelay
-    exclude_targets: [mfg-data]
-
   i2c-relay:
     entry: elec/src/blocks/relay.ato:I2CRelay
     exclude_targets: [mfg-data]
