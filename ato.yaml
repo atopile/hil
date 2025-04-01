@@ -163,7 +163,7 @@ dependencies:
     link_broken: false
     path: .ato/modules/saleae-header
     source:
-  - name: xt-connectorsa
+  - name: xt-connectors
     version_spec:
     link_broken: false
     path: .ato/modules/xt-connectors
