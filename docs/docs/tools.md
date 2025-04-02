@@ -1,10 +1,10 @@
-# Hardware Testing Tools
+# Gold Standard Hardware Testing 🏆
 
-_For technical folks who may not specialize in test but need a straightforward way to think about **hardware-in-the-loop** testing across development and manufacturing._
+_For technical folks who may not specialize in test but need a straightforward way to think about **hardware testing** across development and manufacturing._
 
 ---
 
-There's a bunch of tooling that goes into good hardware testing.
+If your team touches hardware, you're going to need to test it. Whether it's for design validation, system integration, or factory QA, the right tools make development scalable to design enormously complex products quickly and reliably. The wrong ones slow your team down, delay launches and degrade your customer's confidence.
 
 Consider whether to:
 
@@ -28,7 +28,7 @@ We make it easy to have the best testing tools for your project.
 
 As your project progresses, your test requirements resolve and confidence in the design increases. Testing expectations increase alongside it. In order to consider what to test and what equipment is best suited for the job, it can be useful to map it out in lifecycle and figure out whether shortcuts can be taken. Often it's useful to reduce fidelity and mock out parts of the board or system to save time, money and test corner-cases that are otherwise unreachable.
 
-We look at it along two axes:
+🧠 A mental model for hardware testing:
 
 - **Phase** of the project lifecycle. It's not strictly linear or chronological, but for a typical project you start with bring-up on a lab bench, design verification, move through integration with the rest of the system, and then into manufacturing test before finally field testing.
 - **Fidelity** of the test is a measure of how closely the test matches the real world. One of the biggest factors here is how much of the system is connected together and how much you're emulating or mocking.
