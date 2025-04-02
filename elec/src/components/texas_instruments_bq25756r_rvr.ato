@@ -137,7 +137,7 @@ module Texas_Instruments_BQ25756RRVR:
 
     # Power
     power_in.vcc ~ controller.VAC_IN
-    power_out.vcc ~ controller.VAC_OUT
+    power_in.vcc ~ controller.VAC_OUT
     power_in.gnd ~ controller.PGND
 
         # Set switching frequency
