@@ -3,26 +3,28 @@ from hil.drivers.tca9548a import TCA9548A
 from hil.drivers.mcp4728 import MCP4728
 import pytest
 
+
 class HilMCP4728:
     """
-        Simulates a HIL for testing purposes.
+    Simulates a HIL for testing purposes.
     """
 
-    mcp: 'MCP4728'
+    mcp: "MCP4728"
     physical_bus: AsyncSMBus
 
     @classmethod
     async def create(cls):
         self = cls()
         self.physical_bus = AsyncSMBusPeripheral(2)
-        # Open the bus before creating CellSim
+        # Open the bus before creating MCP4728 device
+        await self.physical_bus.open()
         async with self.physical_bus:
             bus_mux2 = AsyncSMBusBranch.from_channels(
-                            upstream=self.physical_bus,
-                            mux=TCA9548A(self.physical_bus),
-                            channels=[2]
-                        )[0]
-        self.mcp = MCP4728.create(bus=bus_mux2)
+                upstream=self.physical_bus,
+                mux=TCA9548A(self.physical_bus),
+                channels=[2],
+            )[0]
+        self.mcp = await MCP4728.create(bus=bus_mux2)
 
         return self
 
@@ -45,7 +47,7 @@ async def hil_mcp4728():
         yield hil_mcp4728
 
 
-@pytest.mark.runs_on(hostname='lively-sloth')
+@pytest.mark.runs_on(hostname="lively-sloth")
 async def test_write_vref_and_read(hil_mcp4728) -> None:
     async with hil_mcp4728:
         mcp: MCP4728 = hil_mcp4728.mcp
@@ -63,7 +65,7 @@ async def test_write_vref_and_read(hil_mcp4728) -> None:
             assert vref_list[i] == mcp._channels[i].vref
 
 
-@pytest.mark.runs_on(hostname='lively-sloth')
+@pytest.mark.runs_on(hostname="lively-sloth")
 async def test_write_pd_and_wakeup(hil_mcp4728: MCP4728) -> None:
     async with hil_mcp4728:
         mcp: MCP4728 = hil_mcp4728.mcp
@@ -82,12 +84,11 @@ async def test_write_pd_and_wakeup(hil_mcp4728: MCP4728) -> None:
         await mcp.general_call_wakeup()
         await mcp.read()
 
-        cha: MCP4728.Channel = mcp._channels[0]
         for i in range(mcp._num_channels):
             assert MCP4728.ChannelPowerDown.NORMAL == mcp._channels[i].pd
 
 
-@pytest.mark.runs_on(hostname='lively-sloth')
+@pytest.mark.runs_on(hostname="lively-sloth")
 async def test_write_gain_and_read(hil_mcp4728: MCP4728) -> None:
     async with hil_mcp4728:
         mcp: MCP4728 = hil_mcp4728.mcp
@@ -105,7 +106,7 @@ async def test_write_gain_and_read(hil_mcp4728: MCP4728) -> None:
             assert gx_list[i] == mcp._channels[i].gx
 
 
-@pytest.mark.runs_on(hostname='lively-sloth')
+@pytest.mark.runs_on(hostname="lively-sloth")
 async def test_write_fast_all(hil_mcp4728: MCP4728) -> None:
     async with hil_mcp4728:
         mcp: MCP4728 = hil_mcp4728.mcp
@@ -120,8 +121,7 @@ async def test_write_fast_all(hil_mcp4728: MCP4728) -> None:
             assert dac_list[i] == mcp._channels[i].dac_val
 
 
-
-@pytest.mark.runs_on(hostname='lively-sloth')
+@pytest.mark.runs_on(hostname="lively-sloth")
 async def test_write_channel(hil_mcp4728: MCP4728) -> None:
     async with hil_mcp4728:
         mcp: MCP4728 = hil_mcp4728.mcp
@@ -132,8 +132,13 @@ async def test_write_channel(hil_mcp4728: MCP4728) -> None:
 
         for i in range(mcp._num_channels):
             ch = MCP4728.ChannelId(i)
-            await mcp.write_channel(ch, dac_val=dac_list[i], pd=pd_list[i], vref=vref_list[i],
-                        gain=gx_list[i])
+            await mcp.write_channel(
+                ch,
+                dac_val=dac_list[i],
+                pd=pd_list[i],
+                vref=vref_list[i],
+                gain=gx_list[i],
+            )
 
         await mcp.read()
 
@@ -144,7 +149,7 @@ async def test_write_channel(hil_mcp4728: MCP4728) -> None:
             assert gx_list[i] == mcp._channels[i].gx
 
 
-@pytest.mark.runs_on(hostname='lively-sloth')
+@pytest.mark.runs_on(hostname="lively-sloth")
 async def test_write_eeprom_all(hil_mcp4728: MCP4728) -> None:
     async with hil_mcp4728:
         mcp: MCP4728 = hil_mcp4728.mcp
@@ -169,11 +174,12 @@ async def test_write_eeprom_all(hil_mcp4728: MCP4728) -> None:
         vref_list = [MCP4728.ChannelVref.INT_VREF] * 4
         gx_list = [MCP4728.ChannelGain.GX_2] * 4
 
-        await mcp.write_channel_eeprom_all(dac_vals=dac_list, pd=pd_list,
-                                           vref=vref_list, gain=gx_list)
+        await mcp.write_channel_eeprom_all(
+            dac_vals=dac_list, pd=pd_list, vref=vref_list, gain=gx_list
+        )
 
         ready = False
-        while (not ready):
+        while not ready:
             ready = await mcp.read_rdy()
 
         await mcp.read()
@@ -190,10 +196,11 @@ async def test_write_eeprom_all(hil_mcp4728: MCP4728) -> None:
             assert mcp._channels[i].dac_val == mcp._channels[i].dac_val_eeprom
 
         # restore eeprom to original state
-        await mcp.write_channel_eeprom_all(dac_vals=dac_t0, pd=pd_t0,
-                                           vref=vref_t0, gain=gx_t0)
+        await mcp.write_channel_eeprom_all(
+            dac_vals=dac_t0, pd=pd_t0, vref=vref_t0, gain=gx_t0
+        )
         ready = False
-        while (not ready):
+        while not ready:
             ready = await mcp.read_rdy()
         await mcp.read()
 
@@ -205,7 +212,7 @@ async def test_write_eeprom_all(hil_mcp4728: MCP4728) -> None:
             assert dac_t0[i] == mcp._channels[i].dac_val_eeprom
 
 
-@pytest.mark.runs_on(hostname='lively-sloth')
+@pytest.mark.runs_on(hostname="lively-sloth")
 async def test_write_eeprom_single(hil_mcp4728: MCP4728) -> None:
     async with hil_mcp4728:
         mcp: MCP4728 = hil_mcp4728.mcp
@@ -232,18 +239,22 @@ async def test_write_eeprom_single(hil_mcp4728: MCP4728) -> None:
 
         for i in range(mcp._num_channels):
             ch: MCP4728.ChannelId = MCP4728.ChannelId(i)
-            await mcp.write_channel_eeprom_single(ch=ch, dac_val=dac_list[i],
-                            pd=pd_list[i], vref=vref_list[i], gain=gx_list[i])
+            await mcp.write_channel_eeprom_single(
+                ch=ch,
+                dac_val=dac_list[i],
+                pd=pd_list[i],
+                vref=vref_list[i],
+                gain=gx_list[i],
+            )
 
             ready = False
-            while (not ready):
+            while not ready:
                 ready = await mcp.read_rdy()
 
         await mcp.read()
 
         # Confirm that eeprom matches active values
         for i in range(mcp._num_channels):
-            print('Ch', i)
             assert pd_list[i] == mcp._channels[i].pd_eeprom
             assert vref_list[i] == mcp._channels[i].vref_eeprom
             assert gx_list[i] == mcp._channels[i].gx_eeprom
@@ -256,10 +267,11 @@ async def test_write_eeprom_single(hil_mcp4728: MCP4728) -> None:
         # restore eeprom to original state
         for i in range(mcp._num_channels):
             ch: MCP4728.ChannelId = MCP4728.ChannelId(i)
-            await mcp.write_channel_eeprom_single(ch=ch, dac_val=dac_t0[i],
-                            pd=pd_t0[i], vref=vref_t0[i], gain=gx_t0[i])
+            await mcp.write_channel_eeprom_single(
+                ch=ch, dac_val=dac_t0[i], pd=pd_t0[i], vref=vref_t0[i], gain=gx_t0[i]
+            )
             ready = False
-            while (not ready):
+            while not ready:
                 ready = await mcp.read_rdy()
         await mcp.read()
 
@@ -271,7 +283,7 @@ async def test_write_eeprom_single(hil_mcp4728: MCP4728) -> None:
             assert dac_t0[i] == mcp._channels[i].dac_val_eeprom
 
 
-@pytest.mark.runs_on(hostname='lively-sloth')
+@pytest.mark.runs_on(hostname="lively-sloth")
 async def test_general_call_reset(hil_mcp4728: MCP4728) -> None:
     async with hil_mcp4728:
         mcp: MCP4728 = hil_mcp4728.mcp
@@ -288,14 +300,15 @@ async def test_general_call_reset(hil_mcp4728: MCP4728) -> None:
         for i in range(mcp._num_channels):
             assert mcp._channels[i].dac_val_eeprom == mcp._channels[i].dac_val
 
+    # @pytest.mark.runs_on(hostname='lively-sloth')
+    # async def test_general_call_software_update(hil_mcp4728: MCP4728) -> None:
+    """
+    TODO This test can't be run in software. The UDAC pin is supposed to inhibit
+         VOUT updates and general call software should trigger all VOUT updates
+         at the same time.
+    """
 
-"""
-TODO This test can't be run in software. The UDAC pin is supposed to inhibit
-     VOUT updates and general call software should trigger all VOUT updates
-     at the same time.
-"""
-# @pytest.mark.runs_on(hostname='lively-sloth')
-# async def test_general_call_software_update(hil_mcp4728: MCP4728) -> None:
+
 #     async with hil_mcp4728:
 #         mcp: MCP4728 = hil_mcp4728.mcp
 
