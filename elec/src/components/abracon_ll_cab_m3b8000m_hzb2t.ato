@@ -1,0 +1,15 @@
+from "oscillators.ato" import Crystal
+
+component Abracon_LLC_ABM3B_8_000MHZ_B2_T from Crystal:
+    """Abracon_LLC_ABM3B_8_000MHZ_B2_T component"""
+    lcsc_id = "C83312"
+    manufacturer = "Abracon LLC"
+    mpn = "ABM3B-8.000MHZ-B2-T"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Abracon-LLC-ABM3B-8-000MHZ-B2-T_C83312.pdf"
+    designator_prefix = "X"
+
+    # pins
+    xin ~ pin 1
+    xout ~ pin 3
+    gnd ~ pin 2
+    gnd ~ pin 4

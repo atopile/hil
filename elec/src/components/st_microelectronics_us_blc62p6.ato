@@ -1,0 +1,15 @@
+component STMicroelectronics_USBLC6_2P6:
+    """STMicroelectronics_USBLC6_2P6 component"""
+    lcsc_id = "C15999"
+    manufacturer = "STMicroelectronics"
+    mpn = "USBLC6-2P6"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1809192323_STMicroelectronics-USBLC6-2P6_C15999.pdf"
+    designator_prefix = "D"
+
+    # pins
+    signal GND ~ pin 2
+    signal I_O1 ~ pin 1
+    I_O1 ~ pin 6
+    signal I_O2 ~ pin 3
+    I_O2 ~ pin 4
+    signal VBUS ~ pin 5

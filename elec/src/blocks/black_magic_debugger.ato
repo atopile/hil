@@ -1,0 +1,102 @@
+import ElectricPower, JTAG. PoweredLED, ResistorVoltageDivider, Resistor, Electrical
+from "components/st_microelectronics_st_m32f103c_bu6t_r.ato" import STMicroelectronics_STM32F103CBU6TR
+from "components/texas_instruments_sn74l_vc2t45d_cur.ato" import Texas_Instruments_SN74LVC2T45DCUR
+from "components/diodes_incorporated_dm_g1024u_v7.ato" import Diodes_Incorporated_DMG1024UV_7
+
+module BlackMagicDebugger:
+    """
+    Black Magic Debugger
+    Implements https://black-magic.org/_downloads/9268bd95a59bf58b68008004df51c31f/bmpm_v2_1c_schematic.pdf
+    Connects to the MCU via JTAG and provides a level shifter to connect to targets between 1.8V and 5V
+    """
+    # External Interfaces
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
+    jtag = new JTAG
+    boot_mode = new ElectricLogic #Pull up to put MCU into DFU Mode
+
+    # Common gnd
+    gnd = new Electrical
+    gnd ~ power_5v.gnd
+    gnd ~ power_3v3.gnd
+    gnd ~ jtag.vtref.gnd
+
+    # Components
+    micro = new STMicroelectronics_STM32F103CBU6TR
+    lvl_shifter_1 = new Texas_Instruments_SN74LVC2T45DCUR
+    lvl_shifter_2 = new Texas_Instruments_SN74LVC2T45DCUR
+    lvl_shifter_3 = new Texas_Instruments_SN74LVC2T45DCUR
+    lvl_shifter_4 = new Texas_Instruments_SN74LVC2T45DCUR
+    reset_mosfets = new Diodes_Incorporated_DMG1024UV_7
+    power_mosfets = new Diodes_Incorporated_DMG1024UV_7
+    tdi_resistor = new Resistor
+    tck_resistor = new Resistor
+    tms_resistor = new Resistor
+    tdo_resistor = new Resistor
+    trst_resistor = new Resistor
+    vtref_resistor = new Resistor
+    vtref_divider = new ResistorVoltageDivider
+    vbus_divider = new ResistorVoltageDivider
+
+    # Connect JTAG
+    micro.PA3 ~ lvl_shifter_2.a2; lvl_shifter_2.b2 ~ tdi_resistor.p1; tdi_resistor.p2 ~ jtag.tdi
+    micro.PA4 ~ lvl_shifter_4.a2; lvl_shifter_4.b2 ~ tms_resistor.p1; tms_resistor.p2 ~ jtag.tms
+    micro.PA5 ~ lvl_shifter_2.a1; lvl_shifter_2.b1 ~ tck_resistor.p1; tck_resistor.p2 ~ jtag.tck
+    micro.PA6 ~ lvl_shifter_3.a1; lvl_shifter_3.b1 ~ tdo_resistor.p1; tdo_resistor.p2 ~ jtag.tdo
+
+    # Level Shifter Connections
+    power_3v3 ~ lvl_shifter_1.power_a
+    power_3v3 ~ lvl_shifter_2.power_a
+    power_3v3 ~ lvl_shifter_3.power_a
+    power_3v3 ~ lvl_shifter_4.power_a
+
+    power_vtref_internal = new ElectricPower
+    power_vtref_internal.vcc ~ vtref_resistor.p1; vtref_resistor.p2 ~ jtag.vtref.vcc
+    power_vtref_internal.gnd ~ power_3v3.gnd
+    power_vtref_internal ~ lvl_shifter_1.power_b
+    power_vtref_internal ~ lvl_shifter_2.power_b
+    power_vtref_internal ~ lvl_shifter_3.power_b
+    power_vtref_internal ~ lvl_shifter_4.power_b
+
+    # Reset Connections
+    reset_resistor = new Resistor
+    power_vtref_internal ~ reset_resistor.p1; reset_resistor.p2 ~ jtag.n_trst
+    jtag.n_reset ~ reset_mosfets.p6; reset_mosfets.p1 ~ power_3v3.gnd
+    micro.PA2 ~ reset_mosfets.p2
+    micro.PA7 ~ reset_mosfets.p3; reset_mosfets.p4 ~ power_3v3.vcc
+    reset_mosfets.p5 ~ jtag.n_trst
+
+    # VTREF Sense
+    jtag.vtref ~ vtref_divider.power
+    micro.PB0 ~ vtref_divider.output
+    vtref_filter_cap = new Capacitor
+    micro.PB0 ~ vtref_filter_cap.p1; vtref_filter_cap.p2 ~ gnd
+    vtref_divider.r_top.resistance = 4.7kohm +/- 1%
+    vtref_divider.r_bottom.resistance = 10kohm +/- 1%
+    vtref_filter_cap.capacitance = 100nF +/- 10%
+    vtref_divider.r_top.package = "R0402"
+    vtref_divider.r_bottom.package = "R0402"
+    vtref_filter_cap.package = "C0402"
+
+    # PB12 has a button on it with a pullup
+    pb12_pullup = new Resistor
+    micro.PB12 ~ pb12_pullup.p1; pb12_pullup.p2 ~ power_3v3.vcc
+
+    # Power Enable
+    power_enable_resistor = new Resistor
+    micro.PB1 ~ power_enable_resistor.p1
+    power_enable_resistor.p2 ~ power_mosfets.p1
+    power_enable_resistor.p2 ~ power_mosfets.p4
+    micro.PB1 ~ power_mosfets.p2
+    micro.PB1 ~ power_mosfets.p5
+    power_3v3.vcc ~ power_mosfets.p6
+    power_mosfets.p3 ~ jtag.vtref.vcc
+
+    # Debug
+    led0 = new PoweredLED
+    led1 = new PoweredLED
+    led2 = new PoweredLED
+
+    micro.PB1.line ~ led0.power.vcc; led0.power.gnd ~ power_3v3.gnd
+    micro.PB10.line ~ led1.power.vcc; led1.power.gnd ~ power_3v3.gnd
+    micro.PB11.line ~ led2.power.vcc; led2.power.gnd ~ power_3v3.gnd
