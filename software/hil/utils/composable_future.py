@@ -9,7 +9,7 @@ in a separate thread.
 import asyncio
 import collections.abc
 import functools
-from typing import Awaitable, Callable, Concatenate, ParamSpec, Self
+from typing import Callable, Concatenate, ParamSpec, Self
 import warnings
 
 
@@ -33,7 +33,7 @@ class Future[T](collections.abc.Awaitable):
 
     def __init__(self):
         """Initialize an empty Future with no operations."""
-        self._operations: list[Callable | Awaitable] = []
+        self._operations: list[Callable] = []
 
     async def execute_returning_all(self) -> tuple:
         """Execute all operations and return their results as a tuple.
@@ -43,9 +43,10 @@ class Future[T](collections.abc.Awaitable):
         """
 
         def _execute():
-            results = tuple(operation() for operation in self._operations)
-            self._operations.clear()
-            return results
+            try:
+                return tuple(operation() for operation in self._operations)
+            finally:
+                self._operations.clear()  # Ensure clear happens even on exception
 
         return await asyncio.to_thread(_execute)
 
@@ -60,15 +61,18 @@ class Future[T](collections.abc.Awaitable):
         """
 
         def _execute():
-            for operation in self._operations[:-1]:
-                operation()
+            try:
+                for operation in self._operations[:-1]:
+                    operation()
 
-            if last_op := self._operations[-1:]:
-                result = last_op[0]()
+                return self._operations[-1]()
+            finally:
+                self._operations.clear()  # Ensure clear happens even on exception
 
-            self._operations.clear()
-            return result
-
+        if not self._operations:
+            raise ValueError(
+                f"Cannot execute a {self.__class__.__name__} with no operations."
+            )
         return await asyncio.to_thread(_execute)
 
     def __await__(self):
