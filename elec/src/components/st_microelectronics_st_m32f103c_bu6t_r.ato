@@ -22,6 +22,11 @@ module STMicroelectronics_STM32F103CBU6TR:
     usb_series_res_p.package = "R0402"
     usb2.usb_if.d.p ~ usb_series_res_p.p1; usb_series_res_p.p2 ~ ic.PA12
 
+    usb2_pullup_res_p = new Resistor
+    usb2_pullup_res_p.resistance = 1.5kohm +/- 10%
+    usb2_pullup_res_p.package = "R0402"
+    usb2.usb_if.d.p ~ usb2_pullup_res_p.p1; usb2_pullup_res_p.p2 ~ ic.PA8
+
     # Power
     power_3v3.vcc ~ ic.VBAT
     power_3v3.vcc ~ ic.VDD_1
@@ -33,12 +38,14 @@ module STMicroelectronics_STM32F103CBU6TR:
     power_3v3.gnd ~ ic.VSS_1
     power_3v3.gnd ~ ic.VSS_2
     power_3v3.gnd ~ ic.VSS_3
+    power_3v3.gnd ~ ic.EP
 
     # Oscillator
     oscillator = new Oscillator
     oscillator.crystal -> Abracon_LLC_ABM3B_8_000MHZ_B2_T
     ic.PD0_OSC_IN ~ oscillator.xin
     ic.PD1_OSC_OUT ~ oscillator.xout
+    power_3v3.gnd ~ oscillator.gnd
     oscillator.load_cap_1.capacitance = 18pF +/- 20%
     oscillator.load_cap_2.capacitance = 18pF +/- 20%
 
@@ -254,7 +261,6 @@ module STMicroelectronics_STM32F103CBU6TR:
     PD1_OSC_OUT = new ElectricSignal
     PD1_OSC_OUT.line ~ ic.PD1_OSC_OUT
     PD1_OSC_OUT.reference ~ power_3v3
-
 
 
 component _STMicroelectronics_STM32F103CBU6TR:

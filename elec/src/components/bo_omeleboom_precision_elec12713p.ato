@@ -1,0 +1,9 @@
+component BOOMELEBoom_Precision_Elec_1_27_13P_:
+    """BOOMELEBoom_Precision_Elec_1_27_13P_ component"""
+    lcsc_id = "C24980"
+    manufacturer = "BOOMELE(Boom Precision Elec)"
+    mpn = "1.27-1*3P针"
+    designator_prefix = "P"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3

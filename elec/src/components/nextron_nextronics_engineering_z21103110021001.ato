@@ -1,0 +1,10 @@
+component NextronNextronics_Engineering_Z_211_0311_0021_001:
+    """NextronNextronics_Engineering_Z_211_0311_0021_001 component"""
+    lcsc_id = "C152153"
+    manufacturer = "Nextron(Nextronics Engineering)"
+    mpn = "Z-211-0311-0021-001"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1811151531_Nextron-Nextronics-Engineering-Z-211-0311-0021-001_C152153.pdf"
+    designator_prefix = "H"
+    signal p1 ~ pin 1
+    signal p2 ~ pin 2
+    signal p3 ~ pin 3
