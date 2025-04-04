@@ -37,12 +37,12 @@ class MCP4725:
         assert 0 <= val <= 4095
         val &= 0xFFF
         buffer = [_MCP4725_WRITE_FAST_MODE | (val >> 8), val & 0xFF]
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_i2c_block_data(self._address, buffer[0], buffer[1:])
 
     async def _read(self) -> int:
         """Read the DAC value and return the 12-bit value."""
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             data = await handle.read_i2c_block_data(self._address, 0x00, 3)
         dac_high = data[1]
         dac_low = data[2] >> 4
@@ -83,13 +83,13 @@ class MCP4725:
             (current_value >> 4) & 0xFF,
             (current_value << 4) & 0xFF,
         ]
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_i2c_block_data(self._address, buffer[0], buffer[1:])
 
         # Wait for EEPROM write to complete
         while True:
             await asyncio.sleep(0.05)  # Use asyncio.sleep instead of time.sleep
-            async with self._bus() as handle:
+            async with self._bus.handle() as handle:
                 status = await handle.read_byte(self._address)
             if status & 0x80:
                 break

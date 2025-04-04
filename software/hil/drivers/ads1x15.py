@@ -85,7 +85,7 @@ class ADS1x15:
         QUE_NONE = 3
 
     # I2C object will be provided via AsyncSMBus
-    bus: AsyncSMBus | None = None
+    bus: AsyncSMBus
 
     # I2C address
     _address = I2C_address
@@ -129,12 +129,12 @@ class ADS1x15:
     async def _write_register(self, address: int, value):
         "Asynchronously write a 16-bit integer to an address pointer register"
         registerValue = [(value >> 8) & 0xFF, value & 0xFF]
-        async with self.bus() as handle:
+        async with self.bus.handle() as handle:
             await handle.write_i2c_block_data(self._address, address, registerValue)
 
     async def _read_register(self, address: int):
         "Asynchronously read a 16-bit integer value from an address pointer register"
-        async with self.bus() as handle:
+        async with self.bus.handle() as handle:
             registerValue = await handle.read_i2c_block_data(self._address, address, 2)
         return (registerValue[0] << 8) + registerValue[1]
 

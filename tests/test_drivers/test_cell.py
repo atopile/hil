@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 import logging
 from contextlib import ExitStack
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 import numpy as np
 
 from hil.framework import Recorder, Trace, seconds
@@ -17,25 +17,24 @@ if TYPE_CHECKING:
 
 @pytest.mark.runs_on(hostname="chunky-otter")
 async def test_performance(hil: "Hil"):
-    async with hil:
+    for cell in hil.cellsim.cells:
+        await cell.reset()
+        await cell.set_voltage(1)
+
+    for _ in range(10):
         for cell in hil.cellsim.cells:
-            await cell.reset()
-            await cell.set_voltage(1)
+            await cell.enable()
+            await cell.turn_off_output_relay()
+            await cell.close_load_switch()
 
-        for _ in range(10):
-            for cell in hil.cellsim.cells:
-                await cell.enable()
-                await cell.turn_off_output_relay()
-                await cell.close_load_switch()
+        await asyncio.gather(
+            *[cell.get_voltage() for cell in hil.cellsim.cells],
+            *[cell.get_current() for cell in hil.cellsim.cells],
+        )
 
-            await asyncio.gather(
-                *[cell.get_voltage() for cell in hil.cellsim.cells],
-                *[cell.get_current() for cell in hil.cellsim.cells],
-            )
-
-            for cell in hil.cellsim.cells:
-                await cell.open_load_switch()
-                await cell.disable()
+        for cell in hil.cellsim.cells:
+            await cell.open_load_switch()
+            await cell.disable()
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
@@ -49,53 +48,52 @@ async def test_output_voltage(hil: "Hil", record: Recorder):
     # Generate voltage points from 0.5V to 4.3V in 0.1V steps
     VOLTAGES = [v / 10 for v in range(5, 42)]
     cells = hil.cellsim.cells
-    async with hil:
-        # Set up the cell
-        # for cell in cells:
-        await asyncio.gather(*[cell.calibrate(data_points=32) for cell in cells])
-        for cell in cells:
-            await cell.enable()
-            await cell.turn_on_output_relay()
-            await cell.close_load_switch()
+    # Set up the cell
+    # for cell in cells:
+    await asyncio.gather(*[cell.calibrate(data_points=32) for cell in cells])
+    for cell in cells:
+        await cell.enable()
+        await cell.turn_on_output_relay()
+        await cell.close_load_switch()
 
-        table = ExceptionTable([f"cell: {cell.cell_num}" for cell in cells])
-        with ExitStack() as exit_stack:
-            traces = [
-                exit_stack.enter_context(
-                    record(cell.get_voltage, name=f"cell {cell.cell_num}")
-                )
-                for cell in cells
-            ]
-            target_trace = Trace("Target")
-            record.add_trace(target_trace)
+    table = ExceptionTable([f"cell: {cell.cell_num}" for cell in cells])
+    with ExitStack() as exit_stack:
+        traces = [
+            exit_stack.enter_context(
+                record(cell.get_voltage, name=f"cell {cell.cell_num}")
+            )
+            for cell in cells
+        ]
+        target_trace = Trace("Target")
+        record.add_trace(target_trace)
 
-            for voltage in VOLTAGES:
-                for cell in cells:
-                    await cell.set_voltage(voltage)
+        for voltage in VOLTAGES:
+            for cell in cells:
+                await cell.set_voltage(voltage)
 
-                # Bracket the voltage with two samples to make it stepped
-                target_trace.append(voltage)
-                await asyncio.sleep(0.3)  # Collect data for this time
-                target_trace.append(voltage)
+            # Bracket the voltage with two samples to make it stepped
+            target_trace.append(voltage)
+            await asyncio.sleep(0.3)  # Collect data for this time
+            target_trace.append(voltage)
 
-                ALLOWED_TOLERANCE = 0.02
-                now = datetime.now()
-                for ctx, t in table.iter_row(f"{voltage}V", traces):
-                    with ctx:
-                        assert (
-                            t.to_polars()
-                            .select(
-                                (
-                                    (voltage - ALLOWED_TOLERANCE < t.value)
-                                    & (t.value < voltage + ALLOWED_TOLERANCE)
-                                )
-                                .filter((t.timestamp > now - seconds(0.2)))
-                                .all()
+            ALLOWED_TOLERANCE = 0.02
+            now = datetime.now()
+            for ctx, t in table.iter_row(f"{voltage}V", traces):
+                with ctx:
+                    assert (
+                        t.to_polars()
+                        .select(
+                            (
+                                (voltage - ALLOWED_TOLERANCE < t.value)
+                                & (t.value < voltage + ALLOWED_TOLERANCE)
                             )
-                            .item(0, t._name)
+                            .filter((t.timestamp > now - seconds(0.2)))
+                            .all()
                         )
+                        .item(0, t._name)
+                    )
 
-        table.finalize()
+    table.finalize()
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
@@ -109,72 +107,70 @@ async def test_buck_voltage(hil: "Hil", record: Recorder):
     BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
     cells = hil.cellsim.cells
 
-    async with hil:
+    for cell in cells:
+        await cell.enable()
+        await cell.turn_off_output_relay()
+        await cell.close_load_switch()
+
+    table = ExceptionTable([f"cell: {cell.cell_num}" for cell in cells])
+    with ExitStack() as exit_stack:
+        traces: list[Trace] = []
+        target_trace = Trace("Target")
+        record.add_trace(target_trace)
+
         for cell in cells:
-            await cell.enable()
-            await cell.turn_off_output_relay()
-            await cell.close_load_switch()
 
-        table = ExceptionTable([f"cell: {cell.cell_num}" for cell in cells])
-        with ExitStack() as exit_stack:
-            traces: list[Trace] = []
-            target_trace = Trace("Target")
-            record.add_trace(target_trace)
+            async def _get_voltage():
+                return await cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
 
-            for cell in cells:
-
-                async def _get_voltage():
-                    return await cell.get_voltage(channel=cell.AdcChannels.BUCK_VOLTAGE)
-
-                traces.append(
-                    exit_stack.enter_context(
-                        record(_get_voltage, name=f"cell {cell.cell_num}")
-                    )
+            traces.append(
+                exit_stack.enter_context(
+                    record(_get_voltage, name=f"cell {cell.cell_num}")
                 )
+            )
 
-            for voltage in BUCK_VOLTAGES:
-                for cell in cells:
-                    await cell._set_buck_voltage(voltage)
-                target_trace.append(voltage)
+        for voltage in BUCK_VOLTAGES:
+            for cell in cells:
+                await cell._set_buck_voltage(voltage)
+            target_trace.append(voltage)
 
-                # Record for 0.3s to ensure all traces are recorded
-                await asyncio.sleep(0.3)
-                target_trace.append(voltage)  # Do this both sides to make it stepped
+            # Record for 0.3s to ensure all traces are recorded
+            await asyncio.sleep(0.3)
+            target_trace.append(voltage)  # Do this both sides to make it stepped
 
-                now = datetime.now()
-                ALLOWED_TOLERANCE = 0.1
-                for ctx, t in table.iter_row(f"{voltage}V", traces):
-                    with ctx:
-                        assert (
-                            t.to_polars()
-                            .select(
-                                (
-                                    (voltage - ALLOWED_TOLERANCE < t.value)
-                                    & (t.value < voltage + ALLOWED_TOLERANCE)
-                                )
-                                .filter((t.timestamp > now - seconds(0.2)))
-                                .all()
+            now = datetime.now()
+            ALLOWED_TOLERANCE = 0.1
+            for ctx, t in table.iter_row(f"{voltage}V", traces):
+                with ctx:
+                    assert (
+                        t.to_polars()
+                        .select(
+                            (
+                                (voltage - ALLOWED_TOLERANCE < t.value)
+                                & (t.value < voltage + ALLOWED_TOLERANCE)
                             )
-                            .item(0, t._name)
+                            .filter((t.timestamp > now - seconds(0.2)))
+                            .all()
                         )
+                        .item(0, t._name)
+                    )
 
-        table.finalize()
+    table.finalize()
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
 async def test_mux(hil: "Hil"):
-    async with hil:
-        # Write binary to the mux for each cell
-        for cell in hil.cellsim.cells:
-            async with cell.bus() as handle:
-                await handle.write_byte_data(cell.Devices.GPIO, 0x01, cell.cell_num)
+    # Write binary to the mux for each cell
+    for cell in hil.cellsim.cells:
+        async with cell.bus.handle() as handle:
+            await handle.write_byte_data(cell.Devices.GPIO, 0x01, cell.cell_num)
 
-        # Verify written values
-        for cell in hil.cellsim.cells:
-            async with cell.bus() as handle:
-                read_value = await handle.read_byte_data(cell.Devices.GPIO, 0x01)
-                error_msg = f"Cell {cell.cell_num} GPIO state mismatch: wrote {cell.cell_num}, read {read_value}"
-                assert read_value == cell.cell_num, error_msg
+    # Verify written values
+    for cell in hil.cellsim.cells:
+        async with cell.bus.handle() as handle:
+            read_value = await handle.read_byte_data(cell.Devices.GPIO, 0x01)
+            error_msg = f"Cell {cell.cell_num} GPIO state mismatch: wrote {cell.cell_num}, read {read_value}"
+            assert read_value == cell.cell_num, error_msg
 
 
 @pytest.mark.runs_on(hostname="chunky-otter")
@@ -225,9 +221,10 @@ async def test_cell_calibration(hil: "Hil"):
         assert max_voltage > min_voltage, "No valid voltage range for testing"
 
         # Create test points within the calibrated range
-        test_voltages = np.linspace(
-            min_voltage + 0.1, max_voltage - 0.1, num=5
-        ).tolist()
+        test_voltages = cast(
+            list[float],
+            np.linspace(min_voltage + 0.1, max_voltage - 0.1, num=5).tolist(),
+        )
 
         for voltage in test_voltages:
             voltage = float(voltage)  # Convert to float before using

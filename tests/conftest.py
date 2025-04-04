@@ -24,16 +24,14 @@ class CellSim:
     @classmethod
     async def create(cls, bus: AsyncSMBus, config: ConfigDict):
         self = cls()
-        # Open the bus before creating devices
-        async with bus:
-            self._mux = TCA9548A(bus)
-            self._branch_buses = AsyncSMBusBranch.from_channels(
-                bus, self._mux, list(range(0, 8))
-            )
-            self.cells = [
-                await Cell.create(i, bus, config[i])
-                for i, bus in enumerate(self._branch_buses)
-            ]
+        self._mux = TCA9548A(bus)
+        self._branch_buses = AsyncSMBusBranch.from_channels(
+            bus, self._mux, list(range(0, 8))
+        )
+        self.cells = [
+            await Cell.create(i, bus, config[i])
+            for i, bus in enumerate(self._branch_buses)
+        ]
         return self
 
 
@@ -43,7 +41,7 @@ class Hil:
     """
 
     cellsim: CellSim
-    physical_bus: AsyncSMBus
+    physical_bus: AsyncSMBusPeripheral
     config: ConfigDict
 
     @classmethod
@@ -52,7 +50,7 @@ class Hil:
         self.config = config
         self.physical_bus = AsyncSMBusPeripheral(1)
         # Open the bus before creating CellSim
-        async with self.physical_bus:
+        async with self.physical_bus.open():
             self.cellsim = await CellSim.create(
                 self.physical_bus, self.config["cellsim"]
             )
@@ -74,5 +72,5 @@ async def hil(machine_config: ConfigDict):
     # Create HIL instance
     hil = await Hil.create(machine_config)
     # Open bus for the duration of the test session
-    async with hil.physical_bus:
+    async with hil.physical_bus.open(), hil:
         yield hil

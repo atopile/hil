@@ -87,7 +87,7 @@ class Cell:
         - Clears the GPIO state.
         - Resets the ADC gain.
         """
-        async with self.bus() as handle:
+        async with self.bus.handle() as handle:
             await handle.write_byte_data(self.Devices.GPIO, 0x03, 0x00)
             await handle.write_byte_data(self.Devices.GPIO, 0x01, 0x00)
 
@@ -104,7 +104,7 @@ class Cell:
         Update the state of the GPIO expander.
         Writes the current GPIO_STATE to the output register.
         """
-        async with self.bus() as handle:
+        async with self.bus.handle() as handle:
             await handle.write_byte_data(self.Devices.GPIO, 0x01, self._gpio_state)
         logger.debug(f"[Cell {self.cell_num}] GPIO state set: {bin(self._gpio_state)}")
 
