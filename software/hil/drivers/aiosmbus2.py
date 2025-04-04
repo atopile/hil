@@ -150,21 +150,41 @@ class AsyncSMBus(ABC):
 
     @abstractmethod
     def __call__(self) -> AsyncContextManager[SMBusHandle]:
+
+
+
+class _HasClose(Protocol):
+    async def close(self):
         """
-        Get a context manager for accessing the SMBus.
-        This is the primary method for interacting with the bus.
-
-        Returns:
-            AsyncContextManager[SMBusHandle]: Context manager that yields an SMBusHandle
+        Close the object.
         """
 
-    @abstractmethod
-    async def __aenter__(self) -> Self:
-        """Enter the async context manager."""
 
-    @abstractmethod
+class _Opener[T: _HasClose](Awaitable):
+    """
+    Either await, or async-with to open the bus.
+
+    This class exists to support pathlib.Path.open() style usage, asynchronously:
+    - `await bus.open()`
+    - `async with bus.open():`
+    """
+
+    def __init__(
+        self,
+        obj: T,
+        opener: Callable[[], Coroutine[None, None, T]],
+    ):
+        self._obj = obj
+        self._opener = opener
+
+    def __await__(self):
+        return self._opener().__await__()
+
+    async def __aenter__(self):
+        return await self._opener()
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Exit the async context manager."""
+        await self._obj.close()
 
 
 class AsyncSMBusPeripheral(AsyncSMBus):
@@ -193,12 +213,13 @@ class AsyncSMBusPeripheral(AsyncSMBus):
         await instance.open()
         return instance
 
-    async def open(
+    def open(
         self, bus: int | os.PathLike | None = None, force: bool | None = None
-    ) -> Self:
+    ) -> Awaitable[Self]:
         """
         Open the given I2C bus (e.g., an integer 0 or 1 or a device path).
         """
+
         if bus is None and self._bus is None:
             raise ValueError("bus not provided")
         if bus is not None:
@@ -211,13 +232,18 @@ class AsyncSMBusPeripheral(AsyncSMBus):
         if self._force is None:
             self._force = False
 
+        async def _open():
         async with self._lock:
             if self._smbus is not None:
                 raise self.BusAlreadyOpen()
 
+                assert isinstance(self._bus, int)
+                assert isinstance(self._force, bool)
             self._smbus = await asyncio.to_thread(SMBus, self._bus, self._force)
             self._handle = SMBusHandle(self._smbus)
             return self
+
+        return _Opener(self, _open)
 
     async def close(self):
         """
