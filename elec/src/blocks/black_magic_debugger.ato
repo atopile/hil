@@ -1,4 +1,4 @@
-import ElectricPower, JTAG, ElectricLogic, Electrical, UART
+import ElectricPower, JTAG, ElectricLogic, Electrical, UART, USB2_0
 import PoweredLED, ResistorVoltageDivider, Resistor, Capacitor
 
 from "components/st_microelectronics_st_m32f103c_bu6t_r.ato" import STMicroelectronics_STM32F103CBU6TR
@@ -23,6 +23,7 @@ module BlackMagicDebugger:
     power_3v3 = new ElectricPower
     jtag = new JTAG
     uart = new UART
+    usb2 = new USB2_0
     boot_mode = new ElectricLogic #Pull up to put MCU into DFU Mode
     power_target = new ElectricPower # Connect to the targets powersupply
 
@@ -51,6 +52,10 @@ module BlackMagicDebugger:
     uart_rx_resistor = new Resistor
     vtref_divider = new ResistorVoltageDivider
     vbus_divider = new ResistorVoltageDivider
+
+    # micro
+    power_3v3 ~ micro.power_3v3
+    usb2 ~ micro.usb2
 
     # Set resistor values
     tdi_resistor.resistance = 100ohm +/- 1%
@@ -94,6 +99,14 @@ module BlackMagicDebugger:
     power_target ~ lvl_shifter_2.power_b
     power_target ~ lvl_shifter_3.power_b
     power_target ~ lvl_shifter_4.power_b
+
+    lvl_shifter_1.a1.line ~ gnd
+    lvl_shifter_1.b1.line ~ gnd
+    lvl_shifter_1.dir.line ~ power_3v3.vcc # ->
+    lvl_shifter_2.dir.line ~ power_3v3.vcc # ->
+    lvl_shifter_3.dir.line ~ gnd # <-
+    lvl_shifter_4.a1.line ~ gnd
+    lvl_shifter_4.b1.line ~ gnd
 
     # Reset Connections
     reset_resistor = new Resistor

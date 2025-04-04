@@ -1,0 +1,13 @@
+from "blocks/black_magic_debugger.ato" import BlackMagicDebugger
+from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+
+module BlackMagicProbe:
+    black_magic_debugger = new BlackMagicDebugger
+    usb_connector = new XKB_Connectivity_U262_241N_4BV64_CC
+    regulator = new LDK220M_R
+    usb_connector.usb2 ~ black_magic_debugger.usb2
+
+    # Power
+    usb_connector.power_vbus ~ regulator.power_in
+    usb_connector.power_vbus ~ black_magic_debugger.power_5v
+    regulator.power_out ~ black_magic_debugger.power_3v3
