@@ -1,7 +1,15 @@
 import asyncio
+from collections.abc import Awaitable
 from contextlib import asynccontextmanager
 import os
-from typing import AsyncContextManager, Protocol, Self
+from typing import (
+    AsyncContextManager,
+    AsyncGenerator,
+    Callable,
+    Coroutine,
+    Protocol,
+    Self,
+)
 from abc import ABC, abstractmethod
 from hil.utils.composable_future import Future, composable
 from smbus2 import SMBus
@@ -13,32 +21,11 @@ class SMBusHandle[T](Future[T]):
         self._smbus = smbus
 
     @composable
-    def _get_pec(self) -> int:
-        """
-        Get Packet Error Check (PEC) status.
-        """
-        return self._smbus._get_pec()
-
-    @composable
     def enable_pec(self, enable=True) -> None:
         """
         Enable or disable PEC.
         """
         self._smbus.enable_pec(enable)
-
-    @composable
-    def _set_address(self, address, force=None) -> None:
-        """
-        Set the I2C slave address.
-        """
-        self._smbus._set_address(address, force)
-
-    @composable
-    def _get_funcs(self) -> int:
-        """
-        Get the functionality mask of the I2C adapter.
-        """
-        return self._smbus._get_funcs()
 
     @composable
     def write_quick(self, i2c_addr, force=None) -> None:
@@ -149,8 +136,11 @@ class AsyncSMBus(ABC):
     """
 
     @abstractmethod
-    def __call__(self) -> AsyncContextManager[SMBusHandle]:
-
+    def handle(self) -> AsyncContextManager[SMBusHandle]:
+        """
+        Get a handle for accessing the SMBus
+        """
+        raise NotImplementedError
 
 
 class _HasClose(Protocol):
@@ -215,7 +205,7 @@ class AsyncSMBusPeripheral(AsyncSMBus):
 
     def open(
         self, bus: int | os.PathLike | None = None, force: bool | None = None
-    ) -> Awaitable[Self]:
+    ) -> _Opener[Self]:
         """
         Open the given I2C bus (e.g., an integer 0 or 1 or a device path).
         """
@@ -233,15 +223,15 @@ class AsyncSMBusPeripheral(AsyncSMBus):
             self._force = False
 
         async def _open():
-        async with self._lock:
-            if self._smbus is not None:
-                raise self.BusAlreadyOpen()
+            async with self._lock:
+                if self._smbus is not None:
+                    raise self.BusAlreadyOpen()
 
                 assert isinstance(self._bus, int)
                 assert isinstance(self._force, bool)
-            self._smbus = await asyncio.to_thread(SMBus, self._bus, self._force)
-            self._handle = SMBusHandle(self._smbus)
-            return self
+                self._smbus = await asyncio.to_thread(SMBus, self._bus, self._force)
+                self._handle = SMBusHandle(self._smbus)
+                return self
 
         return _Opener(self, _open)
 
@@ -254,30 +244,14 @@ class AsyncSMBusPeripheral(AsyncSMBus):
                 await asyncio.to_thread(self._smbus.close)
                 self._smbus = None
 
-    def __call__(self) -> AsyncContextManager[SMBusHandle]:
-        @asynccontextmanager
-        async def _enter():
-            try:
-                await self.aquire()
-                if self._handle is None:
-                    raise RuntimeError("bus not open")
-                yield self._handle
-            finally:
-                self.release()
-
-        return _enter()
-
-    async def aquire(self):
-        await self._lock.acquire()
-
-    def release(self):
-        self._lock.release()
+    @asynccontextmanager
+    async def handle(self) -> AsyncGenerator[SMBusHandle, None]:
+        async with self._lock:
+            if self._handle is None:
+                raise RuntimeError("bus not open")
+            yield self._handle
 
     async def __aenter__(self) -> Self:
-        try:
-            await self.open()
-        except self.BusAlreadyOpen:
-            pass
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -303,20 +277,11 @@ class AsyncSMBusBranch(AsyncSMBus):
         self._mux = mux
         self._channel = channel
 
-    def __call__(self) -> AsyncContextManager[SMBusHandle]:
-        @asynccontextmanager
-        async def _enter():
-            async with self._mux.lock, self._mux.upstream() as handle:
-                await self._mux.mux.set_mux(self._channel, handle)
-                yield handle
-
-        return _enter()
-
-    async def __aenter__(self) -> Self:
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        pass
+    @asynccontextmanager
+    async def handle(self) -> AsyncGenerator[SMBusHandle, None]:
+        async with self._mux.lock, self._mux.upstream.handle() as handle:
+            await self._mux.mux.set_mux(self._channel, handle)
+            yield handle
 
     @classmethod
     def from_channels(

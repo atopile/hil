@@ -359,7 +359,7 @@ class MCP4728:
             data[2 * i] = wfm_bits | ((pd_vals[i] & 0x3) << 4) | val_h
             data[2 * i + 1] = val_l
 
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_i2c_block_data(self._address, data[0], data[1:])
 
     async def write_channel(
@@ -406,7 +406,7 @@ class MCP4728:
         reg = 0x40 | (ch & 0x3) << 1 | update
         data = [(vref << 7 | pd << 5 | gain << 4 | val_h), val_l]
 
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_i2c_block_data(self._address, reg, data)
 
     async def write_channel_eeprom_all(
@@ -458,7 +458,7 @@ class MCP4728:
             data[2 * i] = (vref[i] << 7) | (pd[i] << 5) | (gain[i] << 4) | val_h
             data[2 * i + 1] = val_l
 
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_i2c_block_data(self._address, reg, data)
 
     async def write_channel_eeprom_single(
@@ -504,7 +504,7 @@ class MCP4728:
         val_h = val[0] & 0xF
         val_l = val[1]
         data = [(vref << 7) | (pd << 5) | (gain << 4) | val_h, val_l]
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_i2c_block_data(self._address, reg, data)
 
     """
@@ -519,7 +519,7 @@ class MCP4728:
         Returns true when the device is ready (not busy)
         """
         ready = False
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             data = await handle.read_byte(self._address)
             ready = (data & 0x80) > 0
 
@@ -536,7 +536,7 @@ class MCP4728:
         D7 D6 D5 D4 D3 D2 D1 D0 A |
         Continue read to get all channels
         """
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             data = await handle.read_i2c_block_data(self._address, 0, 24)
 
         self._update_channels_with_read_data(data)
@@ -553,7 +553,7 @@ class MCP4728:
         """
         reg = 0x00
         data = 0x06
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_byte(i2c_addr=reg, value=data)
 
     async def general_call_wakeup(self):
@@ -563,7 +563,7 @@ class MCP4728:
         """
         reg = 0x00
         data = 0x09
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_byte(i2c_addr=reg, value=data)
 
     async def general_call_software_update(self):
@@ -573,7 +573,7 @@ class MCP4728:
         """
         reg = 0x00
         data = 0x08
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_byte(i2c_addr=reg, value=data)
 
     async def set_vref(self, vref: list["MCP4728.ChannelVref"]) -> None:
@@ -588,7 +588,7 @@ class MCP4728:
 
         reg = 0x80 | vref[0] << 3 | vref[1] << 2 | vref[2] << 1 | vref[3]
 
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_byte(self._address, reg)
 
     async def set_pd(self, pd: list["MCP4728.ChannelPowerDown"]) -> None:
@@ -604,7 +604,7 @@ class MCP4728:
         reg = 0xA0 | pd[0] << 2 | pd[1]
         data = pd[2] << 6 | pd[3] << 4
 
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_byte_data(self._address, reg, data)
 
     async def set_gain(self, gain: list["MCP4728.ChannelGain"]) -> None:
@@ -619,5 +619,5 @@ class MCP4728:
 
         reg = 0xC0 | gain[0] & 0x1 << 3 | gain[1] << 2 | gain[2] << 1 | gain[3]
 
-        async with self._bus() as handle:
+        async with self._bus.handle() as handle:
             await handle.write_byte(self._address, reg)
