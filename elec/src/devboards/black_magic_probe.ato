@@ -1,13 +1,21 @@
 from "blocks/black_magic_debugger.ato" import BlackMagicDebugger
 from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64_CC
+from "components/hanbo_electronic_hb_ph912725p_b2g_ob.ato" import Hanbo_Electronic_HB_PH9_12725PB2GOB
 
 module BlackMagicProbe:
     black_magic_debugger = new BlackMagicDebugger
     usb_connector = new XKB_Connectivity_U262_241N_4BV64_CC
     regulator = new LDK220M_R
+    jtag_connector = new Hanbo_Electronic_HB_PH9_12725PB2GOB
     usb_connector.usb2 ~ black_magic_debugger.usb2
 
     # Power
     usb_connector.power_vbus ~ regulator.power_in
     usb_connector.power_vbus ~ black_magic_debugger.power_5v
     regulator.power_out ~ black_magic_debugger.power_3v3
+    regulator.v_in = 5V +/- 3%
+    regulator.v_out = 3.3V +/- 3%
+
+    # JTAG
+    jtag_connector.jtag ~ black_magic_debugger.jtag

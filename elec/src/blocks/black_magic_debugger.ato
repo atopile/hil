@@ -107,6 +107,7 @@ module BlackMagicDebugger:
     lvl_shifter_3.dir.line ~ gnd # <-
     lvl_shifter_4.a1.line ~ gnd
     lvl_shifter_4.b1.line ~ gnd
+    micro.PA1 ~ lvl_shifter_4.dir
 
     # Reset Connections
     reset_resistor = new Resistor

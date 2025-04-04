@@ -70,8 +70,7 @@ builds:
     exclude_targets: [mfg-data]
 
   buck-boost:
-    entry:
-      elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
+    entry: elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
 
   analog-out-4ch:
@@ -79,8 +78,7 @@ builds:
     exclude_targets: [mfg-data]
 
   boost-converter:
-    entry:
-      elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
+    entry: elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
     exclude_targets: [mfg-data]
 
   variable-resistor:
@@ -108,13 +106,11 @@ builds:
     exclude_targets: [mfg-data]
 
   usb251b:
-    entry:
-      elec/src/components/microchip_tech_us_b2514b_im2.ato:Microchip_Tech_USB2514B_I_M2
+    entry: elec/src/components/microchip_tech_us_b2514b_im2.ato:Microchip_Tech_USB2514B_I_M2
     exclude_targets: [mfg-data]
 
   current-limit-switch:
-    entry:
-      elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
+    entry: elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
     exclude_targets: [mfg-data]
 
   micro-vault:
@@ -122,13 +118,11 @@ builds:
     exclude_targets: [mfg-data]
 
   ads1219ipwr:
-    entry:
-      elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
+    entry: elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
     exclude_targets: [mfg-data]
 
   ref5050aidr:
-    entry:
-      elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
+    entry: elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
     exclude_targets: [mfg-data]
 
   micro-vault-dev-board:
@@ -150,34 +144,33 @@ builds:
     entry: elec/src/blocks/black_magic_debugger.ato:BlackMagicDebugger
     exclude_targets: [mfg-data]
 
+  black-magic-probe:
+    entry: elec/src/devboards/black_magic_probe.ato:BlackMagicProbe
   # Outlines
   ## These provide simple board shapes
   boardshapes-gridfinity-3x100mm:
-    entry:
-      elec/src/boardshapes/boardshape_gridfinity_3x100mm.ato:BoardshapeGridfinity3x100mm
+    entry: elec/src/boardshapes/boardshape_gridfinity_3x100mm.ato:BoardshapeGridfinity3x100mm
 
-  black-magic-probe:
-    entry: /Users/narayanpowderly/projects/hil/elec/src/black_magic_probe.ato .ato:BlackMagicProbe
 dependencies:
-- name: ldk220m-r
-  version_spec:
-  link_broken: false
-  path: .ato/modules/ldk220m-r
-  source:
-- name: saleae-header
-  link_broken: false
-  path: .ato/modules/saleae-header
-  source:
-- name: xt-connectors
-  version_spec:
-  link_broken: false
-  path: .ato/modules/xt-connectors
-  source:
-- name: https://github.com/atopile/lv2842xlvddcr.git
-  link_broken: false
-  path: .ato/modules/lv2842xlvddcr.git
-  source:
-- name: tca9548apwr
-  link_broken: false
-  path: .ato/modules/tca9548apwr
-  source:
+  - name: ldk220m-r
+    version_spec:
+    link_broken: false
+    path: .ato/modules/ldk220m-r
+    source:
+  - name: saleae-header
+    link_broken: false
+    path: .ato/modules/saleae-header
+    source:
+  - name: xt-connectors
+    version_spec:
+    link_broken: false
+    path: .ato/modules/xt-connectors
+    source:
+  - name: https://github.com/atopile/lv2842xlvddcr.git
+    link_broken: false
+    path: .ato/modules/lv2842xlvddcr.git
+    source:
+  - name: tca9548apwr
+    link_broken: false
+    path: .ato/modules/tca9548apwr
+    source:
