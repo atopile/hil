@@ -1,0 +1,15 @@
+component Diodes_Incorporated_DMG1024UV_7:
+    """Diodes_Incorporated_DMG1024UV_7 component"""
+    lcsc_id = "C2759893"
+    manufacturer = "Diodes Incorporated"
+    mpn = "DMG1024UV-7"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2302211830_Diodes-Incorporated-DMG1024UV-7_C2759893.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal D1 ~ pin 3
+    signal D2 ~ pin 6
+    signal G1 ~ pin 5
+    signal G2 ~ pin 2
+    signal S1 ~ pin 4
+    signal S2 ~ pin 1

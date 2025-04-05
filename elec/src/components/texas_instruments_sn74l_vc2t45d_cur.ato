@@ -1,0 +1,61 @@
+import ElectricLogic, ElectricPower, Capacitor
+
+component Texas_Instruments_SN74LVC2T45DCUR:
+    """Texas_Instruments_SN74LVC2T45DCUR component"""
+    # Power
+    power_a = new ElectricPower
+    power_b = new ElectricPower
+
+    # IO
+    a1 = new ElectricLogic
+    a2 = new ElectricLogic
+    b1 = new ElectricLogic
+    b2 = new ElectricLogic
+    dir = new ElectricLogic
+
+    # Decoupling Cap
+    decouple_1 = new Capacitor
+    decouple_1.capacitance = 100nF +/- 20%
+    decouple_1.max_voltage = 25V to 50V
+    decouple_1.package = "C0402"
+    power_a ~ decouple_1.power
+
+    ic = new _Texas_Instruments_SN74LVC2T45DCUR
+
+    # Connect IC
+    power_a.vcc ~ ic.VCCA
+    power_b.vcc ~ ic.VCCB
+    power_a.gnd ~ ic.GND
+    power_b.gnd ~ ic.GND
+
+    ic.A1 ~ a1.line
+    ic.A2 ~ a2.line
+    ic.B1 ~ b1.line
+    ic.B2 ~ b2.line
+    ic.DIR ~ dir.line
+
+    # References
+    a1.reference ~ power_a
+    a2.reference ~ power_a
+    b1.reference ~ power_b
+    b2.reference ~ power_b
+    dir.reference ~ power_a
+
+
+component _Texas_Instruments_SN74LVC2T45DCUR:
+    """Texas_Instruments_SN74LVC2T45DCUR component"""
+    lcsc_id = "C15741"
+    manufacturer = "Texas Instruments"
+    mpn = "SN74LVC2T45DCUR"
+    datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1809042112_Texas-Instruments-SN74LVC2T45DCUR_C15741.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal A1 ~ pin 2
+    signal A2 ~ pin 3
+    signal B1 ~ pin 7
+    signal B2 ~ pin 6
+    signal DIR ~ pin 5
+    signal GND ~ pin 4
+    signal VCCA ~ pin 1
+    signal VCCB ~ pin 8

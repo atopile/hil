@@ -1,0 +1,323 @@
+import ElectricPower, ElectricSignal, Resistor, Capacitor, USB2_0
+from "oscillators.ato" import Oscillator, Crystal
+from "abracon_ll_cab_m3b8000m_hzb2t.ato" import Abracon_LLC_ABM3B_8_000MHZ_B2_T
+
+module STMicroelectronics_STM32F103CBU6TR:
+    """STMicroelectronics_STM32F103CBU6TR component"""
+    power_3v3 = new ElectricPower
+
+    ic = new _STMicroelectronics_STM32F103CBU6TR
+
+    # USB Interface
+    usb2 = new USB2_0
+
+    # USB Series resistors
+    usb_series_res_n = new Resistor
+    usb_series_res_n.resistance = 22ohm +/- 10%
+    usb_series_res_n.package = "R0402"
+    usb2.usb_if.d.n ~ usb_series_res_n.p1; usb_series_res_n.p2 ~ ic.PA11
+
+    usb_series_res_p = new Resistor
+    usb_series_res_p.resistance = 22ohm +/- 10%
+    usb_series_res_p.package = "R0402"
+    usb2.usb_if.d.p ~ usb_series_res_p.p1; usb_series_res_p.p2 ~ ic.PA12
+
+    usb2_pullup_res_p = new Resistor
+    usb2_pullup_res_p.resistance = 1.5kohm +/- 10%
+    usb2_pullup_res_p.package = "R0402"
+    usb2.usb_if.d.p ~ usb2_pullup_res_p.p1; usb2_pullup_res_p.p2 ~ ic.PA8
+
+    # Power
+    power_3v3.vcc ~ ic.VBAT
+    power_3v3.vcc ~ ic.VDD_1
+    power_3v3.vcc ~ ic.VDD_2
+    power_3v3.vcc ~ ic.VDD_3
+    power_3v3.vcc ~ ic.VDDA
+
+    power_3v3.gnd ~ ic.VSSA
+    power_3v3.gnd ~ ic.VSS_1
+    power_3v3.gnd ~ ic.VSS_2
+    power_3v3.gnd ~ ic.VSS_3
+    power_3v3.gnd ~ ic.EP
+
+    # Oscillator
+    oscillator = new Oscillator
+    oscillator.crystal -> Abracon_LLC_ABM3B_8_000MHZ_B2_T
+    ic.PD0_OSC_IN ~ oscillator.xin
+    ic.PD1_OSC_OUT ~ oscillator.xout
+    power_3v3.gnd ~ oscillator.gnd
+    oscillator.load_cap_1.capacitance = 18pF +/- 20%
+    oscillator.load_cap_2.capacitance = 18pF +/- 20%
+
+    # Decoupling capacitors
+    decouple_1 = new Capacitor
+    decouple_1.capacitance = 4.7uF +/- 20%
+    decouple_1.max_voltage = 25V to 50V
+    decouple_1.package = "C0603"
+    power_3v3 ~ decouple_1.power
+
+    decouple_2 = new Capacitor
+    decouple_2.capacitance = 1uF +/- 20%
+    decouple_2.max_voltage = 25V to 50V
+    decouple_2.package = "C0402"
+    power_3v3 ~ decouple_2.power
+
+    decouple_3 = new Capacitor
+    decouple_3.capacitance = 100nF +/- 20%
+    decouple_3.max_voltage = 25V to 50V
+    decouple_3.package = "C0402"
+    power_3v3 ~ decouple_3.power
+
+    decouple_4 = new Capacitor
+    decouple_4.capacitance = 100nF +/- 20%
+    decouple_4.max_voltage = 25V to 50V
+    decouple_4.package = "C0402"
+    power_3v3 ~ decouple_4.power
+
+    decouple_5 = new Capacitor
+    decouple_5.capacitance = 100nF +/- 20%
+    decouple_5.max_voltage = 25V to 50V
+    decouple_5.package = "C0402"
+    power_3v3 ~ decouple_5.power
+
+    decouple_6 = new Capacitor
+    decouple_6.capacitance = 100nF +/- 20%
+    decouple_6.max_voltage = 25V to 50V
+    decouple_6.package = "C0402"
+    power_3v3 ~ decouple_6.power
+
+    decouple_7 = new Capacitor
+    decouple_7.capacitance = 100nF +/- 20%
+    decouple_7.max_voltage = 25V to 50V
+    decouple_7.package = "C0402"
+    power_3v3 ~ decouple_7.power
+
+    # Connect through GPIO
+    BOOT0 = new ElectricSignal
+    BOOT0.line ~ ic.BOOT0
+    BOOT0.reference ~ power_3v3
+
+    # Boot0 pulldown
+    boot0_pull_down = new Resistor
+    boot0_pull_down.resistance = 10kohm +/- 10%
+    boot0_pull_down.package = "R0402"
+    BOOT0 ~ boot0_pull_down.p1; boot0_pull_down.p2 ~ power_3v3.gnd
+
+    NRST = new ElectricSignal
+    NRST.line ~ ic.NRST
+    NRST.reference ~ power_3v3
+
+    # NRST Capacitor
+    nrst_cap = new Capacitor
+    nrst_cap.capacitance = 100nF +/- 20%
+    nrst_cap.max_voltage = 25V to 50V
+    nrst_cap.package = "C0402"
+    NRST ~ nrst_cap.p1; nrst_cap.p2 ~ power_3v3.gnd
+
+    PA1 = new ElectricSignal
+    PA1.line ~ ic.PA1
+    PA1.reference ~ power_3v3
+
+    PA0_WKUP = new ElectricSignal
+    PA0_WKUP.line ~ ic.PA0_WKUP
+    PA0_WKUP.reference ~ power_3v3
+
+    PA2 = new ElectricSignal
+    PA2.line ~ ic.PA2
+    PA2.reference ~ power_3v3
+
+    PA3 = new ElectricSignal
+    PA3.line ~ ic.PA3
+    PA3.reference ~ power_3v3
+
+    PA4 = new ElectricSignal
+    PA4.line ~ ic.PA4
+    PA4.reference ~ power_3v3
+
+    PA5 = new ElectricSignal
+    PA5.line ~ ic.PA5
+    PA5.reference ~ power_3v3
+
+    PA6 = new ElectricSignal
+    PA6.line ~ ic.PA6
+    PA6.reference ~ power_3v3
+
+    PA7 = new ElectricSignal
+    PA7.line ~ ic.PA7
+    PA7.reference ~ power_3v3
+
+    PA8 = new ElectricSignal
+    PA8.line ~ ic.PA8
+    PA8.reference ~ power_3v3
+
+    PA9 = new ElectricSignal
+    PA9.line ~ ic.PA9
+    PA9.reference ~ power_3v3
+
+    PA10 = new ElectricSignal
+    PA10.line ~ ic.PA10
+    PA10.reference ~ power_3v3
+
+    PA11 = new ElectricSignal
+    PA11.line ~ ic.PA11
+    PA11.reference ~ power_3v3
+
+    PA12 = new ElectricSignal
+    PA12.line ~ ic.PA12
+    PA12.reference ~ power_3v3
+
+    PA13 = new ElectricSignal
+    PA13.line ~ ic.PA13
+    PA13.reference ~ power_3v3
+
+    PA14 = new ElectricSignal
+    PA14.line ~ ic.PA14
+    PA14.reference ~ power_3v3
+
+    PA15 = new ElectricSignal
+    PA15.line ~ ic.PA15
+    PA15.reference ~ power_3v3
+
+    PB0 = new ElectricSignal
+    PB0.line ~ ic.PB0
+    PB0.reference ~ power_3v3
+
+    PB1 = new ElectricSignal
+    PB1.line ~ ic.PB1
+    PB1.reference ~ power_3v3
+
+    PB2 = new ElectricSignal
+    PB2.line ~ ic.PB2
+    PB2.reference ~ power_3v3
+
+    PB3 = new ElectricSignal
+    PB3.line ~ ic.PB3
+    PB3.reference ~ power_3v3
+
+    PB4 = new ElectricSignal
+    PB4.line ~ ic.PB4
+    PB4.reference ~ power_3v3
+
+    PB5 = new ElectricSignal
+    PB5.line ~ ic.PB5
+    PB5.reference ~ power_3v3
+
+    PB6 = new ElectricSignal
+    PB6.line ~ ic.PB6
+    PB6.reference ~ power_3v3
+
+    PB7 = new ElectricSignal
+    PB7.line ~ ic.PB7
+    PB7.reference ~ power_3v3
+
+    PB8 = new ElectricSignal
+    PB8.line ~ ic.PB8
+    PB8.reference ~ power_3v3
+
+    PB9 = new ElectricSignal
+    PB9.line ~ ic.PB9
+    PB9.reference ~ power_3v3
+
+    PB10 = new ElectricSignal
+    PB10.line ~ ic.PB10
+    PB10.reference ~ power_3v3
+
+    PB11 = new ElectricSignal
+    PB11.line ~ ic.PB11
+    PB11.reference ~ power_3v3
+
+    PB12 = new ElectricSignal
+    PB12.line ~ ic.PB12
+    PB12.reference ~ power_3v3
+
+    PB13 = new ElectricSignal
+    PB13.line ~ ic.PB13
+    PB13.reference ~ power_3v3
+
+    PB14 = new ElectricSignal
+    PB14.line ~ ic.PB14
+    PB14.reference ~ power_3v3
+
+    PB15 = new ElectricSignal
+    PB15.line ~ ic.PB15
+    PB15.reference ~ power_3v3
+
+    PC13_TAMPER_RTC = new ElectricSignal
+    PC13_TAMPER_RTC.line ~ ic.PC13_TAMPER_RTC
+    PC13_TAMPER_RTC.reference ~ power_3v3
+
+    PC14_OSC32_IN = new ElectricSignal
+    PC14_OSC32_IN.line ~ ic.PC14_OSC32_IN
+    PC14_OSC32_IN.reference ~ power_3v3
+
+    PC15_OSC32_OUT = new ElectricSignal
+    PC15_OSC32_OUT.line ~ ic.PC15_OSC32_OUT
+    PC15_OSC32_OUT.reference ~ power_3v3
+
+    PD0_OSC_IN = new ElectricSignal
+    PD0_OSC_IN.line ~ ic.PD0_OSC_IN
+    PD0_OSC_IN.reference ~ power_3v3
+
+    PD1_OSC_OUT = new ElectricSignal
+    PD1_OSC_OUT.line ~ ic.PD1_OSC_OUT
+    PD1_OSC_OUT.reference ~ power_3v3
+
+
+component _STMicroelectronics_STM32F103CBU6TR:
+    """STMicroelectronics_STM32F103CBU6TR component"""
+    lcsc_id = "C967640"
+    manufacturer = "STMicroelectronics"
+    mpn = "STM32F103CBU6TR"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2211030000_STMicroelectronics-STM32F103CBU6TR_C967640.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal BOOT0 ~ pin 44
+    signal EP ~ pin 49
+    signal NRST ~ pin 7
+    signal PA0_WKUP ~ pin 10
+    signal PA1 ~ pin 11
+    signal PA2 ~ pin 12
+    signal PA3 ~ pin 13
+    signal PA4 ~ pin 14
+    signal PA5 ~ pin 15
+    signal PA6 ~ pin 16
+    signal PA7 ~ pin 17
+    signal PA8 ~ pin 29
+    signal PA9 ~ pin 30
+    signal PA10 ~ pin 31
+    signal PA11 ~ pin 32
+    signal PA12 ~ pin 33
+    signal PA13 ~ pin 34
+    signal PA14 ~ pin 37
+    signal PA15 ~ pin 38
+    signal PB0 ~ pin 18
+    signal PB1 ~ pin 19
+    signal PB2 ~ pin 20
+    signal PB3 ~ pin 39
+    signal PB4 ~ pin 40
+    signal PB5 ~ pin 41
+    signal PB6 ~ pin 42
+    signal PB7 ~ pin 43
+    signal PB8 ~ pin 45
+    signal PB9 ~ pin 46
+    signal PB10 ~ pin 21
+    signal PB11 ~ pin 22
+    signal PB12 ~ pin 25
+    signal PB13 ~ pin 26
+    signal PB14 ~ pin 27
+    signal PB15 ~ pin 28
+    signal PC13_TAMPER_RTC ~ pin 2
+    signal PC14_OSC32_IN ~ pin 3
+    signal PC15_OSC32_OUT ~ pin 4
+    signal PD0_OSC_IN ~ pin 5
+    signal PD1_OSC_OUT ~ pin 6
+    signal VBAT ~ pin 1
+    signal VDDA ~ pin 9
+    signal VDD_1 ~ pin 24
+    signal VDD_2 ~ pin 36
+    signal VDD_3 ~ pin 48
+    signal VSSA ~ pin 8
+    signal VSS_1 ~ pin 23
+    signal VSS_2 ~ pin 35
+    signal VSS_3 ~ pin 47

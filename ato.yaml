@@ -140,6 +140,12 @@ builds:
     entry: elec/src/blocks/debug-saleae.ato:DebugSaleae
     exclude_targets: [mfg-data]
 
+  black-magic-debugger:
+    entry: elec/src/blocks/black_magic_debugger.ato:BlackMagicDebugger
+    exclude_targets: [mfg-data]
+
+  black-magic-probe:
+    entry: elec/src/devboards/black_magic_probe.ato:BlackMagicProbe
   # Outlines
   ## These provide simple board shapes
   boardshapes-gridfinity-3x100mm:

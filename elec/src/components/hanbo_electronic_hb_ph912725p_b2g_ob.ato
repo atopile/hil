@@ -1,0 +1,19 @@
+import JTAG
+
+component Hanbo_Electronic_HB_PH9_12725PB2GOB:
+    """Hanbo_Electronic_HB_PH9_12725PB2GOB component"""
+    lcsc_id = "C6332249"
+    manufacturer = "Hanbo Electronic"
+    mpn = "HB-PH9-12725PB2GOB"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2305120908_Hanbo-Electronic-HB-PH9-12725PB2GOB_C6332249.pdf"
+    designator_prefix = "U"
+    jtag = new JTAG
+    jtag.n_trst ~ pin 10
+    jtag.tdi ~ pin 8
+    jtag.tdo ~ pin 6
+    jtag.tck ~ pin 4
+    jtag.tms ~ pin 2
+    jtag.vtref.gnd ~ pin 9
+    jtag.vtref.gnd ~ pin 5
+    jtag.vtref.gnd ~ pin 3
+    jtag.vtref.vcc ~ pin 1

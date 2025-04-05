@@ -1,0 +1,199 @@
+import ElectricPower, JTAG, ElectricLogic, Electrical, UART, USB2_0
+import PoweredLED, ResistorVoltageDivider, Resistor, Capacitor
+
+from "components/st_microelectronics_st_m32f103c_bu6t_r.ato" import STMicroelectronics_STM32F103CBU6TR
+from "components/texas_instruments_sn74l_vc2t45d_cur.ato" import Texas_Instruments_SN74LVC2T45DCUR
+from "components/diodes_incorporated_dm_g1024u_v7.ato" import Diodes_Incorporated_DMG1024UV_7
+from "components/nextron_nextronics_engineering_z21103110021001.ato" import NextronNextronics_Engineering_Z_211_0311_0021_001
+
+module BlackMagicDebugger:
+    """
+    Black Magic Debugger
+    Implements https://black-magic.org/_downloads/9268bd95a59bf58b68008004df51c31f/bmpm_v2_1c_schematic.pdf
+    Connects to the MCU via JTAG and provides a level shifter to connect to targets between 1.8V and 5V
+    Usage:
+    - power device with 5V and 3.3V
+    - connect USB to host
+    - connect JTAG and or UART to host
+    - For UART only, connect power_target to the targets power supply
+    - Optionally, to enable DFU programming mode, connect pull Boot0 high while powering up device
+    """
+    # External Interfaces
+    power_5v = new ElectricPower
+    power_3v3 = new ElectricPower
+    jtag = new JTAG
+    uart = new UART
+    usb2 = new USB2_0
+    boot_mode = new ElectricLogic #Pull up to put MCU into DFU Mode
+    power_target = new ElectricPower # Connect to the targets powersupply
+
+    # Common gnd
+    gnd = new Electrical
+    gnd ~ power_5v.gnd
+    gnd ~ power_3v3.gnd
+    gnd ~ jtag.vtref.gnd
+    gnd ~ power_target.gnd
+
+    # Components
+    micro = new STMicroelectronics_STM32F103CBU6TR
+    lvl_shifter_1 = new Texas_Instruments_SN74LVC2T45DCUR
+    lvl_shifter_2 = new Texas_Instruments_SN74LVC2T45DCUR
+    lvl_shifter_3 = new Texas_Instruments_SN74LVC2T45DCUR
+    lvl_shifter_4 = new Texas_Instruments_SN74LVC2T45DCUR
+    reset_mosfets = new Diodes_Incorporated_DMG1024UV_7
+    power_mosfets = new Diodes_Incorporated_DMG1024UV_7
+    tdi_resistor = new Resistor
+    tck_resistor = new Resistor
+    tms_resistor = new Resistor
+    tdo_resistor = new Resistor
+    vtref_resistor = new Resistor
+    trace_swo_resistor = new Resistor
+    uart_tx_resistor = new Resistor
+    uart_rx_resistor = new Resistor
+    vtref_divider = new ResistorVoltageDivider
+    vbus_divider = new ResistorVoltageDivider
+
+    # micro
+    power_3v3 ~ micro.power_3v3
+    usb2 ~ micro.usb2
+
+    # Set resistor values
+    tdi_resistor.resistance = 100ohm +/- 1%
+    tck_resistor.resistance = 100ohm +/- 1%
+    tms_resistor.resistance = 100ohm +/- 1%
+    tdo_resistor.resistance = 100ohm +/- 1%
+    vtref_resistor.resistance = 100ohm +/- 1%
+    trace_swo_resistor.resistance = 100ohm +/- 1%
+    uart_tx_resistor.resistance = 100ohm +/- 1%
+    uart_rx_resistor.resistance = 100ohm +/- 1%
+    tdi_resistor.package = "R0402"
+    tck_resistor.package = "R0402"
+    tms_resistor.package = "R0402"
+    tdo_resistor.package = "R0402"
+    vtref_resistor.package = "R0402"
+    trace_swo_resistor.package = "R0402"
+    uart_tx_resistor.package = "R0402"
+    uart_rx_resistor.package = "R0402"
+
+    # Connect JTAG
+    micro.PA3 ~ lvl_shifter_2.a2; lvl_shifter_2.b2 ~ tdi_resistor.p1; tdi_resistor.p2 ~ jtag.tdi
+    micro.PA4 ~ lvl_shifter_4.a2; lvl_shifter_4.b2 ~ tms_resistor.p1; tms_resistor.p2 ~ jtag.tms
+    micro.PA5 ~ lvl_shifter_2.a1; lvl_shifter_2.b1 ~ tck_resistor.p1; tck_resistor.p2 ~ jtag.tck
+    micro.PA6 ~ lvl_shifter_3.a1; lvl_shifter_3.b1 ~ tdo_resistor.p1; tdo_resistor.p2 ~ jtag.tdo
+    micro.PB3 ~ trace_swo_resistor.p1; trace_swo_resistor.p2 ~ jtag.tdo
+
+    # Connect UART
+    micro.PA9 ~ lvl_shifter_1.a2; lvl_shifter_1.b2 ~ uart_tx_resistor.p1; uart_tx_resistor.p2 ~ uart.base_uart.tx
+    micro.PA10 ~ lvl_shifter_3.a2; lvl_shifter_3.b2 ~ uart_rx_resistor.p1; uart_rx_resistor.p2 ~ uart.base_uart.rx
+
+
+    # Level Shifter Connections
+    power_3v3 ~ lvl_shifter_1.power_a
+    power_3v3 ~ lvl_shifter_2.power_a
+    power_3v3 ~ lvl_shifter_3.power_a
+    power_3v3 ~ lvl_shifter_4.power_a
+
+    power_target.vcc ~ vtref_resistor.p1; vtref_resistor.p2 ~ jtag.vtref.vcc
+    power_target.gnd ~ power_3v3.gnd
+    power_target ~ lvl_shifter_1.power_b
+    power_target ~ lvl_shifter_2.power_b
+    power_target ~ lvl_shifter_3.power_b
+    power_target ~ lvl_shifter_4.power_b
+
+    lvl_shifter_1.a1.line ~ gnd
+    lvl_shifter_1.b1.line ~ gnd
+    lvl_shifter_1.dir.line ~ power_3v3.vcc # ->
+    lvl_shifter_2.dir.line ~ power_3v3.vcc # ->
+    lvl_shifter_3.dir.line ~ gnd # <-
+    lvl_shifter_4.a1.line ~ gnd
+    lvl_shifter_4.b1.line ~ gnd
+    micro.PA1 ~ lvl_shifter_4.dir
+
+    # Reset Connections
+    reset_resistor = new Resistor
+    reset_resistor.resistance = 10kohm +/- 10%
+    reset_resistor.package = "R0402"
+    power_target.vcc ~ reset_resistor.p1; reset_resistor.p2 ~ jtag.n_trst
+    jtag.n_reset ~ reset_mosfets.D2; reset_mosfets.S2 ~ gnd
+    micro.PA2 ~ reset_mosfets.G2
+    micro.PA7 ~ reset_mosfets.D1; reset_mosfets.S1 ~ power_3v3.vcc
+    reset_mosfets.G1 ~ jtag.n_trst
+
+    # VTREF Sense
+    jtag.vtref ~ vtref_divider.power
+    micro.PB0 ~ vtref_divider.output
+    vtref_filter_cap = new Capacitor
+    micro.PB0 ~ vtref_filter_cap.p1; vtref_filter_cap.p2 ~ gnd
+    vtref_divider.r_top.resistance = 4.7kohm +/- 1%
+    vtref_divider.r_bottom.resistance = 10kohm +/- 1%
+    vtref_filter_cap.capacitance = 100nF +/- 10%
+    vtref_divider.r_top.package = "R0402"
+    vtref_divider.r_bottom.package = "R0402"
+    vtref_filter_cap.package = "C0402"
+
+    # 5V Sense
+    power_5v ~ vbus_divider.power
+    micro.PB13 ~ vbus_divider.output
+    vbus_divider.r_top.resistance = 4.7kohm +/- 1%
+    vbus_divider.r_bottom.resistance = 10kohm +/- 1%
+    vbus_divider.r_top.package = "R0402"
+    vbus_divider.r_bottom.package = "R0402"
+
+    # PB12 has a button on it with a pullup
+    pb12_pullup = new Resistor
+    pb12_pullup.resistance = 10kohm +/- 10%
+    pb12_pullup.package = "R0402"
+    micro.PB12 ~ pb12_pullup.p1; pb12_pullup.p2 ~ power_3v3.vcc
+
+    # Power Enable
+    power_enable_resistor = new Resistor
+    power_enable_resistor.resistance = 10kohm +/- 10%
+    power_enable_resistor.package = "R0402"
+    micro.PB1 ~ power_enable_resistor.p1
+    power_enable_resistor.p2 ~ power_mosfets.S2
+    power_enable_resistor.p2 ~ power_mosfets.S1
+    micro.PB1 ~ power_mosfets.G2
+    micro.PB1 ~ power_mosfets.G1
+    power_3v3.vcc ~ power_mosfets.D2
+    power_mosfets.D1 ~ jtag.vtref.vcc
+
+    # Hardware version bits
+    b0_resistor = new Resistor
+    b1_resistor = new Resistor
+    b2_resistor = new Resistor
+    micro.PB4 ~ b0_resistor.p1; b0_resistor.p2 ~ power_3v3.vcc
+    micro.PB5 ~ b1_resistor.p1; b1_resistor.p2 ~ power_3v3.vcc
+    micro.PB6 ~ b2_resistor.p1; b2_resistor.p2 ~ power_3v3.vcc
+    b0_resistor.package = "R0402"
+    b1_resistor.package = "R0402"
+    b2_resistor.package = "R0402"
+    b0_resistor.resistance = 10kohm +/- 10%
+    b1_resistor.resistance = 10kohm +/- 10%
+    b2_resistor.resistance = 10kohm +/- 10%
+
+    # Debug
+    led0 = new PoweredLED
+    led1 = new PoweredLED
+    led2 = new PoweredLED
+
+    micro.PB2.line ~ led0.power.vcc; led0.power.gnd ~ gnd
+    micro.PB10.line ~ led1.power.vcc; led1.power.gnd ~ gnd
+    micro.PB11.line ~ led2.power.vcc; led2.power.gnd ~ gnd
+
+    led0.current_limiting_resistor.resistance = 1kohm +/- 10%
+    led1.current_limiting_resistor.resistance = 1kohm +/- 10%
+    led2.current_limiting_resistor.resistance = 1kohm +/- 10%
+
+    led0.current_limiting_resistor.package = "R0402"
+    led1.current_limiting_resistor.package = "R0402"
+    led2.current_limiting_resistor.package = "R0402"
+
+    led0.led.lcsc_id = "C165977"
+    led1.led.lcsc_id = "C165977"
+    led2.led.lcsc_id = "C165977"
+
+    # SWD programming
+    swd_header = new NextronNextronics_Engineering_Z_211_0311_0021_001
+    micro.PA13 ~ swd_header.p1
+    micro.PA14 ~ swd_header.p2
+    gnd ~ swd_header.p3
