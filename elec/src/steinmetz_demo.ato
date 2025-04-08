@@ -1,0 +1,9 @@
+from "blocks/coms-can.ato" import ComsCANISO
+from "blocks/black_magic_debugger.ato" import BlackMagicDebugger
+from "blocks/hil-core.ato" import HILCore
+
+module SteinmetzDemo:
+    hil_core = new HILCore
+    can_transceiver1 = new ComsCANISO
+    can_transceiver2 = new ComsCANISO
+    jtag_debugger = new BlackMagicDebugger
