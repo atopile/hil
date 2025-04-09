@@ -359,7 +359,7 @@ def configure_adc(bus, continuous=True, resolution_bits=15, average=False):
     # --- Configure ADC Channel Control (0x2C) ---
     # Default: Enable VAC, VBAT, IAC, IBAT, TS. Disable VFB.
     adc_channel_ctrl_val = 0x00 # Start with all enabled
-    adc_channel_ctrl_val |= ADC_CHAN_VFB_ADC_DIS # Disable VFB
+    adc_channel_ctrl_val |= ADC_CHAN_VFB_ADC_DIS # Disable VFB``
 
     try:
         write_byte_with_retry(bus, BQ25756_ADDR, REG_ADC_CHANNEL_CTRL, adc_channel_ctrl_val)
@@ -881,7 +881,7 @@ if __name__ == "__main__":
 
         # --- Enable Reverse Mode ---
         # --- Example: Enable Reverse Mode with 5V, 1.5A output ---
-        TARGET_REV_V = 5000  # mV
+        TARGET_REV_V = 10000  # mV
         TARGET_REV_I = 1500  # mA
         if set_reverse_mode(bus, enable=True, target_voltage_mv=TARGET_REV_V, target_current_ma=TARGET_REV_I):
             print("Reverse mode enabled, monitoring status...")
@@ -891,7 +891,6 @@ if __name__ == "__main__":
 
         # Example: Disable Reverse Mode
         set_reverse_mode(bus, enable=False)
-        monitor_status_live(bus, duration_sec=10)
 
         # --- Monitoring ---
         monitor_status_live(bus, duration_sec=60, refresh_rate_hz=1) # Monitor for 60 seconds
