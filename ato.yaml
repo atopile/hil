@@ -1,4 +1,4 @@
-ato-version: 0.3.0
+requires-atopile: ">=0.3.0"
 
 builds:
   # Project Examples
@@ -174,3 +174,15 @@ dependencies:
     link_broken: false
     path: .ato/modules/tca9548apwr
     source:
+
+package:
+  identifier: atopile/hil
+  repository: https://github.com/atopile/hil
+  authors:
+    - name: atopile
+      email: hi@atopile.io
+  summary: >
+    A hardware testing framework - with batteries included
+    hardware, drivers, framework and distribution
+  license: MIT
+  homepage: https://docs.atopile.io/hil/
