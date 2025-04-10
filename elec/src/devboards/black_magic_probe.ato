@@ -1,7 +1,9 @@
 from "blocks/black_magic_debugger.ato" import BlackMagicDebugger
-from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64_CC
 from "components/hanbo_electronic_hb_ph912725p_b2g_ob.ato" import Hanbo_Electronic_HB_PH9_12725PB2GOB
+
+from "atopile/st-ldk220/ldk220.ato" import LDK220M_R
+
 
 module BlackMagicProbe:
     black_magic_debugger = new BlackMagicDebugger
