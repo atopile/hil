@@ -46,7 +46,7 @@ module Thermistor8ch:
 
     # Regulators
     regulator_24v_isolated = new TDPOWER_TDK20_24S24WH
-    buck_5v = new LV2842XReferenceDesign
+    buck_5v = new LV2842x
     ldo_3v3 = new LDK220M_R
 
     # Connect up regulators

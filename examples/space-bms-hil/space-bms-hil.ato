@@ -1,4 +1,5 @@
 import Resistor
+
 from "blocks/hil-core.ato" import HILCore
 from "blocks/cellsim-8ch.ato" import CellSim8Ch
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
@@ -10,15 +11,17 @@ from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
 from "components/jst-gh.ato" import JSTGH4Pin
 from "blocks/thermistor_8ch.ato" import Thermistor8ch
 from "components/texas_instruments_bq25756r_rvr.ato" import Texas_Instruments_BQ25756RRVR, CapBank
-from "xt-connectors/xt-connectors.ato" import XT30_Female_Vertical
 from "components/Molex5026030270.ato" import Molex5026030270
 from "components/Molex5030912221.ato" import Molex5030912221
 from "components/Molex5051100492.ato" import Molex5051100492
 from "components/Molex5051101292.ato" import Molex5051101292
 from "components/molex39281243.ato" import MOLEX_39281243
 from "components/texas_instruments_tp_s55340r_ter.ato" import Texas_Instruments_TPS55340RTER
-from "tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
 from "components/sinhoo_sm_tso2515c_tj.ato" import Sinhoo_SMTSO2515CTJ
+
+from "atopile/xt-connectors/xt-connectors.ato" import XT30_Female_Vertical
+from "atopile/ti-tca9548a/tca9548a.ato" import TCA9548APWR
+
 
 module SpaceBMSHIL:
     """
