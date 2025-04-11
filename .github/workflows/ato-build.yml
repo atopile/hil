@@ -14,9 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: atopile/run-atopile@main
+      - uses: atopile/setup-atopile@main
         with:
-          args: "ato build"
+          # FIXME: peg to something better
+          version: main
+
+      - run: ato build
 
       - name: Upload Combined Artifacts
         uses: actions/upload-artifact@v4
