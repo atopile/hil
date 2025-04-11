@@ -6,7 +6,8 @@ from "blocks/protection-tvs.ato" import TVSProtection
 from "components/amplifier.ato" import Amplifier
 from "components/ads1115.ato" import ADS1115IDGSR
 from "components/ylptec_b0505s2wr3.ato" import YLPTEC_B0505S_2WR3
-from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
+
+from "atopile/st-ldk220/ldk220.ato" import LDK220M_R
 
 module AnalogIn:
     """

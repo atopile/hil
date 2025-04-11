@@ -252,7 +252,6 @@ component X322525MMB4SI from Crystal:
     # component X322525MMB4SI
     footprint = "CRYSTAL-SMD_4P-L3.2-W2.5-BL"
     lcsc_id = "C70582"
-    mpn = "C70582"
     # pins
     gnd ~ pin 4
     gnd ~ pin 2
@@ -264,7 +263,6 @@ component J1B1211CCD:
     # component J1B1211CCD
     footprint = "RJ45-TH_J1B1211CCD"
     lcsc_id = "C910371"
-    mpn = "C910371"
     # pins
     signal CGND ~ pin 14
     CGND ~ pin 13
@@ -285,7 +283,6 @@ component W5500:
     # component W5500
     footprint = "LQFP-48_L7.0-W7.0-P0.50-LS9.0-BL"
     lcsc_id = "C32843"
-    mpn = "C32843"
     # pins
     signal TXN ~ pin 1
     signal TXP ~ pin 2

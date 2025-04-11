@@ -51,7 +51,7 @@ component _ConfigResistor from Resistor:
 
 component _0OhmConfig from _ConfigResistor:
     """Configuration Resistor"""
-    mpn = "C17168"
+    lcsc_id = "C17168"
     value = 0Ω
 
 

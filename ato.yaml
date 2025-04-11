@@ -1,4 +1,4 @@
-ato-version: 0.3.0
+requires-atopile: ">=0.4.0"
 
 builds:
   # Project Examples
@@ -151,26 +151,31 @@ builds:
   boardshapes-gridfinity-3x100mm:
     entry: elec/src/boardshapes/boardshape_gridfinity_3x100mm.ato:BoardshapeGridfinity3x100mm
 
+package:
+  identifier: atopile/hil
+  repository: https://github.com/atopile/hil
+  authors:
+    - name: atopile
+      email: hi@atopile.io
+  summary: >
+    A hardware testing framework - with batteries included
+    hardware, drivers, framework and distribution
+  license: MIT
+  homepage: https://docs.atopile.io/hil/
+
 dependencies:
-  - name: ldk220m-r
-    version_spec:
-    link_broken: false
-    path: .ato/modules/ldk220m-r
-    source:
-  - name: saleae-header
-    link_broken: false
-    path: .ato/modules/saleae-header
-    source:
-  - name: xt-connectors
-    version_spec:
-    link_broken: false
-    path: .ato/modules/xt-connectors
-    source:
-  - name: https://github.com/atopile/lv2842xlvddcr.git
-    link_broken: false
-    path: .ato/modules/lv2842xlvddcr.git
-    source:
-  - name: tca9548apwr
-    link_broken: false
-    path: .ato/modules/tca9548apwr
-    source:
+  - type: registry
+    identifier: atopile/st-ldk220
+    release: 0.1.0
+  - type: registry
+    identifier: atopile/saleae-header
+    release: 0.1.0
+  - type: registry
+    identifier: atopile/ti-tca9548a
+    release: 0.1.0
+  - type: registry
+    identifier: atopile/xt-connectors
+    release: 0.1.0
+  - type: registry
+    identifier: atopile/ti-lv284x
+    release: 0.1.0

@@ -1,12 +1,14 @@
 import ElectricPower, I2C, ElectricSignal
 from "resistors.ato" import I2CPullup
+
 from "blocks/analog-out-4ch.ato" import AnalogOut4ch
 from "components/iso1640.ato" import ISO1640QDWRQ1
 from "components/ads1115.ato" import ADS1115IDGSR
 from "components/tdpower_tdk2024s24wh.ato" import TDPOWER_TDK20_24S24WH
-from "lv2842xlvddcr.git/elec/src/lv284xx.ato" import LV2842XReferenceDesign
-from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
-from "tca9548apwr/elec/src/tca9548apwr.ato" import TCA9548APWR
+
+from "atopile/ti-tca9548a/tca9548a.ato" import TCA9548APWR
+from "atopile/ti-lv284x/lv284x.ato" import LV2842x
+from "atopile/st-ldk220/ldk220.ato" import LDK220M_R
 
 
 module Thermistor8ch:
@@ -44,7 +46,7 @@ module Thermistor8ch:
 
     # Regulators
     regulator_24v_isolated = new TDPOWER_TDK20_24S24WH
-    buck_5v = new LV2842XReferenceDesign
+    buck_5v = new LV2842x
     ldo_3v3 = new LDK220M_R
 
     # Connect up regulators

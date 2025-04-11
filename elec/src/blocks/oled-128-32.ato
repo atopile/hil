@@ -1,6 +1,8 @@
-from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 import ElectricPower, I2C
 import Capacitor, Resistor, MOSFET
+
+from "atopile/st-ldk220/ldk220.ato" import LDK220M_R
+
 
 module OLED12832:
     """OLED 128x32 module"""

@@ -2,7 +2,8 @@
 import ElectricPower
 
 from "components/Ylptec_BYYXX.ato" import BYYXXS_2WR2, _B2424
-from "lv2842xlvddcr.git/elec/src/lv284xx.ato" import LV2842XReferenceDesign
+
+from "atopile/ti-lv284x/lv284x.ato" import LV2842x
 
 
 module Isolator24v3v3:
@@ -20,6 +21,6 @@ module Isolator24v3v3:
     isolated_supply.power_in ~ power_in_24v
     isolated_supply.power_out ~ power_out_24v
 
-    buck_converter = new LV2842XReferenceDesign
+    buck_converter = new LV2842x
     buck_converter.power_in ~ power_out_24v
     buck_converter.power_out ~ power_out_3v3

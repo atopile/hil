@@ -2,8 +2,10 @@ import ElectricPower, I2C, ResistorVoltageDivider
 from "components/texas_instruments_ref5050aidr.ato" import Texas_Instruments_REF5050AIDR
 from "components/texas_instruments_ads1219ipwr.ato" import Texas_Instruments_ADS1219IPWR
 from "components/texas_instruments_tmp117aidrvr.ato" import Texas_Instruments_TMP117AIDRVR
-from "ldk220m-r/elec/src/ldk220m-r.ato" import LDK220M_R
 from "heater_controller.ato" import HeaterController
+
+from "atopile/st-ldk220/ldk220.ato" import LDK220M_R
+
 
 module MicroVault:
     # Interfaces
