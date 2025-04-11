@@ -16,9 +16,9 @@ jobs:
 
       - uses: atopile/setup-atopile@main
         with:
-          # FIXME: peg to something better
           version: main
 
+      - run: ato sync
       - run: ato build
 
       - name: Upload Combined Artifacts
