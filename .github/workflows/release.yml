@@ -9,5 +9,3 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: atopile/publish-package@main
-        with:
-          ato-config: ato.yaml
