@@ -1,6 +1,10 @@
+#! python3
+
+from typing import Annotated
 import uuid
 import hashlib
-
+import typer
+import random
 
 ADJECTIVES = [
     "happy",
@@ -46,38 +50,38 @@ ADJECTIVES = [
 ]
 
 ANIMALS = [
-    "panda",
-    "otter",
-    "penguin",
-    "koala",
-    "dolphin",
-    "rabbit",
-    "raccoon",
-    "fox",
-    "hedgehog",
-    "squirrel",
-    "beaver",
+    "axolotl",
     "badger",
-    "wombat",
-    "lemur",
-    "lynx",
-    "seal",
-    "sloth",
-    "tiger",
-    "zebra",
+    "beaver",
+    "capybara",
+    "dolphin",
+    "ferret",
+    "fox",
     "giraffe",
-    "monkey",
-    "llama",
-    "walrus",
+    "hedgehog",
     "hippo",
+    "koala",
+    "lemur",
+    "llama",
+    "lynx",
     "meerkat",
+    "monkey",
+    "narwhal",
+    "otter",
+    "panda",
+    "pangolin",
+    "penguin",
     "platypus",
     "quokka",
-    "narwhal",
-    "capybara",
-    "pangolin",
-    "axolotl",
-    "ferret",
+    "rabbit",
+    "raccoon",
+    "seal",
+    "sloth",
+    "squirrel",
+    "tiger",
+    "walrus",
+    "wombat",
+    "zebra",
 ]
 
 
@@ -115,3 +119,18 @@ def get_pet_name(identifier: int | None = None) -> str:
     animal = ANIMALS[animal_hash % len(ANIMALS)]
 
     return f"{adjective}-{animal}"
+
+
+def main(
+    identifier: int | None = None,
+    im_feeling_lucky: Annotated[bool, typer.Option("--im-feeling-lucky", "-r")] = False,
+):
+    if im_feeling_lucky:
+        identifier = random.randint(0, 2**48 - 1)
+
+    name = get_pet_name(identifier)
+    print(name)
+
+
+if __name__ == "__main__":
+    typer.run(main)
