@@ -85,10 +85,18 @@ ADC_CHAN_IAC_ADC_DIS   = (1 << 7)
 ADC_CHAN_IBAT_ADC_DIS  = (1 << 6)
 ADC_CHAN_VAC_ADC_DIS   = (1 << 5)
 ADC_CHAN_VBAT_ADC_DIS  = (1 << 4)
-# Bit 3 Reserved
+ADC_CHAN_RESERVED      = (1 << 3)
 ADC_CHAN_TS_ADC_DIS    = (1 << 2)
 ADC_CHAN_VFB_ADC_DIS   = (1 << 1) # Disabled by default/recommended when charging
 # Bit 0 Reserved
+
+# INT masks
+PG_MASK                = (1 << 7)
+TS_MASK                = (1 << 4)
+REVERSE_MODE_MASK      = (1 << 3)
+FSW_SYNC_MASK          = (1 << 1)
+MPPT_MASK              = (1 << 0)
+
 
 # --- I2C Mux Configuration ---
 DEFAULT_MUX_ADDRESS = 0x70
@@ -364,6 +372,7 @@ def configure_adc(bus, continuous=True, resolution_bits=15, average=False):
     try:
         write_byte_with_retry(bus, BQ25756_ADDR, REG_ADC_CHANNEL_CTRL, adc_channel_ctrl_val)
         verify_channel = read_byte_with_retry(bus, BQ25756_ADDR, REG_ADC_CHANNEL_CTRL)
+        verify_channel = verify_channel & (~ADC_CHAN_RESERVED) # clear the reserved bit
         console.print(f" - ADC Channel Control (0x2C) written: 0x{adc_channel_ctrl_val:02X}, Read back: 0x{verify_channel:02X}")
         if verify_channel != adc_channel_ctrl_val:
             console.print("[red] - ADC Channel Control Write Verification FAILED![/red]")
@@ -754,8 +763,13 @@ def set_reverse_mode(bus, enable, target_voltage_mv=5000, target_current_ma=1000
             return False
 
     # --- Verify Status ---
-    time.sleep(0.05) # Allow time for status to update
+    time.sleep(0.5) # Allow time for status to update
     try:
+        chrgr_flag2_val = read_byte_with_retry(bus, BQ25756_ADDR, REG_CHARGER_FLAG_2)
+        if chrgr_flag2_val & 0x08:
+            console.print(f"Reverse mode toggle detected")
+        else:
+            console.print(f"No reverse mode toggle {hex(chrgr_flag2_val)}")
         status3_val = read_byte_with_retry(bus, BQ25756_ADDR, REG_CHARGER_STATUS_3)
         reverse_stat = (status3_val >> 2) & 0x01
         expected_stat = 1 if enable else 0
@@ -880,12 +894,21 @@ if __name__ == "__main__":
             console.print(f"[red]Could not read PG_STAT: {e}[/red]")
 
         # --- Enable Reverse Mode ---
+        # Turn on Reverse mode INT pulse
+        read_val = bus.read_byte_data(BQ25756_ADDR, REG_CHARGER_MASK_2)
+        if not read_val & REVERSE_MODE_MASK:
+            read_val = read_val | REVERSE_MODE_MASK
+            bus.write_byte_data(BQ25756_ADDR, REG_CHARGER_MASK_2, read_val)
+            read_val = bus.read_byte_data(BQ25756_ADDR, REG_CHARGER_MASK_2)
+
+        console.print(f"\nReverse mode INT mask = {((read_val & REVERSE_MODE_MASK) > 0)}")
+
         # --- Example: Enable Reverse Mode with 5V, 1.5A output ---
         TARGET_REV_V = 10000  # mV
         TARGET_REV_I = 1500  # mA
         if set_reverse_mode(bus, enable=True, target_voltage_mv=TARGET_REV_V, target_current_ma=TARGET_REV_I):
             print("Reverse mode enabled, monitoring status...")
-            monitor_status_live(bus, duration_sec=30)
+            monitor_status_live(bus, duration_sec=10)
         else:
             print("Failed to enable reverse mode.")
 
@@ -893,7 +916,7 @@ if __name__ == "__main__":
         set_reverse_mode(bus, enable=False)
 
         # --- Monitoring ---
-        monitor_status_live(bus, duration_sec=60, refresh_rate_hz=1) # Monitor for 60 seconds
+        monitor_status_live(bus, duration_sec=10, refresh_rate_hz=1)
 
 
     except IOError as e:
