@@ -122,6 +122,7 @@ component _Shenzhen_Allvision_Tech_N087_2832TSWYG02_H14:
     power_vcc.vcc ~ VCC
     power_vcc.gnd ~ VSS
 
+    # At address 0x3c
     i2c = new I2C
     i2c.sda.line ~ SDA
     i2c.scl.line ~ SCL

@@ -103,7 +103,7 @@ module HILCore:
     power_5v ~ usb_hub.power_5v
     power_3v3 ~ usb_hub.power_3v3
 
-    # OLED
+    # OLED Display / Screen
     oled = new OLED12832
     power_5v ~ oled.power_5v
     power_3v3 ~ oled.power_3v3
