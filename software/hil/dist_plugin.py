@@ -2,6 +2,7 @@ import asyncio
 import base64
 from dataclasses import dataclass
 from enum import StrEnum, auto
+from io import BytesIO
 import itertools
 from os import PathLike
 import os
@@ -114,31 +115,15 @@ class ClientApi:
             response.raise_for_status()
             return response
 
-    async def get_client_session(self) -> SessionId:
-        session = await self._get("session")
-        session_id = session["session_id"]
-        self.session_id = session_id
-        return session_id
-
-    async def submit_env(self, env: Path):
-        if self.session_id is None:
-            raise SessionNotStartedError("Must have an active session")
-
-        await self._post_files(
-            f"session/{self.session_id}/env",
-            env,
-        )
-
-    async def submit_tests(self, tests: list[TestSpec]):
-        if self.session_id is None:
-            raise SessionNotStartedError("Must have an active session")
-
+    async def create_session(self, tests: list[TestSpec], env: str):
         try:
-            await self._post(f"session/{self.session_id}/tests", {"tests": tests})
+            response = await self._post("session/create", {"tests": tests, "env": env})
         except httpx.HTTPStatusError as e:
             if e.response.status_code == 503:
                 raise NoWorkersAvailableError(e.response.json()["detail"])
             raise
+        self.session_id = response["session_id"]
+        return self.session_id
 
     async def fetch_statuses(
         self,
@@ -219,14 +204,18 @@ class WorkerApi:
         return data["test_now"], data["test_next"]
 
     def report_result(
-        self, nodeid: NodeId, report: pytest.TestReport, phase: TestPhase
+        self,
+        worker_id: WorkerId,
+        nodeid: NodeId,
+        report: pytest.TestReport,
+        phase: TestPhase,
     ):
         data = {
             "nodeid": nodeid,
             "report": base64.b64encode(cloudpickle.dumps(report)).decode(),
             "phase": phase,
         }
-        self._post(f"worker/session/{self.session_id}/test", data)
+        self._post(f"worker/{worker_id}/session/{self.session_id}/test", data)
 
     def upload_artifacts(self, worker_id: str):
         """Upload all artifact files"""
@@ -311,7 +300,7 @@ class Worker:
         # This hook is called from within the runtestloop, so we need to run
         # it in a task instead of calling it directly
         self.api_client.report_result(
-            report.nodeid, report, phase=TestPhase(report.when)
+            self.worker_id, report.nodeid, report, phase=TestPhase(report.when)
         )
 
     @pytest.hookimpl
@@ -369,12 +358,15 @@ class Client:
         self.api_client = ClientApi(config)
         self.statuses = {}
 
-    async def submit_env(self, env: Path):
-        # Create a pathspec to exclude certain files
+    def _zip_env(self, env: Path) -> str:
+        """Zip up the environment as a base64 encoded byte-string."""
+
         # FIXME: this will ignore all but the top-level `.git/hilignore`
+        # TODO: this would be way faster if it filtered as it iterated, but
+        #   pathspec iters all the files, and then filters things that don't match
+
+        # Create a pathspec to exclude certain files
         # Always ignore .git/ to avoid including the entire repo in the env
-        # FIXME: this would be way faster if it filtered as it iterated, but
-        # pathspec iters all the files, and then filters things that don't match
         ignore_pattern_lines = [".git/"]
         for ignore_file in itertools.chain(
             env.glob("*.gitignore"), env.glob("*.hilignore")
@@ -386,19 +378,21 @@ class Client:
         ignore_spec = pathspec.GitIgnoreSpec.from_lines(ignore_pattern_lines)
         matched_files = list(ignore_spec.match_tree_files(env, negate=True))
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            zip_path = temp_path / "env.zip"
-            with zipfile.ZipFile(zip_path, "w") as zip_file:
-                for file in rich.progress.track(
-                    matched_files, description="zipping env..."
-                ):
-                    zip_file.write(env / file, file)
+        bytes_io = BytesIO()
 
-            size_mb = zip_path.stat().st_size / 1024 / 1024
+        with zipfile.ZipFile(
+            bytes_io, "w", compression=zipfile.ZIP_BZIP2, compresslevel=9
+        ) as zip_file:
+            for file in rich.progress.track(
+                matched_files, description="zipping env..."
+            ):
+                zip_file.write(env / file, file)
+
+            size_mb = bytes_io.tell() / 1024 / 1024
             if size_mb > 5:
                 rich.print(
-                    f"[yellow]WARNING:[/yellow] Large env size: {size_mb:.1f}MB. Consider adding more to [blue].hilignore[/blue]."
+                    f"[yellow]WARNING:[/yellow] Large env size: {size_mb:.1f}MB. "
+                    "Consider adding more to [blue].hilignore[/blue]."
                 )
                 largest_files = sorted(
                     matched_files,
@@ -409,17 +403,17 @@ class Client:
                     f"Largest files: {', '.join(str(file) for file in largest_files)}"
                 )
 
-            await self.api_client.submit_env(zip_path)
+        return base64.b64encode(bytes_io.getvalue()).decode()
 
-    async def submit_tests(self, session: pytest.Session):
+    async def create_session(self, session: pytest.Session):
         nodeids = {item.nodeid for item in session.items}
         runs_on = session.config.stash[self.runs_on_key]
-        await self.api_client.submit_tests(
-            [
-                TestSpec(nodeid=nodeid, worker_requirements=runs_on.get(nodeid))
-                for nodeid in nodeids
-            ]
-        )
+        test = [
+            TestSpec(nodeid=nodeid, worker_requirements=runs_on.get(nodeid))
+            for nodeid in nodeids
+        ]
+        env_zip = self._zip_env(session.config.rootpath)
+        await self.api_client.create_session(test, env_zip)
 
     async def fetch_results(self) -> list[pytest.TestReport]:
         new_statuses: dict[
@@ -478,9 +472,7 @@ class Client:
         self.results = TestResults(set(item.nodeid for item in session.items))
 
         async def run():
-            await self.api_client.get_client_session()
-            await self.submit_env(session.config.rootpath)
-            await self.submit_tests(session)
+            await self.create_session(session)
 
             while True:
                 new_reports = await self.fetch_results()
