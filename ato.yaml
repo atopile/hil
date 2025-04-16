@@ -146,6 +146,15 @@ builds:
 
   black-magic-probe:
     entry: elec/src/devboards/black_magic_probe.ato:BlackMagicProbe
+
+  psu-fixture-base:
+    entry: elec/src/fixtures/psu-fixture-base.ato:PSUFixtureBase
+    exclude_targets: [mfg-data]
+
+  psu-fixture-hat:
+    entry: elec/src/fixtures/psu-fixture-hat.ato:PSUFixtureHat
+    exclude_targets: [mfg-data]
+
   # Outlines
   ## These provide simple board shapes
   boardshapes-gridfinity-3x100mm:
@@ -178,4 +187,7 @@ dependencies:
     release: 0.1.0
   - type: registry
     identifier: atopile/ti-lv284x
+    release: 0.1.0
+  - type: registry
+    identifier: atopile/pin-headers
     release: 0.1.0
