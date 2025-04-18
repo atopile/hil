@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from ..conftest import Hil
 
 
-@pytest.mark.runs_on(hostname="chunky-otter")
+@pytest.mark.runs_on(hostname="tipsy-raccoon")
 async def test_performance(hil: "Hil"):
     for cell in hil.cellsim.cells:
         await cell.reset()
@@ -37,7 +37,7 @@ async def test_performance(hil: "Hil"):
             await cell.disable()
 
 
-@pytest.mark.runs_on(hostname="chunky-otter")
+@pytest.mark.runs_on(hostname="tipsy-raccoon")
 async def test_output_voltage(hil: "Hil", record: Recorder):
     """
     Set output voltage (0.5- 4.3V, 0.1V steps)
@@ -96,7 +96,7 @@ async def test_output_voltage(hil: "Hil", record: Recorder):
     table.finalize()
 
 
-@pytest.mark.runs_on(hostname="chunky-otter")
+@pytest.mark.runs_on(hostname="tipsy-raccoon")
 async def test_buck_voltage(hil: "Hil", record: Recorder):
     """
     Set Buck voltage (1.5 - 4.4V, 0.1V steps)
@@ -158,7 +158,7 @@ async def test_buck_voltage(hil: "Hil", record: Recorder):
     table.finalize()
 
 
-@pytest.mark.runs_on(hostname="chunky-otter")
+@pytest.mark.runs_on(hostname="tipsy-raccoon")
 async def test_mux(hil: "Hil"):
     # Write binary to the mux for each cell
     for cell in hil.cellsim.cells:

@@ -6,6 +6,7 @@ import numpy as np
 from hil.drivers.ads1x15 import ADS1115
 from hil.drivers.aiosmbus2 import AsyncSMBus
 from hil.drivers.mcp4725 import MCP4725
+from hil.drivers.tca6408 import TCA6408
 
 from hil.framework import record, Calibration
 
@@ -20,7 +21,7 @@ class Cell:
     adc: ADS1115
     buck_dac: MCP4725
     ldo_dac: MCP4725
-    _gpio_state: int
+    gpio: TCA6408
     _buck_calibration: Calibration
     _ldo_calibration: Calibration
 
@@ -68,14 +69,12 @@ class Cell:
         self.buck_dac = await MCP4725.create(bus, self.Devices.BUCK)
         self.ldo_dac = await MCP4725.create(bus, self.Devices.LDO)
         self.adc = await ADS1115.create(self.bus, self.Devices.ADC)
+        self.gpio = await TCA6408.create(bus, self.Devices.GPIO)
         self._buck_calibration = Calibration(
             [1.5041, 4.5971], [2625, 234], lower_bound=1.45, upper_bound=4.65
         )
         self._ldo_calibration = Calibration.from_config(
             config["ldo_calibration"], [0.228, 4.4], [3760, 42]
-        )
-        self._gpio_state = (
-            0x00  # 8-bit register representing the current state of GPIO pins.
         )
         await self.reset()
 
@@ -87,26 +86,23 @@ class Cell:
         - Clears the GPIO state.
         - Resets the ADC gain.
         """
-        async with self.bus.handle() as handle:
-            await handle.write_byte_data(self.Devices.GPIO, 0x03, 0x00)
-            await handle.write_byte_data(self.Devices.GPIO, 0x01, 0x00)
+        # Configure all GPIO pins as outputs
+        await self.gpio.configure_io_bulk({
+            self.GpioChannels.BUCK_ENABLE: True,
+            self.GpioChannels.LDO_ENABLE: True,
+            self.GpioChannels.LOAD_SWITCH_CONTROL: True,
+            self.GpioChannels.OUTPUT_RELAY_CONTROL: True
+        })
+        
+        # Set all GPIO pins low
+        await self.gpio.set_gpio_bulk({
+            self.GpioChannels.BUCK_ENABLE: False,
+            self.GpioChannels.LDO_ENABLE: False,
+            self.GpioChannels.LOAD_SWITCH_CONTROL: False,
+            self.GpioChannels.OUTPUT_RELAY_CONTROL: False
+        })
 
         await self.adc.set_adc_config(gain=ADS1115.GainConfig.UPTO_6_144V)
-
-    def _set_gpio(self, channel: GpioChannels, value: bool):
-        if value:
-            self._gpio_state |= 1 << channel
-        else:
-            self._gpio_state &= ~(1 << channel)
-
-    async def _write_gpio_state(self):
-        """
-        Update the state of the GPIO expander.
-        Writes the current GPIO_STATE to the output register.
-        """
-        async with self.bus.handle() as handle:
-            await handle.write_byte_data(self.Devices.GPIO, 0x01, self._gpio_state)
-        logger.debug(f"[Cell {self.cell_num}] GPIO state set: {bin(self._gpio_state)}")
 
     async def enable(self):
         """
@@ -115,9 +111,10 @@ class Cell:
         if self.enabled:
             return
 
-        self._set_gpio(self.GpioChannels.BUCK_ENABLE, True)
-        self._set_gpio(self.GpioChannels.LDO_ENABLE, True)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio_bulk({
+            self.GpioChannels.BUCK_ENABLE: True,
+            self.GpioChannels.LDO_ENABLE: True
+        })
         self.enabled = True
         logger.debug(f"[Cell {self.cell_num}] Enabled")
 
@@ -128,9 +125,10 @@ class Cell:
         if not self.enabled:
             return
 
-        self._set_gpio(self.GpioChannels.BUCK_ENABLE, False)
-        self._set_gpio(self.GpioChannels.LDO_ENABLE, False)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio_bulk({
+            self.GpioChannels.BUCK_ENABLE: False,
+            self.GpioChannels.LDO_ENABLE: False
+        })
         self.enabled = False
         logger.debug(f"[Cell {self.cell_num}] Disabled")
 
@@ -249,32 +247,28 @@ class Cell:
         """
         Turn on the output relay.
         """
-        self._set_gpio(self.GpioChannels.OUTPUT_RELAY_CONTROL, True)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio(self.GpioChannels.OUTPUT_RELAY_CONTROL, True)
         logger.debug(f"[Cell {self.cell_num}] Output relay turned ON")
 
     async def turn_off_output_relay(self):
         """
         Turn off the output relay.
         """
-        self._set_gpio(self.GpioChannels.OUTPUT_RELAY_CONTROL, False)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio(self.GpioChannels.OUTPUT_RELAY_CONTROL, False)
         logger.debug(f"[Cell {self.cell_num}] Output relay turned OFF")
 
     async def close_load_switch(self):
         """
         Turn on the load switch.
         """
-        self._set_gpio(self.GpioChannels.LOAD_SWITCH_CONTROL, True)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio(self.GpioChannels.LOAD_SWITCH_CONTROL, True)
         logger.debug(f"[Cell {self.cell_num}] Load switch turned ON")
 
     async def open_load_switch(self):
         """
         Turn off the load switch.
         """
-        self._set_gpio(self.GpioChannels.LOAD_SWITCH_CONTROL, False)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio(self.GpioChannels.LOAD_SWITCH_CONTROL, False)
         logger.debug(f"[Cell {self.cell_num}] Load switch turned OFF")
 
     async def get_current(self):
@@ -298,6 +292,7 @@ class Cell:
     async def aclose(self):
         await self.turn_off_output_relay()
         await self.disable()
+        await self.gpio.aclose()
 
     async def __aenter__(self):
         return self
