@@ -1,4 +1,5 @@
 import ElectricPower, Electrical, Resistor
+from "resistors.ato" import I2CPullup
 
 # Blocks
 from "blocks/controller-cm5.ato" import ControllerCM5
@@ -108,6 +109,11 @@ module HILCore:
     power_5v ~ oled.power_5v
     power_3v3 ~ oled.power_3v3
     controller.i2c3 ~ oled.i2c
+
+    # I2C Pullups
+    i2c_pullups = new I2CPullup
+    i2c_pullups.power ~ power_3v3
+    i2c_pullups.i2c ~ controller.i2c3
 
 # Only support one layout per module, apparently inheritance counts
 # module HILCoreATX from HILCore:

@@ -179,3 +179,6 @@ dependencies:
   - type: registry
     identifier: atopile/ti-lv284x
     release: 0.1.0
+  - type: registry
+    identifier: atopile/ti-tps54560x
+    release: 0.1.1

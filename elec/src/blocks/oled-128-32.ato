@@ -11,6 +11,11 @@ module OLED12832:
     power_3v3 = new ElectricPower
     i2c = new I2C
 
+    # Set required interfaces
+    power_5v.required = True
+    power_3v3.required = True
+    i2c.required = True
+
     # Internal rail - charge pump requires 3.5V to 4.2V input
     regulator_4v = new LDK220M_R
     power_5v ~ regulator_4v.power_in
@@ -27,6 +32,7 @@ module OLED12832:
     display = new _Shenzhen_Allvision_Tech_N087_2832TSWYG02_H14
     i2c ~ display.i2c
     power_3v3 ~ display.power_vdd
+    power_3v3 ~ display.power_vcc
     power_4v ~ display.power_vbat
 
 
@@ -70,6 +76,7 @@ module OLED12832:
     vcomh_cap_1.capacitance = 100nF +/- 20%
     vcomh_cap_1.package = "C0402"
     display.power_vcomh ~ vcomh_cap_1.power
+    power_3v3 ~ display.power_vcomh
 
     # IREF
     iref_resistor = new Resistor
@@ -77,6 +84,14 @@ module OLED12832:
     iref_resistor.package = "R0402"
     display.IREF ~ iref_resistor.p1
     iref_resistor.p2 ~ power_3v3.gnd
+
+    # Reset pullup
+    # Reset pullup resistor
+    reset_pullup = new Resistor
+    reset_pullup.resistance = 10kohm +/- 10%
+    reset_pullup.package = "R0402"
+    display.RESh ~ reset_pullup.p1
+    reset_pullup.p2 ~ power_3v3.vcc
 
 component _Shenzhen_Allvision_Tech_N087_2832TSWYG02_H14:
     """Shenzhen_Allvision_Tech_N087_2832TSWYG02_H14 component"""

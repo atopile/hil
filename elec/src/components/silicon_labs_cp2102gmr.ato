@@ -6,13 +6,11 @@ module SILICON_LABS_CP2102_GMR:
 
     # External Interfaces
     power_vbus = new ElectricPower
-    power_3v3 = new ElectricPower
     usb2 = new USB2_0
     uart = new UART
 
     # Set required interfaces
     power_vbus.required = True
-    power_3v3.required = True
     usb2.required = True
     uart.required = True
 
@@ -57,7 +55,6 @@ module SILICON_LABS_CP2102_GMR:
 
     # Power VDD
     power_vdd = new ElectricPower
-    power_3v3 ~ power_vdd
     power_vdd.vcc ~ ic.VDD
     power_vdd.gnd ~ ic.GND
     power_vdd.gnd ~ ic.EP

@@ -102,11 +102,11 @@
     (net 13 "_midpoint")
     (net 14 "rx")
     (net 15 "xin")
-    (net 16 "hv")
+    (net 16 "hv-1")
     (net 17 "gnd")
     (net 18 "cathode")
     (net 19 "gnd-1")
-    (net 20 "hv-1")
+    (net 20 "hv")
     (net 21 "hv-2")
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
@@ -678,7 +678,7 @@
             (size 1.8 1.8)
             (drill 0.999998)
             (layers "*.Cu" "*.Mask")
-            (net 20 "hv-1")
+            (net 20 "hv")
             (remove_unused_layers no)
             (uuid "13dd0437-e666-4f30-9229-9384e04ce0b7")
         )
@@ -1260,7 +1260,7 @@
             (at -1.91 2.77 270)
             (size 0.59 2.05)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 16 "hv")
+            (net 16 "hv-1")
             (uuid "47753425-6d6f-41fd-bc78-f40c24d915b7")
         )
         (pad "2" smd oval
@@ -2181,7 +2181,7 @@
             (at -0.55 0 180)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 16 "hv")
+            (net 16 "hv-1")
             (uuid "72d1a986-c95b-4708-9574-8d8eb637261e")
         )
         (pad "2" smd rect
@@ -2789,7 +2789,7 @@
             (at -0.55 0 0)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 16 "hv")
+            (net 16 "hv-1")
             (uuid "62fab587-afcb-45c4-a7a6-f72b83688379")
         )
         (pad "2" smd rect
@@ -3093,7 +3093,7 @@
             (at -1 0 270)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 20 "hv-1")
+            (net 20 "hv")
             (uuid "bbeef969-d4c6-419f-bd94-8c1233a34470")
         )
         (pad "2" smd rect
@@ -3700,7 +3700,7 @@
             (at -1.95 -1.5 180)
             (size 0.85 0.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 16 "hv")
+            (net 16 "hv-1")
             (uuid "97a819d2-4706-44c2-ac67-8ecebac62e80")
         )
         (pad "15" smd rect

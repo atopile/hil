@@ -23,13 +23,6 @@ module USB2Hub:
     hub = new Microchip_Tech_USB2514B_I_M2
     power_3v3 ~ hub.power_3v3
 
-    # Power switch
-    power_switch = new Diodes_Incorporated_AP22653W6_7
-    power_5v ~ power_switch.power_in
-    power_switch.power_out ~ power_vbus
-    hub.vbus_enable ~ power_switch.enable
-    power_switch.power_in.gnd ~ power_3v3.gnd
-
     # Connect hub USB
     usb2_up ~ hub.usb2_up
     usb2_1 ~ hub.usb2_1
