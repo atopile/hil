@@ -10,6 +10,12 @@ module SILICON_LABS_CP2102_GMR:
     usb2 = new USB2_0
     uart = new UART
 
+    # Set required interfaces
+    power_vbus.required = True
+    power_3v3.required = True
+    usb2.required = True
+    uart.required = True
+
     # IC
     ic = new _SILICON_LABS_CP2102_GMR
 
@@ -70,6 +76,7 @@ module SILICON_LABS_CP2102_GMR:
     power_regin = new ElectricPower
     power_regin.vcc ~ ic.REGIN
     power_regin.gnd ~ ic.GND
+    power_regin ~ power_vbus
 
     regin_cap_1 = new Capacitor
     regin_cap_1.capacitance = 100nF +/- 20%
