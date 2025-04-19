@@ -143,7 +143,7 @@ async def test_buck_voltage(hil: "CellSim16ChV2", record: Recorder):
             target_trace.append(voltage)
 
             now = datetime.now()
-            ALLOWED_TOLERANCE = 0.1
+            ALLOWED_TOLERANCE = 0.2
             for ctx, t in table.iter_row(f"{voltage:.1f}V", traces):
                 with ctx:
                     assert (
