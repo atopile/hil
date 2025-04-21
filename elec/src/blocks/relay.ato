@@ -47,7 +47,7 @@ module PowerRelay:
     # Indicator LED
     indicator_led = new PoweredLED
     indicator_led.current_limiting_resistor.package = "R0402"
-    indicator_led.current_limiting_resistor.resistance = 1kohm +/- 10%
+    indicator_led.current_limiting_resistor.resistance = 2.2kohm +/- 10%
     indicator_led.led.lcsc_id = "C12624"
 
     # Mosfet

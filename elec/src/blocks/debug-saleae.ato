@@ -26,10 +26,10 @@ module DebugSaleae:
     r3 = new Resistor
     r4 = new Resistor
 
-    r1.resistance = 100ohms +/- 5%
-    r2.resistance = 100ohms +/- 5%
-    r3.resistance = 100ohms +/- 5%
-    r4.resistance = 100ohms +/- 5%
+    r1.resistance = 1kohm +/- 5%
+    r2.resistance = 1kohm +/- 5%
+    r3.resistance = 1kohm +/- 5%
+    r4.resistance = 1kohm +/- 5%
 
     r1.package = "R0402"
     r2.package = "R0402"
@@ -60,12 +60,12 @@ module DebugSaleae:
     i2c = new I2C
     i2c.scl ~ ch0
     i2c.sda ~ ch1
-    i2c.scl.reference.gnd ~ gnd
+    # i2c.scl.reference.gnd ~ gnd
 
     i2c2 = new I2C
     i2c2.scl ~ ch2
     i2c2.sda ~ ch3
-    i2c2.scl.reference.gnd ~ gnd
+    # i2c2.scl.reference.gnd ~ gnd
 
     # UART
     # uart = new UART

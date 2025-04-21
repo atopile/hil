@@ -1,5 +1,4 @@
 import ElectricPower, I2C, SPI, USB2_0, ElectricLogic, USB3, UART
-from "resistors.ato" import I2CPullup
 
 from "components/cm5/cm5.py" import CM5_MINIMAL
 from "components/cm5/HANRUNZhongshan_HanRun_Elec_HR911130A.py" import HANRUNZhongshan_HanRun_Elec_HR911130A
