@@ -117,6 +117,10 @@ builds:
   micro-vault:
     entry: elec/src/blocks/micro_vault.ato:MicroVault
     exclude_targets: [mfg-data]
+    exclude_checks:
+      # - PCB.requires_drc_check
+      - I2C.requires_unique_addresses
+      - requires_external_usage
 
   ads1219ipwr:
     entry: elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR

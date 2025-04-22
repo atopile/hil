@@ -18,11 +18,6 @@ module MicroVault:
     power_3v3.required = True
     i2c.required = True
 
-    # Pullup i2c
-    i2c_pullup = new I2CPullup
-    i2c_pullup.power ~ power_3v3
-    i2c_pullup.i2c ~ i2c
-
     # Internal rail
     _power_5v3 = new ElectricPower
     _reference_5v = new ElectricPower
@@ -80,6 +75,11 @@ module MicroVaultDevBoard:
     # Power 9v
     xt30 = new XT30_Male_Right_Angle
     xt30.power ~ micro_vault.power_9v
+
+    # Pullup i2c
+    i2c_pullup = new I2CPullup
+    i2c_pullup.power ~ micro_vault.power_3v3
+    i2c_pullup.i2c ~ micro_vault.i2c
 
     # DMM input
     input_filter = new FilterElectricalRC
