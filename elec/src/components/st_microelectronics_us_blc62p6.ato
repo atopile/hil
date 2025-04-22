@@ -1,3 +1,5 @@
+import Electrical, ElectricPower
+
 component STMicroelectronics_USBLC6_2P6:
     """STMicroelectronics_USBLC6_2P6 component"""
     lcsc_id = "C15999"
@@ -6,10 +8,30 @@ component STMicroelectronics_USBLC6_2P6:
     datasheet_url = "https://www.lcsc.com/datasheet/lcsc_datasheet_1809192323_STMicroelectronics-USBLC6-2P6_C15999.pdf"
     designator_prefix = "D"
 
-    # pins
-    signal GND ~ pin 2
-    signal I_O1 ~ pin 1
-    I_O1 ~ pin 6
-    signal I_O2 ~ pin 3
-    I_O2 ~ pin 4
-    signal VBUS ~ pin 5
+    # Define Interfaces
+    io1 = new Electrical
+    io2 = new Electrical
+    vbus = new Electrical
+    gnd = new Electrical # Should connect to system ground
+
+    # Set required interfaces
+    io1.required = True
+    io2.required = True
+    vbus.required = True
+    gnd.required = True
+
+    # Internal connections to pins
+    signal _GND ~ pin 2
+    signal _I_O1_1 ~ pin 1
+    signal _I_O1_2 ~ pin 6
+    signal _I_O2_1 ~ pin 3
+    signal _I_O2_2 ~ pin 4
+    signal _VBUS ~ pin 5
+
+    # Connect interfaces to pins
+    io1 ~ _I_O1_1
+    io1 ~ _I_O1_2
+    io2 ~ _I_O2_1
+    io2 ~ _I_O2_2
+    vbus ~ _VBUS
+    gnd ~ _GND

@@ -3,9 +3,15 @@ import Diode, Capacitor, MOSFET, Resistor, Inductor, FilterElectricalRC, Powered
 
 module Texas_Instruments_BQ25756RRVR:
     """Texas_Instruments_BQ25756RRVR Bi-directional Buck/Boost"""
+    # External interfaces
     power_in = new ElectricPower
     power_out = new ElectricPower
     i2c = new I2C
+
+    # Set required interfaces
+    power_in.required = True
+    power_out.required = True
+    i2c.required = True
 
     # Common gnd
     power_in.gnd ~ power_out.gnd

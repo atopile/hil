@@ -13,6 +13,15 @@ component Texas_Instruments_SN74LVC2T45DCUR:
     b2 = new ElectricLogic
     dir = new ElectricLogic
 
+    # Set required interfaces
+    power_a.required = True
+    power_b.required = True
+    # a1.required = True # Optional
+    # a2.required = True # Optional
+    # b1.required = True # Optional
+    # b2.required = True # Optional
+    dir.required = True
+
     # Decoupling Cap
     decouple_1 = new Capacitor
     decouple_1.capacitance = 100nF +/- 20%

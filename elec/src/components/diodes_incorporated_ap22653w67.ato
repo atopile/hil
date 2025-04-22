@@ -9,6 +9,11 @@ module Diodes_Incorporated_AP22653W6_7:
     power_out = new ElectricPower
     enable = new ElectricLogic
 
+    # Set required interfaces
+    power_in.required = True
+    power_out.required = True
+    enable.required = True
+
     ic = new _Diodes_Incorporated_AP22653W6_7
 
     # Power

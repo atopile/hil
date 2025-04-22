@@ -26,6 +26,10 @@ component Texas_Instruments_TMP117AIDRVR:
     i2c.scl.line ~ SCL
     i2c.sda.line ~ SDA
 
+    # Set required interfaces
+    power.required = True
+    i2c.required = True
+
     # Address pin
     # I2C Address Configuration:
     #   ADD0 Pin    | Address

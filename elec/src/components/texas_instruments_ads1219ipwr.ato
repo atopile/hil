@@ -3,15 +3,34 @@ import Capacitor
 from "components/nettie.ato" import NetTie
 
 module Texas_Instruments_ADS1219IPWR:
+    # External interfaces
+    power = new ElectricPower
+    power_analog = new ElectricPower
+    i2c = new I2C
+    reference = new ElectricPower
+    input_0 = new ElectricSignal
+    input_1 = new ElectricSignal
+    input_2 = new ElectricSignal
+    input_3 = new ElectricSignal
+
+    # Set required interfaces
+    power.required = True
+    power_analog.required = True
+    i2c.required = True
+    reference.required = True
+    # input_0.required = False # Optional
+    # input_1.required = False # Optional
+    # input_2.required = False # Optional
+    # input_3.required = False # Optional
+
     ic = new _Texas_Instruments_ADS1219IPWR
 
     # Power
-    power = new ElectricPower
     power.vcc ~ ic.DVDD
     power.gnd ~ ic.DGND
     assert power.voltage within 2.7V to 5.5V
 
-    power_analog = new ElectricPower
+    # power_analog = new ElectricPower # Moved to top
     power_analog.vcc ~ ic.AVDD
     power_analog.gnd ~ ic.AGND
 
@@ -41,24 +60,24 @@ module Texas_Instruments_ADS1219IPWR:
     power_analog ~ analog_cap_2.power
 
     # Inputs
-    input_0 = new ElectricSignal
+    # input_0 = new ElectricSignal # Moved to top
     input_0.line ~ ic.AIN0
     input_0.reference ~ power_analog
 
-    input_1 = new ElectricSignal
+    # input_1 = new ElectricSignal # Moved to top
     input_1.line ~ ic.AIN1
     input_1.reference ~ power_analog
 
-    input_2 = new ElectricSignal
+    # input_2 = new ElectricSignal # Moved to top
     input_2.line ~ ic.AIN2
     input_2.reference ~ power_analog
 
-    input_3 = new ElectricSignal
+    # input_3 = new ElectricSignal # Moved to top
     input_3.line ~ ic.AIN3
     input_3.reference ~ power_analog
 
     # Reference
-    reference = new ElectricPower
+    # reference = new ElectricPower # Moved to top
     reference.vcc ~ ic.REFN
     reference.gnd ~ ic.REFP
     reference.gnd ~ power_analog.gnd
@@ -70,7 +89,7 @@ module Texas_Instruments_ADS1219IPWR:
     # Reset - disabled by default
     ic.RESETh ~ power.vcc
 
-    i2c = new I2C
+    # i2c = new I2C # Moved to top
     i2c.scl.line ~ ic.SCL
     i2c.sda.line ~ ic.SDA
 

@@ -26,6 +26,10 @@ component Microchip_Tech_AT24C64DSSHMT:
     i2c.scl.line ~ SCL
     i2c.sda.line ~ SDA
 
+    # Set required interfaces
+    power.required = True
+    i2c.required = True
+
     # Address default to 0x50
     power.gnd ~ A0
     power.gnd ~ A1

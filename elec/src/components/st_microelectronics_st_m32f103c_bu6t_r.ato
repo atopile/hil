@@ -5,11 +5,17 @@ from "abracon_ll_cab_m3b8000m_hzb2t.ato" import Abracon_LLC_ABM3B_8_000MHZ_B2_T
 module STMicroelectronics_STM32F103CBU6TR:
     """STMicroelectronics_STM32F103CBU6TR component"""
     power_3v3 = new ElectricPower
+    usb2 = new USB2_0
+    BOOT0 = new ElectricSignal
+    NRST = new ElectricSignal
+
+    # Set required interfaces
+    power_3v3.required = True
 
     ic = new _STMicroelectronics_STM32F103CBU6TR
 
     # USB Interface
-    usb2 = new USB2_0
+    # usb2 = new USB2_0 # Moved to top
 
     # USB Series resistors
     usb_series_res_n = new Resistor
@@ -93,7 +99,6 @@ module STMicroelectronics_STM32F103CBU6TR:
     power_3v3 ~ decouple_7.power
 
     # Connect through GPIO
-    BOOT0 = new ElectricSignal
     BOOT0.line ~ ic.BOOT0
     BOOT0.reference ~ power_3v3
 
@@ -101,9 +106,8 @@ module STMicroelectronics_STM32F103CBU6TR:
     boot0_pull_down = new Resistor
     boot0_pull_down.resistance = 10kohm +/- 10%
     boot0_pull_down.package = "R0402"
-    BOOT0 ~ boot0_pull_down.p1; boot0_pull_down.p2 ~ power_3v3.gnd
+    BOOT0.line ~ boot0_pull_down.p1; boot0_pull_down.p2 ~ power_3v3.gnd
 
-    NRST = new ElectricSignal
     NRST.line ~ ic.NRST
     NRST.reference ~ power_3v3
 
