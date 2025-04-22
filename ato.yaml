@@ -8,8 +8,9 @@ builds:
   canjay:
     entry: examples/canjay/canjay.ato:Canjay
 
-  space-bms-hil:
-    entry: examples/space-bms-hil/space-bms-hil.ato:SpaceBMSHIL
+  # TODO: add space-bms-hil
+  # space-bms-hil:
+  #   entry: examples/space-bms-hil/space-bms-hil.ato:SpaceBMSHIL
 
   # IO Blocks
   hil-core:
