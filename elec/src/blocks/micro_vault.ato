@@ -1,4 +1,5 @@
 import ElectricPower, I2C, ResistorVoltageDivider
+from "resistors.ato" import I2CPullup
 from "components/texas_instruments_ref5050aidr.ato" import Texas_Instruments_REF5050AIDR
 from "components/texas_instruments_ads1219ipwr.ato" import Texas_Instruments_ADS1219IPWR
 from "components/texas_instruments_tmp117aidrvr.ato" import Texas_Instruments_TMP117AIDRVR
@@ -12,6 +13,15 @@ module MicroVault:
     power_9v = new ElectricPower
     power_3v3 = new ElectricPower
     i2c = new I2C
+
+    power_9v.required = True
+    power_3v3.required = True
+    i2c.required = True
+
+    # Pullup i2c
+    i2c_pullup = new I2CPullup
+    i2c_pullup.power ~ power_3v3
+    i2c_pullup.i2c ~ i2c
 
     # Internal rail
     _power_5v3 = new ElectricPower
@@ -66,11 +76,6 @@ import QWIIC_Connector, FilterElectricalRC, Resistor
 
 module MicroVaultDevBoard:
     micro_vault = new MicroVault
-
-    # Pullup i2c
-    i2c_pullup = new I2CPullup
-    i2c_pullup.power ~ micro_vault.power_3v3
-    i2c_pullup.i2c ~ micro_vault.i2c
 
     # Power 9v
     xt30 = new XT30_Male_Right_Angle

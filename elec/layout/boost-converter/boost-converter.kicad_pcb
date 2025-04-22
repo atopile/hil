@@ -90,8 +90,8 @@
     (net 1 "ic.footprint.pins[1].net-net")
     (net 2 "FB")
     (net 3 "ic.footprint.pins[5].net-net")
-    (net 4 "hv")
-    (net 5 "hv-1")
+    (net 4 "hv-1")
+    (net 5 "hv")
     (net 6 "net")
     (net 7 "SS")
     (net 8 "FREQ")
@@ -358,7 +358,7 @@
             (at -0.75 0 180)
             (size 0.81 0.86)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "hv-1")
+            (net 5 "hv")
             (uuid "23fa94fd-d4d8-45a6-bf3b-fa3696c2ac88")
         )
         (pad "2" smd rect
@@ -946,7 +946,7 @@
             (at -1 0 0)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 4 "hv")
+            (net 4 "hv-1")
             (uuid "03154e18-aabb-4e59-a750-0d6620b313a1")
         )
         (pad "2" smd rect
@@ -1262,7 +1262,7 @@
             (at -1 0 0)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 4 "hv")
+            (net 4 "hv-1")
             (uuid "63561d79-8170-4257-aaf7-c00e44ae07bb")
         )
         (pad "2" smd rect
@@ -1578,7 +1578,7 @@
             (at -1 0 0)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "hv-1")
+            (net 5 "hv")
             (uuid "4c4d0550-e3d4-49cd-bb01-143151081ed4")
         )
         (pad "2" smd rect
@@ -2210,7 +2210,7 @@
             (at -1 0 0)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "hv-1")
+            (net 5 "hv")
             (uuid "f63f3756-cb5b-4b1c-a00d-80128aa24661")
         )
         (pad "2" smd rect
@@ -3083,14 +3083,14 @@
             (at -0.25 1.5 270)
             (size 0.28 0.8)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 4 "hv")
+            (net 4 "hv-1")
             (uuid "66403935-4f60-487a-aee4-9824f7f25eaf")
         )
         (pad "3" smd rect
             (at 0.25 1.5 270)
             (size 0.28 0.8)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 4 "hv")
+            (net 4 "hv-1")
             (uuid "dfa26720-a387-4bad-86a5-4f40fbee6999")
         )
         (pad "4" smd rect
@@ -3514,7 +3514,7 @@
             (at -1 0 0)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "hv-1")
+            (net 5 "hv")
             (uuid "6831355a-e811-4002-9177-a148a975f789")
         )
         (pad "2" smd rect
@@ -3750,7 +3750,7 @@
             (at -2.91 0 90)
             (size 2.15 3.32)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 4 "hv")
+            (net 4 "hv-1")
             (uuid "121ad987-69dd-417b-977b-85387d735c0c")
         )
         (pad "2" smd rect
@@ -4328,7 +4328,7 @@
             (at -3.43 0 0)
             (size 3.03 3.82)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "hv-1")
+            (net 5 "hv")
             (uuid "e135cc5d-ac46-470f-a7c1-96c67408d664")
         )
         (pad "2" smd rect
@@ -4642,7 +4642,7 @@
     )
     (zone
         (net 5)
-        (net_name "hv-1")
+        (net_name "hv")
         (layers "F.Cu")
         (uuid "2c78907a-43cb-40e4-8dea-e965e3145375")
         (hatch edge 0.5)
@@ -4719,7 +4719,7 @@
     )
     (zone
         (net 5)
-        (net_name "hv-1")
+        (net_name "hv")
         (layers "F.Cu")
         (uuid "5900686a-94ab-4302-bdb8-b2d6060c6b39")
         (hatch edge 0.5)
@@ -4773,7 +4773,7 @@
     )
     (zone
         (net 4)
-        (net_name "hv")
+        (net_name "hv-1")
         (layers "F.Cu")
         (uuid "83effc1a-e0d8-4d72-bb8f-fc079d413a4a")
         (hatch edge 0.5)
