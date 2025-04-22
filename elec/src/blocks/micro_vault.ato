@@ -67,6 +67,11 @@ import QWIIC_Connector, FilterElectricalRC, Resistor
 module MicroVaultDevBoard:
     micro_vault = new MicroVault
 
+    # Pullup i2c
+    i2c_pullup = new I2CPullup
+    i2c_pullup.power ~ micro_vault.power_3v3
+    i2c_pullup.i2c ~ micro_vault.i2c
+
     # Power 9v
     xt30 = new XT30_Male_Right_Angle
     xt30.power ~ micro_vault.power_9v
