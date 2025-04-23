@@ -18,10 +18,6 @@ module Texas_Instruments_ADS1219IPWR:
     power_analog.required = True
     i2c.required = True
     reference.required = True
-    # input_0.required = False # Optional
-    # input_1.required = False # Optional
-    # input_2.required = False # Optional
-    # input_3.required = False # Optional
 
     ic = new _Texas_Instruments_ADS1219IPWR
 

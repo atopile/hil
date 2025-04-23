@@ -14,9 +14,6 @@ module STMicroelectronics_STM32F103CBU6TR:
 
     ic = new _STMicroelectronics_STM32F103CBU6TR
 
-    # USB Interface
-    # usb2 = new USB2_0 # Moved to top
-
     # USB Series resistors
     usb_series_res_n = new Resistor
     usb_series_res_n.resistance = 22ohm +/- 10%
