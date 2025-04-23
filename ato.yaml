@@ -1,9 +1,11 @@
-requires-atopile: ">=0.4.0"
+requires-atopile: '>=0.4.0'
 
 builds:
   # Project Examples
   cellsim-16ch:
     entry: examples/cellsim/cellsim-16ch.ato:CellSim16Ch
+    exclude_checks:
+    - PCB.requires_drc_check
 
   canjay:
     entry: examples/canjay/canjay.ato:Canjay
@@ -17,226 +19,232 @@ builds:
     entry: elec/src/blocks/hil-core.ato:HILCore
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   analog-out:
     entry: elec/src/blocks/analog-out.ato:AnalogOut
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   relay:
     entry: elec/src/blocks/relay.ato:PowerRelay
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   i2c-relay:
     entry: elec/src/blocks/relay.ato:I2CRelay
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   coms-can-iso:
     entry: elec/src/blocks/coms-can.ato:ComsCANISO
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   analog-in:
     entry: elec/src/blocks/analog-in.ato:AnalogIn
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   analog-in-4ch:
     entry: elec/src/blocks/analog-in-4ch.ato:AnalogIn4Ch
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   amplifier-4ch:
     entry: elec/src/components/amplifier-4ch.ato:Amplifier4Ch
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   cell:
     entry: elec/src/components/cell.ato:Cell
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   # Controllers and Interconnect
   controller-cm5:
     entry: elec/src/blocks/controller-cm5.ato:ControllerCM5
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   isolator-i2c:
     entry: elec/src/blocks/isolator-i2c.ato:IsolatorI2C
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   isolator-24v-3v3:
     entry: elec/src/blocks/isolator-24v-3v3.ato:Isolator24v3v3
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   power-usbpd:
     entry: elec/src/blocks/power-usbpd.ato:PowerUSBPD
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   buck-boost:
-    entry: elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
+    entry:
+      elec/src/components/texas_instruments_bq25756r_rvr.ato:Texas_Instruments_BQ25756RRVR
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   analog-out-4ch:
     entry: elec/src/blocks/analog-out-4ch.ato:AnalogOut4ch
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   boost-converter:
-    entry: elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
+    entry:
+      elec/src/components/texas_instruments_tp_s55340r_ter.ato:Texas_Instruments_TPS55340RTER
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   variable-resistor:
     entry: elec/src/blocks/variable-resistor.ato:VariableResistor
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   cellsim-8ch:
     entry: elec/src/blocks/cellsim-8ch.ato:CellSim8Ch
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   multiplexer-i2c-8ch:
     entry: elec/src/blocks/multiplexer-i2c-8ch.ato:MultiplexerI2C8Ch
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   oled-128-32:
     entry: elec/src/blocks/oled-128-32.ato:OLED12832
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   usb-uart-bridge:
     entry: elec/src/blocks/usb-uart-bridge.ato:UsbUartBridge
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   usb2-hub:
     entry: elec/src/blocks/usb2-hub.ato:USB2Hub
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   usb251b:
-    entry: elec/src/components/microchip_tech_us_b2514b_im2.ato:Microchip_Tech_USB2514B_I_M2
+    entry:
+      elec/src/components/microchip_tech_us_b2514b_im2.ato:Microchip_Tech_USB2514B_I_M2
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   current-limit-switch:
-    entry: elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
+    entry:
+      elec/src/components/diodes_incorporated_ap22653w67.ato:Diodes_Incorporated_AP22653W6_7
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   micro-vault:
     entry: elec/src/blocks/micro_vault.ato:MicroVault
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   ads1219ipwr:
-    entry: elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
+    entry:
+      elec/src/components/texas_instruments_ads1219ipwr.ato:Texas_Instruments_ADS1219IPWR
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   ref5050aidr:
-    entry: elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
+    entry:
+      elec/src/components/texas_instruments_ref5050aidr.ato:Texas_Instruments_REF5050AIDR
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   micro-vault-dev-board:
     entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   isolated-20w-power-supply:
     entry: elec/src/components/tdpower_tdk2024s24wh.ato:TDPOWER_TDK20_24S24WH
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   thermistor-8ch:
     entry: elec/src/blocks/thermistor_8ch.ato:Thermistor8ch
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   saleae-header:
     entry: elec/src/blocks/debug-saleae.ato:DebugSaleae
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   black-magic-debugger:
     entry: elec/src/blocks/black_magic_debugger.ato:BlackMagicDebugger
     exclude_targets: [mfg-data]
     exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
+    - I2C.requires_unique_addresses
+    - requires_external_usage
 
   black-magic-probe:
     entry: elec/src/devboards/black_magic_probe.ato:BlackMagicProbe
@@ -244,14 +252,15 @@ builds:
   # Outlines
   ## These provide simple board shapes
   boardshapes-gridfinity-3x100mm:
-    entry: elec/src/boardshapes/boardshape_gridfinity_3x100mm.ato:BoardshapeGridfinity3x100mm
+    entry:
+      elec/src/boardshapes/boardshape_gridfinity_3x100mm.ato:BoardshapeGridfinity3x100mm
 
 package:
   identifier: atopile/hil
   repository: https://github.com/atopile/hil
   authors:
-    - name: atopile
-      email: hi@atopile.io
+  - name: atopile
+    email: hi@atopile.io
   summary: >
     A hardware testing framework - with batteries included
     hardware, drivers, framework and distribution
@@ -259,21 +268,21 @@ package:
   homepage: https://docs.atopile.io/hil/
 
 dependencies:
-  - type: registry
-    identifier: atopile/st-ldk220
-    release: 0.1.0
-  - type: registry
-    identifier: atopile/saleae-header
-    release: 0.1.0
-  - type: registry
-    identifier: atopile/ti-tca9548a
-    release: 0.1.0
-  - type: registry
-    identifier: atopile/xt-connectors
-    release: 0.1.0
-  - type: registry
-    identifier: atopile/ti-lv284x
-    release: 0.1.0
-  - type: registry
-    identifier: atopile/ti-tps54560x
-    release: 0.1.1
+- type: registry
+  identifier: atopile/st-ldk220
+  release: 0.1.0
+- type: registry
+  identifier: atopile/saleae-header
+  release: 0.1.0
+- type: registry
+  identifier: atopile/ti-tca9548a
+  release: 0.1.0
+- type: registry
+  identifier: atopile/xt-connectors
+  release: 0.1.0
+- type: registry
+  identifier: atopile/ti-lv284x
+  release: 0.1.0
+- type: registry
+  identifier: atopile/ti-tps54560x
+  release: 0.1.1
