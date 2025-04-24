@@ -42,15 +42,11 @@ module Canjay:
     can0_db9 = new DB9RightAngleMale
     can0.can.CANL ~ can0_db9.2
     can0.can.CANH ~ can0_db9.7
-    can0.termination.gnd ~ can0_db9.6
+    can0.termination.gnd ~ can0_db9.3
 
     can1_db9 = new DB9RightAngleMale
     can1.can.CANL ~ can1_db9.2
     can1.can.CANH ~ can1_db9.7
-    can1.termination.gnd ~ can1_db9.6
+    can1.termination.gnd ~ can1_db9.3
 
     _boardshape = new BoardshapeGridfinity3x100mm
-
-    # Termination
-    # can0.termination -> UnterminatedCAN
-    # can1.termination -> UnterminatedCAN
