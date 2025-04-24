@@ -20,8 +20,3 @@ module UsbUartBridge:
     power_vbus ~ cp2102.power_vbus
     usb2 ~ cp2102.usb2
     uart ~ cp2102.uart
-
-    # ESD Protection
-    esd_protection = new Littelfuse_SP0503BAHTG
-    esd_protection.power_vbus ~ power_vbus
-    esd_protection.usb2 ~ usb2

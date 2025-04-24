@@ -5,10 +5,19 @@ from "components/amplifier.ato" import Amplifier
 from "blocks/protection-tvs.ato" import TVSProtection
 
 module AnalogOut:
+    """
+    Outputs 1 channel of analog signal.
+    """
+    # External interfaces
     power_in = new ElectricPower
     power_3v3 = new ElectricPower
     i2c = new I2C
     output = new ElectricSignal
+
+    power_in.required = True
+    power_3v3.required = True
+    i2c.required = True
+    output.required = True
 
     # Components
     dac = new MCP4725A0T
@@ -17,6 +26,7 @@ module AnalogOut:
     tvs = new TVSProtection
 
     dac.address_bit1.line ~ power_in.gnd
+    power_3v3.gnd ~ power_in.gnd
 
     # Connections
     i2c ~ dac.i2c

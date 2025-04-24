@@ -4,7 +4,7 @@ from "blocks/analog-out-4ch.ato" import AnalogOut4ch
 from "blocks/coms-can.ato" import ComsCANISO, TerminatedCAN120R
 from "blocks/debug-saleae.ato" import DebugSaleae
 from "components/IDC-VSH-connector.ato" import IDCVSH16S, NTCIDC8CH
-from "components/jst-gh.ato" import JSTGH4Pin
+from "components/db9right_angle_male.ato" import DB9RightAngleMale
 from "blocks/thermistor_8ch.ato" import Thermistor8ch
 
 module CellSim16Ch:
@@ -94,9 +94,10 @@ module CellSim16Ch:
     hil_core.controller.cm5.gpio_6 ~ can_controller.interrupt
 
     # Connector
-    can_connector = new JSTGH4Pin
-    can_controller.can ~ can_connector.can
-    can_controller._power_5v_iso ~ can_connector.power
+    can_connector = new DB9RightAngleMale
+    can_controller.can.CANL ~ can_connector.2
+    can_controller.can.CANH ~ can_connector.7
+    can_controller.termination.gnd ~ can_connector.6
 
     # Test points
     debug_saleae_i2c0_i2c_1 = new DebugSaleae

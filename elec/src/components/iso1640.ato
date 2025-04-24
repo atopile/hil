@@ -9,18 +9,25 @@ component ISO1640BDR:
     mpn = "ISO1640BDR"
     # pins
     power_non_isolated = new ElectricPower
+    power_isolated = new ElectricPower
+    i2c_non_isolated = new I2C
+    i2c_isolated = new I2C
+
+    # Set required interfaces
+    power_non_isolated.required = True
+    power_isolated.required = True
+    i2c_non_isolated.required = True
+    i2c_isolated.required = True
+
     power_non_isolated.vcc ~ pin 1
     power_non_isolated.gnd ~ pin 4
 
-    power_isolated = new ElectricPower
     power_isolated.vcc ~ pin 8
     power_isolated.gnd ~ pin 5
 
-    i2c_non_isolated = new I2C
     i2c_non_isolated.scl.line ~ pin 3
     i2c_non_isolated.sda.line ~ pin 2
 
-    i2c_isolated = new I2C
     i2c_isolated.scl.line ~ pin 6
     i2c_isolated.sda.line ~ pin 7
 
@@ -33,17 +40,24 @@ component ISO1640QDWRQ1:
     mpn = "ISO1640QDWRQ1"
     # pins
     power_non_isolated = new ElectricPower
+    power_isolated = new ElectricPower
+    i2c_non_isolated = new I2C
+    i2c_isolated = new I2C
+
+    # Set required interfaces
+    power_non_isolated.required = True
+    power_isolated.required = True
+    i2c_non_isolated.required = True
+    i2c_isolated.required = True
+
     power_non_isolated.vcc ~ pin 3
     power_non_isolated.gnd ~ pin 1
 
-    power_isolated = new ElectricPower
     power_isolated.vcc ~ pin 14
     power_isolated.gnd ~ pin 15
 
-    i2c_non_isolated = new I2C
     i2c_non_isolated.scl.line ~ pin 6
     i2c_non_isolated.sda.line ~ pin 5
 
-    i2c_isolated = new I2C
     i2c_isolated.scl.line ~ pin 11
     i2c_isolated.sda.line ~ pin 12

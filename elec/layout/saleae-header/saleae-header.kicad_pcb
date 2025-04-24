@@ -88,14 +88,14 @@
     )
     (net 0 "")
     (net 1 "net-3")
-    (net 2 "line-2")
+    (net 2 "line-1")
     (net 3 "line-3")
-    (net 4 "net")
-    (net 5 "net-2")
+    (net 4 "net-1")
+    (net 5 "net")
     (net 6 "line")
     (net 7 "gnd")
-    (net 8 "line-1")
-    (net 9 "net-1")
+    (net 8 "line-2")
+    (net 9 "net-2")
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
         (uuid "4ec662db-b9b0-4d33-ae99-e53a4642524b")
@@ -112,7 +112,7 @@
                 )
             )
         )
-        (property "Value" "100Ω ±1% 62.5mW"
+        (property "Value" "1kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -160,7 +160,7 @@
                 )
             )
         )
-        (property "LCSC" "C25076"
+        (property "LCSC" "C11702"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -172,7 +172,7 @@
                 )
             )
         )
-        (property "Partnumber" "0402WGF1000TCE"
+        (property "Partnumber" "0402WGF1001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -196,7 +196,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -232,7 +232,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 99.00000002235174, \"max\": 100.99999997764826}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 990.0000002235174, \"max\": 1009.9999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -339,7 +339,7 @@
             (at 0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 4 "net")
+            (net 4 "net-1")
             (uuid "72915c49-8875-4409-bcab-40bbc1a3c875")
         )
         (embedded_fonts no)
@@ -360,7 +360,7 @@
                 )
             )
         )
-        (property "Value" "100Ω ±1% 62.5mW"
+        (property "Value" "1kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -408,7 +408,7 @@
                 )
             )
         )
-        (property "LCSC" "C25076"
+        (property "LCSC" "C11702"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -420,7 +420,7 @@
                 )
             )
         )
-        (property "Partnumber" "0402WGF1000TCE"
+        (property "Partnumber" "0402WGF1001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -444,7 +444,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -480,7 +480,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 99.00000002235174, \"max\": 100.99999997764826}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 990.0000002235174, \"max\": 1009.9999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -580,7 +580,7 @@
             (at -0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 8 "line-1")
+            (net 8 "line-2")
             (uuid "16d1f88c-fbca-4cb2-856a-b99d5548f4d8")
         )
         (pad "2" smd rect
@@ -877,7 +877,7 @@
             (at -1.27 2.8 0)
             (size 1.27 2.8)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 9 "net-1")
+            (net 9 "net-2")
             (uuid "0006355d-289c-4666-94bc-86ef9f704428")
         )
         (pad "4" smd rect
@@ -891,7 +891,7 @@
             (at 1.27 2.8 0)
             (size 1.27 2.8)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "net-2")
+            (net 5 "net")
             (uuid "f8f1d083-21c7-45d0-b392-d690ea0f354b")
         )
         (pad "6" smd rect
@@ -905,7 +905,7 @@
             (at 3.81 2.8 0)
             (size 1.27 2.8)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 4 "net")
+            (net 4 "net-1")
             (uuid "1fe0b44b-fc4e-44b6-bd55-3b0b0a66041e")
         )
         (pad "8" smd rect
@@ -933,7 +933,7 @@
                 )
             )
         )
-        (property "Value" "100Ω ±1% 62.5mW"
+        (property "Value" "1kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -981,7 +981,7 @@
                 )
             )
         )
-        (property "LCSC" "C25076"
+        (property "LCSC" "C11702"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -993,7 +993,7 @@
                 )
             )
         )
-        (property "Partnumber" "0402WGF1000TCE"
+        (property "Partnumber" "0402WGF1001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1017,7 +1017,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1053,7 +1053,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 99.00000002235174, \"max\": 100.99999997764826}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 990.0000002235174, \"max\": 1009.9999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1160,7 +1160,7 @@
             (at 0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "net-2")
+            (net 5 "net")
             (uuid "2ba8fc9d-c86d-4beb-b4c1-43025a7720a4")
         )
         (embedded_fonts no)
@@ -1181,7 +1181,7 @@
                 )
             )
         )
-        (property "Value" "100Ω ±1% 62.5mW"
+        (property "Value" "1kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide yes)
@@ -1229,7 +1229,7 @@
                 )
             )
         )
-        (property "LCSC" "C25076"
+        (property "LCSC" "C11702"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1241,7 +1241,7 @@
                 )
             )
         )
-        (property "Partnumber" "0402WGF1000TCE"
+        (property "Partnumber" "0402WGF1001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1265,7 +1265,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±1% ±200ppm/℃ 100Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -1301,7 +1301,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 99.00000002235174, \"max\": 100.99999997764826}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 990.0000002235174, \"max\": 1009.9999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1401,14 +1401,14 @@
             (at -0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 2 "line-2")
+            (net 2 "line-1")
             (uuid "88a04bb7-997a-46cf-a979-4be0e0ab0aa2")
         )
         (pad "2" smd rect
             (at 0.43 0 90)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 9 "net-1")
+            (net 9 "net-2")
             (uuid "da18d8d8-462f-4fdd-b453-b663b56fcb92")
         )
         (embedded_fonts no)

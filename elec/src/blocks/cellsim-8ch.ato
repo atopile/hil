@@ -50,8 +50,8 @@ module CellSim8Ch:
     ldo_3v3.power_out ~ power_3v3_isolated
 
     # Configure regulators
-    # assert buck_5v.v_out within 5V +/- 5%
-    # assert ldo_3v3.v_out within 3.3V +/- 5%
+    buck_5v.v_out = 5V +/- 5%
+    ldo_3v3.v_out = 3.3V +/- 5%
 
     # Set regulator feedback components (hack while compiler is slow af)
     buck_5v.feedback_div.r_bottom.resistance = 8.1kohm to 8.3kohm

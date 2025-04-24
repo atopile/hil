@@ -26,10 +26,10 @@ module DebugSaleae:
     r3 = new Resistor
     r4 = new Resistor
 
-    r1.resistance = 100ohms +/- 5%
-    r2.resistance = 100ohms +/- 5%
-    r3.resistance = 100ohms +/- 5%
-    r4.resistance = 100ohms +/- 5%
+    r1.resistance = 1kohm +/- 5%
+    r2.resistance = 1kohm +/- 5%
+    r3.resistance = 1kohm +/- 5%
+    r4.resistance = 1kohm +/- 5%
 
     r1.package = "R0402"
     r2.package = "R0402"

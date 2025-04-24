@@ -1,4 +1,5 @@
 import ElectricPower, Electrical, Resistor
+from "resistors.ato" import I2CPullup
 
 # Blocks
 from "blocks/controller-cm5.ato" import ControllerCM5
@@ -12,7 +13,7 @@ from "components/texas_instruments_tp_s55340r_ter.ato" import Texas_Instruments_
 from "components/xk_bconnectivity_u262241n4b_v64.ato" import XKB_Connectivity_U262_241N_4BV64_CC
 from "components/molex39281243.ato" import MOLEX_39281243
 
-from "atopile/ti-lv284x/lv284x.ato" import LV2842x
+from "atopile/ti-tps54560x/ti-tps54560x.ato" import TPS54560x
 from "atopile/st-ldk220/ldk220.ato" import LDK220M_R
 
 
@@ -60,7 +61,7 @@ module HILCore:
     # Power supplies
     usbpd = new PowerUSBPD
     boost_24v = new Texas_Instruments_TPS55340RTER
-    buck_5v = new LV2842x
+    buck_5v = new TPS54560x
     ldo_3v3 = new LDK220M_R
 
     # Configure power supplies
@@ -108,6 +109,11 @@ module HILCore:
     power_5v ~ oled.power_5v
     power_3v3 ~ oled.power_3v3
     controller.i2c3 ~ oled.i2c
+
+    # I2C Pullups
+    i2c_pullups = new I2CPullup
+    i2c_pullups.power ~ power_3v3
+    i2c_pullups.i2c ~ controller.i2c3
 
 # Only support one layout per module, apparently inheritance counts
 # module HILCoreATX from HILCore:

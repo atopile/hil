@@ -91,15 +91,15 @@
     (net 2 "IN3plus")
     (net 3 "IN2plus")
     (net 4 "IN1plus")
-    (net 5 "line")
+    (net 5 "line-1")
     (net 6 "hv")
     (net 7 "IN4plus")
     (net 8 "gnd")
-    (net 9 "line-2")
+    (net 9 "line")
     (net 10 "IN2_")
     (net 11 "line-3")
     (net 12 "IN4_")
-    (net 13 "line-1")
+    (net 13 "line-2")
     (net 14 "IN1_")
     (footprint "atopile:R0402-56259e"
         (layer "F.Cu")
@@ -117,7 +117,7 @@
                 )
             )
         )
-        (property "Value" "33kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -165,7 +165,7 @@
                 )
             )
         )
-        (property "LCSC" "C138003"
+        (property "LCSC" "C25744"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -177,7 +177,7 @@
                 )
             )
         )
-        (property "Partnumber" "RC0402FR-0733KL"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -189,7 +189,7 @@
                 )
             )
         )
-        (property "Manufacturer" "YAGEO"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -201,7 +201,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 33kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -249,7 +249,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 32670.000007376075, \"max\": 33329.999992623925}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 9900.000002235174, \"max\": 10099.999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -389,7 +389,7 @@
                 )
             )
         )
-        (property "Value" "33kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -437,7 +437,7 @@
                 )
             )
         )
-        (property "LCSC" "C138003"
+        (property "LCSC" "C25744"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -449,7 +449,7 @@
                 )
             )
         )
-        (property "Partnumber" "RC0402FR-0733KL"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -461,7 +461,7 @@
                 )
             )
         )
-        (property "Manufacturer" "YAGEO"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -473,7 +473,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 33kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -509,7 +509,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 32670.000007376075, \"max\": 33329.999992623925}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 9900.000002235174, \"max\": 10099.999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -661,7 +661,7 @@
                 )
             )
         )
-        (property "Value" "240kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -709,7 +709,7 @@
                 )
             )
         )
-        (property "LCSC" "C2909338"
+        (property "LCSC" "C25744"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -721,7 +721,7 @@
                 )
             )
         )
-        (property "Partnumber" "FRC0402F2403TS"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -733,7 +733,7 @@
                 )
             )
         )
-        (property "Manufacturer" "FOJAN"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -745,7 +745,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 240kΩ 0402  Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -781,7 +781,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 237600.00005364418, \"max\": 242399.99994635582}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 9900.000002235174, \"max\": 10099.999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -912,7 +912,7 @@
             (at 0.43 0 180)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 9 "line-2")
+            (net 9 "line")
             (uuid "8dd4ec81-ee9b-44d8-b8e0-46ffb239d4ab")
         )
         (embedded_fonts no)
@@ -933,7 +933,7 @@
                 )
             )
         )
-        (property "Value" "240kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -981,7 +981,7 @@
                 )
             )
         )
-        (property "LCSC" "C2909338"
+        (property "LCSC" "C25744"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -993,7 +993,7 @@
                 )
             )
         )
-        (property "Partnumber" "FRC0402F2403TS"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1005,7 +1005,7 @@
                 )
             )
         )
-        (property "Manufacturer" "FOJAN"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1017,7 +1017,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 240kΩ 0402  Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1053,7 +1053,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 237600.00005364418, \"max\": 242399.99994635582}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 9900.000002235174, \"max\": 10099.999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1205,7 +1205,7 @@
                 )
             )
         )
-        (property "Value" "33kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -1253,7 +1253,7 @@
                 )
             )
         )
-        (property "LCSC" "C138003"
+        (property "LCSC" "C25744"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1265,7 +1265,7 @@
                 )
             )
         )
-        (property "Partnumber" "RC0402FR-0733KL"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1277,7 +1277,7 @@
                 )
             )
         )
-        (property "Manufacturer" "YAGEO"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1289,7 +1289,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 33kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1325,7 +1325,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 32670.000007376075, \"max\": 33329.999992623925}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 9900.000002235174, \"max\": 10099.999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1740,14 +1740,14 @@
             (at 3.81 2.77 0)
             (size 0.57 2.04)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 13 "line-1")
+            (net 13 "line-2")
             (uuid "970a5dcc-8e5b-4c51-9932-fa67ecadf264")
         )
         (pad "8" smd oval
             (at 3.81 -2.77 0)
             (size 0.57 2.04)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "line")
+            (net 5 "line-1")
             (uuid "b65077b9-5469-4b68-a4ff-60233e6b1fd0")
         )
         (pad "9" smd oval
@@ -1789,7 +1789,7 @@
             (at -3.81 -2.77 0)
             (size 0.57 2.04)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 9 "line-2")
+            (net 9 "line")
             (uuid "1666cf27-94ca-47dc-9a26-3eb89e83ccc7")
         )
         (embedded_fonts no)
@@ -1810,7 +1810,7 @@
                 )
             )
         )
-        (property "Value" "33kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -1858,7 +1858,7 @@
                 )
             )
         )
-        (property "LCSC" "C138003"
+        (property "LCSC" "C25744"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1870,7 +1870,7 @@
                 )
             )
         )
-        (property "Partnumber" "RC0402FR-0733KL"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1882,7 +1882,7 @@
                 )
             )
         )
-        (property "Manufacturer" "YAGEO"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1894,7 +1894,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 33kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1942,7 +1942,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 32670.000007376075, \"max\": 33329.999992623925}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 9900.000002235174, \"max\": 10099.999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2082,7 +2082,7 @@
                 )
             )
         )
-        (property "Value" "240kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -2130,7 +2130,7 @@
                 )
             )
         )
-        (property "LCSC" "C2909338"
+        (property "LCSC" "C25744"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2142,7 +2142,7 @@
                 )
             )
         )
-        (property "Partnumber" "FRC0402F2403TS"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2154,7 +2154,7 @@
                 )
             )
         )
-        (property "Manufacturer" "FOJAN"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2166,7 +2166,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 240kΩ 0402  Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2214,7 +2214,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 237600.00005364418, \"max\": 242399.99994635582}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 9900.000002235174, \"max\": 10099.999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2333,7 +2333,7 @@
             (at 0.43 0 0)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 5 "line")
+            (net 5 "line-1")
             (uuid "823c0226-ee8d-449b-a006-314c40f9c9f3")
         )
         (embedded_fonts no)
@@ -2354,7 +2354,7 @@
                 )
             )
         )
-        (property "Value" "240kΩ ±1% 62.5mW"
+        (property "Value" "10kΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -2402,7 +2402,7 @@
                 )
             )
         )
-        (property "LCSC" "C2909338"
+        (property "LCSC" "C25744"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2414,7 +2414,7 @@
                 )
             )
         )
-        (property "Partnumber" "FRC0402F2403TS"
+        (property "Partnumber" "0402WGF1002TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2426,7 +2426,7 @@
                 )
             )
         )
-        (property "Manufacturer" "FOJAN"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2438,7 +2438,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 240kΩ 0402  Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 10kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2474,7 +2474,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 237600.00005364418, \"max\": 242399.99994635582}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 9900.000002235174, \"max\": 10099.999997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2605,7 +2605,7 @@
             (at 0.43 0 0)
             (size 0.57 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 13 "line-1")
+            (net 13 "line-2")
             (uuid "1f5cc3aa-48df-4b7f-8466-ded74accc115")
         )
         (embedded_fonts no)

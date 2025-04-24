@@ -16,6 +16,14 @@ component Texas_Instruments_ISO7720DR:
     a_out = new ElectricLogic
     b_out = new ElectricLogic
 
+    # Set required interfaces
+    power_in.required = True
+    power_out.required = True
+    # a_in.required = True # Optional
+    # b_in.required = True # Optional
+    # a_out.required = True # Optional
+    # b_out.required = True # Optional
+
     # Input
     power_in.vcc ~ pin 1
     power_in.gnd ~ pin 4

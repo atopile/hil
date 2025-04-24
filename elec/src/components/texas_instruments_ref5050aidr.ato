@@ -4,6 +4,11 @@ component Texas_Instruments_REF5050AIDR:
     """Texas_Instruments_REF5050AIDR component"""
     power_in = new ElectricPower
     power_out = new ElectricPower
+    temp_out = new ElectricSignal
+
+    # Set required interfaces
+    power_in.required = True
+    power_out.required = True
 
     ic = new _Texas_Instruments_REF5050AIDR
 
@@ -14,7 +19,6 @@ component Texas_Instruments_REF5050AIDR:
     power_out.gnd ~ ic.GND
 
     # Temp output
-    temp_out = new ElectricSignal
     temp_out.line ~ ic.TEMP
     temp_out.reference.gnd ~ power_in.gnd
 

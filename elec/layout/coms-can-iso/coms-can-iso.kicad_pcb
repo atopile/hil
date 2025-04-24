@@ -102,12 +102,12 @@
     (net 13 "_midpoint")
     (net 14 "rx")
     (net 15 "xin")
-    (net 16 "hv")
+    (net 16 "hv-2")
     (net 17 "gnd")
     (net 18 "cathode")
     (net 19 "gnd-1")
-    (net 20 "hv-1")
-    (net 21 "hv-2")
+    (net 20 "hv")
+    (net 21 "hv-1")
     (footprint "atopile:C0402-b3ef17"
         (layer "F.Cu")
         (uuid "05bc7a58-6cde-4bde-a073-45cd4642524b")
@@ -400,7 +400,7 @@
             (at -0.55 0 270)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 21 "hv-2")
+            (net 21 "hv-1")
             (uuid "75de5c6c-2a4f-4c26-8936-bcce97867a3d")
         )
         (pad "2" smd rect
@@ -678,7 +678,7 @@
             (size 1.8 1.8)
             (drill 0.999998)
             (layers "*.Cu" "*.Mask")
-            (net 20 "hv-1")
+            (net 20 "hv")
             (remove_unused_layers no)
             (uuid "13dd0437-e666-4f30-9229-9384e04ce0b7")
         )
@@ -705,7 +705,7 @@
             (size 1.8 1.8)
             (drill 0.999998)
             (layers "*.Cu" "*.Mask")
-            (net 21 "hv-2")
+            (net 21 "hv-1")
             (remove_unused_layers no)
             (uuid "d323c495-9c36-4b2e-92d7-c997f41fa281")
         )
@@ -1030,7 +1030,7 @@
             (at 0.8 0 0)
             (size 0.8 0.8)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 21 "hv-2")
+            (net 21 "hv-1")
             (uuid "ef1b9702-9d63-4fc8-85b1-70e26b84b9b1")
         )
         (embedded_fonts no)
@@ -1260,7 +1260,7 @@
             (at -1.91 2.77 270)
             (size 0.59 2.05)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 16 "hv")
+            (net 16 "hv-2")
             (uuid "47753425-6d6f-41fd-bc78-f40c24d915b7")
         )
         (pad "2" smd oval
@@ -1309,7 +1309,7 @@
             (at -1.91 -2.77 270)
             (size 0.59 2.05)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 21 "hv-2")
+            (net 21 "hv-1")
             (uuid "ebbe3c2b-a639-4675-bf3a-7c38292ce45d")
         )
         (embedded_fonts no)
@@ -1341,7 +1341,7 @@
                 )
             )
         )
-        (property "Value" "60.4Ω ±1% 62.5mW"
+        (property "Value" "1MΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -1389,7 +1389,7 @@
                 )
             )
         )
-        (property "LCSC" "C137954"
+        (property "LCSC" "C26083"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1401,7 +1401,7 @@
                 )
             )
         )
-        (property "Partnumber" "RC0402FR-0760R4L"
+        (property "Partnumber" "0402WGF1004TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1413,7 +1413,7 @@
                 )
             )
         )
-        (property "Manufacturer" "YAGEO"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1425,7 +1425,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 60.4Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1MΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -1461,7 +1461,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 59.79600001350045, \"max\": 61.003999986499544}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 990000.0002235174, \"max\": 1009999.9997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2181,7 +2181,7 @@
             (at -0.55 0 180)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 16 "hv")
+            (net 16 "hv-2")
             (uuid "72d1a986-c95b-4708-9574-8d8eb637261e")
         )
         (pad "2" smd rect
@@ -2789,7 +2789,7 @@
             (at -0.55 0 0)
             (size 0.79 0.54)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 16 "hv")
+            (net 16 "hv-2")
             (uuid "62fab587-afcb-45c4-a7a6-f72b83688379")
         )
         (pad "2" smd rect
@@ -2817,7 +2817,7 @@
                 )
             )
         )
-        (property "Value" "2.2µF ±10% 25V X7R"
+        (property "Value" "2.2µF ±10% 50V X5R"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -2865,7 +2865,7 @@
                 )
             )
         )
-        (property "LCSC" "C19110"
+        (property "LCSC" "C377773"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2877,7 +2877,7 @@
                 )
             )
         )
-        (property "Partnumber" "CL21B225KAFNNNE"
+        (property "Partnumber" "CL21A225KBQNNNE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2901,7 +2901,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "25V 2.2uF X7R ±10% 0805 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
+        (property "JLCPCB description" "50V 2.2uF X5R ±10% 0805  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -2937,7 +2937,7 @@
                 )
             )
         )
-        (property "PARAM_temperature_coefficient" "{\"type\": \"EnumSet\", \"data\": {\"elements\": [{\"name\": \"X7R\"}], \"enum\": {\"name\": \"TemperatureCoefficient\", \"values\": {\"Y5V\": 1, \"Z5U\": 2, \"X7S\": 3, \"X5R\": 4, \"X6R\": 5, \"X7R\": 6, \"X8R\": 7, \"C0G\": 8}}}}"
+        (property "PARAM_temperature_coefficient" "{\"type\": \"EnumSet\", \"data\": {\"elements\": [{\"name\": \"X5R\"}], \"enum\": {\"name\": \"TemperatureCoefficient\", \"values\": {\"Y5V\": 1, \"Z5U\": 2, \"X7S\": 3, \"X5R\": 4, \"X6R\": 5, \"X7R\": 6, \"X8R\": 7, \"C0G\": 8}}}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -2949,7 +2949,7 @@
                 )
             )
         )
-        (property "PARAM_max_voltage" "{\"type\": \"Quantity_Set_Discrete\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 25.0, \"max\": 25.0}}]}}, \"unit\": \"volt\"}}"
+        (property "PARAM_max_voltage" "{\"type\": \"Quantity_Set_Discrete\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 50.0, \"max\": 50.0}}]}}, \"unit\": \"volt\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -3093,7 +3093,7 @@
             (at -1 0 270)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 20 "hv-1")
+            (net 20 "hv")
             (uuid "bbeef969-d4c6-419f-bd94-8c1233a34470")
         )
         (pad "2" smd rect
@@ -3121,7 +3121,7 @@
                 )
             )
         )
-        (property "Value" "60.4Ω ±1% 62.5mW"
+        (property "Value" "1MΩ ±1% 62.5mW"
             (at 0 4 0)
             (layer "F.Fab")
             (hide no)
@@ -3169,7 +3169,7 @@
                 )
             )
         )
-        (property "LCSC" "C137954"
+        (property "LCSC" "C26083"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -3181,7 +3181,7 @@
                 )
             )
         )
-        (property "Partnumber" "RC0402FR-0760R4L"
+        (property "Partnumber" "0402WGF1004TCE"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -3193,7 +3193,7 @@
                 )
             )
         )
-        (property "Manufacturer" "YAGEO"
+        (property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -3205,7 +3205,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 60.4Ω 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1MΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -3241,7 +3241,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 59.79600001350045, \"max\": 61.003999986499544}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 990000.0002235174, \"max\": 1009999.9997764826}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -3700,7 +3700,7 @@
             (at -1.95 -1.5 180)
             (size 0.85 0.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 16 "hv")
+            (net 16 "hv-2")
             (uuid "97a819d2-4706-44c2-ac67-8ecebac62e80")
         )
         (pad "15" smd rect
@@ -4524,7 +4524,7 @@
                 )
             )
         )
-        (property "Value" "1kΩ ±1% 62.5mW"
+        (property "Value" "2kΩ ±1% 62.5mW"
             (at 0 4 90)
             (layer "F.Fab")
             (hide no)
@@ -4572,7 +4572,7 @@
                 )
             )
         )
-        (property "LCSC" "C11702"
+        (property "LCSC" "C4109"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -4584,7 +4584,7 @@
                 )
             )
         )
-        (property "Partnumber" "0402WGF1001TCE"
+        (property "Partnumber" "0402WGF2001TCE"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -4608,7 +4608,7 @@
                 )
             )
         )
-        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 1kΩ 0402 Chip Resistor - Surface Mount ROHS"
+        (property "JLCPCB description" "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% 2kΩ 0402 Chip Resistor - Surface Mount ROHS"
             (at 0 0 90)
             (layer "User.9")
             (hide yes)
@@ -4644,7 +4644,7 @@
                 )
             )
         )
-        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 990.0000002235174, \"max\": 1009.9999997764826}}]}}, \"unit\": \"ohm\"}}"
+        (property "PARAM_resistance" "{\"type\": \"Quantity_Interval_Disjoint\", \"data\": {\"intervals\": {\"type\": \"Numeric_Interval_Disjoint\", \"data\": {\"intervals\": [{\"type\": \"Numeric_Interval\", \"data\": {\"min\": 1980.0000004470348, \"max\": 2019.9999995529652}}]}}, \"unit\": \"ohm\"}}"
             (at 0 0 0)
             (layer "User.9")
             (hide yes)
@@ -5060,7 +5060,7 @@
             (at -1 0 90)
             (size 1.41 1.35)
             (layers "F.Cu" "F.Mask" "F.Paste")
-            (net 21 "hv-2")
+            (net 21 "hv-1")
             (uuid "9d531d6c-eb84-4672-ad50-351f8066dcda")
         )
         (pad "2" smd rect
@@ -5962,6 +5962,14 @@
         (layer "F.Cu")
     )
     (segment
+        (start 144.054454 77.845546)
+        (end 143.975735 77.924265)
+        (width 0.2)
+        (net 17)
+        (uuid "015486bc-cab1-411c-abac-ce912b3ed0fc")
+        (layer "B.Cu")
+    )
+    (segment
         (start 129.4 78.2)
         (end 132.4 78.2)
         (width 0.2)
@@ -5992,6 +6000,30 @@
         (net 17)
         (uuid "e20cef4c-1157-4bbf-9854-bd8fed8c42c9")
         (layer "B.Cu")
+    )
+    (segment
+        (start 144.054454 76.148279)
+        (end 144.054454 77.845546)
+        (width 0.2)
+        (net 17)
+        (uuid "e83afb97-ac84-4bf9-b8fe-849a4191e87c")
+        (layer "B.Cu")
+    )
+    (segment
+        (start 155.49 67.71)
+        (end 155.5 67.72)
+        (width 0.2)
+        (net 18)
+        (uuid "01250e11-7ea1-4af3-beb6-98179b4536e4")
+        (layer "F.Cu")
+    )
+    (segment
+        (start 155.49 66.53)
+        (end 155.49 67.71)
+        (width 0.2)
+        (net 18)
+        (uuid "0507b268-aac1-4277-a073-5c3011840cfe")
+        (layer "F.Cu")
     )
     (segment
         (start 153.385 73.37)

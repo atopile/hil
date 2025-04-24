@@ -15,6 +15,14 @@ module Microchip_Tech_USB2514B_I_M2:
     i2c = new I2C
     vbus_enable = new ElectricLogic
 
+    # Set required interfaces
+    usb2_up.required = True
+    # usb2_1.required = True  # Keep downstream ports optional in definition
+    # usb2_2.required = True
+    # usb2_3.required = True
+    # usb2_4.required = True
+    power_3v3.required = True
+
     # Hub IC
     ic = new _Microchip_Tech_USB2514B_I_M2
 
@@ -96,6 +104,12 @@ module Microchip_Tech_USB2514B_I_M2:
 
     usb2_4.usb_if.d.p.line ~ ic.USBDP_DN4_PRT_DIS_P4
     usb2_4.usb_if.d.n.line ~ ic.USBDM_DN4_PRT_DIS_M4
+
+    # Reset pullup
+    reset_pullup = new Resistor
+    reset_pullup.resistance = 10kohm +/- 10%
+    reset_pullup.package = "R0402"
+    ic.RESET_N ~ reset_pullup.p1; reset_pullup.p2 ~ power_3v3.vcc
 
     # R Bias
     rbias = new Resistor

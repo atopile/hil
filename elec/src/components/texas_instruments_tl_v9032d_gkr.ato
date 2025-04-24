@@ -21,3 +21,5 @@ component Texas_Instruments_TLV9032DGKR:
     power = new ElectricPower
     power.vcc ~ Vplus
     power.gnd ~ Vminus
+
+    power.required = True
