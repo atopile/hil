@@ -50,7 +50,3 @@ module Canjay:
     can1.termination.gnd ~ can1_db9.3
 
     _boardshape = new BoardshapeGridfinity3x100mm
-
-    # Termination
-    # can0.termination -> UnterminatedCAN
-    # can1.termination -> UnterminatedCAN
