@@ -1,0 +1,46 @@
+import I2C, SPI, ElectricLogic, ElectricPower, Electrical
+from "atopile/pin-headers/pin-headers.ato" import Male_2_54mm_1x10P_TH
+
+module TestBlock:
+    """
+    Test block for 25 blocks
+    """
+    # Interfaces
+    i2c = new I2C
+    spi = new SPI
+    spi_cs = new ElectricLogic
+    power_3v3 = new ElectricPower
+    power_5v = new ElectricPower
+    power_24v = new ElectricPower
+
+    gnd = new Electrical
+    gnd ~ power_3v3.gnd
+    gnd ~ power_5v.gnd
+    gnd ~ power_24v.gnd
+
+    # Components
+    header_a = new Male_2_54mm_1x10P_TH
+    header_b = new Male_2_54mm_1x10P_TH
+
+    # Connections
+    gnd ~ header_a.1
+    i2c.scl.line ~ header_a.2
+    i2c.sda.line ~ header_a.3
+    gnd ~ header_a.4
+    spi.sclk.line ~ header_a.5
+    spi.mosi.line ~ header_a.6
+    gnd ~ header_a.7
+    spi.miso.line ~ header_a.8
+    spi_cs.line ~ header_a.9
+    gnd ~ header_a.10
+
+    gnd ~ header_b.1
+    power_3v3.vcc ~ header_b.2
+    power_3v3.vcc ~ header_b.3
+    gnd ~ header_b.4
+    power_5v.vcc ~ header_b.5
+    power_5v.vcc ~ header_b.6
+    gnd ~ header_b.7
+    power_24v.vcc ~ header_b.8
+    power_24v.vcc ~ header_b.9
+    gnd ~ header_b.10

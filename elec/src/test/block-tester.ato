@@ -1,0 +1,56 @@
+from "blocks/hil-core.ato" import HILCore
+from "test/test-base.ato" import TestBase
+
+module BlockTester:
+    """
+    Tester for 25 blocks
+    """
+
+    hil_core = new HILCore
+
+    # Blocks
+    column_0 = new BlockColumn
+    column_1 = new BlockColumn
+    column_2 = new BlockColumn
+    column_3 = new BlockColumn
+    column_4 = new BlockColumn
+
+    # Input power
+    # Use M3 studs to connect ring terminal for AC input
+    # add one for chassis ground
+    # Scope probe test points /saleae test points
+    # scope multiplexer
+    # RGB led under each
+
+module BlockColumn:
+    """
+    Column of 5 test bases
+    - I2C Multiplexer
+    - GPIO Expander for CS
+    - Current measurement
+    - Over current shut down
+    - Block Family ID Resistor Ladder
+    - Part UUID
+    """
+
+    # Interfaces
+    i2c = new I2C
+    spi = new SPI
+    spi_cs = new ElectricLogic
+    power_3v3 = new ElectricPower
+    power_5v = new ElectricPower
+    power_24v = new ElectricPower
+
+    # Power supplies
+    ac_in_line = new Sinhoo_SMTSO2515CTJ
+    ac_in_neutral = new Sinhoo_SMTSO2515CTJ
+    ac_in_chassis = new Sinhoo_SMTSO2515CTJ
+
+    # Blocks
+    base_0 = new TestBase
+    base_1 = new TestBase
+    base_2 = new TestBase
+    base_3 = new TestBase
+    base_4 = new TestBase
+
+    # Connect interfaces

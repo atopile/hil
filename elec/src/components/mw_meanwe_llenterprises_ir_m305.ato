@@ -1,0 +1,13 @@
+component MWMEAN_WELL_Enterprises_IRM_30_5:
+    """MWMEAN_WELL_Enterprises_IRM_30_5 component"""
+    lcsc_id = "C6211074"
+    manufacturer = "MW(MEAN WELL Enterprises)"
+    mpn = "IRM-30-5"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2404190941_MW-MEAN-WELL-Enterprises-IRM-30-5_C6211074.pdf"
+    designator_prefix = "U"
+
+    # pins
+    signal ac_line ~ pin 1
+    signal ac_neutral ~ pin 2
+    signal v_plus ~ pin 3
+    signal v_minus ~ pin 4
