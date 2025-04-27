@@ -1,4 +1,22 @@
-component MWMEAN_WELL_Enterprises_IRM_30_5:
+import ElectricPower, Electrical
+
+
+module MWMEAN_WELL_Enterprises_IRM_30_5:
+    """
+    MWMEAN_WELL_Enterprises_IRM_30_5 component
+    """
+    regulator = new _MWMEAN_WELL_Enterprises_IRM_30_5
+
+    power_out = new ElectricPower
+    power_in_line = new Electrical
+    power_in_neutral = new Electrical
+
+    power_out.vcc ~ regulator.v_plus
+    power_out.gnd ~ regulator.v_minus
+    power_in_line ~ regulator.ac_line
+    power_in_neutral ~ regulator.ac_neutral
+
+component _MWMEAN_WELL_Enterprises_IRM_30_5:
     """MWMEAN_WELL_Enterprises_IRM_30_5 component"""
     lcsc_id = "C6211074"
     manufacturer = "MW(MEAN WELL Enterprises)"

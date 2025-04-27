@@ -1,3 +1,20 @@
+import ElectricPower, Electrical
+
+module MWMEAN_WELL_Enterprises_IRM_30_24:
+    """
+    MWMEAN_WELL_Enterprises_IRM_30_24 component
+    """
+    regulator = new _MWMEAN_WELL_Enterprises_IRM_30_24
+
+    power_out = new ElectricPower
+    power_in_line = new Electrical
+    power_in_neutral = new Electrical
+
+    power_out.vcc ~ regulator.v_plus
+    power_out.gnd ~ regulator.v_minus
+    power_in_line ~ regulator.ac_line
+    power_in_neutral ~ regulator.ac_neutral
+
 component MWMEAN_WELL_Enterprises_IRM_30_24:
     """MWMEAN_WELL_Enterprises_IRM_30_24 component"""
     lcsc_id = "C6280124"
@@ -7,7 +24,7 @@ component MWMEAN_WELL_Enterprises_IRM_30_24:
     designator_prefix = "U"
 
     # pins
-    pin 1
-    pin 2
-    pin 3
-    pin 4
+    signal ac_line ~ pin 1
+    signal ac_neutral ~ pin 2
+    signal v_plus ~ pin 3
+    signal v_minus ~ pin 4

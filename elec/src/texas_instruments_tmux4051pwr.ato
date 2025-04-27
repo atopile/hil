@@ -1,0 +1,25 @@
+component TEXAS_INSTRUMENTS_TMUX4051PWR:
+    """TEXAS_INSTRUMENTS_TMUX4051PWR component"""
+    lcsc_id = "C5449352"
+    manufacturer = "TEXAS INSTRUMENTS"
+    mpn = "TMUX4051PWR"
+    datasheet_url = "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2306061209_Texas-Instruments-TMUX4051PWR_C5449352.pdf"
+    designator_prefix = "U"
+
+    # pins
+    pin 1
+    pin 2
+    pin 3
+    pin 4
+    pin 5
+    pin 6
+    pin 7
+    pin 8
+    pin 9
+    pin 10
+    pin 11
+    pin 12
+    pin 13
+    pin 14
+    pin 15
+    pin 16

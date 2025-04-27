@@ -1,12 +1,27 @@
+import ElectricPower, Electrical, SPI, I2C, ElectricLogic
+
 from "blocks/hil-core.ato" import HILCore
 from "test/test-base.ato" import TestBase
+
+from "atopile/ti-tca9548a/tca9548a.ato" import TCA9548APWR
+from "components/tca6408.ato" import TCA6408ARGTR
+
+from "components/sinhoo_sm_tso2515c_tj.ato" import Sinhoo_SMTSO2515CTJ
+from "components/mw_meanwe_llenterprises_ir_m305.ato" import MWMEAN_WELL_Enterprises_IRM_30_5
+from "components/mw_meanwe_llenterprises_ir_m3024.ato" import MWMEAN_WELL_Enterprises_IRM_30_24
 
 module BlockTester:
     """
     Tester for 25 blocks
     """
-
+    # Intrastructure
     hil_core = new HILCore
+    power_24V = new MWMEAN_WELL_Enterprises_IRM_30_24
+    power_5V = new MWMEAN_WELL_Enterprises_IRM_30_5
+    # hil_core.buck_5v.# Do not populate
+    ac_in_line = new Sinhoo_SMTSO2515CTJ
+    ac_in_neutral = new Sinhoo_SMTSO2515CTJ
+    ac_in_chassis = new Sinhoo_SMTSO2515CTJ
 
     # Blocks
     column_0 = new BlockColumn
@@ -41,10 +56,14 @@ module BlockColumn:
     power_5v = new ElectricPower
     power_24v = new ElectricPower
 
-    # Power supplies
-    ac_in_line = new Sinhoo_SMTSO2515CTJ
-    ac_in_neutral = new Sinhoo_SMTSO2515CTJ
-    ac_in_chassis = new Sinhoo_SMTSO2515CTJ
+    # I2C Multiplexer
+    i2c_mux = new TCA9548APWR
+    gpio_expander_1 = new TCA6408ARGTR
+    gpio_expander_2 = new TCA6408ARGTR
+
+    # SPI MUX: 74CBT3251
+    # Scope mux
+
 
     # Blocks
     base_0 = new TestBase

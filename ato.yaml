@@ -256,6 +256,10 @@ builds:
   boardshapes-gridfinity-3x100mm:
     entry: elec/src/boardshapes/boardshape_gridfinity_3x100mm.ato:BoardshapeGridfinity3x100mm
 
+  block-column:
+    entry: elec/src/test/block-tester.ato:BlockColumn
+    exclude_targets: [mfg-data]
+
   test-block:
     entry: elec/src/test/test-block.ato:TestBlock
     exclude_targets: [mfg-data]
