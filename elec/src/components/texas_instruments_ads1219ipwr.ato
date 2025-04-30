@@ -1,5 +1,5 @@
 import ElectricPower, I2C, ElectricSignal
-import Capacitor
+import Capacitor, Addressor2, Resistor
 from "components/nettie.ato" import NetTie
 
 module Texas_Instruments_ADS1219IPWR:
@@ -31,11 +31,15 @@ module Texas_Instruments_ADS1219IPWR:
     power_analog.gnd ~ ic.AGND
 
     # Netties
-    agnd_nettie = new NetTie
+    agnd_nettie = new Resistor
+    agnd_nettie.resistance = 0ohm
+    agnd_nettie.package = "R0402"
     power.gnd ~ agnd_nettie.p1
     power_analog.gnd ~ agnd_nettie.p2
 
-    avdd_nettie = new NetTie
+    avdd_nettie = new Resistor
+    avdd_nettie.resistance = 0ohm
+    avdd_nettie.package = "R0402"
     power_analog.vcc ~ avdd_nettie.p1
     power.vcc ~ avdd_nettie.p2
 
@@ -78,9 +82,14 @@ module Texas_Instruments_ADS1219IPWR:
     reference.gnd ~ ic.REFP
     reference.gnd ~ power_analog.gnd
 
-    # Address 0x40 (default)
-    power.gnd ~ ic.A0
-    power.gnd ~ ic.A1
+    # Address 0x40
+    addressor = new Addressor2
+    assert i2c.address is addressor.address
+    addressor.base = 0x40
+    addressor.address_lines[0].line ~ ic.A0
+    addressor.address_lines[0].reference ~ power
+    addressor.address_lines[1].line ~ ic.A1
+    addressor.address_lines[1].reference ~ power
 
     # Reset - disabled by default
     ic.RESETh ~ power.vcc
@@ -115,3 +124,36 @@ component _Texas_Instruments_ADS1219IPWR:
     signal RESETh ~ pin 3
     signal SCL ~ pin 16
     signal SDA ~ pin 15
+
+
+module Test:
+    """Test module"""
+
+    adc1 = new Texas_Instruments_ADS1219IPWR
+    adc2 = new Texas_Instruments_ADS1219IPWR
+    adc3 = new Texas_Instruments_ADS1219IPWR
+    adc4 = new Texas_Instruments_ADS1219IPWR
+
+    power = new ElectricPower
+    reference = new ElectricPower
+    i2c = new I2C
+
+    power ~ adc1.power
+    power ~ adc2.power
+    power ~ adc3.power
+    power ~ adc4.power
+
+    reference ~ adc1.reference
+    reference ~ adc2.reference
+    reference ~ adc3.reference
+    reference ~ adc4.reference
+
+    i2c ~ adc1.i2c
+    i2c ~ adc2.i2c
+    i2c ~ adc3.i2c
+    i2c ~ adc4.i2c
+
+    adc1.i2c.address = 0x40
+    adc2.i2c.address = 0x41
+    adc3.i2c.address = 0x42
+    adc4.i2c.address = 0x43
