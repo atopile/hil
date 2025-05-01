@@ -1,0 +1,58 @@
+import ElectricPower, ElectricSignal, I2C, ElectricLogic
+
+module Texas_Instruments_ADS1115:
+    """
+    ADC with 16-bit resolution
+    """
+    ic = new _Texas_Instruments_ADS1115IDGSR
+
+    # External interfaces
+    power = new ElectricPower
+    i2c = new I2C
+    inputs = new ElectricSignal[4]
+    data_ready = new ElectricLogic
+
+    # I2C
+    i2c.sda.line ~ ic.sda
+    i2c.scl.line ~ ic.scl
+    i2c.address = 0x48
+    ic.A0 ~ power.gnd
+
+    # Power
+    power.vcc ~ ic.vcc
+    power.gnd ~ ic.gnd
+    assert power.voltage within 2V to 5.5V
+
+    # Inputs
+    inputs[0] ~ ic.IN1
+    inputs[1] ~ ic.IN2
+    inputs[2] ~ ic.IN3
+    inputs[3] ~ ic.IN4
+
+    for input in inputs:
+        input.reference.gnd ~ power.gnd
+
+
+    # Alert
+    data_ready.line ~ ic.ALERT
+
+
+
+component _Texas_Instruments_ADS1115IDGSR:
+    """
+    ADC with 16-bit resolution
+    """
+    lcsc_id = "C37593"
+    mpn = "ADS1115IDGSR"
+
+    # pins
+    signal SDA ~ pin 9
+    signal SCL ~ pin 10
+    signal VCC ~ pin 8
+    signal GND ~ pin 3
+    signal IN1 ~ pin 4
+    signal IN2 ~ pin 5
+    signal IN3 ~ pin 6
+    signal IN4 ~ pin 7
+    signal A0 ~ pin 1
+    signal ALERT ~ pin 2

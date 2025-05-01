@@ -6,11 +6,11 @@ from "resistors.ato" import I2CPullup
 # Components
 from "components/iso1640.ato" import ISO1640BDR
 from "components/mcp4725.ato" import MCP4725A0T
-from "components/ads1115.ato" import ADS1115IDGSR
+from "components/texas_instruments_ads1115.ato" import Texas_Instruments_ADS1115
 from "components/digitalBuck.ato" import DigitalBuck
 from "components/digitalLDO.ato" import DigitalLDO
 from "components/Ylptec_BYYXX.ato" import BYYXXS_2WR2, _B2405
-from "components/tca6408.ato" import TCA6408ARGTR
+from "components/texas_instruments_tca6408.ato" import Texas_Instruments_TCA6408
 from "components/current-sensor.ato" import CurrentSensor
 from "components/YNR4030.ato" import YNR4030_101M
 from "components/sk6805-ec20/elec/src/sk6805-ec20.ato" import SK6805EC20
@@ -61,7 +61,7 @@ module Cell:
 
     isolated_converter = new BYYXXS_2WR2
     isolated_converter.converter -> _B2405
-    adc = new ADS1115IDGSR
+    adc = new Texas_Instruments_ADS1115
     buck = new DigitalBuck
     ldo = new DigitalLDO
     current_sense = new CurrentSensor
@@ -78,12 +78,11 @@ module Cell:
     external_load = new LowSideSwitch
     external_load_resistor = new Resistor
 
-    # # addresses:
-    adc.address = "0x48"
-    buck.address = "0x61"
-    ldo.address = "0x60"
-    gpio.address = "0x20"
-    current_sense.address = "0x21"
+    # addresses:
+    assert adc.i2c.address is 0x48
+    assert buck.i2c.address is 0x61
+    assert ldo.i2c.address is 0x60
+    assert gpio.i2c.address is 0x20
 
     # I2C pullup
     _power_3v3 ~ i2c_pullup.power
@@ -112,7 +111,7 @@ module Cell:
     _iso_i2c ~ ldo.i2c
     _iso_i2c ~ gpio.i2c
 
-    # # # Internal rails
+    # Internal rails
     internal_ldo = new UMWYoutai_Semiconductor_Co___Ltd__XC6206P332MR
     _power_5v ~ internal_ldo.power_in
     internal_ldo.power_out ~ _power_3v3
@@ -142,7 +141,7 @@ module Cell:
     #TODO: do the math in ato
     # Buck config: vout = 5v when vctrl = 0V, vout = 0V when vctrl = 3.3V
     assert buck.power_out.voltage within 0V to 5V
-    buck.feedback_div.r_top.resistance = 37kohm +/- 2%
+    buck.feedback_div.r_top.resistance = 37kohm +/- 3%
     buck.feedback_div.r_bottom.resistance = 10kohm +/- 2%
     buck.feedback_div.r_ctrl.resistance = 24kohm +/- 2%
 
@@ -201,13 +200,11 @@ module Cell:
     adc.input_4.line ~ current_sense.power_out.vcc
 
     # GPIO expander
-    gpio.P2 ~ buck.enable.line
-    gpio.P3 ~ ldo.enable.line
-    gpio.P4 ~ load_switch.control.line
-    gpio.P5 ~ output_relay.input.line
-    gpio.P6 ~ external_load.control.line
-
-    gpio.ADDR ~ _power_3v3.gnd # 0x20
+    gpio.gpios[1] ~ buck.enable
+    gpio.gpios[3] ~ ldo.enable
+    gpio.gpios[4] ~ load_switch.control
+    gpio.gpios[5] ~ output_relay.input
+    gpio.gpios[6] ~ external_load.control
 
     _power_3v3.vcc.suggest_net_name = "3V3"
     _power_3v3.gnd.suggest_net_name = "3V3_GND"

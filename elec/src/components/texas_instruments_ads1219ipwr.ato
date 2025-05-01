@@ -117,6 +117,7 @@ module Test:
 
     # Interfaces
     power = new ElectricPower
+    power.voltage = 3.3V +/- 10%
     reference = new ElectricPower
     i2c = new I2C
 
@@ -127,7 +128,7 @@ module Test:
         reference ~ adc.reference
 
     # Address configuration
-    adcs[0].i2c.address = 0x40
-    adcs[1].i2c.address = 0x41
-    adcs[2].i2c.address = 0x42
-    adcs[3].i2c.address = 0x43
+    assert adcs[0].i2c.address is 0x40
+    assert adcs[1].i2c.address is 0x41
+    assert adcs[2].i2c.address is 0x42
+    assert adcs[3].i2c.address is 0x43

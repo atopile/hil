@@ -1,12 +1,13 @@
+#pragma experiment("BRIDGE_CONNECT")
 import ElectricPower, ElectricSignal, I2C
 import Resistor
 from "regulators.ato" import Regulator
-from "components/mcp4725.ato" import MCP4725A0T
+from "components/microchip_tech_mcp4725.ato" import Microchip_Tech_MCP4725A0T
 
 module DigitalRegulator from Regulator:
     power_3v3 = new ElectricPower
     i2c = new I2C
-    dac = new MCP4725A0T
+    dac = new Microchip_Tech_MCP4725A0T
     feedback_div = new VDivCtrl
     enable = new ElectricSignal
 
@@ -15,6 +16,7 @@ module DigitalRegulator from Regulator:
 
     # DAC config
     i2c ~ dac.i2c
+    assert i2c.address is dac.i2c.address
     power_3v3 ~ dac.power
 
     # Feedback
@@ -39,6 +41,5 @@ module VDivCtrl:
     r_bottom.package = "R0402"
     r_ctrl.package = "R0402"
 
-    power_in.vcc ~ r_top.p1; r_top.p2 ~ r_bottom.p1; r_bottom.p2 ~ power_in.gnd
-    control.line ~ r_ctrl.p1; r_ctrl.p2 ~ r_top.p2
-    output.line ~ r_top.p2
+    power_in.vcc ~> r_top ~> output.line; output.line ~> r_bottom ~> power_in.gnd
+    control.line ~> r_ctrl ~> output.line
