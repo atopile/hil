@@ -58,7 +58,7 @@ module Texas_Instruments_ADS1219IPWR:
 
     # Input references
     for input in inputs:
-        input.reference ~ power_analog
+        input.reference.gnd ~ power_analog.gnd
 
     # Reference
     reference.vcc ~ ic.REFN
