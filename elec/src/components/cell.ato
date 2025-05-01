@@ -67,7 +67,7 @@ module Cell:
     current_sense = new CurrentSensor
     output_relay = new PowerRelay
     dmm_relay = new PowerRelay
-    gpio = new TCA6408ARGTR
+    gpio = new Texas_Instruments_TCA6408
     filter = new PiFilter
     digital_isolator = new ISO1640BDR
     voltage_led = new SK6805EC20
@@ -79,11 +79,11 @@ module Cell:
     external_load_resistor = new Resistor
 
     # # addresses:
-    # adc.address = "0x48"
-    # buck.address = "0x61"
-    # ldo.address = "0x60"
-    # gpio.address = "0x20"
-    # current_sense.address = "0x21"
+    adc.address = "0x48"
+    buck.address = "0x61"
+    ldo.address = "0x60"
+    gpio.address = "0x20"
+    current_sense.address = "0x21"
 
     # I2C pullup
     _power_3v3 ~ i2c_pullup.power
