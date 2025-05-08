@@ -25,7 +25,7 @@ component MOLEX_39281243:
     gnd ~ power_ok.reference.gnd
     gnd ~ ps_on.reference.gnd
 
-    # Pins
+    # Row 1
     pin 1  ~ power_3v3.vcc
     pin 2  ~ power_3v3.vcc
     pin 3  ~ gnd
@@ -38,14 +38,16 @@ component MOLEX_39281243:
     pin 10 ~ power_12v.vcc
     pin 11 ~ power_12v.vcc
     pin 12 ~ power_3v3.vcc
+
+    # Row 2
     pin 13 ~ power_3v3.vcc
     pin 14 ~ power_12v_neg.vcc
     pin 15 ~ gnd
     pin 16 ~ ps_on.line
     pin 17 ~ gnd
     pin 18 ~ gnd
-    pin 19 ~ power_5v.vcc
-    pin 20 ~ power_5v.vcc
+    pin 19 ~ gnd
+    pin 20 # no connect
     pin 21 ~ power_5v.vcc
     pin 22 ~ power_5v.vcc
     pin 23 ~ power_5v.vcc
