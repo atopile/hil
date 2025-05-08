@@ -10,7 +10,6 @@ from software.hil.drivers.mcp4728 import MCP4728
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-
 class CellSim16ChV2:
     """
     Driver for CellSim16ChV2 hardware.
@@ -22,7 +21,7 @@ class CellSim16ChV2:
     i2c0: AsyncSMBusPeripheral
     i2c1: AsyncSMBusPeripheral
     cellsim_1_8: CellSim8Ch
-    cellsim_9_16: CellSim8Ch
+    # cellsim_9_16: CellSim8Ch
 
     # Thermistor DACs
     i2c2: AsyncSMBusPeripheral
@@ -37,7 +36,7 @@ class CellSim16ChV2:
         """Returns a combined list of cells from both 8-channel boards."""
         if not hasattr(self, 'cellsim_1_8') or not hasattr(self, 'cellsim_9_16'):
             raise AttributeError("CellSim8Ch instances not created yet.")
-        return self.cellsim_1_8.cells + self.cellsim_9_16.cells
+        return self.cellsim_1_8.cells# + self.cellsim_9_16.cells
 
     @classmethod
     async def create(cls, config: ConfigDict):
@@ -71,9 +70,9 @@ class CellSim16ChV2:
             self.cellsim_1_8 = await CellSim8Ch.create(
                 self.i2c0, config.get("cellsim_1_8", {})
             )
-            self.cellsim_9_16 = await CellSim8Ch.create(
-                self.i2c1, config.get("cellsim_9_16", {})
-            )
+            # self.cellsim_9_16 = await CellSim8Ch.create(
+            #     self.i2c1, config.get("cellsim_9_16", {})
+            # )
             logger.info("CellSim8Ch instances created.")
 
             # Create Thermistor DAC instances

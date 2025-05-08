@@ -15,12 +15,13 @@ import pytest
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from software.hil.drivers.examples.cellsim_16ch import CellSim16ChV2
+    from software.hil.drivers.examples.spacebms_hil import SpaceBMSHil
+
 
 
 @pytest.mark.runs_on(hostname="tipsy-raccoon")
-async def test_performance(hil: "CellSim16ChV2"):
-    cells = hil.cells
+async def test_performance(space_bms_hil: "SpaceBMSHil"):
+    cells = space_bms_hil.cellsim.cells
     for cell in cells:
         await cell.reset()
         await cell.set_voltage(1)
@@ -43,7 +44,7 @@ async def test_performance(hil: "CellSim16ChV2"):
 
 
 @pytest.mark.runs_on(hostname="tipsy-raccoon")
-async def test_output_voltage(hil: "CellSim16ChV2", record: Recorder):
+async def test_output_voltage(space_bms_hil: "SpaceBMSHil", record: Recorder):
     """
     Set output voltage (0.5- 4.3V, 0.1V steps)
         - Set output voltage
@@ -51,7 +52,7 @@ async def test_output_voltage(hil: "CellSim16ChV2", record: Recorder):
         - Check voltage within 0.02V
     """
     VOLTAGES = [v / 10 for v in range(5, 42)]
-    cells = hil.cells
+    cells = space_bms_hil.cellsim.cells
 
     logger.info("Calibrating cells before output voltage test...")
     await asyncio.gather(*[cell.calibrate(data_points=32) for cell in cells])
@@ -102,7 +103,7 @@ async def test_output_voltage(hil: "CellSim16ChV2", record: Recorder):
 
 
 @pytest.mark.runs_on(hostname="tipsy-raccoon")
-async def test_buck_voltage(hil: "CellSim16ChV2", record: Recorder):
+async def test_buck_voltage(space_bms_hil: "SpaceBMSHil", record: Recorder):
     """
     Set Buck voltage (1.5 - 4.4V, 0.1V steps)
         - Set Buck voltage
@@ -110,7 +111,7 @@ async def test_buck_voltage(hil: "CellSim16ChV2", record: Recorder):
         - Check voltage within 0.1V
     """
     BUCK_VOLTAGES = [v / 10 for v in range(15, 45)]
-    cells = hil.cells
+    cells = space_bms_hil.cellsim.cells
 
     logger.info("Setting up cells for buck voltage test...")
     for cell in cells:
@@ -165,14 +166,14 @@ async def test_buck_voltage(hil: "CellSim16ChV2", record: Recorder):
 
 
 @pytest.mark.runs_on(hostname="tipsy-raccoon")
-async def test_mux(hil: "CellSim16ChV2"):
+async def test_mux(space_bms_hil: "SpaceBMSHil"):
     """Tests basic GPIO write/read via output register (original mux test intent)."""
     logger.info("Starting GPIO basic write/read test (test_mux)...")
-    for cell in hil.cells:
+    for cell in space_bms_hil.cellsim.cells:
         async with cell.bus.handle() as handle:
             await handle.write_byte_data(cell.Devices.GPIO, 0x01, cell.cell_num)
 
-    for cell in hil.cells:
+    for cell in space_bms_hil.cellsim.cells:
         async with cell.bus.handle() as handle:
             read_value = await handle.read_byte_data(cell.Devices.GPIO, 0x01)
             error_msg = f"Cell {cell.cell_num} GPIO output state mismatch: wrote {cell.cell_num}, read {read_value}"
@@ -181,7 +182,7 @@ async def test_mux(hil: "CellSim16ChV2"):
 
 
 @pytest.mark.runs_on(hostname="tipsy-raccoon")
-async def test_external_load_current(hil: "CellSim16ChV2", record: Recorder):
+async def test_external_load_current(space_bms_hil: "SpaceBMSHil", record: Recorder):
     """Tests current measurement when the external load is enabled for all cells."""
     logger.info("Starting external load current sense test for all cells...")
 
@@ -196,13 +197,13 @@ async def test_external_load_current(hil: "CellSim16ChV2", record: Recorder):
     failed_cells = []
     with ExitStack() as stack:
         current_traces = {}
-        for cell_to_test in hil.cells:
+        for cell_to_test in space_bms_hil.cellsim.cells:
             trace = stack.enter_context(
                 record(cell_to_test.get_current, name=f"cell_{cell_to_test.cell_num}_current")
             )
             current_traces[cell_to_test.cell_num] = trace
 
-        for cell_to_test in hil.cells:
+        for cell_to_test in space_bms_hil.cellsim.cells:
             logger.info(f"--- Testing Cell {cell_to_test.cell_num} ---")
             cell_failed_this_iteration = False
             try:
@@ -242,14 +243,14 @@ async def test_external_load_current(hil: "CellSim16ChV2", record: Recorder):
 
 
 @pytest.mark.runs_on(hostname="tipsy-raccoon")
-async def test_cell_calibration(hil: "CellSim16ChV2", record: Recorder):
+async def test_cell_calibration(space_bms_hil: "SpaceBMSHil", record: Recorder):
     """Test the cell calibration functionality on the first cell."""
     logger.info("Starting cell calibration test (on cell 0)...")
-    if not hil.cells:
+    if not space_bms_hil.cellsim.cells:
         pytest.skip("No cells available for calibration test.")
         return
 
-    cell = hil.cells[0]
+    cell = space_bms_hil.cellsim.cells[0]
     await cell.enable() # Enable cell before calibration
 
     with record(cell.get_voltage, name=f"cell_{cell.cell_num}_cal_voltage") as voltage_trace:
@@ -357,7 +358,7 @@ async def _generate_multi_relay_freq(
 # --- Multi-Relay Tests ---
 
 @pytest.mark.runs_on(hostname="tipsy-raccoon")
-async def test_multi_relay_high_freq(hil: "CellSim16ChV2"):
+async def test_multi_relay_high_freq(space_bms_hil: "SpaceBMSHil"):
     """Tests generating higher frequencies by interleaving multiple relays."""
     target_frequencies = [500.0, 750.0, 1000.0, 1500.0, 2000.0]
     duration = 1.0
@@ -366,7 +367,7 @@ async def test_multi_relay_high_freq(hil: "CellSim16ChV2"):
     logger.info(f"Starting multi-relay high frequency test. Targets: {target_frequencies} Hz")
     for freq in target_frequencies:
         num_relays_needed = math.ceil(freq / max_relay_freq)
-        if num_relays_needed > len(hil.cells):
+        if num_relays_needed > len(space_bms_hil.cellsim.cells):
             logger.warning(f"Skipping {freq:.1f} Hz. Need {num_relays_needed} relays > {len(hil.cells)} available.")
             pytest.skip(f"Insufficient relays for {freq:.1f} Hz")
             continue
@@ -378,7 +379,7 @@ async def test_multi_relay_high_freq(hil: "CellSim16ChV2"):
 
 
 @pytest.mark.runs_on(hostname="tipsy-raccoon")
-async def test_relay_techno_beat(hil: "CellSim16ChV2"):
+async def test_relay_techno_beat(space_bms_hil: "SpaceBMSHil"):
     """Generates a DnB-style beat pattern using many dedicated relays for kick/snare."""
     logger.info("Starting relay DnB beat test with many relays...")
     bpm = 174.0
@@ -396,7 +397,7 @@ async def test_relay_techno_beat(hil: "CellSim16ChV2"):
     all_indices = [i for s in sounds.values() for i in s["indices"]]
     total_relays_required = max(all_indices) + 1 if all_indices else 0
     logger.info(f"Beat requires {total_relays_required} unique relays.")
-    all_cells = hil.cells
+    all_cells = space_bms_hil.cellsim.cells
     if total_relays_required > len(all_cells):
         pytest.skip(f"Insufficient relays ({len(all_cells)}). Beat requires indices up to {total_relays_required-1}.")
         return
