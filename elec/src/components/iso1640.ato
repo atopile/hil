@@ -52,9 +52,11 @@ component ISO1640QDWRQ1:
 
     power_non_isolated.vcc ~ pin 3
     power_non_isolated.gnd ~ pin 1
+    power_non_isolated.gnd ~ pin 7
 
     power_isolated.vcc ~ pin 14
-    power_isolated.gnd ~ pin 15
+    power_isolated.gnd ~ pin 16
+    power_isolated.gnd ~ pin 9
 
     i2c_non_isolated.scl.line ~ pin 6
     i2c_non_isolated.sda.line ~ pin 5
