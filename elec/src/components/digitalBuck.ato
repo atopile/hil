@@ -1,3 +1,5 @@
+#pragma experiment("BRIDGE_CONNECT")
+#pragma experiment("FOR_LOOP")
 import ElectricPower, ElectricSignal, Capacitor, Resistor, Inductor
 
 from "components/digital-regulator.ato" import DigitalRegulator
@@ -18,56 +20,36 @@ module DigitalBuck from DigitalRegulator:
     # Feedback
     regulator.VFB ~ feedback_div.output.line
 
-    # DAC config
-    dac.address_bit1.line ~ power_in.vcc
-
     # Input caps
-    input_cap_1 = new Capacitor
-    input_cap_2 = new Capacitor
-    input_cap_3 = new Capacitor
-    input_cap_1.capacitance = 10uF +/- 20%
-    input_cap_2.capacitance = 10uF +/- 20%
-    input_cap_3.capacitance = 100nF +/- 20%
-    input_cap_1.package = "C0805"
-    input_cap_2.package = "C0805"
-    input_cap_3.package = "C0402"
-    power_in ~ input_cap_1.power
-    power_in ~ input_cap_2.power
-    power_in ~ input_cap_3.power
+    input_caps = new Capacitor[2]
+    for cap in input_caps:
+        cap.capacitance = 10uF +/- 20%
+        cap.package = "C0805"
+        power_in ~ cap.power
 
     # Output caps
-    output_cap_1 = new Capacitor
-    output_cap_2 = new Capacitor
-    output_cap_3 = new Capacitor
-    output_cap_1.capacitance = 10uF +/- 20%
-    output_cap_2.capacitance = 10uF +/- 20%
-    output_cap_3.capacitance = 10uF +/- 20%
-    output_cap_1.package = "C0805"
-    output_cap_2.package = "C0805"
-    output_cap_3.package = "C0805"
-    power_out ~ output_cap_1.power
-    power_out ~ output_cap_2.power
-    power_out ~ output_cap_3.power
+    output_caps = new Capacitor[3]
+    for cap in output_caps:
+        cap.capacitance = 10uF +/- 20%
+        cap.package = "C0805"
+        power_out ~ cap.power
 
     # Bootstrap cap
     bootstrap_cap = new Capacitor
     bootstrap_cap.capacitance = 100nF +/- 20%
     bootstrap_cap.package = "C0402"
-    regulator.VBST ~ bootstrap_cap.p1
-    bootstrap_cap.p2 ~ regulator.SW
+    regulator.VBST ~> bootstrap_cap ~> regulator.SW
 
     # Inductor
     inductor = new Inductor
     inductor.lcsc_id = "C408335"
-    regulator.SW ~ inductor.p1
-    inductor.p2 ~ power_out.vcc
+    regulator.SW ~> inductor ~> power_out.vcc
 
     # Enable
     enable_resistor = new Resistor
     enable_resistor.resistance = 10kohm +/- 5%
     enable_resistor.package = "R0402"
-    enable.line ~ enable_resistor.p1
-    enable_resistor.p2 ~ regulator.EN
+    enable.line ~> enable_resistor ~> regulator.EN
 
 component TPS563201DDCR:
     # component TPS563201DDCR

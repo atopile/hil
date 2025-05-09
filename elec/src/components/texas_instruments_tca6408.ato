@@ -1,0 +1,106 @@
+#pragma experiment("FOR_LOOP")
+import ElectricPower, I2C, Addressor1, ElectricLogic
+
+module Texas_Instruments_TCA6408:
+    """Texas_Instruments_TCA6408"""
+    # External interfaces
+    power = new ElectricPower
+    i2c = new I2C
+    gpios = new ElectricLogic[8]
+    reset = new ElectricLogic
+    interrupt = new ElectricLogic
+
+    # Required interfaces
+    power.required = True
+    i2c.required = True
+
+    # Internal components
+    ic = new _Texas_Instruments_TCA6408ARGTR
+
+    # Connect IC to interfaces
+    # I2C
+    i2c.sda.line ~ ic.SDA
+    i2c.scl.line ~ ic.SCL
+    power ~ i2c.scl.reference
+    power ~ i2c.sda.reference
+
+    # Power
+    power.vcc ~ ic.VCCP
+    power.vcc ~ ic.VCCI
+    power.gnd ~ ic.GND
+    power.gnd ~ ic.PAD
+
+    # Reset
+    reset.line ~ ic.RESET
+
+    # Interrupt
+    interrupt.line ~ ic.INT
+
+    # GPIO
+    gpios[0].line ~ ic.P0
+    gpios[1].line ~ ic.P1
+    gpios[2].line ~ ic.P2
+    gpios[3].line ~ ic.P3
+    gpios[4].line ~ ic.P4
+    gpios[5].line ~ ic.P5
+    gpios[6].line ~ ic.P6
+    gpios[7].line ~ ic.P7
+
+    # Addressor
+    addressor = new Addressor1
+    assert i2c.address is addressor.address
+    addressor.base = 0x20
+    addressor.address_lines[0].line ~ ic.ADDR
+    addressor.address_lines[0].reference ~ power
+
+    # Reset
+    reset.line ~ power.vcc # default enabled
+
+    # Connect gpio references to power
+    for gpio in gpios:
+        gpio.reference ~ power
+
+
+component _Texas_Instruments_TCA6408ARGTR:
+    """
+    8 Channel I2C GPIO Expander
+    """
+    lcsc_id = "C181499"
+
+    signal RESET ~ pin 1
+    signal P0 ~ pin 2
+    signal P1 ~ pin 3
+    signal P2 ~ pin 4
+    signal P3 ~ pin 5
+    signal GND ~ pin 6
+    signal P4 ~ pin 7
+    signal P5 ~ pin 8
+    signal P6 ~ pin 9
+    signal P7 ~ pin 10
+    signal INT ~ pin 11
+    signal SCL ~ pin 12
+    signal SDA ~ pin 13
+    signal VCCP ~ pin 14
+    signal VCCI ~ pin 15
+    signal ADDR ~ pin 16
+    signal PAD ~ pin 17
+
+
+module Test:
+    """Test module for Texas_Instruments_TCA6408"""
+
+    # Components
+    gpio_expanders = new Texas_Instruments_TCA6408[2]
+
+    # Interfaces
+    power = new ElectricPower
+    i2c = new I2C
+
+    # Connect interfaces
+    for expander in gpio_expanders:
+        power ~ expander.power
+        i2c ~ expander.i2c
+
+    # Address configuration
+    gpio_expanders[0].i2c.address = 0x20
+    gpio_expanders[1].i2c.address = 0x21
