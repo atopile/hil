@@ -142,14 +142,14 @@ module Cell:
     # Buck config: vout = 5v when vctrl = 0V, vout = 0V when vctrl = 3.3V
     assert buck.power_out.voltage within 0V to 5V
     buck.feedback_div.r_top.resistance = 37kohm +/- 3%
-    buck.feedback_div.r_bottom.resistance = 10kohm +/- 2%
-    buck.feedback_div.r_ctrl.resistance = 24kohm +/- 2%
+    buck.feedback_div.r_bottom.resistance = 10kohm +/- 3%
+    buck.feedback_div.r_ctrl.resistance = 24kohm +/- 3%
 
     #TODO: do the math in ato
     # LDO config: vout = 5v when vctrl = 0V, vout = 0V when vctrl = 3.3V
-    ldo.feedback_div.r_top.resistance = 60kohm +/- 2%
-    ldo.feedback_div.r_bottom.resistance = 10kohm +/- 2%
-    ldo.feedback_div.r_ctrl.resistance = 43kohm +/- 2%
+    ldo.feedback_div.r_top.resistance = 60kohm +/- 3%
+    ldo.feedback_div.r_bottom.resistance = 10kohm +/- 3%
+    ldo.feedback_div.r_ctrl.resistance = 43kohm +/- 3%
 
     # Connect Cell components
     power_in ~ isolated_converter.power_in

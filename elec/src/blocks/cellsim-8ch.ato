@@ -79,6 +79,8 @@ module CellSim8Ch:
     i2c_pullup = new I2CPullup
     power_3v3_isolated ~ i2c_pullup.power
     i2c_isolated ~ i2c_pullup.i2c
+    i2c_pullup.r_sda.resistance = 2kohm +/- 10%
+    i2c_pullup.r_scl.resistance = 2kohm +/- 10%
 
     # High precision voltage sense
     micro_vault = new MicroVault
@@ -118,6 +120,7 @@ module CellSim8Ch:
     i2c_pullup_micro_vault = new I2CPullup
     micro_vault.power_3v3 ~ i2c_pullup_micro_vault.power
     micro_vault.i2c ~ i2c_pullup_micro_vault.i2c
+
 
     # Cells
     cell1 = new Cell
