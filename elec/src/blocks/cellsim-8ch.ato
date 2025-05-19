@@ -39,6 +39,10 @@ module CellSim8Ch:
     buck_5v = new LV2842x
     ldo_3v3 = new LDK220M_R
 
+    # Addresses
+    micro_vault.adc.i2c.address = 0x49
+    micro_vault.temp_sensor.i2c.address = 0x48
+
     # Connect up regulators
     power_24v ~ regulator_24v_isolated.power_in
     regulator_24v_isolated.power_out ~ power_24v_isolated

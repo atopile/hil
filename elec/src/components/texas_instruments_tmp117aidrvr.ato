@@ -1,4 +1,7 @@
-import ElectricPower, I2C
+import ElectricPower
+import I2C
+
+from "components/ti_addressor.ato" import TIAddressor
 
 component Texas_Instruments_TMP117AIDRVR:
     """Texas_Instruments_TMP117AIDRVR component"""
@@ -38,4 +41,8 @@ component Texas_Instruments_TMP117AIDRVR:
     #   V+          | 0x49
     #   SDA         | 0x4A
     #   SCL         | 0x4B
-    power.gnd ~ ADD0
+    addressor = new TIAddressor
+    addressor.address_line.line ~ ADD0
+    addressor.address_line.reference ~ power
+    assert addressor.base is 0x48
+    assert i2c.address is addressor.address

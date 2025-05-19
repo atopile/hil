@@ -178828,17 +178828,6 @@
 		(layer "Edge.Cuts")
 		(uuid "739cbb4f-8fb6-4ace-9687-06ab471bc73d")
 	)
-	(gr_rect
-		(start 71.45 39.72)
-		(end 230.07 150.09)
-		(stroke
-			(width 0.2)
-			(type solid)
-		)
-		(fill no)
-		(layer "Edge.Cuts")
-		(uuid "7aeced8d-139b-44aa-b549-405f9f970557")
-	)
 	(gr_line
 		(start 114.35 60.7)
 		(end 114.35 64.700001)
@@ -220462,14 +220451,6 @@
 		(layer "In1.Cu")
 		(net 372)
 		(uuid "3e1888c8-b2ba-40c7-a27f-6cf8c9355608")
-	)
-	(segment
-		(start 110.253412 66.241)
-		(end 109.804412 66.69)
-		(width 0.2)
-		(layer "In1.Cu")
-		(net 372)
-		(uuid "5b4b3cd1-ab91-4772-8524-a490a6cd344c")
 	)
 	(segment
 		(start 92.445 80.77)
