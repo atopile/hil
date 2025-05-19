@@ -80,8 +80,8 @@ module Cell:
 
     # addresses:
     assert adc.i2c.address is 0x48
-    assert buck.i2c.address is 0x61
-    assert ldo.i2c.address is 0x60
+    assert buck.dac.i2c.address is 0x61
+    assert ldo.dac.i2c.address is 0x60
     assert gpio.i2c.address is 0x20
 
     # I2C pullup
@@ -200,7 +200,7 @@ module Cell:
     adc.inputs[3].line ~ current_sense.power_out.vcc
 
     # GPIO expander
-    gpio.gpios[1] ~ buck.enable
+    gpio.gpios[2] ~ buck.enable
     gpio.gpios[3] ~ ldo.enable
     gpio.gpios[4] ~ load_switch.control
     gpio.gpios[5] ~ output_relay.input

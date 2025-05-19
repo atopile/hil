@@ -64,4 +64,3 @@ module MicroVault:
 
     heater_vdiv.r_top.package = "R0402"
     heater_vdiv.r_bottom.package = "R0402"
-

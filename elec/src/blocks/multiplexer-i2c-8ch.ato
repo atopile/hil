@@ -41,11 +41,11 @@ module MultiplexerI2C8Ch:
     i2c ~ gpio_expander.i2c
     gpio_expander.i2c.address = 0x21
 
-    gpio_expander.gpios[0].line ~ mux.S2 # Select 3
-    gpio_expander.gpios[1].line ~ mux.S1 # Select 2
-    gpio_expander.gpios[2].line ~ mux.S0 # Select 1
-    gpio_expander.gpios[3].line ~ mux.A # Shared data line
-    gpio_expander.gpios[4].line ~ mux.Eh # Enablex
+    gpio_expander.gpios[1].line ~ mux.S2 # Select 3
+    gpio_expander.gpios[2].line ~ mux.S1 # Select 2
+    gpio_expander.gpios[3].line ~ mux.S0 # Select 1
+    gpio_expander.gpios[4].line ~ mux.A # Shared data line
+    gpio_expander.gpios[5].line ~ mux.Eh # Enable
 
     # Zip connect would be nice here
     outputs[0].line ~ mux.A0
