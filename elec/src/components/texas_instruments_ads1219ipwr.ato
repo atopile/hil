@@ -1,6 +1,12 @@
 #pragma experiment("FOR_LOOP")
-import ElectricPower, I2C, ElectricSignal
-import Capacitor, Addressor2, Resistor
+#pragma experiment("MODULE_TEMPLATING")
+
+import ElectricPower
+import I2C
+import ElectricSignal
+import Capacitor
+import Addressor
+import Resistor
 
 module Texas_Instruments_ADS1219IPWR:
     # External interfaces
@@ -63,10 +69,9 @@ module Texas_Instruments_ADS1219IPWR:
     # Reference
     reference.vcc ~ ic.REFN
     reference.gnd ~ ic.REFP
-    reference.gnd ~ power_analog.gnd
 
     # Address 0x40
-    addressor = new Addressor2
+    addressor = new Addressor<address_bits=2>
     assert i2c.address is addressor.address
     addressor.base = 0x40
     addressor.address_lines[0].line ~ ic.A0

@@ -1,4 +1,12 @@
-import ElectricPower, ElectricSignal, I2C, ElectricLogic
+#pragma experiment("FOR_LOOP")
+#pragma experiment("BRIDGE_CONNECT")
+
+import ElectricPower
+import ElectricSignal
+import I2C
+import ElectricLogic
+
+from "components/ti_addressor.py" import TIAddressor
 
 module Texas_Instruments_ADS1115:
     """
@@ -13,28 +21,37 @@ module Texas_Instruments_ADS1115:
     data_ready = new ElectricLogic
 
     # I2C
-    i2c.sda.line ~ ic.sda
-    i2c.scl.line ~ ic.scl
+    i2c.sda.line ~ ic.SDA
+    i2c.scl.line ~ ic.SCL
     i2c.address = 0x48
     ic.A0 ~ power.gnd
 
     # Power
-    power.vcc ~ ic.vcc
-    power.gnd ~ ic.gnd
+    power.vcc ~ ic.VCC
+    power.gnd ~ ic.GND
     assert power.voltage within 2V to 5.5V
 
     # Inputs
-    inputs[0] ~ ic.IN1
-    inputs[1] ~ ic.IN2
-    inputs[2] ~ ic.IN3
-    inputs[3] ~ ic.IN4
+    inputs[0].line ~ ic.IN1
+    inputs[1].line ~ ic.IN2
+    inputs[2].line ~ ic.IN3
+    inputs[3].line ~ ic.IN4
 
     for input in inputs:
         input.reference.gnd ~ power.gnd
 
 
-    # Alert
-    data_ready.line ~ ic.ALERT
+    # Addressor
+    addressor = new TIAddressor
+    addressor.base = 0x48
+    addressor.i2c ~ i2c
+    addressor.address_line.line ~ ic.A0
+    assert i2c.address is addressor.address
+
+    # Alert Ready
+    alert_ready = new ElectricLogic
+    alert_ready.line ~ ic.ALERT
+    alert_ready.reference ~ power
 
 
 

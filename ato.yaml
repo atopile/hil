@@ -222,13 +222,6 @@ builds:
       - I2C.requires_unique_addresses
       - requires_external_usage
 
-  micro-vault-dev-board:
-    entry: elec/src/blocks/micro_vault.ato:MicroVaultDevBoard
-    exclude_targets: [mfg-data]
-    exclude_checks:
-      - I2C.requires_unique_addresses
-      - requires_external_usage
-
   isolated-20w-power-supply:
     entry: elec/src/components/tdpower_tdk2024s24wh.ato:TDPOWER_TDK20_24S24WH
     exclude_targets: [mfg-data]

@@ -194,10 +194,10 @@ module Cell:
     dmm_relay_enable ~ dmm_relay.input
 
     # ADC connections
-    adc.input_1.line ~ buck.power_out.vcc
-    adc.input_2.line ~ ldo.power_out.vcc
-    adc.input_3 ~ current_sense.output
-    adc.input_4.line ~ current_sense.power_out.vcc
+    adc.inputs[0].line ~ buck.power_out.vcc
+    adc.inputs[1].line ~ ldo.power_out.vcc
+    adc.inputs[2] ~ current_sense.output
+    adc.inputs[3].line ~ current_sense.power_out.vcc
 
     # GPIO expander
     gpio.gpios[1] ~ buck.enable

@@ -87,7 +87,7 @@ module CellSim8Ch:
     dmm_input_filter = new FilterElectricalRC
     dmm_input_filter.in_.line ~ dmm_out.vcc
     dmm_input_filter.in_.reference.gnd ~ dmm_out.gnd
-    dmm_input_filter.out ~ micro_vault.adc.input_0
+    dmm_input_filter.out ~ micro_vault.adc.inputs[0]
     # Device gnd should be connected to microVault gnd
     dmm_out.gnd ~ micro_vault.power_3v3.gnd
 
@@ -199,14 +199,14 @@ module CellSim8Ch:
     i2c_mux.i2c7 ~ cell8.i2c
 
     # Cell to dmm mux connections
-    gpio_mux.output_1 ~ cell1.dmm_relay_enable
-    gpio_mux.output_2 ~ cell2.dmm_relay_enable
-    gpio_mux.output_3 ~ cell3.dmm_relay_enable
-    gpio_mux.output_4 ~ cell4.dmm_relay_enable
-    gpio_mux.output_5 ~ cell5.dmm_relay_enable
-    gpio_mux.output_6 ~ cell6.dmm_relay_enable
-    gpio_mux.output_7 ~ cell7.dmm_relay_enable
-    gpio_mux.output_8 ~ cell8.dmm_relay_enable
+    gpio_mux.outputs[0] ~ cell1.dmm_relay_enable
+    gpio_mux.outputs[1] ~ cell2.dmm_relay_enable
+    gpio_mux.outputs[2] ~ cell3.dmm_relay_enable
+    gpio_mux.outputs[3] ~ cell4.dmm_relay_enable
+    gpio_mux.outputs[4] ~ cell5.dmm_relay_enable
+    gpio_mux.outputs[5] ~ cell6.dmm_relay_enable
+    gpio_mux.outputs[6] ~ cell7.dmm_relay_enable
+    gpio_mux.outputs[7] ~ cell8.dmm_relay_enable
 
     # DMM Mux output connections
     dmm_out ~ cell1.dmm_out
