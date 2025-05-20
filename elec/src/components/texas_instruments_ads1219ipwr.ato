@@ -1,5 +1,6 @@
 #pragma experiment("FOR_LOOP")
 #pragma experiment("MODULE_TEMPLATING")
+#pragma experiment("BRIDGE_CONNECT")
 
 import ElectricPower
 import I2C
@@ -18,7 +19,6 @@ module Texas_Instruments_ADS1219IPWR:
 
     # Required interfaces
     power.required = True
-    power_analog.required = True
     i2c.required = True
     reference.required = True
 
@@ -37,14 +37,12 @@ module Texas_Instruments_ADS1219IPWR:
     agnd_nettie = new Resistor
     agnd_nettie.resistance = 0ohm
     agnd_nettie.package = "R0402"
-    power.gnd ~ agnd_nettie.p1
-    power_analog.gnd ~ agnd_nettie.p2
+    power.gnd ~> agnd_nettie ~> power_analog.gnd
 
     avdd_nettie = new Resistor
     avdd_nettie.resistance = 0ohm
     avdd_nettie.package = "R0402"
-    power_analog.vcc ~ avdd_nettie.p1
-    power.vcc ~ avdd_nettie.p2
+    power_analog.vcc ~> avdd_nettie ~> power.vcc
 
     # Input capacitors
     decoupling_caps = new Capacitor[3]
