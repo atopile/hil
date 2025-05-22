@@ -34,6 +34,10 @@ module MicroVault:
     i2c ~ adc.i2c
     i2c ~ temp_sensor.i2c
 
+    # Addresses
+    assert adc.i2c.address is 0x41
+    assert temp_sensor.i2c.address is 0x49
+
     # Power
     power_9v ~ reference_regulator.power_in
     reference_regulator.power_out ~ _power_5v3
@@ -64,55 +68,3 @@ module MicroVault:
 
     heater_vdiv.r_top.package = "R0402"
     heater_vdiv.r_bottom.package = "R0402"
-
-
-from "components/banana-power.ato" import BananaPower
-import QWIIC_Connector, FilterElectricalRC, Resistor
-
-module MicroVaultDevBoard:
-    micro_vault = new MicroVault
-
-    # Power 9v
-    xt30 = new XT30_Male_Right_Angle
-    xt30.power ~ micro_vault.power_9v
-
-    # Pullup i2c
-    i2c_pullup = new I2CPullup
-    i2c_pullup.power ~ micro_vault.power_3v3
-    i2c_pullup.i2c ~ micro_vault.i2c
-
-    # DMM input
-    input_filter = new FilterElectricalRC
-    input_filter.resistor.resistance = 10kohm +/- 1%
-    input_filter.capacitor.capacitance = 100nF +/- 20%
-    input_filter.resistor.package = "R0402"
-    input_filter.capacitor.package = "C0402"
-
-    input_series_resistor = new Resistor
-    input_series_resistor.resistance = 10kohm +/- 1%
-    input_series_resistor.package = "R0402"
-
-    dmm_input = new BananaPower
-    dmm_input.power.vcc ~ input_filter.in_
-    micro_vault.adc.input_0 ~ input_filter.out
-    micro_vault.adc.input_0.reference.gnd ~ input_filter.in_.reference.gnd
-    micro_vault.adc.input_0.reference.gnd ~ input_series_resistor.p1
-    input_series_resistor.p2 ~ dmm_input.power.gnd
-
-    # I2C connection - QWIIC
-    qwiic_connector = new QWIIC_Connector
-    qwiic_connector.power ~ micro_vault.power_3v3
-    qwiic_connector.i2c ~ micro_vault.i2c
-
-
-component XT30_Male_Right_Angle:
-    """Male XT30 connector with right angle pins. This side would go on the device typically"""
-    signal gnd ~ pin 1
-    signal vin ~ pin 2
-    power = new ElectricPower
-    power.vcc ~ vin
-    power.gnd ~ gnd
-
-    footprint = "CONN-TH_XT30PW-M"
-    lcsc_id = "C431092"
-    designator_prefix = "J"

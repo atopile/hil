@@ -84,14 +84,14 @@
 		)
 	)
 	(net 0 "")
-	(net 1 "hv")
+	(net 1 "adcs[3]-AVDD")
 	(net 2 "SDA")
 	(net 3 "adcs[3]-AIN3")
 	(net 4 "adcs[0]-AIN0")
 	(net 5 "adcs[3].ic-DRDYh")
 	(net 6 "REFN")
 	(net 7 "adcs[0]-AIN1")
-	(net 8 "hv-2")
+	(net 8 "hv")
 	(net 9 "adcs[3]-AIN2")
 	(net 10 "adcs[2]-AIN1")
 	(net 11 "adcs[0].ic-DRDYh")
@@ -103,8 +103,8 @@
 	(net 17 "adcs[3]-AIN1")
 	(net 18 "adcs[0]-AIN3")
 	(net 19 "adcs[1]-AIN2")
-	(net 20 "hv-3")
-	(net 21 "gnd")
+	(net 20 "adcs[2]-AVDD")
+	(net 21 "adcs[1]-gnd")
 	(net 22 "adcs[2]-AIN3")
 	(net 23 "gnd-1")
 	(net 24 "adcs[2].ic-DRDYh")
@@ -112,8 +112,12 @@
 	(net 26 "adcs[0]-AIN2")
 	(net 27 "adcs[3]-AIN0")
 	(net 28 "adcs[1]-AIN3")
-	(net 29 "hv-1")
-	(net 30 "hv-4")
+	(net 29 "adcs[1]-AVDD")
+	(net 30 "adcs[0]-AVDD")
+	(net 31 "adcs[3]-gnd")
+	(net 32 "adcs[0]-gnd")
+	(net 33 "gnd")
+	(net 34 "adcs[2]-gnd")
 	(footprint "atopile:C0402-b3ef17"
 		(layer "F.Cu")
 		(uuid "023925de-1ca0-4c74-abfd-cd484642524b")
@@ -416,7 +420,7 @@
 			(at -0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "94fbfcb4-9916-4a20-8438-a85aafac758d")
 		)
 		(pad "2" smd rect
@@ -492,7 +496,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C60485"
+		(property "LCSC" "C21376"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -504,7 +508,7 @@
 				)
 			)
 		)
-		(property "Partnumber" "RC0402JR-070RL"
+		(property "Partnumber" "0402WGJ0000TCE"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -516,7 +520,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO"
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -693,7 +697,7 @@
 			(at 0.43 0)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 32 "adcs[0]-gnd")
 			(uuid "b0fe54c0-8b61-4ec1-ab84-f0069509f18c")
 		)
 		(embedded_fonts no)
@@ -1000,7 +1004,7 @@
 			(at -0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "184d71b5-58da-4e30-9100-a3e03308c00e")
 		)
 		(pad "2" smd rect
@@ -1076,7 +1080,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C60485"
+		(property "LCSC" "C21376"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -1088,7 +1092,7 @@
 				)
 			)
 		)
-		(property "Partnumber" "RC0402JR-070RL"
+		(property "Partnumber" "0402WGJ0000TCE"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -1100,7 +1104,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO"
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -1270,14 +1274,14 @@
 			(at -0.43 0 180)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 20 "hv-3")
+			(net 20 "adcs[2]-AVDD")
 			(uuid "1601eddb-f0d2-47d1-b082-084ce97ac59f")
 		)
 		(pad "2" smd rect
 			(at 0.43 0 180)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "b4145501-691f-4be8-8e3b-c44cbfd39c5b")
 		)
 		(embedded_fonts no)
@@ -1346,7 +1350,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C60485"
+		(property "LCSC" "C21376"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -1358,7 +1362,7 @@
 				)
 			)
 		)
-		(property "Partnumber" "RC0402JR-070RL"
+		(property "Partnumber" "0402WGJ0000TCE"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -1370,7 +1374,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO"
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -1547,7 +1551,7 @@
 			(at 0.43 0)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 31 "adcs[3]-gnd")
 			(uuid "88d3c55b-0d0a-4996-b298-8b2dfed967ab")
 		)
 		(embedded_fonts no)
@@ -1854,14 +1858,14 @@
 			(at -0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 30 "hv-4")
+			(net 30 "adcs[0]-AVDD")
 			(uuid "71d0a818-0894-4846-baa1-107ee60ab429")
 		)
 		(pad "2" smd rect
 			(at 0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 32 "adcs[0]-gnd")
 			(uuid "4e5947c5-22b1-40d2-a943-6ccbcd84f2cb")
 		)
 		(embedded_fonts no)
@@ -2101,7 +2105,7 @@
 			(at -2.28 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "b600e0f3-c438-4fdc-bfc1-8df7050c4388")
 		)
 		(pad "2" smd oval
@@ -2115,7 +2119,7 @@
 			(at -0.98 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "1cbbbc1f-8153-4917-bda3-955cdd6f0f2e")
 		)
 		(pad "4" smd oval
@@ -2129,7 +2133,7 @@
 			(at 0.33 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 21 "adcs[1]-gnd")
 			(uuid "adffdcd0-acb0-4143-9934-6f01eb473b0e")
 		)
 		(pad "6" smd oval
@@ -2157,7 +2161,7 @@
 			(at 2.28 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 33 "gnd")
 			(uuid "2af5b0df-93aa-4bbd-a00b-e565868c1444")
 		)
 		(pad "10" smd oval
@@ -2178,14 +2182,14 @@
 			(at 0.33 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 29 "hv-1")
+			(net 29 "adcs[1]-AVDD")
 			(uuid "941dda78-b01e-4d9f-94b2-fee94c267feb")
 		)
 		(pad "13" smd oval
 			(at -0.32 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "28998ada-fcbf-400b-97fa-348b4991f368")
 		)
 		(pad "14" smd oval
@@ -2275,7 +2279,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C60485"
+		(property "LCSC" "C21376"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -2287,7 +2291,7 @@
 				)
 			)
 		)
-		(property "Partnumber" "RC0402JR-070RL"
+		(property "Partnumber" "0402WGJ0000TCE"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -2299,7 +2303,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO"
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -2469,14 +2473,14 @@
 			(at -0.43 0 180)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 30 "hv-4")
+			(net 30 "adcs[0]-AVDD")
 			(uuid "f2e25871-47a5-4ea8-b118-880475bd7a69")
 		)
 		(pad "2" smd rect
 			(at 0.43 0 180)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "e4c95383-06ab-4a5c-8d1d-524dae9f4e75")
 		)
 		(embedded_fonts no)
@@ -2783,14 +2787,14 @@
 			(at -0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 1 "hv")
+			(net 1 "adcs[3]-AVDD")
 			(uuid "891abbd1-4e66-4e35-ba4e-2fb6cf3aecc3")
 		)
 		(pad "2" smd rect
 			(at 0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 31 "adcs[3]-gnd")
 			(uuid "ca6e8ef4-06ef-43bf-8feb-bd057ccafa7a")
 		)
 		(embedded_fonts no)
@@ -3030,21 +3034,21 @@
 			(at -2.28 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "34d4d055-a2c7-4a0e-9460-e36644eab5be")
 		)
 		(pad "2" smd oval
 			(at -1.63 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "83208499-0188-4503-9933-04ffb87b121c")
 		)
 		(pad "3" smd oval
 			(at -0.98 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "ada5652b-5788-4c80-b25b-ba8117e63be5")
 		)
 		(pad "4" smd oval
@@ -3058,7 +3062,7 @@
 			(at 0.33 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 31 "adcs[3]-gnd")
 			(uuid "4647e380-0f6c-41f9-9ca2-2bc5f038a10e")
 		)
 		(pad "6" smd oval
@@ -3086,7 +3090,7 @@
 			(at 2.28 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 33 "gnd")
 			(uuid "96f94f87-8c53-4037-8c4d-e6d3592cb79c")
 		)
 		(pad "10" smd oval
@@ -3107,14 +3111,14 @@
 			(at 0.33 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 1 "hv")
+			(net 1 "adcs[3]-AVDD")
 			(uuid "49fba822-da03-4e7c-931b-64fe9047deec")
 		)
 		(pad "13" smd oval
 			(at -0.32 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "b04555c6-74a5-4fd2-9728-78689f4a2397")
 		)
 		(pad "14" smd oval
@@ -3389,7 +3393,7 @@
 			(at -0.98 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "55858948-1722-4ec9-a02c-890f99146662")
 		)
 		(pad "4" smd oval
@@ -3403,7 +3407,7 @@
 			(at 0.33 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 32 "adcs[0]-gnd")
 			(uuid "ca80b6ed-e6fc-431f-ab85-d4a7efb1dacb")
 		)
 		(pad "6" smd oval
@@ -3431,7 +3435,7 @@
 			(at 2.28 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 33 "gnd")
 			(uuid "a4b84754-38a3-4ad8-b4bd-c65feed19502")
 		)
 		(pad "10" smd oval
@@ -3452,14 +3456,14 @@
 			(at 0.33 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 30 "hv-4")
+			(net 30 "adcs[0]-AVDD")
 			(uuid "e40a50ff-493c-4c0c-bd0b-e266a0a932ce")
 		)
 		(pad "13" smd oval
 			(at -0.32 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "a9e39eca-684b-433f-8d1f-431c237890f0")
 		)
 		(pad "14" smd oval
@@ -3549,7 +3553,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C60485"
+		(property "LCSC" "C21376"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -3561,7 +3565,7 @@
 				)
 			)
 		)
-		(property "Partnumber" "RC0402JR-070RL"
+		(property "Partnumber" "0402WGJ0000TCE"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -3573,7 +3577,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO"
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -3743,14 +3747,14 @@
 			(at -0.43 0 180)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 1 "hv")
+			(net 1 "adcs[3]-AVDD")
 			(uuid "37e3d3b6-f4f0-45cb-aaf3-b430daf20630")
 		)
 		(pad "2" smd rect
 			(at 0.43 0 180)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "195488cd-667d-46e5-a164-ac81dde6bfbd")
 		)
 		(embedded_fonts no)
@@ -4057,14 +4061,14 @@
 			(at -0.55 0 90)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 20 "hv-3")
+			(net 20 "adcs[2]-AVDD")
 			(uuid "16e4f79f-868f-484e-8306-06f5b57a5232")
 		)
 		(pad "2" smd rect
 			(at 0.55 0 90)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 34 "adcs[2]-gnd")
 			(uuid "d18301a6-300c-4c32-99b9-78f98782e71a")
 		)
 		(embedded_fonts no)
@@ -4371,7 +4375,7 @@
 			(at -0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "2a39464d-7cfd-41be-b1cf-82d17ad8258d")
 		)
 		(pad "2" smd rect
@@ -4447,7 +4451,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C60485"
+		(property "LCSC" "C21376"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -4459,7 +4463,7 @@
 				)
 			)
 		)
-		(property "Partnumber" "RC0402JR-070RL"
+		(property "Partnumber" "0402WGJ0000TCE"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -4471,7 +4475,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO"
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 180)
 			(layer "User.9")
 			(hide yes)
@@ -4641,14 +4645,14 @@
 			(at -0.43 0 180)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 29 "hv-1")
+			(net 29 "adcs[1]-AVDD")
 			(uuid "103c8952-efe6-456e-b524-4e7524f0af16")
 		)
 		(pad "2" smd rect
 			(at 0.43 0 180)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "c2d2c467-b6df-4fb7-91f4-7d0ec51f2af9")
 		)
 		(embedded_fonts no)
@@ -4717,7 +4721,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C60485"
+		(property "LCSC" "C21376"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -4729,7 +4733,7 @@
 				)
 			)
 		)
-		(property "Partnumber" "RC0402JR-070RL"
+		(property "Partnumber" "0402WGJ0000TCE"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -4741,7 +4745,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO"
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -4918,7 +4922,7 @@
 			(at 0.43 0)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 34 "adcs[2]-gnd")
 			(uuid "53dd8c36-5eb5-497d-9e8e-7716948a3c8e")
 		)
 		(embedded_fonts no)
@@ -5225,14 +5229,14 @@
 			(at -0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 20 "hv-3")
+			(net 20 "adcs[2]-AVDD")
 			(uuid "f73eaa04-cca8-457e-b918-9c3d57615bb8")
 		)
 		(pad "2" smd rect
 			(at 0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 34 "adcs[2]-gnd")
 			(uuid "8ef346be-5ea6-4e57-bd3c-9b6b53e0948c")
 		)
 		(embedded_fonts no)
@@ -5539,7 +5543,7 @@
 			(at -0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "32a71b4e-61b3-429a-80ed-de0607b9157b")
 		)
 		(pad "2" smd rect
@@ -5853,14 +5857,14 @@
 			(at -0.55 0 90)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 1 "hv")
+			(net 1 "adcs[3]-AVDD")
 			(uuid "12ea2f4e-13ab-400e-9ba0-0ca8da97ed98")
 		)
 		(pad "2" smd rect
 			(at 0.55 0 90)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 31 "adcs[3]-gnd")
 			(uuid "c6904df8-fbd0-47e8-87c2-5abc2fadc5e3")
 		)
 		(embedded_fonts no)
@@ -6167,14 +6171,14 @@
 			(at -0.55 0 90)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 30 "hv-4")
+			(net 30 "adcs[0]-AVDD")
 			(uuid "d24a7df5-6098-40bb-a287-baa13a891ba9")
 		)
 		(pad "2" smd rect
 			(at 0.55 0 90)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 32 "adcs[0]-gnd")
 			(uuid "92af13c7-9359-4853-90cc-a325d94c5886")
 		)
 		(embedded_fonts no)
@@ -6481,14 +6485,14 @@
 			(at -0.55 0 90)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 29 "hv-1")
+			(net 29 "adcs[1]-AVDD")
 			(uuid "b354b574-e72b-4347-9f2f-64a00a718157")
 		)
 		(pad "2" smd rect
 			(at 0.55 0 90)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 21 "adcs[1]-gnd")
 			(uuid "ef35c9c8-b5be-4e35-8706-e58019fe46f9")
 		)
 		(embedded_fonts no)
@@ -6557,7 +6561,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C60485"
+		(property "LCSC" "C21376"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -6569,7 +6573,7 @@
 				)
 			)
 		)
-		(property "Partnumber" "RC0402JR-070RL"
+		(property "Partnumber" "0402WGJ0000TCE"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -6581,7 +6585,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "YAGEO"
+		(property "Manufacturer" "UNI-ROYAL(Uniroyal Elec)"
 			(at 0 0 0)
 			(layer "User.9")
 			(hide yes)
@@ -6758,7 +6762,7 @@
 			(at 0.43 0)
 			(size 0.57 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 21 "adcs[1]-gnd")
 			(uuid "5adc2eb6-4195-4b0e-aea4-237ce999bb41")
 		)
 		(embedded_fonts no)
@@ -7005,14 +7009,14 @@
 			(at -1.63 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "ed65522b-903b-41c5-b347-9a5316a2088f")
 		)
 		(pad "3" smd oval
 			(at -0.98 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "b02da4e8-2aea-4ee8-bc3e-3f8b3a5a68ca")
 		)
 		(pad "4" smd oval
@@ -7026,7 +7030,7 @@
 			(at 0.33 2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 34 "adcs[2]-gnd")
 			(uuid "d7413bb4-9489-405b-a77f-f1e9fbe23347")
 		)
 		(pad "6" smd oval
@@ -7054,7 +7058,7 @@
 			(at 2.28 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 33 "gnd")
 			(uuid "a686bb7c-f81d-4fa1-8683-928c63cecd74")
 		)
 		(pad "10" smd oval
@@ -7075,14 +7079,14 @@
 			(at 0.33 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 20 "hv-3")
+			(net 20 "adcs[2]-AVDD")
 			(uuid "bca7d955-fc5a-451b-a47f-71a395a10ebf")
 		)
 		(pad "13" smd oval
 			(at -0.32 -2.87)
 			(size 0.34 1.73)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 8 "hv-2")
+			(net 8 "hv")
 			(uuid "2779df7a-ff70-4171-9a65-823e9738783a")
 		)
 		(pad "14" smd oval
@@ -7410,14 +7414,14 @@
 			(at -0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 29 "hv-1")
+			(net 29 "adcs[1]-AVDD")
 			(uuid "aa8cb2a3-a64d-4da1-a229-2d66610bb424")
 		)
 		(pad "2" smd rect
 			(at 0.55 0 270)
 			(size 0.79 0.54)
 			(layers "F.Cu" "F.Mask" "F.Paste")
-			(net 21 "gnd")
+			(net 21 "adcs[1]-gnd")
 			(uuid "2e665c17-70ff-4f46-aced-2e76abafa6ef")
 		)
 		(embedded_fonts no)
@@ -10680,7 +10684,7 @@
 	)
 	(zone
 		(net 8)
-		(net_name "hv-2")
+		(net_name "hv")
 		(layer "B.Cu")
 		(uuid "e10369b6-715c-47df-a9c0-1b704be22893")
 		(hatch edge 0.5)

@@ -1,5 +1,8 @@
 #pragma experiment("FOR_LOOP")
-import ElectricPower, I2C, Addressor1, ElectricLogic
+import ElectricPower
+import I2C
+import Addressor1
+import ElectricLogic
 
 module Texas_Instruments_TCA6408:
     """Texas_Instruments_TCA6408"""
@@ -49,7 +52,7 @@ module Texas_Instruments_TCA6408:
     # Addressor
     addressor = new Addressor1
     assert i2c.address is addressor.address
-    addressor.base = 0x20
+    assert addressor.base is 0x20
     addressor.address_lines[0].line ~ ic.ADDR
     addressor.address_lines[0].reference ~ power
 

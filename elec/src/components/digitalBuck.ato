@@ -51,6 +51,7 @@ module DigitalBuck from DigitalRegulator:
     enable_resistor.package = "R0402"
     enable.line ~> enable_resistor ~> regulator.EN
 
+
 component TPS563201DDCR:
     # component TPS563201DDCR
     footprint = "SOT-23-6_L2.9-W1.6-P0.95-LS2.8-BL"

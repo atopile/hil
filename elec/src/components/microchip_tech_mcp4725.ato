@@ -1,5 +1,10 @@
+#pragma experiment("MODULE_TEMPLATING")
 #pragma experiment("FOR_LOOP")
-import ElectricPower, ElectricSignal, I2C, Addressor1
+
+import ElectricPower
+import ElectricSignal
+import I2C
+import Addressor
 
 module Microchip_Tech_MCP4725A0T:
     """
@@ -25,9 +30,9 @@ module Microchip_Tech_MCP4725A0T:
     output.reference.gnd ~ power.gnd
 
     # Address
-    addressor = new Addressor1
+    addressor = new Addressor<address_bits=1>
     assert i2c.address is addressor.address
-    addressor.base = 0x60
+    assert addressor.base is 0x60
     addressor.address_lines[0].line ~ ic.A0
     addressor.address_lines[0].reference ~ power
 

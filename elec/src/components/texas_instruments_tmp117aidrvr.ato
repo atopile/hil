@@ -1,4 +1,9 @@
-import ElectricPower, I2C
+#pragma experiment("FOR_LOOP")
+
+import ElectricPower
+import I2C
+
+from "components/ti_addressor.py" import TIAddressor
 
 component Texas_Instruments_TMP117AIDRVR:
     """Texas_Instruments_TMP117AIDRVR component"""
@@ -38,4 +43,28 @@ component Texas_Instruments_TMP117AIDRVR:
     #   V+          | 0x49
     #   SDA         | 0x4A
     #   SCL         | 0x4B
-    power.gnd ~ ADD0
+    addressor = new TIAddressor
+    addressor.address_line.line ~ ADD0
+    addressor.address_line.reference ~ power
+    assert addressor.base is 0x48
+    assert i2c.address is addressor.address
+
+
+module Test:
+    # Create components
+    temp_sensors = new Texas_Instruments_TMP117AIDRVR[4]
+
+    # Create interfaces
+    power = new ElectricPower
+    i2c = new I2C
+
+    # Set Addresses
+    temp_sensors[0].i2c.address = 0x48
+    temp_sensors[1].i2c.address = 0x49
+    temp_sensors[2].i2c.address = 0x4A
+    temp_sensors[3].i2c.address = 0x4B
+
+    # Connect up components
+    for sensor in temp_sensors:
+        sensor.power ~ power
+        sensor.i2c ~ i2c

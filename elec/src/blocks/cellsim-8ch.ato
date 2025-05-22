@@ -1,11 +1,16 @@
-import ElectricPower, ElectricLogic, I2C, FilterElectricalRC
+#pragma experiment("BRIDGE_CONNECT")
+
+import ElectricPower
+import ElectricLogic
+import I2C
+import FilterElectricalRC
+
 from "resistors.ato" import I2CPullup
 
 from "blocks/multiplexer-i2c-8ch.ato" import MultiplexerI2C8Ch
 from "blocks/micro_vault.ato" import MicroVault
 from "components/cell.ato" import Cell, CellJumper
 from "components/tdpower_tdk2024s24wh.ato" import TDPOWER_TDK20_24S24WH
-from "components/iso1640.ato" import ISO1640QDWRQ1, ISO1640BDR
 from "components/Ylptec_BYYXX.ato" import BYYXXS_2WR2, _B2424
 from "components/evisun_b2409s1wr3.ato" import EVISUN_B2409S_1WR3
 from "components/analog_devices_ad_um121n1b_rzrl7.ato" import Analog_Devices_ADUM121N1BRZ_RL7
@@ -13,6 +18,10 @@ from "components/analog_devices_ad_um121n1b_rzrl7.ato" import Analog_Devices_ADU
 from "atopile/ti-lv284x/lv284x.ato" import LV2842x
 from "atopile/st-ldk220/ldk220.ato" import LDK220M_R
 from "atopile/ti-tca9548a/tca9548a.ato" import TCA9548APWR
+from "atopile/ti-iso1640x/ti-iso1640.ato" import Texas_Instruments_ISO1640_driver
+from "atopile/ti-iso1640x/ti-iso1640.ato" import Texas_Instruments_ISO1640QDWRQ1_package
+from "atopile/ti-iso1640x/ti-iso1640.ato" import Texas_Instruments_ISO1640BDR_package
+
 
 
 module CellSim8Ch:
@@ -70,11 +79,11 @@ module CellSim8Ch:
     led_isolator.output_a ~ block_up.led_data # non isolated output
 
     # I2C Isolator - 1500V isolation
-    i2c_isolator = new ISO1640QDWRQ1
-    power_3v3 ~ i2c_isolator.power_non_isolated
-    power_3v3_isolated ~ i2c_isolator.power_isolated
-    i2c ~ i2c_isolator.i2c_non_isolated
-    i2c_isolated ~ i2c_isolator.i2c_isolated
+    i2c_isolator = new Texas_Instruments_ISO1640_driver
+    i2c_isolator.package -> Texas_Instruments_ISO1640BDR_package
+    power_3v3 ~ i2c_isolator.power_rails[0]
+    power_3v3_isolated ~ i2c_isolator.power_rails[1]
+    i2c ~> i2c_isolator ~> i2c_isolated
 
     i2c_pullup = new I2CPullup
     power_3v3_isolated ~ i2c_pullup.power
@@ -83,11 +92,24 @@ module CellSim8Ch:
     # High precision voltage sense
     micro_vault = new MicroVault
 
+    # # MicroVault Addresses
+    # assert micro_vault.adc.i2c.address is 0x41
+    # assert micro_vault.temp_sensor.i2c.address is 0x49
+
+    # MicroVault Addresses - set directly in component connections
+    # ADC (ADS1219IPWR) - base 0x40, A0=1, A1=0 for 0x41
+    micro_vault.adc.addressor.address_lines[0].line ~ micro_vault._power_5v3.vcc  # A0 to V+ for 0x41
+    micro_vault.adc.addressor.address_lines[1].line ~ micro_vault._power_5v3.gnd  # A1 to GND for 0x41
+
+    # Temperature Sensor (TMP117AIDRVR) - base 0x48, ADD0=1 for 0x49
+    micro_vault.temp_sensor.addressor.address_line.line ~ micro_vault.power_3v3.vcc  # ADD0 to V+ for 0x49
+
+
     # Input filter
     dmm_input_filter = new FilterElectricalRC
     dmm_input_filter.in_.line ~ dmm_out.vcc
     dmm_input_filter.in_.reference.gnd ~ dmm_out.gnd
-    dmm_input_filter.out ~ micro_vault.adc.input_0
+    dmm_input_filter.out ~ micro_vault.adc.inputs[0]
     # Device gnd should be connected to microVault gnd
     dmm_out.gnd ~ micro_vault.power_3v3.gnd
 
@@ -105,11 +127,11 @@ module CellSim8Ch:
     micro_vault_ldo_3v3.power_out ~ micro_vault.power_3v3
 
     # Isolator for i2c, needs to float with respect to the cells
-    micro_vault_isolator = new ISO1640BDR
-    power_3v3_isolated ~ micro_vault_isolator.power_non_isolated
-    micro_vault_ldo_3v3.power_out ~ micro_vault_isolator.power_isolated
-    i2c_isolated ~ micro_vault_isolator.i2c_non_isolated
-    micro_vault_isolator.i2c_isolated ~ micro_vault.i2c
+    micro_vault_isolator = new Texas_Instruments_ISO1640_driver
+    micro_vault_isolator.package -> Texas_Instruments_ISO1640QDWRQ1_package
+    power_3v3_isolated ~ micro_vault_isolator.power_rails[0]
+    micro_vault_ldo_3v3.power_out ~ micro_vault_isolator.power_rails[1]
+    i2c_isolated ~> micro_vault_isolator ~> micro_vault.i2c
 
     # micro_vault_ldo_3v3.v_out = 3.3V +/- 5%
     micro_vault_ldo_3v3.feedback_div.r_bottom.resistance = 9.9kohm to 10.1kohm
@@ -199,14 +221,14 @@ module CellSim8Ch:
     i2c_mux.i2c7 ~ cell8.i2c
 
     # Cell to dmm mux connections
-    gpio_mux.output_1 ~ cell1.dmm_relay_enable
-    gpio_mux.output_2 ~ cell2.dmm_relay_enable
-    gpio_mux.output_3 ~ cell3.dmm_relay_enable
-    gpio_mux.output_4 ~ cell4.dmm_relay_enable
-    gpio_mux.output_5 ~ cell5.dmm_relay_enable
-    gpio_mux.output_6 ~ cell6.dmm_relay_enable
-    gpio_mux.output_7 ~ cell7.dmm_relay_enable
-    gpio_mux.output_8 ~ cell8.dmm_relay_enable
+    gpio_mux.outputs[0] ~ cell1.dmm_relay_enable
+    gpio_mux.outputs[1] ~ cell2.dmm_relay_enable
+    gpio_mux.outputs[2] ~ cell3.dmm_relay_enable
+    gpio_mux.outputs[3] ~ cell4.dmm_relay_enable
+    gpio_mux.outputs[4] ~ cell5.dmm_relay_enable
+    gpio_mux.outputs[5] ~ cell6.dmm_relay_enable
+    gpio_mux.outputs[6] ~ cell7.dmm_relay_enable
+    gpio_mux.outputs[7] ~ cell8.dmm_relay_enable
 
     # DMM Mux output connections
     dmm_out ~ cell1.dmm_out

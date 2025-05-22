@@ -1,5 +1,11 @@
-import ElectricPower, I2C, ElectricLogic, Capacitor
-from "components/tca6408.ato" import TCA6408ARGTR
+#pragma experiment("FOR_LOOP")
+
+import ElectricPower
+import I2C
+import ElectricLogic
+import Capacitor
+
+from "components/texas_instruments_tca6408.ato" import Texas_Instruments_TCA6408
 from "components/texas_instruments_cd74h_c4051p_wr.ato" import Texas_Instruments_CD74HC4051PWR
 
 module MultiplexerI2C8Ch:
@@ -11,17 +17,10 @@ module MultiplexerI2C8Ch:
     power_3v3 = new ElectricPower
     i2c = new I2C
     input = new ElectricLogic
-    output_1 = new ElectricLogic
-    output_2 = new ElectricLogic
-    output_3 = new ElectricLogic
-    output_4 = new ElectricLogic
-    output_5 = new ElectricLogic
-    output_6 = new ElectricLogic
-    output_7 = new ElectricLogic
-    output_8 = new ElectricLogic
+    outputs = new ElectricLogic[8]
 
     # Devices
-    gpio_expander = new TCA6408ARGTR
+    gpio_expander = new Texas_Instruments_TCA6408
     mux = new Texas_Instruments_CD74HC4051PWR
 
     # Decoupling
@@ -40,28 +39,23 @@ module MultiplexerI2C8Ch:
     power_3v3 ~ gpio_expander.power
 
     i2c ~ gpio_expander.i2c
-    gpio_expander.ADDR ~ power_3v3.vcc # 0x21
+    gpio_expander.i2c.address = 0x21
 
-    gpio_expander.P1 ~ mux.S2 # Select 3
-    gpio_expander.P2 ~ mux.S1 # Select 2
-    gpio_expander.P3 ~ mux.S0 # Select 1
-    gpio_expander.P4 ~ mux.A # Shared data line
-    gpio_expander.P5 ~ mux.Eh # Enablex
+    gpio_expander.gpios[1].line ~ mux.S2 # Select 3
+    gpio_expander.gpios[2].line ~ mux.S1 # Select 2
+    gpio_expander.gpios[3].line ~ mux.S0 # Select 1
+    gpio_expander.gpios[4].line ~ mux.A # Shared data line
+    gpio_expander.gpios[5].line ~ mux.Eh # Enable
 
-    output_1.line ~ mux.A0
-    output_2.line ~ mux.A1
-    output_3.line ~ mux.A2
-    output_4.line ~ mux.A3
-    output_5.line ~ mux.A4
-    output_6.line ~ mux.A5
-    output_7.line ~ mux.A6
-    output_8.line ~ mux.A7
+    # Zip connect would be nice here
+    outputs[0].line ~ mux.A0
+    outputs[1].line ~ mux.A1
+    outputs[2].line ~ mux.A2
+    outputs[3].line ~ mux.A3
+    outputs[4].line ~ mux.A4
+    outputs[5].line ~ mux.A5
+    outputs[6].line ~ mux.A6
+    outputs[7].line ~ mux.A7
 
-    output_1.reference.gnd ~ power_3v3.gnd
-    output_2.reference.gnd ~ power_3v3.gnd
-    output_3.reference.gnd ~ power_3v3.gnd
-    output_4.reference.gnd ~ power_3v3.gnd
-    output_5.reference.gnd ~ power_3v3.gnd
-    output_6.reference.gnd ~ power_3v3.gnd
-    output_7.reference.gnd ~ power_3v3.gnd
-    output_8.reference.gnd ~ power_3v3.gnd
+    for output in outputs:
+        output.reference.gnd ~ power_3v3.gnd
