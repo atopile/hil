@@ -1,5 +1,8 @@
 #pragma experiment("FOR_LOOP")
-import ElectricPower, I2C, Addressor1, ElectricLogic
+import ElectricPower
+import I2C
+import Addressor1
+import ElectricLogic
 
 module Texas_Instruments_TCA6408:
     """Texas_Instruments_TCA6408"""

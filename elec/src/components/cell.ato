@@ -88,6 +88,11 @@ module Cell:
     assert ldo.dac.i2c.address is 0x60
     assert gpio.i2c.address is 0x20
 
+    # Explicit address connections (addressor is being flakey)
+    buck.dac.ic.A0 ~ buck.dac.power.vcc
+    ldo.dac.ic.A0 ~ ldo.dac.power.gnd
+    gpio.ic.ADDR ~ gpio.power.gnd
+
     # I2C pullup
     _power_3v3 ~ i2c_pullup.power
     _iso_i2c ~ i2c_pullup.i2c
