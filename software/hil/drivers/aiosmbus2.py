@@ -11,8 +11,12 @@ from typing import (
     Self,
 )
 from abc import ABC, abstractmethod
+import logging
 from hil.utils.composable_future import Future, composable
 from smbus2 import SMBus
+
+# Define logger
+logger = logging.getLogger(__name__)
 
 
 class SMBusHandle[T](Future[T]):
@@ -191,7 +195,7 @@ class AsyncSMBusPeripheral(AsyncSMBus):
         super().__init__()
         self._lock = asyncio.Lock()
         self._handle: SMBusHandle | None = None
-        self._smbus = None
+        self._smbus: SMBus | None = None
         self._bus = bus
         self._force = force
 
@@ -225,12 +229,26 @@ class AsyncSMBusPeripheral(AsyncSMBus):
         async def _open():
             async with self._lock:
                 if self._smbus is not None:
-                    raise self.BusAlreadyOpen()
+                    raise self.BusAlreadyOpen("Bus is already open")
 
-                assert isinstance(self._bus, int)
+                assert isinstance(self._bus, (int, str)), "Bus must be int or path-like string"
                 assert isinstance(self._force, bool)
-                self._smbus = await asyncio.to_thread(SMBus, self._bus, self._force)
-                self._handle = SMBusHandle(self._smbus)
+
+                def sync_open_smbus(bus_id, force_flag):
+                    smbus_obj = SMBus(bus_id, force_flag)
+                    smbus_obj.open(bus_id)
+                    return smbus_obj
+
+                try:
+                    self._smbus = await asyncio.to_thread(sync_open_smbus, self._bus, self._force)
+                    self._handle = SMBusHandle(self._smbus)
+                    logger.debug(f"Successfully opened SMBus {self._bus}")
+                except Exception as e:
+                    logger.error(f"Failed to open SMBus {self._bus}: {e}")
+                    self._smbus = None
+                    self._handle = None
+                    raise
+
                 return self
 
         return _Opener(self, _open)
@@ -241,17 +259,27 @@ class AsyncSMBusPeripheral(AsyncSMBus):
         """
         async with self._lock:
             if self._smbus is not None:
-                await asyncio.to_thread(self._smbus.close)
-                self._smbus = None
+                logger.debug(f"Closing SMBus {self._bus}")
+                try:
+                    await asyncio.to_thread(self._smbus.close)
+                except Exception as e:
+                    logger.error(f"Error closing SMBus {self._bus}: {e}")
+                finally:
+                    self._smbus = None
+                    self._handle = None
+            else:
+                logger.debug(f"SMBus {self._bus} already closed or never opened.")
 
     @asynccontextmanager
     async def handle(self) -> AsyncGenerator[SMBusHandle, None]:
         async with self._lock:
-            if self._handle is None:
-                raise RuntimeError("bus not open")
+            if self._handle is None or self._smbus is None:
+                raise RuntimeError(f"bus {self._bus} is not open or handle not created")
             yield self._handle
 
     async def __aenter__(self) -> Self:
+        if self._smbus is None:
+            raise RuntimeError(f"Bus {self._bus} must be opened before entering context. Use 'async with bus.open():' or 'await bus.open()' first.")
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):

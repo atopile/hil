@@ -6,6 +6,7 @@ import numpy as np
 from hil.drivers.ads1x15 import ADS1115
 from hil.drivers.aiosmbus2 import AsyncSMBus
 from hil.drivers.mcp4725 import MCP4725
+from hil.drivers.tca6408 import TCA6408
 
 from hil.framework import record, Calibration
 
@@ -20,7 +21,7 @@ class Cell:
     adc: ADS1115
     buck_dac: MCP4725
     ldo_dac: MCP4725
-    _gpio_state: int
+    gpio: TCA6408
     _buck_calibration: Calibration
     _ldo_calibration: Calibration
 
@@ -35,6 +36,7 @@ class Cell:
         LDO_ENABLE = 3
         LOAD_SWITCH_CONTROL = 4
         OUTPUT_RELAY_CONTROL = 5
+        EXTERNAL_LOAD_CONTROL = 6
 
     class AdcChannels(IntEnum):
         BUCK_VOLTAGE = 0
@@ -65,17 +67,26 @@ class Cell:
         self.cell_num = cell_num
         self.bus = bus
         self.enabled = False
+        logger.debug(f"Creating Cell {cell_num} with config: {config}")
         self.buck_dac = await MCP4725.create(bus, self.Devices.BUCK)
         self.ldo_dac = await MCP4725.create(bus, self.Devices.LDO)
         self.adc = await ADS1115.create(self.bus, self.Devices.ADC)
+        self.gpio = await TCA6408.create(bus, self.Devices.GPIO)
+
+        # Use default buck calibration for now
+        # TODO: Add buck calibration loading from config if needed
         self._buck_calibration = Calibration(
             [1.5041, 4.5971], [2625, 234], lower_bound=1.45, upper_bound=4.65
         )
+
+        # Safely get LDO calibration config, default to {} if missing
+        ldo_cal_config = config.get("ldo_calibration", {})
+        if not ldo_cal_config:
+             logger.warning(f"[Cell {cell_num}] ldo_calibration missing from config. Using default values.")
+
+        # Pass the obtained (or default empty) dict to from_config
         self._ldo_calibration = Calibration.from_config(
-            config["ldo_calibration"], [0.228, 4.4], [3760, 42]
-        )
-        self._gpio_state = (
-            0x00  # 8-bit register representing the current state of GPIO pins.
+            ldo_cal_config, [0.228, 4.4], [3760, 42]
         )
         await self.reset()
 
@@ -87,26 +98,25 @@ class Cell:
         - Clears the GPIO state.
         - Resets the ADC gain.
         """
-        async with self.bus.handle() as handle:
-            await handle.write_byte_data(self.Devices.GPIO, 0x03, 0x00)
-            await handle.write_byte_data(self.Devices.GPIO, 0x01, 0x00)
+        # Configure all GPIO pins as outputs
+        await self.gpio.configure_io_bulk({
+            self.GpioChannels.BUCK_ENABLE: True,
+            self.GpioChannels.LDO_ENABLE: True,
+            self.GpioChannels.LOAD_SWITCH_CONTROL: True,
+            self.GpioChannels.OUTPUT_RELAY_CONTROL: True,
+            self.GpioChannels.EXTERNAL_LOAD_CONTROL: True
+        })
+        
+        # Set all GPIO pins low
+        await self.gpio.set_gpio_bulk({
+            self.GpioChannels.BUCK_ENABLE: False,
+            self.GpioChannels.LDO_ENABLE: False,
+            self.GpioChannels.LOAD_SWITCH_CONTROL: False,
+            self.GpioChannels.OUTPUT_RELAY_CONTROL: False,
+            self.GpioChannels.EXTERNAL_LOAD_CONTROL: False
+        })
 
         await self.adc.set_adc_config(gain=ADS1115.GainConfig.UPTO_6_144V)
-
-    def _set_gpio(self, channel: GpioChannels, value: bool):
-        if value:
-            self._gpio_state |= 1 << channel
-        else:
-            self._gpio_state &= ~(1 << channel)
-
-    async def _write_gpio_state(self):
-        """
-        Update the state of the GPIO expander.
-        Writes the current GPIO_STATE to the output register.
-        """
-        async with self.bus.handle() as handle:
-            await handle.write_byte_data(self.Devices.GPIO, 0x01, self._gpio_state)
-        logger.debug(f"[Cell {self.cell_num}] GPIO state set: {bin(self._gpio_state)}")
 
     async def enable(self):
         """
@@ -115,9 +125,10 @@ class Cell:
         if self.enabled:
             return
 
-        self._set_gpio(self.GpioChannels.BUCK_ENABLE, True)
-        self._set_gpio(self.GpioChannels.LDO_ENABLE, True)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio_bulk({
+            self.GpioChannels.BUCK_ENABLE: True,
+            self.GpioChannels.LDO_ENABLE: True
+        })
         self.enabled = True
         logger.debug(f"[Cell {self.cell_num}] Enabled")
 
@@ -128,9 +139,10 @@ class Cell:
         if not self.enabled:
             return
 
-        self._set_gpio(self.GpioChannels.BUCK_ENABLE, False)
-        self._set_gpio(self.GpioChannels.LDO_ENABLE, False)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio_bulk({
+            self.GpioChannels.BUCK_ENABLE: False,
+            self.GpioChannels.LDO_ENABLE: False
+        })
         self.enabled = False
         logger.debug(f"[Cell {self.cell_num}] Disabled")
 
@@ -211,24 +223,47 @@ class Cell:
         await self._set_buck_voltage(
             self.MAX_BUCK_VOLTAGE
         )  # Start with max buck voltage
-        await self.ldo_dac.set_raw_value(3760)
+        await self.ldo_dac.set_raw_value(3760) # Start at high DAC value (low voltage)
         await self.turn_on_output_relay()
         await asyncio.sleep(0.2)
 
+        # Adjust the lower DAC limit (increase from 200 to 250)
+        min_dac_value = 250
         for dac_value in np.linspace(
-            3760, 200, num=data_points, dtype=int, endpoint=True
+            3760, min_dac_value, num=data_points, dtype=int, endpoint=True
         ):
             await self.ldo_dac.set_raw_value(int(dac_value))
             await asyncio.sleep(0.3)  # Increased settling time
             voltage = await self.get_voltage()
             logger.debug(
-                f"[Cell {self.cell_num}] Voltage read: {voltage:.3f} V (raw: {dac_value})"
+                f"[Cell {self.cell_num}] Calibration point: DAC={int(dac_value)}, V={voltage:.4f}"
             )
-            ldo_calibration_list.append([voltage, dac_value])
+            ldo_calibration_list.append([voltage, float(dac_value)]) # Store as floats
+
+        # Ensure data is sorted by voltage (x-value) before updating calibration
         calibration_array = np.array(ldo_calibration_list)
+        # Handle potential duplicate voltage readings robustly before sorting/updating
+        # Option 1: Average DAC values for duplicate voltages (might be okay if close)
+        # Option 2: Keep only the first occurrence of a voltage (simpler)
+        unique_voltages, indices = np.unique(calibration_array[:, 0], return_index=True)
+        if len(unique_voltages) < len(calibration_array):
+             logger.warning(f"[Cell {self.cell_num}] Duplicate voltage readings detected during calibration. Keeping first occurrences.")
+             calibration_array = calibration_array[indices]
+
+        # Now sort the unique points by voltage
         sorted_indices = np.argsort(calibration_array[:, 0])
         x_sorted = calibration_array[sorted_indices, 0].tolist()
         y_sorted = calibration_array[sorted_indices, 1].tolist()
+
+        # Check again for strictly increasing x after potential filtering/sorting
+        if not np.all(np.diff(np.array(x_sorted)) > 1e-9): # Use tolerance for float comparison
+             logger.error(f"[Cell {self.cell_num}] LDO calibration failed: x values not strictly increasing after processing. Data: {list(zip(x_sorted, y_sorted))}")
+             # Decide how to handle: raise error, use old calibration, use partial data?
+             # For now, log error and potentially don't update
+             # raise ValueError("LDO Calibration failed: x values not strictly increasing after processing.")
+             return # Or maybe just don't update if problematic
+
+        logger.info(f"[Cell {self.cell_num}] Updating LDO calibration with {len(x_sorted)} points.")
         self._ldo_calibration.update(x_sorted, y_sorted)
 
     async def _set_buck_voltage(self, voltage):
@@ -249,32 +284,28 @@ class Cell:
         """
         Turn on the output relay.
         """
-        self._set_gpio(self.GpioChannels.OUTPUT_RELAY_CONTROL, True)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio(self.GpioChannels.OUTPUT_RELAY_CONTROL, True)
         logger.debug(f"[Cell {self.cell_num}] Output relay turned ON")
 
     async def turn_off_output_relay(self):
         """
         Turn off the output relay.
         """
-        self._set_gpio(self.GpioChannels.OUTPUT_RELAY_CONTROL, False)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio(self.GpioChannels.OUTPUT_RELAY_CONTROL, False)
         logger.debug(f"[Cell {self.cell_num}] Output relay turned OFF")
 
     async def close_load_switch(self):
         """
         Turn on the load switch.
         """
-        self._set_gpio(self.GpioChannels.LOAD_SWITCH_CONTROL, True)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio(self.GpioChannels.LOAD_SWITCH_CONTROL, True)
         logger.debug(f"[Cell {self.cell_num}] Load switch turned ON")
 
     async def open_load_switch(self):
         """
         Turn off the load switch.
         """
-        self._set_gpio(self.GpioChannels.LOAD_SWITCH_CONTROL, False)
-        await self._write_gpio_state()
+        await self.gpio.set_gpio(self.GpioChannels.LOAD_SWITCH_CONTROL, False)
         logger.debug(f"[Cell {self.cell_num}] Load switch turned OFF")
 
     async def get_current(self):
@@ -298,9 +329,24 @@ class Cell:
     async def aclose(self):
         await self.turn_off_output_relay()
         await self.disable()
+        await self.gpio.aclose()
 
     async def __aenter__(self):
         return self
 
     async def __aexit__(self, exc_type, exc_value, traceback):
         await self.aclose()
+
+    async def turn_on_external_load(self):
+        """
+        Turn on the external load switch (connects external load).
+        """
+        await self.gpio.set_gpio(self.GpioChannels.EXTERNAL_LOAD_CONTROL, True)
+        logger.debug(f"[Cell {self.cell_num}] External load turned ON")
+
+    async def turn_off_external_load(self):
+        """
+        Turn off the external load switch (disconnects external load).
+        """
+        await self.gpio.set_gpio(self.GpioChannels.EXTERNAL_LOAD_CONTROL, False)
+        logger.debug(f"[Cell {self.cell_num}] External load turned OFF")
